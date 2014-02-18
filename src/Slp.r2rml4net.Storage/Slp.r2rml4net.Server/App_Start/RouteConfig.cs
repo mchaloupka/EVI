@@ -7,7 +7,7 @@ using System.Web.Routing;
 
 namespace Slp.r2rml4net.Server
 {
-    public class RouteConfig
+    public static class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
