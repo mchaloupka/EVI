@@ -61,11 +61,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mapping\MappingWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\QueryProcessor.cs" />
+    <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="Sql\ISqlDb.cs" />
+    <Compile Include="Sql\Vendor\BaseSqlVendor.cs" />
+    <Compile Include="Sql\Vendor\MSSQLVendor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Optimization\" />
+    <Folder Include="Sparql\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
