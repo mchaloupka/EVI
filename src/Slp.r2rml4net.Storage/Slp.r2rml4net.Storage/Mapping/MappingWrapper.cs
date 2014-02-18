@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TCode.r2rml4net.Mapping;
+using TCode.r2rml4net;
 
 namespace Slp.r2rml4net.Storage.Mapping
 {

@@ -42,14 +42,71 @@
             </summary>
             <remarks>See http://stackoverflow.com/questions/2320533/system-net-uri-with-urlencoded-characters</remarks>
         </member>
+        <member name="T:TCode.r2rml4net.IFreezable">
+            <summary>
+            Interface for the freezeable pattern
+            </summary>
+            <remarks>See http://blogs.msdn.com/b/ericlippert/archive/2007/11/13/immutability-in-c-part-one-kinds-of-immutability.aspx</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.IFreezable.Freeze">
+            <summary>
+            Makes a freezable object immutable
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Log.LogFacadeBase">
+            <summary>
+            Facade for all logging methods used throught the code
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogColumnNotFound(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an error of not found column in the SQL reuslts
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogTermGenerated(VDS.RDF.INode)">
+            <summary>
+            Logs an RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogNullTermGenerated(TCode.r2rml4net.Mapping.ITermMap)">
+            <summary>
+            Logs a null RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogNullValueForColumn(System.String)">
+            <summary>
+            Logs a null value retrieved for column
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogMissingSubject(TCode.r2rml4net.Mapping.ITriplesMap)">
+            <summary>
+            Logs an error of missing <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>'s <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SubjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogQueryExecutionError(TCode.r2rml4net.Mapping.IQueryMap,System.String)">
+            <summary>
+            Logs an error in executing an SQL query
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogInvalidTermMap(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogInvaldTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#triples-map">triples map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogMultipleCompositeKeyReferences(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Logs multiple references to a compisote key in a table
+            </summary>
+            <param name="table">Table with multiple composite keys referenced</param>
+        </member>
         <member name="T:TCode.r2rml4net.MappingHelper">
             <summary>
             Utility helper class for generating and working with mappings
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.MappingHelper.#ctor(TCode.r2rml4net.MappingOptions)">
-            <summary>
-            Creates a new instance of <see cref="T:TCode.r2rml4net.MappingHelper"/> with <see cref="T:TCode.r2rml4net.MappingOptions"/>
             </summary>
         </member>
         <member name="M:TCode.r2rml4net.MappingHelper.UrlEncode(System.String)">
@@ -80,9 +137,64 @@
             Creates a new instance of <see cref="T:TCode.r2rml4net.MappingOptions"/> with default options' values
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.MappingOptions.SetSqlIdentifierDelimiters(System.Char,System.Char)">
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlIdentifierDelimiters(System.Char,System.Char)">
             <summary>
             Sets the SQL identifier delimiters
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlIdentifierDelimiters(System.Char)">
+            <summary>
+            Sets the SQL identifier delimiters
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlVersionValidation(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.ValidateSqlVersion"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.UsingDelimitedIdentifiers(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.UseDelimitedIdentifiers"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithBlankNodeTemplateSeparator(System.String)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.IgnoringDataErrors(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.IgnoreDataErrors"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithAutomaticBlankNodeSubjects(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.AllowAutomaticBlankNodeSubjects"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithDuplicateRowsPreserved(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.PreserveDuplicateRows"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.IgnoringMappingErrors(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.IgnoreMappingErrors"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.Freeze">
+            <summary>
+            Makes this <see cref="T:TCode.r2rml4net.MappingOptions"/> object read-only
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.Default">
+            <summary>
+            Gets a singleton instance with default values of <see cref="T:TCode.r2rml4net.MappingOptions"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.Current">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.MappingOptions"/> from the current <see cref="T:TCode.r2rml4net.MappingScope"/> or the <see cref="P:TCode.r2rml4net.MappingOptions.Default"/> options
             </summary>
         </member>
         <member name="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator">
@@ -130,6 +242,15 @@
             Default value is false
             </summary>
         </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.AllowAutomaticBlankNodeSubjects">
+            <summary>
+            Gets or set value indicating whether <a href="http://www.w3.org/TR/r2rml/#dfn-subject-map">subject maps</a> can be neither
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-template-valued-term-map">template-valued</a> nor 
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-constant-valued-term-map">constant-valued</a> nor 
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-column-valued-term-map">column-valued</a>. In such case a distinct automatic blank node
+            will be created for each logical row.
+            </summary>
+        </member>
         <member name="T:TCode.r2rml4net.Exceptions.InvalidTemplateException">
             <summary>
             Represents errors occuring, when <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
@@ -170,61 +291,9 @@
             Invoke the Visit method and forward visiting to child elements (if any)
             </summary>
         </member>
-        <member name="T:TCode.r2rml4net.Log.IRDFTermGenerationLog">
-            <summary>
-            Interface for abstract logging of the RDF term generation process
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.IRDFTermGenerationLog.LogColumnNotFound(TCode.r2rml4net.Mapping.ITermMap,System.String)">
-            <summary>
-            Logs a column missing in the SQL results
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.IRDFTermGenerationLog.LogTermGenerated(VDS.RDF.INode)">
-            <summary>
-            Logs an RDF term generated
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.IRDFTermGenerationLog.LogNullTermGenerated(TCode.r2rml4net.Mapping.ITermMap)">
-            <summary>
-            Logs a null RDF term generated
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.IRDFTermGenerationLog.LogNullValueForColumn(System.String)">
-            <summary>
-            Logs a null value retrieved for column
-            </summary>
-        </member>
-        <member name="T:TCode.r2rml4net.Log.ITriplesGenerationLog">
-            <summary>
-            Interface for abstract logging of the triples generation process
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.ITriplesGenerationLog.LogMissingSubject(TCode.r2rml4net.Mapping.ITriplesMap)">
-            <summary>
-            Logs an error of missing <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>'s <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SubjectMap"/>
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.ITriplesGenerationLog.LogQueryExecutionError(TCode.r2rml4net.Mapping.IQueryMap,System.String)">
-            <summary>
-            Logs an error in executing an SQL query
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.ITriplesGenerationLog.LogInvalidTermMap(TCode.r2rml4net.Mapping.ITermMap,System.String)">
-            <summary>
-            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.Log.ITriplesGenerationLog.LogInvaldTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap,System.String)">
-            <summary>
-            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#triples-map">triples map</a>
-            </summary>
-        </member>
         <member name="T:TCode.r2rml4net.Log.TextWriterLog">
             <summary>
-            Simple implementation of the <see cref="T:TCode.r2rml4net.Log.IRDFTermGenerationLog"/> and <see cref="T:TCode.r2rml4net.Log.ITriplesGenerationLog"/>
-            interfaces, which writes messages to a <see cref="T:System.IO.TextWriter"/>
-            todo: refactor to a base class
+            Simple implementation of the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>, which writes messages to a <see cref="T:System.IO.TextWriter"/>
             </summary>
         </member>
         <member name="M:TCode.r2rml4net.Log.TextWriterLog.#ctor(System.IO.TextWriter)">
@@ -272,17 +341,375 @@
             Logs an invalid <a href="http://www.w3.org/TR/r2rml/#triples-map">triples map</a>
             </summary>
         </member>
-        <member name="T:TCode.r2rml4net.Mapping.IGraphMap">
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogMultipleCompositeKeyReferences(TCode.r2rml4net.RDB.TableMetadata)">
             <summary>
-            Represents a graph map 
+            Logs multiple references to a compisote key in a table
             </summary>
-            <remarks>See more at http://www.w3.org/TR/r2rml/#dfn-graph-map</remarks>
+            <param name="table">Table with multiple composite keys referenced</param>
         </member>
-        <member name="T:TCode.r2rml4net.Mapping.ITermMap">
+        <member name="T:TCode.r2rml4net.Mapping.Direct.ColumnMappingStrategy">
             <summary>
-            Represents a term map
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy"/>,  which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
             </summary>
-            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-term-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of columns to predicates
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy.CreatePredicateUri(System.Uri,TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Creates a predicate URI for a column
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ColumnMappingStrategy.CreatePredicateUri(System.Uri,TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Creates a predicate URI for a <paramref name="column"/>
+            </summary>
+            <example>For table 'Student', column 'Last name' and base URI 'http://example.com/' it returns URI 'http://example.com/Student#Last%20name'</example>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase">
+            <summary>
+            Base class for mapping strategy classes
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase.CreateBlankNodeTemplate(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a template for column names in the form of "TableName;{col1};{col2};{col3}", where the separator is taken
+            from <see cref="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of direct mapping relational databases
+            to <a href="http://www.w3.org/TR/r2rml/#subject-map">subject maps</a>, 
+            <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate maps</a>
+            and <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object maps</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> for table without primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateSubjectMapForPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> for table with primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreatePredicateMapForForeignKey(TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate map</a> for foreign key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateObjectMapForCandidateKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> for candidate key reference
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateObjectMapForPrimaryKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> for primary key reference
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> as a template valued blank node with template 
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)"/>
+            and class returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateSubjectMapForPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> as a termplate valued URI noed with template 
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)"/>
+            and class returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreatePredicateMapForForeignKey(TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate map</a> as constant valued with URI returned by
+            <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateObjectMapForCandidateKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> as template valued blank node with template
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateObjectMapForPrimaryKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> as template valued node with template returned by
+            <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.PrimaryKeyMappingStrategy">
+            <summary>
+            Strategy for mapping primary keys
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.ForeignKeyMappingStrategy">
+            <summary>
+            Strategy for mapping foreign keys
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.DirectR2RMLMapping">
+            <summary>
+            Provides default mapping by wrapping the <see cref="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.IR2RML">
+            <summary>
+            Represents a R2RML mapping
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.TriplesMaps">
+            <summary>
+            Gets triple maps contained by this <see cref="T:TCode.r2rml4net.IR2RML"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.SqlQueryBuilder">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which is used during generating triples
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.SqlVersionValidator">
+            <summary>
+            Gets or sets the SQL version validator implementation
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.DirectR2RMLMapping.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata)">
+            <summary>
+            Creates a default mapping with no base URI
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.DirectR2RMLMapping.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata,System.Uri)">
+            <summary>
+            Creates a default mapping with a base URI set
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of mapping foreign keys to RDF predicates and obejcts
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a predicate URI for a foreign key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a URI template for referenced object
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a blank node identifier template for referenced object
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates a predicate URI for foreign Key according to <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+            <example>For referenced table "Student", foreign key columns "Last Name" and "SSN" and base URI "http://www.exmample.com/" it creates a 
+            URI "http://www.exmample.com/Student#ref-{\"Last Name\"};{\"SSN\"}"</example>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates an object template for a foreign key reference
+            </summary>
+            <remarks>The template contains both referenced and referencing columns. Different columns are used
+            if the referenced table has or hasn't got a primary key producing different templates</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates a blank node object identifier template for foreign key, which references a candidate key.
+            See <see cref="M:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase.CreateBlankNodeTemplate(System.String,System.Collections.Generic.IEnumerable{System.String})"/> for details on implementation
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.PrimaryKeyMappingStrategy">
+            <summary>
+            Mapping strategy for primary keys
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of mapping primary keys to RDF subjects
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)">
+            <summary>
+            Create an absolute URI subject for a table
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier template for a table without primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a URI template for table with primary key
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.NewBlankNodeForDuplicateRows">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.NewBlankNodeForDuplicateRows.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.NewBlankNodeForDuplicateRows.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            
+            </summary>
+            <param name="subjectMap"></param>
+            <param name="baseUri"></param>
+            <param name="table"></param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)">
+            <summary>
+            Creates a URI for subject class by joining <paramref name="BaseUri"/> and <paramref name="tableName"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier subject template by concatenating the referenced table name with the referenced columns
+            </summary>
+            <example>For table "Student" and referenced columns "Last Name" and "SSN" it creates a template "Student;{\"Last Name\"};{\"SSN\"}"</example>
+            <remarks>If the referenced table has multiple unique keys the template will be created for the longest one. <br/>
+            If the referenced table has no unique key, all columns are used</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier subject template for referenced table with primary key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.Log">
+            <summary>
+            Default mapping log
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator">
+            <summary>
+            Builds a R2RML graph from a relational database's schema
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor">
+            <summary>
+            Interface for the Visitor pattern, which visits tables and columns to extract 
+            relational database structure
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableCollection)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableCollection"/> and it's tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> and it's columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.ColumnMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Visist a <see cref="T:TCode.r2rml4net.RDB.ForeignKeyMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata,TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration)">
+            <summary>
+            Creates <see cref="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator"/> which will read RDB metadata using <see cref="T:TCode.r2rml4net.RDB.IDatabaseMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.GenerateMappings">
+            <summary>
+            Generates default R2RML mappings based on database metadata
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.TableCollection)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableCollection"/> and it's tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> and it's columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.ColumnMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Visist a <see cref="T:TCode.r2rml4net.RDB.ForeignKeyMetadata"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.MappingBaseUri">
+            <summary>
+            R2RML graph's base URI
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.MappingStrategy">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy"/>, which defines how to map relational database to RDF subject , predicate and object maps
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.ColumnMappingStrategy">
+            <summary>
+            Impementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy"/>, which defines how to map columns to RDF predicates
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.PrimaryKeyMappingStrategy">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy"/>, which defines how to map primary keys to RDF subjects
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.SqlBuilder">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which builds queries used to retrieve data from relationalt database for genertaing triples
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration">
+            <summary>
+            Base for DotNetRDF-backed fluent R2RML configuration
+            </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.IMapBase">
             <summary>
@@ -294,10 +721,176 @@
             The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase"/>
             </summary>
         </member>
-        <member name="P:TCode.r2rml4net.Mapping.IMapBase.BaseURI">
+        <member name="P:TCode.r2rml4net.Mapping.IMapBase.BaseUri">
             <summary>
             Base mapping URI. It will be used to resolve relative values when generating terms
             </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(VDS.RDF.IGraph)">
+            <summary>
+            Constructor used by <see cref="T:TCode.r2rml4net.FluentR2RML"/>
+            </summary>
+            <param name="graph">existing graph with mappings</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(System.Uri)">
+            <summary>
+            Constructor used by <see cref="T:TCode.r2rml4net.FluentR2RML"/>
+            </summary>
+            <param name="baseUri">R2RML graph's base URI</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Constructor used by <see cref="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration,VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Constructor used by implementations other than <see cref="T:TCode.r2rml4net.FluentR2RML"/> and <see cref="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.RecursiveInitializeSubMapsFromCurrentGraph">
+            <summary>
+            Reads all maps contained in the current configuration and creates configuration objects
+            </summary>
+            <remarks>Used in loading configuration from an exinsting graph</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.InitializeSubMapsFromCurrentGraph">
+            <summary>
+            Implemented in child classes should create submaps and for each of the run the <see cref="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.RecursiveInitializeSubMapsFromCurrentGraph"/> method
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.EnsureNoShortcutSubmaps">
+            <summary>
+            Overriden in child classes should change shortcut properties to maps
+            </summary>
+            <example>{ [] rr:graph ex:instance } should become { [] rr:graphMap [ rr:constant ex:instance ] }</example>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.CreateSubMaps``1(System.String,System.Func{VDS.RDF.IGraph,VDS.RDF.INode,``0},System.Collections.Generic.IList{``0})">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.R2RMLMappings">
+            <summary>
+            DotNetRDF graph containing the R2RML mappings
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node">
+            <summary>
+            Gets the RDF node representing this map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.BaseUri">
+            <summary>
+            Base mapping URI. It will be used to resolve relative values when generating terms
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.UsesNode">
+            <summary>
+            Gets value indicating whether configuration class is represented by an RDF node
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.TriplesMap">
+            <summary>
+            Gets the parent <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/> containing this map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.FluentR2RML">
+            <summary>
+            Entrypoint to fluent configuration of R2RML, backed by DotNetRDF
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration">
+            <summary>
+            Entrypoint to all of R2RML fluent configuration interfaces
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.CreateTriplesMapFromTable(System.String)">
+            <summary>
+            Creates a <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>, which will use a concrete table or view as datasource 
+            as described on http://www.w3.org/TR/r2rml/#physical-tables
+            </summary>
+            <param name="tablename">Unquoted table name (any quotes and parentheses will be trimmed)</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.CreateTriplesMapFromR2RMLView(System.String)">
+            <summary>
+            Creates a <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>, which will use a SQL query as datasource
+            as described on http://www.w3.org/TR/r2rml/#r2rml-views
+            </summary>
+            <param name="sqlQuery">a valid SQL query</param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.BaseUri">
+            <summary>
+            Base mapping URI. It will be used to resolve relative values when generating terms
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.#ctor(System.Uri)">
+            <summary>
+            Creates a new instance of R2RMLConfiguration with empty R2RML mappings
+            </summary>
+            <param name="baseUri">base URI for mapping nodes</param>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.#ctor">
+            <summary>
+            Creates a new instance of R2RMLConfiguration with empty R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.InitializeSubMapsFromCurrentGraph">
+            <summary>
+            Creates triples maps configuration objects for the current mapping file
+            </summary>
+            <remarks>Used in loading configuration from an exinsting graph</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.CreateTriplesMapFromTable(System.String)">
+            <summary>
+            Creates a Triples Map with physical table datasource and adds it to the R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.CreateTriplesMapFromR2RMLView(System.String)">
+            <summary>
+            Creates a Triples Map with R2RML view datasource and adds it to the R2RML mappings
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.UsesNode">
+            <summary>
+            Always returns false
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.GraphReadOnly">
+            <summary>
+            Returns copy of the mapping graph
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.SqlQueryBuilder">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.SqlVersionValidator">
+            <summary>
+            <see cref="T:TCode.r2rml4net.Validation.ISqlVersionValidator"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.TriplesMaps">
+            <summary>
+            <see cref="P:TCode.r2rml4net.IR2RML.TriplesMaps"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration">
+            <summary>
+            Base fluent configuration of term maps (subject maps, predicate maps, graph maps or object maps) 
+            backed by a DotNetRDF graph (see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration"/>)
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration">
+            <summary>
+            Interface for creating configuration of term maps as described on http://www.w3.org/TR/r2rml/#term-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ITermMap">
+            <summary>
+            Represents a term map
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-term-map</remarks>
         </member>
         <member name="P:TCode.r2rml4net.Mapping.ITermMap.Template">
             <summary>
@@ -345,6 +938,242 @@
             Gets <a href="http://www.w3.org/TR/r2rml/#term-map">term map's</a> <a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
             </summary>
         </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsConstantValued(System.Uri)">
+            <summary>
+            Sets the term map as constant-valued
+            </summary>
+            <param name="uri">Constant value URI</param>
+            <remarks>
+            Asserted using the rr:constant property described on http://www.w3.org/TR/r2rml/#constant
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsTemplateValued(System.String)">
+            <summary>
+            Sets the term map as template-values
+            </summary>
+            <param name="template">A valid template</param>
+            <remarks>
+            For details on templates read more on http://www.w3.org/TR/r2rml/#from-template
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.SetInverseExpression(System.String)">
+            <summary>
+            Sets the term map's inverse expression template
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#inverse</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.TermType">
+            <summary>
+            Allows setting the term type of the current term map
+            </summary>
+            <remarks>Please see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration"/> members for info on valid values for different term maps</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration">
+            <summary>
+            Interface for setting term map's term type. More info on http://www.w3.org/TR/r2rml/#dfn-term-type
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsBlankNode">
+            <summary>
+            Sets Term Map's term type to blank node. Throws an exception if term map is a graph map or a predicate map
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsIRI">
+            <summary>
+            Sets Term Map's term type to uri node. Throws an exception if term map is a graph map or a predicate map
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsLiteral">
+            <summary>
+            Sets Term Map's term type to literal node.
+            </summary>
+            <remarks>Throws an exception if term map is not an object map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ITermType">
+            <summary>
+            Interface for class representing the <a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsURI">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:IRI
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsBlankNode">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:BlankNode
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsLiteral">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:Literal
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.#ctor(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration,TCode.r2rml4net.Mapping.IMapBase,VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Creates a new instance of <see cref="T:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsConstantValued(System.Uri)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsConstantValued(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsTemplateValued(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsTemplateValued(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.SetInverseExpression(System.String)">
+            <summary>
+            Sets the inverse expression. <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.SetInverseExpression(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsBlankNode">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsBlankNode"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsIRI">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsIRI"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsLiteral">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsLiteral"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.AssertTermTypeNotSet">
+            <summary>
+             Checks wheather term type is already set
+             </summary>
+             <exception cref="T:TCode.r2rml4net.Exceptions.InvalidMapException"/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateMapPropertyNode">
+            <summary>
+            Returns a term map property
+            </summary>
+            <returns>one of the following: rr:subjectMap, rr:objectMap, rr:propertyMap or rr:graphMap</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateShortcutPropertyNode">
+            <summary>
+            Returns a constant term shortcut property
+            </summary>
+            <returns>one of the following: rr:subject, rr:object, rr:property or rr:graph</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.EnsureRelationWithParentMap">
+            <summary>
+            Ensures that <see cref="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ParentMapNode"/> and this <see cref="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node"/> are 
+            connected with the appropriate property
+            </summary>
+            <remarks>The two nodes will be connected by return value of <see cref="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateMapPropertyNode"/> method</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateParentMapRelation">
+            <summary>
+            Creates relation with parent map (using rr:subjectMap, rr:objectMap, rr:propertyMap or rr:graphMap)
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsColumnValued(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion.IsColumnValued(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.GetSingleLiteralValueForPredicate(VDS.RDF.IUriNode)">
+            <summary>
+            Gets a single literal object value for <see cref="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node"/> ans <paramref name="predicate"/> predicate
+            </summary>
+            <exception cref="T:TCode.r2rml4net.Exceptions.InvalidMapException">if multiple values found or object is not a literal</exception>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.GetSingleUriValueForPredicate(VDS.RDF.IUriNode)">
+            <summary>
+            Gets a single URI object value for <see cref="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node"/> ans <paramref name="predicate"/> predicate
+            </summary>
+            <exception cref="T:TCode.r2rml4net.Exceptions.InvalidMapException">if multiple values found or object is not a URI</exception>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ParentMapNode">
+            <summary>
+            The parent node for the current term map
+            </summary>
+            <remarks>
+            Depending on the type the parent can be a triples map (for property-object maps, subject maps), 
+            property-object map (for object maps, property maps and graph maps)
+            or subject map (for graph maps)
+            </remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TermType">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.TermType"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TermTypeURI">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITermMap.TermTypeURI"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ExplicitTermType">
+            <summary>
+            Gets explicitly set
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ColumnName">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITermMap.ColumnName"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.Template">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITermMap.Template"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ConstantValue">
+            <summary>
+            Gets the constant URI value for this term map
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#constant</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.InverseExpression">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITermMap.InverseExpression"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsURI">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:IRI
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TCode#r2rml4net#Mapping#ITermType#IsBlankNode">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:BlankNode
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TCode#r2rml4net#Mapping#ITermType#IsLiteral">
+            <summary>
+            Gets value indicating whether the term map's term type is rr:Literal
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion">
+            <summary>
+            Configuration of term maps, which cannot be of term type rr:Literal. See http://www.w3.org/TR/r2rml/#termtype
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion.IsColumnValued(System.String)">
+            <summary>
+            Sets term map to as column-valued
+            </summary>
+            <param name="columnName">column name</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IGraphMapConfiguration">
+            <summary>
+            Interface for creating configuration of graph maps as described on http://www.w3.org/TR/r2rml/#dfn-graph-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IGraphMap">
+            <summary>
+            Represents a graph map 
+            </summary>
+            <remarks>See more at http://www.w3.org/TR/r2rml/#dfn-graph-map</remarks>
+        </member>
         <member name="T:TCode.r2rml4net.Mapping.IUriValuedTermMap">
             <summary>
             Represents a <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>, which can be URI valued
@@ -353,6 +1182,22 @@
         <member name="P:TCode.r2rml4net.Mapping.IUriValuedTermMap.URI">
             <summary>
             Get the URI
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IGraphMapParent">
+            <summary>
+            Marker interface to allow only <see cref="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration"/> and <see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/>
+            as parent for <see cref="T:TCode.r2rml4net.Mapping.Fluent.GraphMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IGraphMapParent.CreateGraphMap">
+            <summary>
+            Creates an attached <see cref="T:TCode.r2rml4net.Mapping.IGraphMap"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration">
+            <summary>
+            Configuration for term maps which can be of term-type rr:Literal. See http://www.w3.org/TR/r2rml/#termtype
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.ILiteralTermMap">
@@ -375,6 +1220,35 @@
             Gets the literal value of the RDF term generated from this term map
             </summary>
         </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasDataType(System.Uri)">
+            <summary>
+            Sets the datatype of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasDataType(System.String)">
+            <summary>
+            Sets the datatype of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasLanguage(System.String)">
+            <summary>
+            Sets the language tag of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasLanguage(System.Globalization.CultureInfo)">
+            <summary>
+            Sets the language tag of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration">
+            <summary>
+            Configuration of object maps
+            </summary>
+        </member>
         <member name="T:TCode.r2rml4net.Mapping.IObjectMap">
             <summary>
             Represents an object map
@@ -387,40 +1261,24 @@
             </summary>
             <exception cref="T:TCode.r2rml4net.Exceptions.InvalidMapException"></exception>
         </member>
-        <member name="T:TCode.r2rml4net.Mapping.IPredicateMap">
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration.IsConstantValued(System.String)">
             <summary>
-            Represents a predicate map
+            Sets the object map as constant-valued
             </summary>
-            <remarks>See more on http://www.w3.org/TR/r2rml/#dfn-predicate-map</remarks>
+            <param name="literal">Constant value literal</param>
+            <remarks>
+            Asserted using the rr:constant property as described on http://www.w3.org/TR/r2rml/#constant
+            </remarks>
         </member>
-        <member name="T:TCode.r2rml4net.Mapping.IQueryMap">
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration.IsColumnValued(System.String)">
             <summary>
-            Represents a map, which provides a SQL query
+            Sets the object map as column-valued
             </summary>
+            <param name="columnName">Column name</param>
         </member>
-        <member name="P:TCode.r2rml4net.Mapping.IQueryMap.EffectiveSqlQuery">
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration">
             <summary>
-            Gets the effective sql query of a <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/> or a <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>
-            </summary>
-        </member>
-        <member name="T:TCode.r2rml4net.Mapping.ITermType">
-            <summary>
-            Interface for class representing the <a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
-            </summary>
-        </member>
-        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsURI">
-            <summary>
-            Gets value indicating whether the term map's term type is rr:IRI
-            </summary>
-        </member>
-        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsBlankNode">
-            <summary>
-            Gets value indicating whether the term map's term type is rr:BlankNode
-            </summary>
-        </member>
-        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsLiteral">
-            <summary>
-            Gets value indicating whether the term map's term type is rr:Literal
+            Configuration for predicate-object maps described on http://www.w3.org/TR/r2rml/#predicate-object-map
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.IPredicateObjectMap">
@@ -449,25 +1307,27 @@
             Gets graph maps associated with this <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/>
             </summary>
         </member>
-        <member name="T:TCode.r2rml4net.Mapping.IR2RML">
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreateObjectMap">
             <summary>
-            Represents a R2RML mapping
+            Creates a new object map
             </summary>
-            <remarks>See http://www.w3.org/TR/r2rml/</remarks>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many object maps</remarks>
         </member>
-        <member name="P:TCode.r2rml4net.Mapping.IR2RML.TriplesMaps">
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreatePredicateMap">
             <summary>
-            Gets triple maps contained by this <see cref="T:TCode.r2rml4net.Mapping.IR2RML"/>
+            Creates a new predicate map
             </summary>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many predicate maps</remarks>
         </member>
-        <member name="P:TCode.r2rml4net.Mapping.IR2RML.SqlQueryBuilder">
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreateRefObjectMap(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration)">
             <summary>
-            Gets or sets the <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which is used during generating triples
+            Creates a new ref object map
             </summary>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many ref object maps</remarks>
         </member>
-        <member name="P:TCode.r2rml4net.Mapping.IR2RML.SqlVersionValidator">
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IRefObjectMapConfiguration">
             <summary>
-            Gets or sets the SQL version validator implementation
+            Configuration for ref object maps described on http://www.w3.org/TR/r2rml/#dfn-referencing-object-map
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.IRefObjectMap">
@@ -475,6 +1335,16 @@
             Represents a RefObjectMap
             </summary>
             <remarks>See http://www.w3.org/TR/r2rml/#dfn-referencing-object-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IQueryMap">
+            <summary>
+            Represents a map, which provides a SQL query
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IQueryMap.EffectiveSqlQuery">
+            <summary>
+            Gets the effective sql query of a <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/> or a <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>
+            </summary>
         </member>
         <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.JoinConditions">
             <summary>
@@ -503,6 +1373,18 @@
             Gets the parent predicate object map
             </summary>
         </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IRefObjectMapConfiguration.AddJoinCondition(System.String,System.String)">
+            <summary>
+            Adds a join condition, which will be used to join logical tables
+            </summary>
+            <param name="childColumn">column name that exists in the logical table of the triples map that contains the referencing object map</param>
+            <param name="parentColumn">column name that exists in the logical table of the referencing object map's parent triples map</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration">
+            <summary>
+            Interface for creating configuration of subject maps as described on http://www.w3.org/TR/r2rml/#subject-map
+            </summary>
+        </member>
         <member name="T:TCode.r2rml4net.Mapping.ISubjectMap">
             <summary>
             Represents a subject map
@@ -517,6 +1399,17 @@
         <member name="P:TCode.r2rml4net.Mapping.ISubjectMap.Classes">
             <summary>
             All classes added to this <see cref="T:TCode.r2rml4net.Mapping.ISubjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration.AddClass(System.Uri)">
+            <summary>
+            Adds a class definition to subject map. A subject map can have many classes which will be used to construct
+            triples for each RDF term as described on http://www.w3.org/TR/r2rml/#typing
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration">
+            <summary>
+            Configuration of the Triples Map graph as described on http://www.w3.org/TR/r2rml/#triples-map
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.ITriplesMap">
@@ -550,6 +1443,155 @@
         <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlVersions">
             <summary>
             Gets the URIs of SQL versions set for the logical table
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.CreatePropertyObjectMap">
+            <summary>
+            Adds a property-object map, which is used together with subject map to create complete triples\r\n
+            from logical rows as described on http://www.w3.org/TR/r2rml/#predicate-object-map
+            <remarks>Triples map can contain many property-object maps</remarks>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.Uri">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.Uri"/> of the triples map represented by this instance
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.SubjectMap">
+            <summary>
+            Adds a subject map subgraph to the mapping graph or returns existing if already created. Subject maps are used to construct subjects
+            for triples procduced once mapping is applied to relational data
+            <remarks>Triples map must contain exactly one subject map</remarks>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.R2RMLConfiguration">
+            <summary>
+            The <see cref="T:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration"/> containing this <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration">
+            <summary>
+            Configuration of Triples Map, which source is a R2RML View as described on http://www.w3.org/TR/r2rml/#r2rml-views
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration.SetSqlVersion(System.Uri)">
+            <summary>
+            Sets the sql query to be conformat with a specific SQL language specification
+            </summary>
+            <param name="uri">Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration.SetSqlVersion(System.String)">
+            <summary>
+            Sets the sql query to be conformant with a specific SQL language specification
+            </summary>
+            <param name="uri">String representation of the sql version URI. Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ObjectMapConfiguration.TermTypeURI">
+            <summary>
+            Overriden, because object maps can be of term type rr:Literal
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ObjectMapConfiguration.IsLiteralTermType">
+            <summary>
+            See http://www.w3.org/TR/r2rml/#termtype
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IPredicateMap">
+            <summary>
+            Represents a predicate map
+            </summary>
+            <remarks>See more on http://www.w3.org/TR/r2rml/#dfn-predicate-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader">
+            <summary>
+            Class for loading existing R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader.Load(System.String)">
+            <summary>
+            Loads R2RML mappings from a string
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader.Load(System.IO.Stream)">
+            <summary>
+            Loads R2RML mappings from a stream
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration">
+            <summary>
+            Fluent configuration of subject map backed by a DotNetRDF graph (see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration"/>)
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.AddClass(System.Uri)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration.AddClass(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.CreateMapPropertyNode">
+            <summary>
+            Returns rr:subjectMap
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.Classes">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ISubjectMap.Classes"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.URI">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.IUriValuedTermMap.URI"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration">
+            <summary>
+            Implementation of fluent configuration interface for <a href="http://www.w3.org/TR/r2rml/#triples-map">Triples Maps</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.CreatePropertyObjectMap">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.CreatePropertyObjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.Uri)">
+            <summary>
+            Asserts this Triples Map's SQL query as a query of type defined by <paramref name="uri"/> parmeter
+            </summary>
+            <param name="uri">Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TableName">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.TableName"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlQuery">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlQuery"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.Uri">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.Uri"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TCode#r2rml4net#Mapping#Fluent#ITriplesMapConfiguration#SubjectMap">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.SubjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.EffectiveSqlQuery">
+            <summary>
+            Gets the effective sql query based on <see cref="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TableName"/> or <see cref="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlQuery"/>
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-effective-sql-query, http://www.w3.org/TR/r2rml/#physical-tables and http://www.w3.org/TR/r2rml/#r2rml-views</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlVersions">
+            <summary>
+            <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlVersions"/>
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.Mapping.JoinCondition">
@@ -901,17 +1943,6 @@
             Gets a member of <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/> enumeration for a given MS SQL Server <see cref="T:DatabaseSchemaReader.DataSchema.DataType"/>
             </summary>
         </member>
-        <member name="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.CoreSQL2008ColumTypeMapper">
-            <summary>
-            Implementation of <see cref="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper"/> which maps Core SQL:2008 datatypes
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.CoreSQL2008ColumTypeMapper.GetColumnTypeFromColumn(DatabaseSchemaReader.DataSchema.DataType)">
-            <summary>
-            Gets a member of <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/> enumeration for a given Core SQL:2008 <see cref="T:DatabaseSchemaReader.DataSchema.DataType"/>
-            </summary>
-            <remarks>Expects db typename to be one of the values described on http://www.w3.org/TR/r2rml/#natural-mapping</remarks>
-        </member>
         <member name="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter">
             <summary>
             Implementation of <see cref="T:TCode.r2rml4net.RDB.IDatabaseMetadata"/> using <a href="http://dbschemareader.codeplex.com/">Database Schema Reader project</a>
@@ -926,12 +1957,6 @@
             <summary>
             Collecion of tables contained by the current database
             </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter.#ctor(DatabaseSchemaReader.IDatabaseReader)">
-            <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter"/>
-            </summary>
-            <param name="reader">A <see cref="T:DatabaseSchemaReader.DatabaseReader"/> initialized for reading a desired database type</param>
         </member>
         <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter.#ctor(DatabaseSchemaReader.IDatabaseReader,TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper)">
             <summary>
@@ -1066,32 +2091,6 @@
             Gets a value indicating whether the referenced table has primary key
             </summary>
         </member>
-        <member name="T:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor">
-            <summary>
-            Interface for the Visitor pattern, which visits tables and columns to extract 
-            relational database structure
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableCollection)">
-            <summary>
-            Visits a <see cref="T:TCode.r2rml4net.RDB.TableCollection"/> and it's tables
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableMetadata)">
-            <summary>
-            Visits a <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> and it's columns
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ColumnMetadata)">
-            <summary>
-            Visits a <see cref="T:TCode.r2rml4net.RDB.ColumnMetadata"/>
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
-            <summary>
-            Visist a <see cref="T:TCode.r2rml4net.RDB.ForeignKeyMetadata"/>
-            </summary>
-        </member>
         <member name="T:TCode.r2rml4net.RDB.TableCollection">
             <summary>
             Implementation od <see cref="T:System.Collections.Generic.List`1"/> and <see cref="T:TCode.r2rml4net.IVistitable`1"/> representing a group of tables
@@ -1203,14 +2202,9 @@
             Implementation of <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which returns effective sql query as described on R2RML specifications page
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.#ctor(TCode.r2rml4net.MappingOptions)">
-            <summary>
-            Creates a new instance of <see cref="T:TCode.r2rml4net.RDB.W3CSqlQueryBuilder"/> with custom mapping options
-            </summary>
-        </member>
         <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.#ctor">
             <summary>
-            Creates a new instance of <see cref="T:TCode.r2rml4net.RDB.W3CSqlQueryBuilder"/> with default mapping options
+            Creates a new instance of <see cref="T:TCode.r2rml4net.RDB.W3CSqlQueryBuilder"/>
             </summary>
         </member>
         <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.GetEffectiveQueryForTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap)">
@@ -1580,6 +2574,19 @@
             Gets whether the Handler will accept all Triples i.e. it will never abort handling early
             </summary>
         </member>
+        <member name="T:TCode.r2rml4net.MappingScope">
+            <summary>
+            A thread-static scope, which allow changing mapping options for a given time
+            </summary>
+            <remarks>See http://msdn.microsoft.com/en-us/magazine/cc300805.aspx</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingScope.#ctor(TCode.r2rml4net.MappingOptions)">
+            <summary>
+            Creates a new instance of <see cref="T:TCode.r2rml4net.MappingScope"/> with a given set of options
+            </summary>
+            <param name="instance"></param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:TCode.r2rml4net.TriplesGeneration.ISQLValuesMappingStrategy">
             <summary>
             Strategy for mapping SQL column values to RDF datatypes
@@ -1615,29 +2622,39 @@
             <remarks>see http://www.w3.org/TR/r2rml/#dfn-generated-rdf-term</remarks>
             <returns>an RDF term (<see cref="T:VDS.RDF.INode"/>)</returns>
         </member>
-        <member name="T:TCode.r2rml4net.TriplesGeneration.IR2RMLProcessor">
+        <member name="P:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator.Log">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.IR2RMLProcessor">
             <summary>
             Interface for generating triples from R2RML mappings
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML,VDS.RDF.IRdfHandler)">
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.IRdfHandler)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and processes them with the given <see cref="T:VDS.RDF.IRdfHandler"/>
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML)">
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and returns the generated dataset
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML,VDS.RDF.ITripleStore)">
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.ITripleStore)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and adds the generated triples to the given <see cref="T:VDS.RDF.ITripleStore"/>
             </summary>
         </member>
-        <member name="P:TCode.r2rml4net.TriplesGeneration.IR2RMLProcessor.Success">
+        <member name="P:TCode.r2rml4net.IR2RMLProcessor.Success">
             <summary>
             Gets a value indicating whether generating triples had no errors
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RMLProcessor.Log">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.TriplesGeneration.IRefObjectMapProcessor">
@@ -1660,6 +2677,11 @@
             <summary>
             Retrieves source data using the given <paramref name="connection"/> and processes <paramref name="triplesMap"/>
             to transform that data to RDF triples
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
             </summary>
         </member>
         <member name="T:TCode.r2rml4net.TriplesGeneration.MapProcessorBase">
@@ -1713,16 +2735,6 @@
             Default implementation of the <a href="http://www.w3.org/TR/r2rml/#dfn-generated-rdf-term">RDF term generation process</a>
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.#ctor">
-            <summary>
-            Creates a new <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/> with default options
-            </summary>
-        </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.#ctor(TCode.r2rml4net.MappingOptions)">
-            <summary>
-            Creates a new <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/> with customized options
-            </summary>
-        </member>
         <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.GenerateTerm``1(TCode.r2rml4net.Mapping.ITermMap,System.Data.IDataRecord)">
             <summary>
             Generates RDF term for the given <see cref="T:TCode.r2rml4net.Mapping.ITermMap"/> by applying to the <paramref name="logicalRow"/>
@@ -1757,7 +2769,7 @@
         </member>
         <member name="P:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.Log">
             <summary>
-            <see cref="T:TCode.r2rml4net.Log.IRDFTermGenerationLog"/>
+            Gets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
             </summary>
         </member>
         <member name="P:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.NodeFactory">
@@ -1797,79 +2809,61 @@
             </summary>
             <remarks>see http://www.w3.org/TR/r2rml/#generated-triples</remarks>
         </member>
-        <member name="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor">
+        <member name="T:TCode.r2rml4net.W3CR2RMLProcessor">
             <summary>
             Base implementation of the triple generation algorithm suggested by R2RML specification. 
             It should generate triples for all rows in all triples maps from the input R2RML mappings
             </summary>
             <remarks>See http://www.w3.org/TR/r2rml/#generated-rdf</remarks>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection)">
             <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor"/> which generates triples using the default <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/>
-            and uses default RDF term generation and map processing algorithms and default mapping options
+            Creates an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which generates triples using the default <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/>
+            and uses default RDF term generation and map processing algorithms
             </summary>
             <param name="connection">connection to datasource</param>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator)">
             <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor"/> which generates triples using the supplied <see cref="T:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator"/>
-            and uses default map processing algorithm and default mapping options
-            </summary>
-            <param name="connection">connection to datasource</param>
-            <param name="rdfTermGenerator">generator of <see cref="T:VDS.RDF.INode"/>s for subject maps, predicate maps, object maps and graph maps</param>
-        </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.MappingOptions)">
-            <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor"/> which generates triples using the default <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/>
-            and uses default RDF term generation and map processing algorithms and custom mapping options
-            </summary>
-            <param name="connection">connection to datasource</param>
-            <param name="mappingOptions">options for map processing</param>
-        </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator,TCode.r2rml4net.MappingOptions)">
-            <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor"/> which generates triples using the supplied <see cref="T:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator"/>
-            and uses default map processing algorithm and custom mapping options
+            Creates an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which generates triples using the supplied <see cref="T:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator"/>
+            and uses default map processing algorithm
             </summary>
             <param name="connection">connection to datasource</param>
             <param name="rdfTermGenerator">generator of <see cref="T:VDS.RDF.INode"/>s for subject maps, predicate maps, object maps and graph maps</param>
-            <param name="mappingOptions">options for map processing</param>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor,TCode.r2rml4net.MappingOptions)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor)">
             <summary>
-            Creates an instance of <see cref="T:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor"/> which processes triples maps with the supplied implementatioon of <see cref="T:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor"/>
+            Creates an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which processes triples maps with the supplied implementatioon of <see cref="T:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor"/>
             </summary>
             <param name="connection">connection to datasource</param>
             <param name="triplesMapProcessor"></param>
-            <param name="mappingOptions">options for map processing</param>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML,VDS.RDF.IRdfHandler)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.IRdfHandler)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and processes them with the given <see cref="T:VDS.RDF.IRdfHandler"/>
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and returns the generated dataset
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.Mapping.IR2RML,VDS.RDF.ITripleStore)">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.ITripleStore)">
             <summary>
             Generates triples from <paramref name="r2RML"/> mappings and adds the generated triples to the given <see cref="T:VDS.RDF.ITripleStore"/>
             </summary>
         </member>
-        <member name="M:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.Dispose">
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.Dispose">
             <summary>
             Disposes of the connection
             </summary>
         </member>
-        <member name="P:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.Log">
+        <member name="P:TCode.r2rml4net.W3CR2RMLProcessor.Log">
             <summary>
-            Implementation of <see cref="T:TCode.r2rml4net.Log.ITriplesGenerationLog"/> logging interface
+            Gets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
             </summary>
         </member>
-        <member name="P:TCode.r2rml4net.TriplesGeneration.W3CR2RMLProcessor.Success">
+        <member name="P:TCode.r2rml4net.W3CR2RMLProcessor.Success">
             <summary>
             Gets a value indicating whether generating triples had no errors
             </summary>

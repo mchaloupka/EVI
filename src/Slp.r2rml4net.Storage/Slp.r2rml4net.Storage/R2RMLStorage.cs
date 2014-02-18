@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
-using TCode.r2rml4net.Mapping;
+using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;

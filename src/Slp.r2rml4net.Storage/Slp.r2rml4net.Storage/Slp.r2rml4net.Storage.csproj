@@ -30,8 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DatabaseSchemaReader">
-      <HintPath>..\packages\r2rml.net.0.3.3\lib\net40\DatabaseSchemaReader.dll</HintPath>
+    <Reference Include="DatabaseSchemaReader, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DatabaseSchemaReader.1.2.8.0\lib\net40\DatabaseSchemaReader.dll</HintPath>
     </Reference>
     <Reference Include="dotNetRDF">
       <HintPath>..\packages\dotNetRDF.1.0.3\lib\net40\dotNetRDF.dll</HintPath>
@@ -50,11 +51,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TCode.r2rml4net">
-      <HintPath>..\packages\r2rml.net.0.3.3\lib\net40\TCode.r2rml4net.dll</HintPath>
-    </Reference>
-    <Reference Include="TCode.r2rml4net.Mapping">
-      <HintPath>..\packages\r2rml.net.0.3.3\lib\net40\TCode.r2rml4net.Mapping.dll</HintPath>
+    <Reference Include="TCode.r2rml4net, Version=0.3.3.20, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\r2rml.net-unstable.0.3.3.20\lib\net40\TCode.r2rml4net.dll</HintPath>
     </Reference>
     <Reference Include="VDS.Common">
       <HintPath>..\packages\VDS.Common.1.2.0\lib\net40-client\VDS.Common.dll</HintPath>
@@ -66,8 +65,8 @@
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Sql\ISqlDb.cs" />
-    <Compile Include="Sql\Vendor\BaseSqlVendor.cs" />
-    <Compile Include="Sql\Vendor\MSSQLVendor.cs" />
+    <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
+    <Compile Include="Sql\Vendor\MSSQLDb.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
