@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
+using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sql;
 using VDS.RDF;
+using VDS.RDF.Parsing;
 
 namespace Slp.r2rml4net.Storage.Query
 {
@@ -22,6 +24,13 @@ namespace Slp.r2rml4net.Storage.Query
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
+            SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+            var originalQuery = parser.ParseFromString(sparqlQuery);
+
+            var context = new QueryContext(originalQuery, mapping);
+            var sparqlProcessor = new SparqlProcessor(context);
+            sparqlProcessor.Process();
+
             throw new NotImplementedException();
         }
     }
