@@ -16,9 +16,13 @@ namespace Slp.r2rml4net.Server
             bundles.Add(new ScriptBundle("~/Content/js/bootstrap").Include(
                  "~/Content/js/bootstrap.js"));
 
+            bundles.Add(new ScriptBundle("~/Content/js/base").Include(
+                 "~/Content/js/base.js"));
+
 
             bundles.Add(new StyleBundle("~/Content/css/bootstrap").Include(
-                "~/Content/css/bootstrap*"));
+                "~/Content/css/bootstrap*").Include(
+                "~/Content/css/font-awesome.css"));
 
             bundles.Add(new StyleBundle("~/Content/css/style").Include(
                 "~/Content/css/style.css"));

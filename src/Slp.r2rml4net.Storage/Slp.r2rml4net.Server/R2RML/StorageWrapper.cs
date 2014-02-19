@@ -19,19 +19,28 @@ namespace Slp.r2rml4net.Server.R2RML
 
         public static void AppStart()
         {
-            var mappingPath = System.Configuration.ConfigurationManager.AppSettings["r2rmlConfig"];
-            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["r2rmlstoreconnection"].ConnectionString;
+            StartException = null;
 
-            IR2RML mapping = null;
-
-            var path = System.Web.Hosting.HostingEnvironment.MapPath(mappingPath);
-
-            using (var fs = new FileStream(path, FileMode.Open))
+            try
             {
-                mapping = R2RMLLoader.Load(fs);
-            }
+                var mappingPath = System.Configuration.ConfigurationManager.AppSettings["r2rmlConfig"];
+                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["r2rmlstoreconnection"].ConnectionString;
 
-            _storage = new R2RMLStorage(mapping, new MSSQLDb(connectionString));
+                IR2RML mapping = null;
+
+                var path = System.Web.Hosting.HostingEnvironment.MapPath(mappingPath);
+
+                using (var fs = new FileStream(path, FileMode.Open))
+                {
+                    mapping = R2RMLLoader.Load(fs);
+                }
+
+                _storage = new R2RMLStorage(mapping, new MSSQLDb(connectionString));
+            }
+            catch (Exception e)
+            {
+                StartException = e;
+            }
         }
 
         public static void AppEnd()
@@ -39,5 +48,7 @@ namespace Slp.r2rml4net.Server.R2RML
             if (_storage != null)
                 _storage.Dispose();
         }
+
+        public static Exception StartException { get; private set; }
     }
 }
