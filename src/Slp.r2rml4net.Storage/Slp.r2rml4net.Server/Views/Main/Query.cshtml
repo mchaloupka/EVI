@@ -2,14 +2,128 @@
     ViewBag.Title = "SPARQL Query";
 }
 
+<script type="text/javascript">
+    function write_exception(name, message) {
+        $('#exception-box strong').html(name);
+        $('#exception-box span').html(message);
+        $('#exception-box').removeClass('hidden');
+    }
+
+    function writeTableHeading(variables) {
+        var row = $('<tr></tr>');
+
+        row.append('<td>#</td>');
+
+        for (var i = 0; i < variables.length; i++) {
+            var v = variables[i];
+
+            row.append($('<td>' + v + '</td>'));
+        }
+
+        $('#results-table thead').append(row);
+    }
+
+    function getValue(row, variable) {
+        for (var i = 0; i < row.Bindings.length; i++) {
+            var b = row.Bindings[i];
+            
+            if (b.Variable == variable) {
+                return b.Value;
+            }
+        }
+
+        return '';
+    }
+
+    function writeTableRow(index, row, variables) {
+        var row = $('<tr></tr>');
+        row.append('<td>' + index + '</td>');
+
+        for (var i = 0; i < variables.length; i++) {
+            var v = variables[i];
+            var value = getValue(row, v);
+
+            row.append($('<td>' + value + '</td>'));
+        }
+
+        $('#results-table tbody').append(row);
+    }
+
+    function query() {
+        if ($('#execute-button').hasClass('active'))
+            return;
+
+        $('#execute-button').addClass('active');
+        $('#result-panel').addClass('hidden');
+        $('#exception-box').addClass('hidden');
+        $('#results-table thead').html('');
+        $('#results-table tbody').html('');
+
+        $.post('@Url.Action("GetQueryResult", "Json")', { query: $('#query-textarea').val() }, function (data) {
+            if (data.Success == true) {
+                writeTableHeading(data.Data.Variables);
+
+                for (var i = 0; i < data.Data.Rows; i++) {
+                    writeTableRow(i + 1, data.Data.Rows[i], data.Data.Variables);
+                }
+
+                $('#result-count').html(data.Data.Rows.length);
+                $('#result-time').html(data.Data.TimeElapsedInMs);
+                $('#result-panel').removeClass('hidden');
+            }
+            else {
+                write_exception(data.ExceptionName, data.ExceptionMessage);
+            }
+
+            $('#execute-button').removeClass('active');
+        }).fail(function () {
+            write_exception('POST error', 'POST request failed');
+
+            $('#execute-button').removeClass('active');
+        });
+
+
+    }
+
+    $(document).ready(function () {
+        $('#execute-button').click(function () { query(); });
+    });
+</script>
+
+<div id="exception-box" class="alert alert-danger hidden">
+    <h4>Query failed</h4>
+    <strong>Exception name</strong> <span>Exception message</span>
+</div>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">SPARQL Query</h3>
     </div>
     <div class="panel-body">
-        <textarea class="form-control" rows="4"></textarea>
+        <textarea id="query-textarea" class="form-control" rows="4"></textarea>
     </div>
-    <div class="panel-footer"><button type="button" class="btn btn-primary">Execute</button></div>
+    <div class="panel-footer">
+        <button id="execute-button" type="button" class="btn btn-primary has-spinner">
+            <span class="spinner">
+                <i class="fa fa-spinner fa-spin"></i>
+            </span>Execute
+        </button>
+    </div>
+</div>
+
+<div id="result-panel" class="panel panel-default hidden">
+    <div class="panel-heading">
+        <h3 class="panel-title">Query result</h3>
+    </div>
+    <div class="panel-body">
+        <table id="results-table" class="table table-striped table-bordered">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        Returned <span id="result-count">0</span> results in <span id="result-time">1</span>ms
+    </div>
 </div>
 
 
