@@ -8,12 +8,14 @@ namespace Slp.r2rml4net.Storage.Sparql
 {
     public interface ISparqlQuery
     {
+        IEnumerable<ISparqlQuery> GetInnerQueries();
 
+        void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery);
     }
 
     public interface ISparqlQueryPart : ISparqlQuery
     {
-
+        
     }
 
     public interface ISparqlQueryModifier : ISparqlQuery

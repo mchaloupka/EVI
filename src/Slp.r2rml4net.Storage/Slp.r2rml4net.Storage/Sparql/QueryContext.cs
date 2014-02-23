@@ -10,7 +10,7 @@ namespace Slp.r2rml4net.Storage.Sparql
 {
     public class QueryContext
     {
-        public QueryContext(SparqlQuery query, MappingWrapper mapping)
+        public QueryContext(SparqlQuery query, MappingProcessor mapping)
         {
             this.OriginalQuery = query;
             this.Mapping = mapping;
@@ -18,6 +18,6 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         public SparqlQuery OriginalQuery { get; private set; }
 
-        public MappingWrapper Mapping { get; private set; }
+        public MappingProcessor Mapping { get; private set; }
     }
 }

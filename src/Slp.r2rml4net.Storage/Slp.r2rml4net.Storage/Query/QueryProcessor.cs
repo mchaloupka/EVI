@@ -13,10 +13,10 @@ namespace Slp.r2rml4net.Storage.Query
 {
     public class QueryProcessor
     {
-        private MappingWrapper mapping;
+        private MappingProcessor mapping;
         private ISqlDb db;
 
-        public QueryProcessor(MappingWrapper mapping, ISqlDb db)
+        public QueryProcessor(MappingProcessor mapping, ISqlDb db)
         {
             this.mapping = mapping;
             this.db = db;
@@ -27,9 +27,25 @@ namespace Slp.r2rml4net.Storage.Query
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             var originalQuery = parser.ParseFromString(sparqlQuery);
 
+            // Convert to algebra
             var context = new QueryContext(originalQuery, mapping);
-            var sparqlProcessor = new SparqlProcessor(context);
-            sparqlProcessor.Process();
+            var sparqlAlgebraBuilder = new SparqlAlgebraBuilder(context);
+            var algebra = sparqlAlgebraBuilder.Process();
+
+            // Transform graph and from statements
+
+            // Transform using R2RML
+            algebra = mapping.ProcessAlgebra(algebra);
+
+            // TODO: Validate algebra, take filters and union up as possible
+
+            // TODO: Optimize
+
+            // TODO: Transform to SQL
+
+            // TODO: Query
+
+            // TODO: Process results
 
             throw new NotImplementedException();
         }

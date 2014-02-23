@@ -21,11 +21,11 @@ namespace Slp.r2rml4net.Storage
     public class R2RMLStorage : IQueryableStorage
     {
         private ISqlDb db;
-        private MappingWrapper mapping;
+        private MappingProcessor mapping;
 
         public R2RMLStorage(IR2RML mapping, ISqlDb db)
         {
-            this.mapping = new MappingWrapper(mapping);
+            this.mapping = new MappingProcessor(mapping);
             this.db = db;
         }
 
