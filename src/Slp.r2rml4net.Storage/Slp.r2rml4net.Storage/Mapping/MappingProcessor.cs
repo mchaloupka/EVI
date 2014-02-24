@@ -19,11 +19,11 @@ namespace Slp.r2rml4net.Storage.Mapping
             this.mapping = mapping;
         }
 
-        public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra)
+        public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is BgpOp)
             {
-                return ProcessBgp((BgpOp)algebra);
+                return ProcessBgp((BgpOp)algebra, context);
             }
             else
             {
@@ -31,7 +31,7 @@ namespace Slp.r2rml4net.Storage.Mapping
 
                 foreach (var query in innerQueries)
                 {
-                    var processed = ProcessAlgebra(query);
+                    var processed = ProcessAlgebra(query, context);
 
                     if (processed != query)
                     {
@@ -43,7 +43,7 @@ namespace Slp.r2rml4net.Storage.Mapping
             }
         }
 
-        private ISparqlQuery ProcessBgp(BgpOp bgpOp)
+        private ISparqlQuery ProcessBgp(BgpOp bgpOp, QueryContext context)
         {
             var union = new UnionOp();
 
@@ -79,9 +79,10 @@ namespace Slp.r2rml4net.Storage.Mapping
                 {
                     var clone = bgpOp.Clone();
                     clone.R2RMLTripleDef = tripleDef;
-                    clone.R2RMLSubjectMap = predicateMap;
+                    clone.R2RMLSubjectMap = subjectMap;
                     clone.R2RMLRefObjectMap = refObjectMap;
                     clone.R2RMLGraphMap = graphMap;
+                    clone.R2RMLPredicateMap = predicateMap;
                     union.AddToUnion(clone);
                 }
             }
@@ -89,8 +90,9 @@ namespace Slp.r2rml4net.Storage.Mapping
             {
                 var clone = bgpOp.Clone();
                 clone.R2RMLTripleDef = tripleDef;
-                clone.R2RMLSubjectMap = predicateMap;
+                clone.R2RMLSubjectMap = subjectMap;
                 clone.R2RMLRefObjectMap = refObjectMap;
+                clone.R2RMLPredicateMap = predicateMap;
                 union.AddToUnion(clone);
             }
         }
@@ -103,9 +105,10 @@ namespace Slp.r2rml4net.Storage.Mapping
                 {
                     var clone = bgpOp.Clone();
                     clone.R2RMLTripleDef = tripleDef;
-                    clone.R2RMLSubjectMap = predicateMap;
+                    clone.R2RMLSubjectMap = subjectMap;
                     clone.R2RMLObjectMap = objectMap;
                     clone.R2RMLGraphMap = graphMap;
+                    clone.R2RMLPredicateMap = predicateMap;
                     union.AddToUnion(clone);
                 }
             }
@@ -113,8 +116,9 @@ namespace Slp.r2rml4net.Storage.Mapping
             {
                 var clone = bgpOp.Clone();
                 clone.R2RMLTripleDef = tripleDef;
-                clone.R2RMLSubjectMap = predicateMap;
+                clone.R2RMLSubjectMap = subjectMap;
                 clone.R2RMLObjectMap = objectMap;
+                clone.R2RMLPredicateMap = predicateMap;
                 union.AddToUnion(clone);
             }
         }

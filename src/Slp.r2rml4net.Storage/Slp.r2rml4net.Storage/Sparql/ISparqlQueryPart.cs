@@ -11,6 +11,8 @@ namespace Slp.r2rml4net.Storage.Sparql
         IEnumerable<ISparqlQuery> GetInnerQueries();
 
         void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery);
+
+        ISparqlQuery FinalizeAfterTransform();
     }
 
     public interface ISparqlQueryPart : ISparqlQuery

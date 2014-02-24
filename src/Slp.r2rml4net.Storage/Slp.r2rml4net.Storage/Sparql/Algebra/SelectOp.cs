@@ -42,5 +42,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
         {
             return string.Format("SELECT({0})", InnerQuery);
         }
+
+        public ISparqlQuery FinalizeAfterTransform()
+        {
+            return this;
+        }
     }
 }

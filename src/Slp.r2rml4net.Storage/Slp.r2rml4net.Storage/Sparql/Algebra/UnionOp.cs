@@ -34,13 +34,37 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
 
             if (i > -1)
             {
-                unioned[i] = newQuery;
+                if(newQuery is NoSolutionOp)
+                {
+                    unioned.RemoveAt(i);
+                }
+                else
+                {
+                    unioned[i] = newQuery;
+                }
             }
         }
 
         public override string ToString()
         {
             return string.Format("UNION({0})", string.Join(",", unioned));
+        }
+
+
+        public ISparqlQuery FinalizeAfterTransform()
+        {
+            if (unioned.Count == 0)
+            {
+                return new NoSolutionOp();
+            }
+            else if (unioned.Count == 1)
+            {
+                return unioned[0];
+            }
+            else
+            {
+                return this;
+            }
         }
     }
 }

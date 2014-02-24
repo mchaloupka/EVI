@@ -61,17 +61,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mapping\MappingProcessor.cs" />
+    <Compile Include="Optimization\ISparqlAlgebraOptimizer.cs" />
+    <Compile Include="Optimization\SparqlAlgebra\R2RMLOptimizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Sparql\Algebra\BgpOp.cs" />
+    <Compile Include="Sparql\Algebra\NoSolutionOp.cs" />
+    <Compile Include="Sparql\Algebra\OneEmptySolutionOp.cs" />
     <Compile Include="Sparql\Algebra\UnionOp.cs" />
     <Compile Include="Sparql\Algebra\JoinOp.cs" />
     <Compile Include="Sparql\Algebra\SelectOp.cs" />
     <Compile Include="Sparql\ISparqlQueryPart.cs" />
     <Compile Include="Sparql\QueryContext.cs" />
     <Compile Include="Sparql\SparqlAlgebraBuilder.cs" />
+    <Compile Include="Sql\Algebra\ICondition.cs" />
+    <Compile Include="Sql\Algebra\ISqlColumn.cs" />
+    <Compile Include="Sql\Algebra\ISqlSource.cs" />
+    <Compile Include="Sql\Algebra\NoRowSource.cs" />
+    <Compile Include="Sql\Algebra\SingleEmptyRowSource.cs" />
+    <Compile Include="Sql\Algebra\SqlQuery.cs" />
+    <Compile Include="Sql\Algebra\SqlSelectColumn.cs" />
+    <Compile Include="Sql\Algebra\SqlSelectOp.cs" />
+    <Compile Include="Sql\Algebra\SqlTableColumn.cs" />
+    <Compile Include="Sql\Algebra\SqlStatement.cs" />
+    <Compile Include="Sql\Binders\ValueBinder.cs" />
     <Compile Include="Sql\ISqlDb.cs" />
+    <Compile Include="Sql\ISqlQuery.cs" />
+    <Compile Include="Sql\SqlAlgebraBuilder.cs" />
+    <Compile Include="Sql\Algebra\SqlTable.cs" />
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
     <Compile Include="Sql\Vendor\MSSQLDb.cs" />
   </ItemGroup>
@@ -79,9 +97,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Optimization\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

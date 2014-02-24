@@ -5,77 +5,71 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 
 namespace Slp.r2rml4net.Storage.Sparql
 {
     public class SparqlAlgebraBuilder
     {
-        private QueryContext context;
-
-        public SparqlAlgebraBuilder(QueryContext context)
+        public SparqlAlgebraBuilder()
         {
-            this.context = context;
         }
 
-        public ISparqlQuery Process()
+        public ISparqlQuery Process(QueryContext context)
         {
-            var originalQuery = this.context.OriginalQuery;
+            var originalQuery = context.OriginalQuery;
 
             switch (originalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    return ProcessAsk(originalQuery);
-                    break;
+                    return ProcessAsk(originalQuery, context);
                 case SparqlQueryType.Construct:
-                    return ProcessConstruct(originalQuery);
-                    break;
+                    return ProcessConstruct(originalQuery, context);
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    return ProcessDescribe(originalQuery);
-                    break;
+                    return ProcessDescribe(originalQuery, context);
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    return ProcessSelect(originalQuery);
-                    break;
+                    return ProcessSelect(originalQuery, context);
                 default:
                     throw new Exception("Cannot handle unknown query type");
             }
         }
 
-        private ISparqlQuery ProcessAsk(SparqlQuery originalQuery)
+        private ISparqlQuery ProcessAsk(SparqlQuery originalQuery, QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessConstruct(SparqlQuery originalQuery)
+        private ISparqlQuery ProcessConstruct(SparqlQuery originalQuery, QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessDescribe(SparqlQuery originalQuery)
+        private ISparqlQuery ProcessDescribe(SparqlQuery originalQuery, QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessSelect(SparqlQuery originalQuery)
+        private ISparqlQuery ProcessSelect(SparqlQuery originalQuery, QueryContext context)
         {
             var originalAlgebra = originalQuery.ToAlgebra();
 
-            var resultingAlgebra = ProcessAlgebra(originalAlgebra);
+            var resultingAlgebra = ProcessAlgebra(originalAlgebra, context);
 
             return resultingAlgebra;
         }
 
-        private ISparqlQuery ProcessAlgebra(VDS.RDF.Query.Algebra.ISparqlAlgebra originalAlgebra)
+        private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, QueryContext context)
         {
-            if (originalAlgebra is VDS.RDF.Query.Algebra.Select)
+            if (originalAlgebra is Select)
             {
-                var orSel = (VDS.RDF.Query.Algebra.Select)originalAlgebra;
-                var innerAlgebra = ProcessAlgebra(orSel.InnerAlgebra);
+                var orSel = (Select)originalAlgebra;
+                var innerAlgebra = ProcessAlgebra(orSel.InnerAlgebra, context);
 
                 if (!orSel.IsSelectAll)
                 {
@@ -89,7 +83,7 @@ namespace Slp.r2rml4net.Storage.Sparql
             else if (originalAlgebra is VDS.RDF.Query.Algebra.Bgp)
             {
                 var orBgp = (VDS.RDF.Query.Algebra.Bgp)originalAlgebra;
-                return ProcessITriplePatterns(orBgp.TriplePatterns);
+                return ProcessITriplePatterns(orBgp.TriplePatterns, context);
             }
 
             throw new NotImplementedException();
@@ -151,7 +145,7 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         }
 
-        private ISparqlQuery ProcessITriplePatterns(IEnumerable<VDS.RDF.Query.Patterns.ITriplePattern> enumerable)
+        private ISparqlQuery ProcessITriplePatterns(IEnumerable<VDS.RDF.Query.Patterns.ITriplePattern> enumerable, QueryContext context)
         {
             var triples = enumerable.OfType<VDS.RDF.Query.Patterns.TriplePattern>();
             ISparqlQuery triplesOp = null;

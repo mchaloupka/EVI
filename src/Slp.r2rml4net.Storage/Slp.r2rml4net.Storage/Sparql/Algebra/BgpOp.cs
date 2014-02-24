@@ -37,15 +37,27 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             return new BgpOp(objectPattern, predicatePattern, subjectPattern);
         }
 
+        public PatternItem PredicatePattern { get { return predicatePattern; } }
+        public PatternItem ObjectPattern { get { return objectPattern; } }
+        public PatternItem SubjectPattern { get { return subjectPattern; } }
+
         public TCode.r2rml4net.Mapping.IGraphMap R2RMLGraphMap { get; set; }
         public TCode.r2rml4net.Mapping.IObjectMap R2RMLObjectMap { get; set; }
-        public TCode.r2rml4net.Mapping.IPredicateMap R2RMLSubjectMap { get; set; }
+        public TCode.r2rml4net.Mapping.ISubjectMap R2RMLSubjectMap { get; set; }
         public TCode.r2rml4net.Mapping.ITriplesMap R2RMLTripleDef { get; set; }
         public TCode.r2rml4net.Mapping.IRefObjectMap R2RMLRefObjectMap { get; set; }
 
         public override string ToString()
         {
             return "BGP";
+        }
+
+        public TCode.r2rml4net.Mapping.IPredicateMap R2RMLPredicateMap { get; set; }
+
+
+        public ISparqlQuery FinalizeAfterTransform()
+        {
+            return this;
         }
     }
 }

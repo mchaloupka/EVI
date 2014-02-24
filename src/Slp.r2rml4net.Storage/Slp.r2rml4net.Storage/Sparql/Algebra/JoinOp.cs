@@ -34,13 +34,40 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
 
             if (i > -1)
             {
-                joined[i] = newQuery;
+                if (newQuery is OneEmptySolutionOp)
+                {
+                    joined.RemoveAt(i);
+                }
+                else
+                {
+                    joined[i] = newQuery;
+                }
             }
         }
 
         public override string ToString()
         {
             return string.Format("JOIN({0})", string.Join(",", joined));
+        }
+
+        public ISparqlQuery FinalizeAfterTransform()
+        {
+            if (joined.OfType<NoSolutionOp>().Any())
+            {
+                return new NoSolutionOp();
+            }
+            else if (joined.Count == 0)
+            {
+                return new OneEmptySolutionOp();
+            }
+            else if (joined.Count == 1)
+            {
+                return joined[0];
+            }
+            else
+            {
+                return this;
+            }
         }
     }
 }
