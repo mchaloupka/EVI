@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sql.Algebra
+namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
-    public class NoRowSource : ISqlSource
+    public class AndCondition : ICondition
     {
 
     }

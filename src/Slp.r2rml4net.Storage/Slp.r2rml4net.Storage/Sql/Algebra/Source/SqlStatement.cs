@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sql.Algebra
+namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 {
-    public class SqlTable : ISqlOriginalDbSource
+    public class SqlStatement : ISqlOriginalDbSource
     {
-        public string TableName { get; private set; }
+        public string SqlQuery { get; private set; }
 
-        public SqlTable(string tableName)
+        public SqlStatement(string query)
         {
-            this.TableName = tableName;
-            this.columns = new List<SqlTableColumn>();
+            this.SqlQuery = query;
         }
 
         private List<SqlTableColumn> columns;

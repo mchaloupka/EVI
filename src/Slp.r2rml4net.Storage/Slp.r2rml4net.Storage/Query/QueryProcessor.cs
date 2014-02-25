@@ -42,6 +42,18 @@ namespace Slp.r2rml4net.Storage.Query
             // Convert to algebra
             var context = new QueryContext(originalQuery, mapping);
 
+            // Generate SQL algebra
+            var sqlAlgebra = GenerateSqlAlgebra(context);
+
+            // TODO: Query
+
+            // TODO: Process results
+
+            throw new NotImplementedException();
+        }
+
+        private ISqlQuery GenerateSqlAlgebra(QueryContext context)
+        {
             var algebra = sparqlAlgebraBuilder.Process(context);
 
             // Transform graph and from statements
@@ -57,14 +69,12 @@ namespace Slp.r2rml4net.Storage.Query
                 algebra = optimizer.ProcessAlgebra(algebra, context);
             }
 
-            // Transform to SQL
+            // Transform to SQL algebra
             var sqlAlgebra = sqlAlgebraBuilder.Process(algebra, context);
+            
+            // TODO: Optimize sql algebra
 
-            // TODO: Query
-
-            // TODO: Process results
-
-            throw new NotImplementedException();
+            return sqlAlgebra;
         }
     }
 }

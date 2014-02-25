@@ -69,17 +69,21 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         private bool CanSubjectMatch(BgpOp bgpOp, QueryContext context)
         {
+            // TODO: Implement this
             return true;
         }
 
         private bool CanObjectMatch(BgpOp bgpOp, QueryContext context)
         {
+            // TODO: Implement this
             return true;
         }
 
         private bool CanMatch(NodeMatchPattern nmp, ITermMap r2rmlTerm)
         {
             var node = nmp.Node;
+            // TODO: Has node uri?
+            // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.INode.html
 
             if (r2rmlTerm.IsConstantValued)
             {
@@ -94,11 +98,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                         return UriEquals(uriValued.URI, uNode.Uri);
                     }
                 }
-                else if (r2rmlTerm is ILiteralTermMap)
+                else if (r2rmlTerm is IObjectMap)
                 {
-                    var literalTerm = (ILiteralTermMap)r2rmlTerm;
-
-                    // TODO: Compare literal terms
+                    // TODO: Compare literal terms or uri
                 }
             }
             // TODO: Template compare

@@ -14,13 +14,20 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         private ITermMap r2rmlMap;
 
         private Dictionary<string, ISqlColumn> columns;
+        private TemplateProcessor templateProcessor;
 
-        private static readonly Regex TemplateReplaceRegex = new Regex(@"(?<N>\{)([^\{\}.]+)(?<-N>\})(?(N)(?!))");
+        public ValueBinder(ITermMap r2rmlMap, TemplateProcessor templateProcessor)
+            : this(null, r2rmlMap, templateProcessor)
+        {
 
-        public ValueBinder(ITermMap r2rmlMap)
+        }
+
+        public ValueBinder(string variableName, ITermMap r2rmlMap, TemplateProcessor templateProcessor)
         {
             this.r2rmlMap = r2rmlMap;
             this.columns = new Dictionary<string, ISqlColumn>();
+            this.VariableName = variableName;
+            this.templateProcessor = templateProcessor;
 
             if (r2rmlMap.IsConstantValued)
             {
@@ -34,7 +41,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             {
                 var template = r2rmlMap.Template;
 
-                var columns = GetColumnsFromTemplate(template);
+                var columns = templateProcessor.GetColumnsFromTemplate(template);
 
                 foreach (var col in columns)
                 {
@@ -43,15 +50,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
-        private IEnumerable<string> GetColumnsFromTemplate(string template)
-        {
-            var matches = TemplateReplaceRegex.Matches(template);
+        public string VariableName { get; private set; }
 
-            foreach (var match in matches.OfType<Match>())
-            {
-                yield return match.Value.Substring(1, match.Value.Length - 2); // Trim brackets
-            }
-        }
+        public ITermMap R2RMLMap { get { return r2rmlMap; } }
+
+        public TemplateProcessor TemplateProcessor { get { return templateProcessor; } }
 
         public IEnumerable<string> NeededColumns { get { return columns.Keys.ToArray(); } }
 
@@ -64,6 +67,18 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             else
             {
                 throw new Exception("Cannot set column that is not requested for evaluation");
+            }
+        }
+
+        public ISqlColumn GetColumn(string column)
+        {
+            if (this.columns.ContainsKey(column))
+            {
+                return this.columns[column];
+            }
+            else
+            {
+                throw new Exception("Cannot get column that is not requested for evaluation");
             }
         }
     }

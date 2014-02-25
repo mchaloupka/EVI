@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sql.Algebra
+namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     public class SqlSelectOp : ISqlSource
     {
@@ -44,6 +44,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
             }
 
             return col;
+        }
+
+        public void AddCondition(ICondition condition)
+        {
+            this.conditions.Add(condition);
         }
     }
 }
