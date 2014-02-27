@@ -34,7 +34,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateTableQuery(sb, (SqlTable)sqlSource, context);
             }
-            else if(sqlSource is SqlStatement)
+            else if (sqlSource is SqlStatement)
             {
                 GenerateStatementQuery(sb, (SqlStatement)sqlSource, context);
             }
@@ -78,7 +78,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 if (i != 0)
                     sb.Append(",");
                 sb.Append(" ");
-                GenerateColumnQuery(sb, cols[i], context);
+                GenerateSelectColumnQuery(sb, cols[i], context);
             }
 
             sb.Append(" FROM ");
@@ -122,29 +122,24 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             throw new NotImplementedException();
         }
 
-        private void GenerateColumnQuery(StringBuilder sb, ISqlColumn col, QueryContext context)
+        private void GenerateSelectColumnQuery(StringBuilder sb, SqlSelectColumn sqlSelectColumn, QueryContext context)
         {
-            if (col is SqlTableColumn)
-            {
-                var tCol = (SqlTableColumn)col;
-                sb.Append(col.Source.Name);
-                sb.Append(".");
-                sb.Append(tCol.OriginalName);
-            }
-            else if (col is SqlSelectColumn)
-            {
-                var sCol = (SqlSelectColumn)col;
-                sb.Append(sCol.OriginalColumn.Source.Name);
-                sb.Append(".");
-                sb.Append(sCol.OriginalColumn.Name);
-            }
-            else throw new Exception("Unknown column type");
+            GenerateColumnQuery(sb, sqlSelectColumn.OriginalColumn, context);
 
-            if (!string.IsNullOrEmpty(col.Name))
+            if(!string.IsNullOrEmpty(sqlSelectColumn.Name))
             {
                 sb.Append(" AS ");
-                sb.Append(col.Name);
+                sb.Append(sqlSelectColumn.Name);
             }
+
+        }
+
+        private void GenerateColumnQuery(StringBuilder sb, ISqlColumn col, QueryContext context)
+        {
+            var tCol = (SqlTableColumn)col;
+            sb.Append(col.Source.Name);
+            sb.Append(".");
+            sb.Append(tCol.OriginalName);
         }
 
         private void GenerateTableQuery(StringBuilder sb, SqlTable sqlTable, QueryContext context)

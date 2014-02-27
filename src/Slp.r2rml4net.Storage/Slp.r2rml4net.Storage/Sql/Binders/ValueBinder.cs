@@ -13,7 +13,7 @@ using TCode.r2rml4net;
 
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/TriplesGeneration/RDFTermGenerator.cs?at=default
 
-// TODO: Read this
+// TODO: Read this and implement getting value properly (with type)
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/RDF/DefaultSQLValuesMappingStrategy.cs?at=default
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
