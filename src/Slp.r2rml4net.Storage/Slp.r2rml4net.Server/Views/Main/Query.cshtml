@@ -35,13 +35,13 @@
         return '';
     }
 
-    function writeTableRow(index, row, variables) {
+    function writeTableRow(index, datarow, variables) {
         var row = $('<tr></tr>');
         row.append('<td>' + index + '</td>');
 
         for (var i = 0; i < variables.length; i++) {
             var v = variables[i];
-            var value = getValue(row, v);
+            var value = getValue(datarow, v);
 
             row.append($('<td>' + value + '</td>'));
         }
@@ -63,7 +63,7 @@
             if (data.Success == true) {
                 writeTableHeading(data.Data.Variables);
 
-                for (var i = 0; i < data.Data.Rows; i++) {
+                for (var i = 0; i < data.Data.Rows.length; i++) {
                     writeTableRow(i + 1, data.Data.Rows[i], data.Data.Variables);
                 }
 

@@ -38,6 +38,7 @@ namespace Slp.r2rml4net.Server.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult GetQueryResult(string query)
         {
             var result = new JsonResultModel<QueryResultModel>();
