@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra
 {
     [DebuggerDisplay("SELECT({InnerQuery})")]
     public class SelectOp : ISparqlQueryModifier
     {
-        private List<VDS.RDF.Query.SparqlVariable> variables;
+        private List<SparqlVariable> variables;
 
         public SelectOp(ISparqlQuery innerQuery)
         {
@@ -24,6 +25,9 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             this.variables = variables.ToList();
         }
 
+        public bool IsSelectAll { get { return variables == null; } }
+
+        public IEnumerable<SparqlVariable> Variables { get { return variables; } }
 
         public ISparqlQuery InnerQuery { get; private set; }
 

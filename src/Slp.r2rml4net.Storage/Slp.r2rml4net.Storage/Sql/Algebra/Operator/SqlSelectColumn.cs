@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
-    public class SqlSelectColumn : ISqlColumn
+    public class SqlSelectColumn : INotOriginalSqlColumn
     {
         public SqlSelectColumn(ISqlColumn originalColumn, ISqlSource source)
         {

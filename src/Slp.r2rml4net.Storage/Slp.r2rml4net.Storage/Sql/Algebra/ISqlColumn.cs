@@ -8,8 +8,18 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
     public interface ISqlColumn
     {
-        string Name { get; }
+        string Name { get; set; }
 
         ISqlSource Source { get; }
+    }
+
+    public interface IOriginalSqlColumn : ISqlColumn
+    {
+        string OriginalName { get; }
+    }
+
+    public interface INotOriginalSqlColumn : ISqlColumn
+    {
+        ISqlColumn OriginalColumn { get; }
     }
 }

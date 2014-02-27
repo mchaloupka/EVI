@@ -14,6 +14,8 @@ namespace Slp.r2rml4net.Console
     {
         static void Main(string[] args)
         {
+            SetDirectory();
+
             StorageWrapper.AppStart();
 
             if (StorageWrapper.StartException != null)
@@ -33,6 +35,11 @@ namespace Slp.r2rml4net.Console
             }
 
             StorageWrapper.AppEnd();
+        }
+
+        private static void SetDirectory()
+        {
+            AppDomain.CurrentDomain.SetData("DataDirectory", System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../Slp.r2rml4net.Server/App_Data")));            
         }
 
         private static void ProcessQuery()

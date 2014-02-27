@@ -8,6 +8,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 {
     public class SingleEmptyRowSource : ISqlSource
     {
+        public string Name { get; set; }
 
+
+        public IEnumerable<ISqlColumn> Columns
+        {
+            get { yield break; }
+        }
     }
 }

@@ -8,7 +8,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
     public interface ISqlSource
     {
-        
+        string Name { get; set; }
+
+        IEnumerable<ISqlColumn> Columns { get; }
     }
 
     public interface ISqlOriginalDbSource : ISqlSource

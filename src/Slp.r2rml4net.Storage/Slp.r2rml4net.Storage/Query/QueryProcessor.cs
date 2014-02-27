@@ -10,6 +10,7 @@ using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Storage.Query
 {
@@ -20,6 +21,7 @@ namespace Slp.r2rml4net.Storage.Query
         private SparqlAlgebraBuilder sparqlAlgebraBuilder;
         private List<ISparqlAlgebraOptimizer> sparqlOptimizers;
         private SqlAlgebraBuilder sqlAlgebraBuilder;
+        private List<ISqlAlgebraOptimizer> sqlOptimizers;
 
         public QueryProcessor(MappingProcessor mapping, ISqlDb db)
         {
@@ -31,6 +33,11 @@ namespace Slp.r2rml4net.Storage.Query
             this.sparqlOptimizers = new List<ISparqlAlgebraOptimizer>()
             {
                 new Optimization.SparqlAlgebra.R2RMLOptimizer()
+            };
+
+            this.sqlOptimizers = new List<ISqlAlgebraOptimizer>() 
+            {
+                new Optimization.SqlAlgebra.ConditionOptimizer()
             };
         }
 
@@ -45,11 +52,143 @@ namespace Slp.r2rml4net.Storage.Query
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
 
-            // TODO: Query
+            // Query
+            var query = db.GenerateQuery(sqlAlgebra, context);
 
-            // TODO: Process results
+            // Execute query
+            using (var result = db.ExecuteQuery(query, context))
+            {
+                switch (originalQuery.QueryType)
+                {
+                    case VDS.RDF.Query.SparqlQueryType.Ask:
+                        //Expect a single row and column which contains a boolean
+                        //Ensure Results Handler is not null
+                        if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean Result with a null SPARQL Results Handler");
 
-            throw new NotImplementedException();
+                        resultsHandler.StartResults();
+                        try
+                        {
+                            if (result.HasNextRow)
+                            {
+                                var row = result.Read();
+
+                                if (!row.Columns.Any())
+                                {
+                                    throw new Exception("Expected a column from sql query execution");
+                                }
+                                else if (row.Columns.Count() > 1)
+                                {
+                                    throw new Exception("Expected a single column from sql query execution");
+                                }
+
+                                var boolValue = row.Columns.First().GetBooleanValue();
+
+                                resultsHandler.HandleBooleanResult(boolValue);
+                            }
+                            else
+                            {
+                                throw new Exception("Expected a row from sql query execution");
+                            }
+
+                            resultsHandler.EndResults(true);
+                        }
+                        catch
+                        {
+                            resultsHandler.EndResults(false);
+                            throw;
+                        }
+                        
+
+                        break;
+                    case VDS.RDF.Query.SparqlQueryType.Construct:
+                    case VDS.RDF.Query.SparqlQueryType.Describe:
+                    case VDS.RDF.Query.SparqlQueryType.DescribeAll:
+                        if (rdfHandler == null) throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
+
+                        if (sqlAlgebra.ValueBinders.Count() != 3)
+                            throw new Exception("Expected 3 value binders in construct or describe query");
+
+                        var sBinder = sqlAlgebra.ValueBinders.ElementAt(0);
+                        var pBinder = sqlAlgebra.ValueBinders.ElementAt(1);
+                        var oBinder = sqlAlgebra.ValueBinders.ElementAt(2);
+
+                        rdfHandler.StartRdf();
+                        try
+                        {
+                            while (result.HasNextRow)
+                            {
+                                var row = result.Read();
+
+                                var sNode = sBinder.LoadNode(rdfHandler, row, context);
+                                var pNode = pBinder.LoadNode(rdfHandler, row, context);
+                                var oNode = oBinder.LoadNode(rdfHandler, row, context);
+
+                                if (sNode == null || pNode == null || oNode == null)
+                                    continue;
+
+                                if (!rdfHandler.HandleTriple(new Triple(sNode, pNode, oNode))) break;
+                            }
+                        }
+                        catch
+                        {
+                            rdfHandler.EndRdf(false);
+                            throw;
+                        }
+
+                        break;
+                    case VDS.RDF.Query.SparqlQueryType.Select:
+                    case VDS.RDF.Query.SparqlQueryType.SelectAll:
+                    case VDS.RDF.Query.SparqlQueryType.SelectAllDistinct:
+                    case VDS.RDF.Query.SparqlQueryType.SelectAllReduced:
+                    case VDS.RDF.Query.SparqlQueryType.SelectDistinct:
+                    case VDS.RDF.Query.SparqlQueryType.SelectReduced:
+                        //Ensure Results Handler is not null
+                        if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
+
+                        resultsHandler.StartResults();
+
+                        try
+                        {
+                            foreach (var binder in sqlAlgebra.ValueBinders)
+                            {
+                                if (!resultsHandler.HandleVariable(binder.VariableName)) ParserHelper.Stop();
+                            }
+
+                            Graph temp = new Graph();
+
+                            //var s = new VDS.RDF.Query.Algebra.Set();
+                            while (result.HasNextRow)
+                            {
+                                var row = result.Read();
+
+                                var s = new VDS.RDF.Query.Algebra.Set();
+
+                                foreach (var binder in sqlAlgebra.ValueBinders)
+                                {
+                                    var val = binder.LoadNode(temp, row, context);
+
+                                    if (val != null)
+                                        s.Add(binder.VariableName, val);
+                                }
+
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+
+                            resultsHandler.EndResults(true);
+                        }
+                        catch
+                        {
+                            resultsHandler.EndResults(false);
+                            throw;
+                        }
+
+                        break;
+                    case VDS.RDF.Query.SparqlQueryType.Unknown:
+                        throw new Exception("Unable to process the results of an Unknown query type");
+                    default:
+                        break;
+                }
+            }
         }
 
         private ISqlQuery GenerateSqlAlgebra(QueryContext context)
@@ -71,8 +210,12 @@ namespace Slp.r2rml4net.Storage.Query
 
             // Transform to SQL algebra
             var sqlAlgebra = sqlAlgebraBuilder.Process(algebra, context);
-            
-            // TODO: Optimize sql algebra
+
+            // Optimize sql algebra
+            foreach (var optimizer in sqlOptimizers)
+            {
+                optimizer.ProcessAlgebra(sqlAlgebra, context);
+            }
 
             return sqlAlgebra;
         }

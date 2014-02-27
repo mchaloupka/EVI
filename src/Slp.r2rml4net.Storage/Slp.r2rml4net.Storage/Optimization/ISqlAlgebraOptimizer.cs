@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sql;
 
 namespace Slp.r2rml4net.Storage.Optimization
 {
-    public interface ISparqlAlgebraOptimizer
+    public interface ISqlAlgebraOptimizer
     {
-        ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context);
+        void ProcessAlgebra(ISqlQuery algebra, QueryContext context);
     }
 }

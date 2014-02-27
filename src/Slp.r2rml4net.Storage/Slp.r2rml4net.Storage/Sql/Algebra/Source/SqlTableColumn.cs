@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 {
-    public class SqlTableColumn : ISqlColumn
+    public class SqlTableColumn : IOriginalSqlColumn
     {
         public SqlTableColumn(string name, ISqlSource source)
         {
-            this.Name = name;
+            this.OriginalName = name;
             this.Source = source;
         }
 
-        public string Name { get; private set; }
+        public string OriginalName { get; private set; }
+
+        public string Name { get; set; }
 
         public ISqlSource Source { get; private set; }
     }

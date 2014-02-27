@@ -8,5 +8,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
     public class AlwaysFalseCondition : ICondition
     {
+
     }
 }

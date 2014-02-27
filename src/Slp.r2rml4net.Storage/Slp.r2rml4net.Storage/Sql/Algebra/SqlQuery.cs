@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
         public void AddValueBinder(ValueBinder valueBinder)
         {
             this.valueBinders.Add(valueBinder);
+        }
+
+        public IEnumerable<ValueBinder> ValueBinders
+        {
+            get { return valueBinders; }
         }
     }
 }

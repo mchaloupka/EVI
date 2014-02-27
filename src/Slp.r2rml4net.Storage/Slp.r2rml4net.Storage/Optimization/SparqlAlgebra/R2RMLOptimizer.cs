@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using TCode.r2rml4net.Mapping;

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
-    public class AlwaysTrueCondition
+    public class AlwaysTrueCondition : ICondition
     {
+
     }
 }
