@@ -14,5 +14,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             this.parts = parts.ToList();
         }
+
+        public IEnumerable<IExpression> Parts { get { return parts; } }
     }
 }

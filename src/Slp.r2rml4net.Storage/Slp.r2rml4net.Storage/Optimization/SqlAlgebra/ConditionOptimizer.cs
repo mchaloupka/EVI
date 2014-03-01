@@ -15,9 +15,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
     public class ConditionOptimizer : ISqlAlgebraOptimizer
     {
-        public void ProcessAlgebra(ISqlQuery algebra, QueryContext context)
+        public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
-            ProcessSource(algebra.SqlSource, context);
+            ProcessSource(algebra, context);
+            return algebra;
         }
 
         public void ProcessSource(ISqlSource source, QueryContext context)
@@ -106,12 +107,64 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         private ICondition SimplifyOrCondition(OrCondition orCondition, QueryContext context)
         {
-            throw new NotImplementedException();
+            List<ICondition> conditions = new List<ICondition>();
+
+            foreach (var cond in orCondition.Conditions)
+            {
+                var simpl = SimplifyCondition(cond, context);
+
+                if (simpl is AlwaysTrueCondition)
+                    return new AlwaysTrueCondition();
+                else if (!(simpl is AlwaysFalseCondition))
+                    conditions.Add(simpl);
+            }
+
+            if (conditions.Count == 0)
+                return new AlwaysFalseCondition();
+            else if (conditions.Count == 1)
+                return conditions[0];
+            else
+            {
+                var orCond = new OrCondition();
+
+                foreach (var cond in conditions)
+                {
+                    orCond.AddToCondition(cond);
+                }
+
+                return orCond;
+            }
         }
 
         private ICondition SimplifyAndCondition(AndCondition andCondition, QueryContext context)
         {
-            throw new NotImplementedException();
+            List<ICondition> conditions = new List<ICondition>();
+
+            foreach (var cond in andCondition.Conditions)
+            {
+                var simpl = SimplifyCondition(cond, context);
+
+                if (simpl is AlwaysFalseCondition)
+                    return new AlwaysFalseCondition();
+                else if (!(simpl is AlwaysTrueCondition))
+                    conditions.Add(simpl);
+            }
+
+            if (conditions.Count == 0)
+                return new AlwaysTrueCondition();
+            else if (conditions.Count == 1)
+                return conditions[0];
+            else
+            {
+                var andCond = new AndCondition();
+
+                foreach (var cond in conditions)
+                {
+                    andCond.AddToCondition(cond);
+                }
+
+                return andCond;
+            }
         }
 
         private ICondition SimplifyEqualsCondition(EqualsCondition equalsCondition, QueryContext context)
@@ -125,7 +178,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             {
                 return new AlwaysTrueCondition();
             }
-            else if (ExpressionsCanBeEqual(leftOp, rightOp))
+            else if (!ExpressionsCanBeEqual(leftOp, rightOp))
             {
                 return new AlwaysFalseCondition();
             }

@@ -8,6 +8,7 @@ using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql;
+using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -191,7 +192,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
         }
 
-        private ISqlQuery GenerateSqlAlgebra(QueryContext context)
+        private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)
         {
             var algebra = sparqlAlgebraBuilder.Process(context);
 
@@ -214,7 +215,7 @@ namespace Slp.r2rml4net.Storage.Query
             // Optimize sql algebra
             foreach (var optimizer in sqlOptimizers)
             {
-                optimizer.ProcessAlgebra(sqlAlgebra, context);
+                sqlAlgebra = optimizer.ProcessAlgebra(sqlAlgebra, context);
             }
 
             return sqlAlgebra;

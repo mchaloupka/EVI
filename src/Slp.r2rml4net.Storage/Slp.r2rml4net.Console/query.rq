@@ -1,7 +1,9 @@
 PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
 
-SELECT ?mun ?munName
+SELECT ?mun ?code ?level ?munName
 WHERE
 {
-	?mun eugeo:name ?munName	
+	?mun eugeo:name ?munName;
+		 eugeo:regionCode ?code;
+		 eugeo:level ?level; 
 }

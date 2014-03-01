@@ -17,7 +17,7 @@ using TCode.r2rml4net;
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/RDF/DefaultSQLValuesMappingStrategy.cs?at=default
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
-    public class ValueBinder
+    public class ValueBinder : IBaseValueBinder
     {
         private ITermMap r2rmlMap;
 
@@ -297,6 +297,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 var reason = string.Format(format, joinedChars);
                 throw new Exception(reason);
             }
+        }
+
+
+        public IEnumerable<ISqlColumn> AssignedColumns
+        {
+            get { return columns.Select(x => x.Value); }
         }
     }
 }

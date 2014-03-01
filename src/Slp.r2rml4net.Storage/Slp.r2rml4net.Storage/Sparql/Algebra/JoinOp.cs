@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra
 {
-    [DebuggerDisplay("UNION(Count = {unioned.Count})")]
+    [DebuggerDisplay("JOIN(Count = {joined.Count})")]
     public class JoinOp : ISparqlQueryPart
     {
         private List<ISparqlQuery> joined;
@@ -26,7 +26,6 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
         {
             return joined.AsEnumerable();
         }
-
 
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {

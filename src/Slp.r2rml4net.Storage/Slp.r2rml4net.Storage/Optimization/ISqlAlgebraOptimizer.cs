@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
+using Slp.r2rml4net.Storage.Sql.Algebra;
 
 namespace Slp.r2rml4net.Storage.Optimization
 {
     public interface ISqlAlgebraOptimizer
     {
-        void ProcessAlgebra(ISqlQuery algebra, QueryContext context);
+        INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context);
     }
 }

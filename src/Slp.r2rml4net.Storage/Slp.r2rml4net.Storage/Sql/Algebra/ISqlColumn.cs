@@ -17,9 +17,4 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
     {
         string OriginalName { get; }
     }
-
-    public interface INotOriginalSqlColumn : ISqlColumn
-    {
-        ISqlColumn OriginalColumn { get; }
-    }
 }

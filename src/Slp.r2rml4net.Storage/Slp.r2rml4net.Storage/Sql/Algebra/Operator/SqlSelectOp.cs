@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
-    public class SqlSelectOp : ISqlSource
+    public class SqlSelectOp : INotSqlOriginalDbSource
     {
         public IEnumerable<SqlSelectColumn> Columns { get { return columns; } }
 
@@ -32,6 +33,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             this.joinSources = new List<ConditionedSource>();
             this.leftOuterJoinSources = new List<ConditionedSource>();
             this.conditions = new List<ICondition>();
+            this.valueBinders = new List<IBaseValueBinder>();
         }
 
         public ISqlColumn GetSelectColumn(ISqlColumn sourceColumn)
@@ -85,6 +87,41 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         IEnumerable<ISqlColumn> ISqlSource.Columns
         {
             get { return this.Columns.Cast<ISqlColumn>(); }
+        }
+
+        private List<IBaseValueBinder> valueBinders;
+
+        public void AddValueBinder(IBaseValueBinder valueBinder)
+        {
+            this.valueBinders.Add(valueBinder);
+        }
+
+        public IEnumerable<IBaseValueBinder> ValueBinders
+        {
+            get { return valueBinders; }
+        }
+
+        public bool HaveOnlyOriginalSourceAndConditions { get { return joinSources.Count == 0 && leftOuterJoinSources.Count == 0; } }
+
+        public void AddJoinedSource(ISqlSource sqlSource, ICondition condition, Query.QueryContext context)
+        {
+            this.joinSources.Add(new ConditionedSource(condition, sqlSource));
+        }
+
+        public void ReplaceValueBinder(IBaseValueBinder fBinder, IBaseValueBinder sBinder)
+        {
+            var index = this.valueBinders.IndexOf(fBinder);
+
+            if (index > -1)
+                this.valueBinders[index] = sBinder;
+        }
+
+        public void RemoveValueBinder(IBaseValueBinder valueBinder)
+        {
+            var index = this.valueBinders.IndexOf(valueBinder);
+
+            if (index > -1)
+                this.valueBinders.RemoveAt(index);
         }
     }
 }

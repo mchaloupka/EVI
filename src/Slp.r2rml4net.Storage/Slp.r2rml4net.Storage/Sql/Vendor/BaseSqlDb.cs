@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
+using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 
@@ -15,12 +17,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     {
         public abstract IQueryResultReader ExecuteQuery(string query, QueryContext context);
 
-        public string GenerateQuery(ISqlQuery sqlAlgebra, QueryContext context)
+        public string GenerateQuery(INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
         {
-            GenerateNames(sqlAlgebra.SqlSource, context);
+            GenerateNames(sqlAlgebra, context);
 
             StringBuilder sb = new StringBuilder();
-            GenerateQuery(sb, sqlAlgebra.SqlSource, context);
+            GenerateQuery(sb, sqlAlgebra, context);
             return sb.ToString();
         }
 
@@ -117,10 +119,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             }
         }
 
-        private void GenerateConditionQuery(StringBuilder sb, ICondition condition, QueryContext context)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         private void GenerateSelectColumnQuery(StringBuilder sb, SqlSelectColumn sqlSelectColumn, QueryContext context)
         {
@@ -227,10 +226,17 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             int counter = 2;
             var curName = prefix;
+            string appendString = string.Empty;
+
+            if(prefix.EndsWith("]"))
+            {
+                prefix = prefix.Substring(0, prefix.Length - 1);
+                appendString = "]";
+            }
 
             while (context.IsAlreadyUsedSqlSourceName(curName))
             {
-                curName = string.Format("{0}{1}", prefix, counter++);
+                curName = string.Format("{0}{1}{2}", prefix, counter++, appendString);
             }
 
             context.RegisterUsedSqlSourceName(curName);
@@ -244,16 +250,23 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             foreach (var col in sqlSelectOp.Columns)
             {
                 var orName = GetOriginalColumnName(col);
-                var newName = orName;
                 int counter = 2;
+                var curName = orName;
+                string appendString = string.Empty;
 
-                while (colNames.Contains(newName))
+                if (orName.EndsWith("]"))
                 {
-                    newName = string.Format("{0}{1}", orName, counter++);
+                    orName = orName.Substring(0, orName.Length - 1);
+                    appendString = "]";
                 }
 
-                colNames.Add(newName);
-                col.Name = newName;
+                while (colNames.Contains(curName))
+                {
+                    curName = string.Format("{0}{1}{2}", orName, counter++, appendString);
+                }
+
+                colNames.Add(curName);
+                col.Name = curName;
             }
         }
 
@@ -263,12 +276,168 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 return ((IOriginalSqlColumn)col).OriginalName;
             }
-            else if (col is INotOriginalSqlColumn)
+            else if (col is SqlSelectColumn)
             {
-                return GetOriginalColumnName(((INotOriginalSqlColumn)col).OriginalColumn);
+                return GetOriginalColumnName(((SqlSelectColumn)col).OriginalColumn);
             }
             else
-                throw new Exception("Column must be original or not original");
+                throw new Exception("Column must be original or select");
         }
+
+        #region Conditions
+        private void GenerateConditionQuery(StringBuilder sb, ICondition condition, QueryContext context)
+        {
+            if (condition is AlwaysFalseCondition)
+            {
+                sb.Append("1=0");
+            }
+            else if (condition is AlwaysTrueCondition)
+            {
+                sb.Append("1=1");
+            }
+            else if (condition is AndCondition)
+            {
+                GenerateAndConditionQuery(sb, (AndCondition)condition, context);
+            }
+            else if (condition is OrCondition)
+            {
+                GenerateOrConditionQuery(sb, (OrCondition)condition, context);
+            }
+            else if (condition is EqualsCondition)
+            {
+                GenerateEqualsConditionQuery(sb, (EqualsCondition)condition, context);
+            }
+            else
+                throw new Exception("Unknown condition type");
+        }
+
+        private void GenerateEqualsConditionQuery(StringBuilder sb, EqualsCondition equalsCondition, QueryContext context)
+        {
+            var leftExpr = equalsCondition.LeftOperand;
+            var rightExpr = equalsCondition.RightOperand;
+
+            if (leftExpr is NullExpr)
+            {
+                var sw = leftExpr;
+                leftExpr = rightExpr;
+                rightExpr = sw;
+            }
+
+            GenerateExpressionQuery(sb, leftExpr, context);
+
+            if(rightExpr is NullExpr)
+            {
+                sb.Append("IS NULL");
+            }
+            else
+            {
+                sb.Append("=");
+                GenerateExpressionQuery(sb, rightExpr, context);
+            }
+        }
+
+        private void GenerateOrConditionQuery(StringBuilder sb, OrCondition orCondition, QueryContext context)
+        {
+            var conditions = orCondition.Conditions.ToArray();
+
+            if (conditions.Length == 0)
+            {
+                throw new Exception("Cannot generate query for empty OR condition");
+            }
+            else if (conditions.Length == 1)
+            {
+                GenerateConditionQuery(sb, conditions[0], context);
+            }
+            else
+            {
+                for (int i = 0; i < conditions.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(" OR ");
+
+                    sb.Append("(");
+                    GenerateConditionQuery(sb, conditions[i], context);
+                    sb.Append(")");
+                }
+            }
+        }
+
+        private void GenerateAndConditionQuery(StringBuilder sb, AndCondition andCondition, QueryContext context)
+        {
+            var conditions = andCondition.Conditions.ToArray();
+
+            if (conditions.Length == 0)
+            {
+                throw new Exception("Cannot generate query for empty AND condition");
+            }
+            else if (conditions.Length == 1)
+            {
+                GenerateConditionQuery(sb, conditions[0], context);
+            }
+            else
+            {
+                for (int i = 0; i < conditions.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(" AND ");
+
+                    sb.Append("(");
+                    GenerateConditionQuery(sb, conditions[i], context);
+                    sb.Append(")");
+                }
+            }
+        } 
+        #endregion
+
+        #region Expressions
+        private void GenerateExpressionQuery(StringBuilder sb, IExpression leftExpr, QueryContext context)
+        {
+            if (leftExpr is ColumnExpr)
+            {
+                GenerateColumnExpressionQuery(sb, (ColumnExpr)leftExpr, context);
+            }
+            else if(leftExpr is ConcatenationExpr)
+            {
+                GenerateConcatenationExpressionQuery(sb, (ConcatenationExpr)leftExpr, context);
+            }
+            else if(leftExpr is ConstantExpr)
+            {
+                GenerateConstantExpressionQuery(sb, (ConstantExpr)leftExpr, context);
+            }
+            else if(leftExpr is NullExpr)
+            {
+                sb.Append("NULL");
+            }
+        }
+
+        private void GenerateConstantExpressionQuery(StringBuilder sb, ConstantExpr constantExpr, QueryContext context)
+        {
+            sb.Append(constantExpr.SqlString);
+        }
+
+        private void GenerateConcatenationExpressionQuery(StringBuilder sb, ConcatenationExpr concatenationExpr, QueryContext context)
+        {
+            sb.Append("CONCAT(");
+
+            var parts = concatenationExpr.Parts.ToArray();
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (i > 0)
+                    sb.Append(", ");
+
+                sb.Append("CAST(");
+                GenerateExpressionQuery(sb, parts[i], context);
+                sb.Append(" AS nvarchar(MAX))");
+            }
+
+            sb.Append(")");
+        }
+
+        private void GenerateColumnExpressionQuery(StringBuilder sb, ColumnExpr columnExpr, QueryContext context)
+        {
+            GenerateColumnQuery(sb, columnExpr.Column, context);
+        }
+        #endregion
     }
 }
