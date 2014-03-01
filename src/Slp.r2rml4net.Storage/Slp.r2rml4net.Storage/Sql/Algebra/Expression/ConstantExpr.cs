@@ -8,18 +8,20 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
     public class ConstantExpr : IExpression
     {
-        public string SqlString { get { return sqlString; } }
+        public string SqlString { get; private set; }
 
-        private string sqlString;
+        public object Value { get; private set; }
 
         public ConstantExpr(Uri uri)
         {
-            sqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
+            SqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
+            Value = uri;
         }
 
         public ConstantExpr(string text)
         {
-            sqlString = string.Format("\'{0}\'", text);
+            SqlString = string.Format("\'{0}\'", text);
+            Value = text;
         }
     }
 }

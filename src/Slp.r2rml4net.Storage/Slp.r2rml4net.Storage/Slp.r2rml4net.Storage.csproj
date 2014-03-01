@@ -64,7 +64,9 @@
     <Compile Include="Optimization\ISparqlAlgebraOptimizer.cs" />
     <Compile Include="Optimization\ISqlAlgebraOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\R2RMLOptimizer.cs" />
-    <Compile Include="Optimization\SqlAlgebra\ConditionOptimizer.cs" />
+    <Compile Include="Optimization\SqlAlgebra\BaseConditionOptimizer.cs" />
+    <Compile Include="Optimization\SqlAlgebra\ConcatenationInEqualConditionOptimizer.cs" />
+    <Compile Include="Optimization\SqlAlgebra\ConstantExprEqualityOptimizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />

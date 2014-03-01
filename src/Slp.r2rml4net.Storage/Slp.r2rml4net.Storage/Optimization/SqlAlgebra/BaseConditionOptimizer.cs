@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
-using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
@@ -13,7 +11,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public class ConditionOptimizer : ISqlAlgebraOptimizer
+    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer
     {
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
@@ -29,7 +27,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        private void ProcessSelectOp(SqlSelectOp sqlSelectOp, QueryContext context)
+        protected virtual void ProcessSelectOp(SqlSelectOp sqlSelectOp, QueryContext context)
         {
             ProcessSource(sqlSelectOp.OriginalSource, context);
 
@@ -46,20 +44,20 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        private void ProcessSelectOpJoinCondition(ConditionedSource join, QueryContext context)
+        protected virtual void ProcessSelectOpJoinCondition(ConditionedSource join, QueryContext context)
         {
-            var simplified = SimplifyCondition(join.Condition, context);
+            var simplified = ProcessCondition(join.Condition, context);
             if (join.Condition != simplified)
                 join.ReplaceCondition(simplified);
         }
 
-        private void ProcessSelectOpConditions(SqlSelectOp sqlSelectOp, QueryContext context)
+        protected virtual void ProcessSelectOpConditions(SqlSelectOp sqlSelectOp, QueryContext context)
         {
             var conditions = sqlSelectOp.Conditions.ToArray();
 
             foreach (var cond in conditions)
             {
-                var simplified = SimplifyCondition(cond, context);
+                var simplified = ProcessCondition(cond, context);
 
                 if (simplified != cond)
                     sqlSelectOp.ReplaceCondition(cond, simplified);
@@ -79,7 +77,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        private ICondition SimplifyCondition(ICondition condition, QueryContext context)
+        protected virtual ICondition ProcessCondition(ICondition condition, QueryContext context)
         {
             if (condition is AlwaysFalseCondition)
             {
@@ -91,27 +89,27 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
             else if (condition is AndCondition)
             {
-                return SimplifyAndCondition((AndCondition)condition, context);
+                return ProcessAndCondition((AndCondition)condition, context);
             }
             else if (condition is OrCondition)
             {
-                return SimplifyOrCondition((OrCondition)condition, context);
+                return ProcessOrCondition((OrCondition)condition, context);
             }
             else if (condition is EqualsCondition)
             {
-                return SimplifyEqualsCondition((EqualsCondition)condition, context);
+                return ProcessEqualsCondition((EqualsCondition)condition, context);
             }
 
             throw new NotImplementedException();
         }
 
-        private ICondition SimplifyOrCondition(OrCondition orCondition, QueryContext context)
+        protected virtual ICondition ProcessOrCondition(OrCondition orCondition, QueryContext context)
         {
             List<ICondition> conditions = new List<ICondition>();
 
             foreach (var cond in orCondition.Conditions)
             {
-                var simpl = SimplifyCondition(cond, context);
+                var simpl = ProcessCondition(cond, context);
 
                 if (simpl is AlwaysTrueCondition)
                     return new AlwaysTrueCondition();
@@ -136,13 +134,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        private ICondition SimplifyAndCondition(AndCondition andCondition, QueryContext context)
+        protected virtual ICondition ProcessAndCondition(AndCondition andCondition, QueryContext context)
         {
             List<ICondition> conditions = new List<ICondition>();
 
             foreach (var cond in andCondition.Conditions)
             {
-                var simpl = SimplifyCondition(cond, context);
+                var simpl = ProcessCondition(cond, context);
 
                 if (simpl is AlwaysFalseCondition)
                     return new AlwaysFalseCondition();
@@ -167,66 +165,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        private ICondition SimplifyEqualsCondition(EqualsCondition equalsCondition, QueryContext context)
+        protected virtual ICondition ProcessEqualsCondition(EqualsCondition equalsCondition, QueryContext context)
         {
-            var leftOp = equalsCondition.LeftOperand;
-            var rightOp = equalsCondition.RightOperand;
-
-            // TODO: Simplify concatenation
-
-            if (ExpressionsAlwaysEqual(leftOp, rightOp))
-            {
-                return new AlwaysTrueCondition();
-            }
-            else if (!ExpressionsCanBeEqual(leftOp, rightOp))
-            {
-                return new AlwaysFalseCondition();
-            }
-            else
-            {
-                return equalsCondition;
-            }
-        }
-
-        private bool ExpressionsAlwaysEqual(IExpression first, IExpression second)
-        {
-            if (first is ConcatenationExpr || second is ConcatenationExpr) 
-            {
-                return false;
-            }
-            else if (first is ColumnExpr || second is ColumnExpr)
-            {
-                return false;
-            }
-            else if (first is ConstantExpr && second is ConstantExpr)
-            {
-                return ConstantExprAreEqual((ConstantExpr)first, (ConstantExpr)second);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private bool ExpressionsCanBeEqual(IExpression first, IExpression second)
-        {
-            if (first is ConcatenationExpr || second is ConcatenationExpr)
-            {
-                return true;
-            }
-            else if (first is ColumnExpr || second is ColumnExpr)
-            {
-                return true;
-            }
-            else if (first is ConstantExpr && second is ConstantExpr)
-            {
-                return ConstantExprAreEqual((ConstantExpr)first, (ConstantExpr)second);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private bool ConstantExprAreEqual(ConstantExpr constantExpr1, ConstantExpr constantExpr2)
-        {
-            return constantExpr1.SqlString == constantExpr2.SqlString;
+            return equalsCondition;
         }
     }
 }
