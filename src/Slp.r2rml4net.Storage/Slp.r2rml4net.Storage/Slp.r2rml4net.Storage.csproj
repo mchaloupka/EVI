@@ -98,6 +98,7 @@
     <Compile Include="Sql\Algebra\Operator\SingleEmptyRowSource.cs" />
     <Compile Include="Sql\Algebra\Operator\SqlSelectColumn.cs" />
     <Compile Include="Sql\Algebra\Operator\SqlSelectOp.cs" />
+    <Compile Include="Sql\Algebra\Operator\SqlUnionOp.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTableColumn.cs" />
     <Compile Include="Sql\Algebra\Source\SqlStatement.cs" />
     <Compile Include="Sql\Binders\IBaseValueBinder.cs" />

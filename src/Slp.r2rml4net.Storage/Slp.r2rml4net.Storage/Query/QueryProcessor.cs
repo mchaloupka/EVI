@@ -202,7 +202,7 @@ namespace Slp.r2rml4net.Storage.Query
             // Transform using R2RML
             algebra = mapping.ProcessAlgebra(algebra, context);
 
-            // TODO: Validate algebra, take filters and union up as possible
+            // TODO: Make algebra valid, take filters up as possible
 
             // Optimize sparql algebra
             foreach (var optimizer in sparqlOptimizers)
