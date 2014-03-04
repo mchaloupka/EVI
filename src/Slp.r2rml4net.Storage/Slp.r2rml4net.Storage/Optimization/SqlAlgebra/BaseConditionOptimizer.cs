@@ -99,8 +99,33 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             {
                 return ProcessEqualsCondition((EqualsCondition)condition, context);
             }
+            else if (condition is NotCondition)
+            {
+                return ProcessNotCondition((NotCondition)condition, context);
+            }
+            else if(condition is IsNullCondition)
+            {
+                return ProcessIsNullCondition((IsNullCondition)condition, context);
+            }
 
             throw new NotImplementedException();
+        }
+
+        protected virtual ICondition ProcessIsNullCondition(IsNullCondition isNullCondition, QueryContext context)
+        {
+            return isNullCondition;
+        }
+
+        protected virtual ICondition ProcessNotCondition(NotCondition notCondition, QueryContext context)
+        {
+            var inner = ProcessCondition(notCondition.InnerCondition, context);
+
+            if (inner is AlwaysTrueCondition)
+                return new AlwaysFalseCondition();
+            else if (inner is AlwaysFalseCondition)
+                return new AlwaysTrueCondition();
+            else
+                return new NotCondition(inner);
         }
 
         protected virtual ICondition ProcessOrCondition(OrCondition orCondition, QueryContext context)

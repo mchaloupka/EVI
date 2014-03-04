@@ -83,11 +83,12 @@
     <Compile Include="Sql\Algebra\Condition\AlwaysTrueCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\AndCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\EqualsCondition.cs" />
+    <Compile Include="Sql\Algebra\Condition\IsNullCondition.cs" />
+    <Compile Include="Sql\Algebra\Condition\NotCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\OrCondition.cs" />
     <Compile Include="Sql\Algebra\Expression\ColumnExpr.cs" />
     <Compile Include="Sql\Algebra\Expression\ConcatenationExpr.cs" />
     <Compile Include="Sql\Algebra\Expression\ConstantExpr.cs" />
-    <Compile Include="Sql\Algebra\Expression\NullExpr.cs" />
     <Compile Include="Sql\Algebra\ICondition.cs" />
     <Compile Include="Sql\Algebra\IExpression.cs" />
     <Compile Include="Sql\Algebra\ISqlColumn.cs" />

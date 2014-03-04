@@ -135,10 +135,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         private void GenerateColumnQuery(StringBuilder sb, ISqlColumn col, QueryContext context)
         {
-            var tCol = (SqlTableColumn)col;
             sb.Append(col.Source.Name);
             sb.Append(".");
-            sb.Append(tCol.OriginalName);
+            sb.Append(col.Name);
         }
 
         private void GenerateTableQuery(StringBuilder sb, SqlTable sqlTable, QueryContext context)
@@ -307,8 +306,28 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateEqualsConditionQuery(sb, (EqualsCondition)condition, context);
             }
+            else if(condition is NotCondition)
+            {
+                GenerateNotConditionQuery(sb, (NotCondition)condition, context);
+            }
+            else if (condition is IsNullCondition)
+            {
+                GenerateIsNullConditionQuery(sb, (IsNullCondition)condition, context);
+            }
             else
                 throw new Exception("Unknown condition type");
+        }
+
+        private void GenerateIsNullConditionQuery(StringBuilder sb, IsNullCondition isNullCondition, QueryContext context)
+        {
+            GenerateColumnQuery(sb, isNullCondition.Column, context);
+            sb.Append(" IS NULL");
+        }
+
+        private void GenerateNotConditionQuery(StringBuilder sb, NotCondition notCondition, QueryContext context)
+        {
+            sb.Append("NOT ");
+            GenerateConditionQuery(sb, notCondition.InnerCondition, context);
         }
 
         private void GenerateEqualsConditionQuery(StringBuilder sb, EqualsCondition equalsCondition, QueryContext context)
@@ -316,24 +335,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var leftExpr = equalsCondition.LeftOperand;
             var rightExpr = equalsCondition.RightOperand;
 
-            if (leftExpr is NullExpr)
-            {
-                var sw = leftExpr;
-                leftExpr = rightExpr;
-                rightExpr = sw;
-            }
-
             GenerateExpressionQuery(sb, leftExpr, context);
 
-            if(rightExpr is NullExpr)
-            {
-                sb.Append("IS NULL");
-            }
-            else
-            {
-                sb.Append("=");
-                GenerateExpressionQuery(sb, rightExpr, context);
-            }
+            sb.Append("=");
+            GenerateExpressionQuery(sb, rightExpr, context);
         }
 
         private void GenerateOrConditionQuery(StringBuilder sb, OrCondition orCondition, QueryContext context)
@@ -404,9 +409,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateConstantExpressionQuery(sb, (ConstantExpr)leftExpr, context);
             }
-            else if(leftExpr is NullExpr)
+            else
             {
-                sb.Append("NULL");
+                throw new NotImplementedException();
             }
         }
 
