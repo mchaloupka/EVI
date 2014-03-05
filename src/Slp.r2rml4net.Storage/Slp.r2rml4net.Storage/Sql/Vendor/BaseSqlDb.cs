@@ -40,6 +40,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateStatementQuery(sb, (SqlStatement)sqlSource, context);
             }
+            else if(sqlSource is SqlUnionOp)
+            {
+                GenerateUnionOpQuery(sb, (SqlUnionOp)sqlSource, context);
+            }
             else
             {
                 throw new NotImplementedException();
@@ -71,10 +75,25 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return !(sqlSource is SqlTable);
         }
 
+        private void GenerateUnionOpQuery(StringBuilder sb, SqlUnionOp sqlUnionOp, QueryContext context)
+        {
+            bool first = true;
+
+            foreach (var select in sqlUnionOp.Sources)
+            {
+                if (first)
+                    first = false;
+                else
+                    sb.Append(" UNION ");
+
+                GenerateSelectOpQuery(sb, select, context);
+            }
+        }
+
         private void GenerateSelectOpQuery(StringBuilder sb, SqlSelectOp sqlSelectOp, QueryContext context)
         {
             sb.Append("SELECT");
-            var cols = sqlSelectOp.Columns.ToArray();
+            var cols = sqlSelectOp.Columns.OrderBy(x => x.Name).ToArray();
             for (int i = 0; i < cols.Length; i++)
             {
                 if (i != 0)
@@ -128,16 +147,26 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 var sqlSelectColumn = (SqlSelectColumn)column;
 
                 GenerateColumnQuery(sb, sqlSelectColumn.OriginalColumn, context);
+            }
+            else if(column is SqlExpressionColumn)
+            {
+                var sqlExpressionColumn = (SqlExpressionColumn)column;
 
-                if (!string.IsNullOrEmpty(sqlSelectColumn.Name))
-                {
-                    sb.Append(" AS ");
-                    sb.Append(sqlSelectColumn.Name);
-                }
+                GenerateExpressionQuery(sb, sqlExpressionColumn.Expression, context);
             }
             else
             {
                 throw new NotImplementedException();
+            }
+
+            if (!string.IsNullOrEmpty(column.Name))
+            {
+                sb.Append(" AS ");
+                sb.Append(column.Name);
+            }
+            else
+            {
+                throw new Exception("All names should be set");
             }
         }
 
@@ -172,10 +201,45 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateStatementNames((SqlStatement)sqlSource, context);
             }
+            else if(sqlSource is SqlUnionOp)
+            {
+                GenerateUnionOpNames((SqlUnionOp)sqlSource, context);
+            }
             else
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void GenerateUnionOpNames(SqlUnionOp sqlUnionOp, QueryContext context)
+        {
+            foreach (var unColumn in sqlUnionOp.Columns.Cast<SqlUnionColumn>())
+            {
+                foreach (var select in sqlUnionOp.Sources)
+                {
+                    var column = unColumn.OriginalColumns.FirstOrDefault(x => x.Source == select);
+
+                    if (column == null)
+                    {
+                        column = select.GetExpressionColumn(new NullExpr());
+                        unColumn.AddColumn(column);
+                    }
+                }
+            }
+
+            sqlUnionOp.CaseColumn.Name = "uncase";
+            GenerateColumnNames(sqlUnionOp.Columns, context);
+
+            foreach (var unColumn in sqlUnionOp.Columns.Cast<SqlUnionColumn>())
+            {
+                foreach (var select in sqlUnionOp.Sources)
+                {
+                    var column = unColumn.OriginalColumns.First(x => x.Source == select);
+                    column.Name = unColumn.Name;
+                }
+            }
+
+            GenerateSourceNames(sqlUnionOp, context);
         }
 
         private void GenerateStatementNames(SqlStatement sqlStatement, QueryContext context)
@@ -196,8 +260,17 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         private void GenerateSelectOpNames(SqlSelectOp sqlSelectOp, QueryContext context)
         {
-            GenerateColumnNames(sqlSelectOp, context);
+            GenerateColumnNames(sqlSelectOp.Columns, context);
             GenerateSourceNames(sqlSelectOp, context);
+        }
+
+        private void GenerateSourceNames(SqlUnionOp sqlUnionOp, QueryContext context)
+        {
+            foreach (var select in sqlUnionOp.Sources)
+            {
+                // In union the sources are not named
+                GenerateNames(select, context);
+            }
         }
 
         private void GenerateSourceNames(SqlSelectOp sqlSelectOp, QueryContext context)
@@ -250,19 +323,19 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             source.Name = curName;
         }
 
-        private void GenerateColumnNames(SqlSelectOp sqlSelectOp, QueryContext context)
+        private void GenerateColumnNames(IEnumerable<ISqlColumn> columns, QueryContext context)
         {
             List<string> colNames = new List<string>();
 
-            foreach (var col in sqlSelectOp.Columns.Where(x => x.Name != null))
+            foreach (var col in columns.Where(x => x.Name != null))
             {
                 colNames.Add(col.Name);
             }
 
-            foreach (var col in sqlSelectOp.Columns)
+            foreach (var col in columns)
             {
                 if (col.Name != null)
-                    return;
+                    continue;
 
                 var orName = GetOriginalColumnName(col);
                 int counter = 2;
@@ -295,8 +368,43 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 return GetOriginalColumnName(((SqlSelectColumn)col).OriginalColumn);
             }
+            else if (col is SqlExpressionColumn)
+            {
+                return "expr";
+            }
+            else if(col is SqlUnionColumn)
+            {
+                var unCol = (SqlUnionColumn)col;
+
+                ISqlColumn innerCol = null;
+
+                foreach (var subCol in unCol.OriginalColumns)
+                {
+                    if(subCol is IOriginalSqlColumn)
+                    {
+                        return GetOriginalColumnName(subCol);
+                    }
+                    else if(!(innerCol is SqlSelectColumn) && subCol is SqlSelectColumn)
+                    {
+                        innerCol = subCol;
+                    }
+                    else if(!(innerCol is SqlSelectColumn) && !(innerCol is SqlExpressionColumn) && subCol is SqlExpressionColumn)
+                    {
+                        innerCol = subCol;
+                    }
+                    else if (!(innerCol is SqlSelectColumn) && !(innerCol is SqlExpressionColumn) && !(innerCol is SqlUnionColumn) && subCol is SqlUnionColumn)
+                    {
+                        innerCol = subCol;
+                    }
+                }
+
+                if (innerCol == null)
+                    return "un";
+                else
+                    return GetOriginalColumnName(innerCol);
+            }
             else
-                throw new Exception("Column must be original or select");
+                throw new NotImplementedException();
         }
 
         #region Conditions
@@ -425,10 +533,19 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 GenerateConstantExpressionQuery(sb, (ConstantExpr)leftExpr, context);
             }
+            else if(leftExpr is NullExpr)
+            {
+                GenerateNullExpressionQuery(sb, (NullExpr)leftExpr, context);
+            }
             else
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void GenerateNullExpressionQuery(StringBuilder sb, NullExpr nullExpr, QueryContext context)
+        {
+            sb.Append("NULL");
         }
 
         private void GenerateConstantExpressionQuery(StringBuilder sb, ConstantExpr constantExpr, QueryContext context)

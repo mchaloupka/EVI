@@ -483,6 +483,7 @@ namespace Slp.r2rml4net.Storage.Sql
                         {
                             var newCol = sqlUnion.GetUnionedColumn();
                             unColumns.Add(neededColumn, newCol);
+                            newCol.AddColumn(neededColumn);
                         }
 
                         var unColumn = unColumns[neededColumn];

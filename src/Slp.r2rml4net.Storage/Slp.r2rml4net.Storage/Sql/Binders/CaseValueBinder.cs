@@ -12,11 +12,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 {
     public class CaseValueBinder : IBaseValueBinder
     {
-        private List<CaseStatementBinder> binders;
+        private List<CaseStatementBinder> statements;
 
         public CaseValueBinder(string variableName)
         {
-            binders = new List<CaseStatementBinder>();
+            statements = new List<CaseStatementBinder>();
             this.VariableName = variableName;
         }
 
@@ -25,12 +25,21 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             if (valueBinder.VariableName != this.VariableName)
                 throw new Exception("Cannot add value binder to case value binder with different variable name");
 
-            binders.Add(new CaseStatementBinder(condition, valueBinder));
+            statements.Add(new CaseStatementBinder(condition, valueBinder));
         }
 
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
-            throw new NotImplementedException();
+            var matchingStatement = statements.Where(x => x.Condition.StaticEvaluation(row)).FirstOrDefault();
+
+            if(matchingStatement != null)
+            {
+                return matchingStatement.ValueBinder.LoadNode(factory, row, context);
+            }
+            else
+            {
+                throw new Exception("Every row should be in some case");
+            }
         }
 
         public string VariableName { get; private set; }
@@ -39,15 +48,15 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         {
             get
             {
-                return this.binders.SelectMany(x => x.ValueBinder.AssignedColumns.Union(x.Condition.GetAllReferencedColumns())).Distinct();
+                return this.statements.SelectMany(x => x.ValueBinder.AssignedColumns.Union(x.Condition.GetAllReferencedColumns())).Distinct();
             }
         }
 
-        public IEnumerable<CaseStatementBinder> Statements { get { return binders; } }
+        public IEnumerable<CaseStatementBinder> Statements { get { return statements; } }
 
         public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
-            foreach (var binder in binders)
+            foreach (var binder in statements)
             {
                 binder.ValueBinder.ReplaceAssignedColumn(oldColumn, newColumn);
                 binder.Condition.ReplaceColumnReference(oldColumn, newColumn);
@@ -58,9 +67,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         {
             var newBinder = new CaseValueBinder(this.VariableName);
 
-            foreach (var binder in this.binders)
+            foreach (var binder in this.statements)
             {
-                newBinder.binders.Add(new CaseStatementBinder((ICondition)binder.Condition.Clone(), (IBaseValueBinder)binder.ValueBinder.Clone()));
+                newBinder.statements.Add(new CaseStatementBinder((ICondition)binder.Condition.Clone(), (IBaseValueBinder)binder.ValueBinder.Clone()));
             }
 
             return newBinder;

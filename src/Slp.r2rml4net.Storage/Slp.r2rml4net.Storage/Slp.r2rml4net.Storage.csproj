@@ -91,6 +91,7 @@
     <Compile Include="Sql\Algebra\Expression\ConcatenationExpr.cs" />
     <Compile Include="Sql\Algebra\Expression\ConstantExpr.cs" />
     <Compile Include="Sql\Algebra\Expression\IExpressionVisitor.cs" />
+    <Compile Include="Sql\Algebra\Expression\NullExpr.cs" />
     <Compile Include="Sql\Algebra\ICondition.cs" />
     <Compile Include="Sql\Algebra\IExpression.cs" />
     <Compile Include="Sql\Algebra\ISqlColumn.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Sql\Algebra\Source\SqlStatement.cs" />
     <Compile Include="Sql\Algebra\Utils\GetAllReferencedColumnsExtension.cs" />
     <Compile Include="Sql\Algebra\Utils\ReplaceColumnReferenceExtension.cs" />
+    <Compile Include="Sql\Algebra\Utils\StaticExpressionEvaluationExtension.cs" />
     <Compile Include="Sql\Binders\CaseValueBinder.cs" />
     <Compile Include="Sql\Binders\IBaseValueBinder.cs" />
     <Compile Include="Sql\Binders\CollateValueBinder.cs" />

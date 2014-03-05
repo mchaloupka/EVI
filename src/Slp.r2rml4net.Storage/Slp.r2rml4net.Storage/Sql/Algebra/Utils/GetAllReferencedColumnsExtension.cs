@@ -10,22 +10,16 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 {
     public static class GetAllReferencedColumnsExtension
     {
+        private static readonly GetAllReferencedColumnsVisitor visitor = new GetAllReferencedColumnsVisitor();
+
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this ICondition condition)
         {
-            var visitor = new GetAllReferencedColumnsVisitor();
-
-            var res = (IEnumerable<ISqlColumn>)condition.Accept(visitor, null);
-
-            return res;
+            return (IEnumerable<ISqlColumn>)condition.Accept(visitor, null);
         }
 
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this IExpression expression)
         {
-            var visitor = new GetAllReferencedColumnsVisitor();
-
-            var res = (IEnumerable<ISqlColumn>)expression.Accept(visitor, null);
-
-            return res;
+            return (IEnumerable<ISqlColumn>)expression.Accept(visitor, null);
         }
 
         private class GetAllReferencedColumnsVisitor : IConditionVisitor, IExpressionVisitor
@@ -107,6 +101,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            public IEnumerable<ISqlColumn> Visit(NullExpr nullExpr, object data)
+            {
+                yield break;
+            }
+
             object IConditionVisitor.Visit(AlwaysFalseCondition condition, object data)
             {
                 return Visit(condition, data);
@@ -153,6 +152,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             object IExpressionVisitor.Visit(ConcatenationExpr expression, object data)
+            {
+                return Visit(expression, data);
+            }
+
+            object IExpressionVisitor.Visit(NullExpr expression, object data)
             {
                 return Visit(expression, data);
             }

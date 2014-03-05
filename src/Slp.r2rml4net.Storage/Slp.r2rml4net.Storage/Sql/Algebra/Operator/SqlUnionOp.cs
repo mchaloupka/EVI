@@ -75,5 +75,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             this.columns.Add(col);
             return col;
         }
+
+        public IEnumerable<SqlSelectOp> Sources { get { return sources; } }
     }
 }

@@ -106,6 +106,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 
                 return null;
             }
+            
+            public object Visit(NullExpr nullExpr, object data)
+            {
+                return null;
+            }
         }
     }
 }
