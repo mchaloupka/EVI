@@ -17,5 +17,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         public IExpression RightOperand { get; private set; }
 
         public IExpression LeftOperand { get; private set; }
+
+        public K Accept<K>(IConditionVisitor visitor)
+        {
+            return visitor.Visit<K>(this);
+        }
     }
 }

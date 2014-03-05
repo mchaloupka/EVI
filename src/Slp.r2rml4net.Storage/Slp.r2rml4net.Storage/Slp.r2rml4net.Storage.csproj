@@ -83,6 +83,7 @@
     <Compile Include="Sql\Algebra\Condition\AlwaysTrueCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\AndCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\EqualsCondition.cs" />
+    <Compile Include="Sql\Algebra\Condition\IConditionVisitor.cs" />
     <Compile Include="Sql\Algebra\Condition\IsNullCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\NotCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\OrCondition.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Sql\Algebra\Operator\SqlUnionOp.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTableColumn.cs" />
     <Compile Include="Sql\Algebra\Source\SqlStatement.cs" />
+    <Compile Include="Sql\Binders\CaseValueBinder.cs" />
     <Compile Include="Sql\Binders\IBaseValueBinder.cs" />
     <Compile Include="Sql\Binders\CollateValueBinder.cs" />
     <Compile Include="Sql\Binders\TemplateProcessor.cs" />
@@ -114,6 +116,8 @@
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
     <Compile Include="Sql\Vendor\DataReaderWrapper.cs" />
     <Compile Include="Sql\Vendor\MSSQLDb.cs" />
+    <Compile Include="Utils\IVisitable.cs" />
+    <Compile Include="Utils\IVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

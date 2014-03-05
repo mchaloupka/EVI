@@ -453,6 +453,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
             }
 
+            var variableNames = selects.SelectMany(x => x.ValueBinders).Select(x => x.VariableName).Distinct().ToArray();
+
+
+
             throw new NotImplementedException();
         }
     }

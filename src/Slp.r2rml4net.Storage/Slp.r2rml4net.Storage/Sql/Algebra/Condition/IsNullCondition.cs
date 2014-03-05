@@ -14,5 +14,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         {
             this.Column = sqlColumn;
         }
+
+        public K Accept<K>(IConditionVisitor visitor)
+        {
+            return visitor.Visit<K>(this);
+        }
     }
 }
