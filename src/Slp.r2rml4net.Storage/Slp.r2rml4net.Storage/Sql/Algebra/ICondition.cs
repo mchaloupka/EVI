@@ -8,8 +8,8 @@ using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
-    public interface ICondition : IVisitable<IConditionVisitor>
+    public interface ICondition : ICloneable, IVisitable<IConditionVisitor>
     {
-        
+
     }
 }

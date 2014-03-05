@@ -13,6 +13,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
     {
         private List<IBaseValueBinder> binders;
 
+        private CollateValueBinder()
+        {
+            this.binders = new List<IBaseValueBinder>();
+        }
+
         public CollateValueBinder(IBaseValueBinder originalValueBinder)
         {
             this.binders = new List<IBaseValueBinder>();
@@ -60,5 +65,26 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         }
 
         public IEnumerable<IBaseValueBinder> InnerBinders { get { return binders; } }
+
+
+        public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
+        {
+            foreach (var binder in binders)
+            {
+                binder.ReplaceAssignedColumn(oldColumn, newColumn);
+            }
+        }
+
+        public object Clone()
+        {
+            var newBinder = new CollateValueBinder();
+
+            foreach (var binder in this.InnerBinders)
+            {
+                newBinder.binders.Add((IBaseValueBinder)binder.Clone());
+            }
+
+            return newBinder;
+        }
     }
 }

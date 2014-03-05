@@ -25,6 +25,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         private TemplateProcessor templateProcessor;
         private IEnumerable<ITemplatePart> templateParts;
 
+        private ValueBinder()
+        {
+
+        }
+
         public ValueBinder(ITermMap r2rmlMap, TemplateProcessor templateProcessor)
             : this(null, r2rmlMap, templateProcessor)
         {
@@ -89,6 +94,16 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             else
             {
                 throw new Exception("Cannot get column that is not requested for evaluation");
+            }
+        }
+
+        public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
+        {
+            var keys = this.columns.Where(x => x.Value == oldColumn).Select(x => x.Key).ToArray();
+
+            foreach (var key in keys)
+            {
+                SetColumn(key, newColumn);
             }
         }
 
@@ -299,10 +314,26 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
-
         public IEnumerable<ISqlColumn> AssignedColumns
         {
             get { return columns.Select(x => x.Value); }
+        }
+
+        public object Clone()
+        {
+            var newBinder = new ValueBinder();
+            newBinder.VariableName = this.VariableName;
+            newBinder.r2rmlMap = this.r2rmlMap;
+            newBinder.templateProcessor = templateProcessor;
+            newBinder.templateParts = templateParts;
+            newBinder.columns = new Dictionary<string, ISqlColumn>();
+
+            foreach (var item in this.columns)
+            {
+                newBinder.columns.Add(item.Key, item.Value);
+            }
+
+            return newBinder;
         }
     }
 }

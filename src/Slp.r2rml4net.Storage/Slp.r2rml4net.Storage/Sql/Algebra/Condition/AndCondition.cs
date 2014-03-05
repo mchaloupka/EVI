@@ -21,9 +21,21 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 
         public IEnumerable<ICondition> Conditions { get { return conditions; } }
 
-        public K Accept<K>(IConditionVisitor visitor)
+        public object Accept(IConditionVisitor visitor, object data)
         {
-            return visitor.Visit<K>(this);
+            return visitor.Visit(this, data);
+        }
+
+        public object Clone()
+        {
+            var newAnd = new AndCondition();
+
+            foreach (var cond in this.conditions)
+            {
+                newAnd.conditions.Add((ICondition)cond.Clone());
+            }
+
+            return newAnd;
         }
     }
 }

@@ -119,5 +119,10 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             return new ColumnExpr(sqlColumn, isIriEscaped);
         }
+
+        public IExpression CreateExpression(QueryContext context, int number)
+        {
+            return new ConstantExpr(number);
+        }
     }
 }

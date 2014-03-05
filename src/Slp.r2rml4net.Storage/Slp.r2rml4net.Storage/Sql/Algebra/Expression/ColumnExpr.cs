@@ -14,8 +14,18 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
             this.IsIriEscapedValue = isIriEscapedValue;
         }
 
-        public ISqlColumn Column { get; private set; }
+        public ISqlColumn Column { get; set; }
 
         public bool IsIriEscapedValue { get; set; }
+
+        public object Accept(IExpressionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
+
+        public object Clone()
+        {
+            return new ColumnExpr(this.Column, this.IsIriEscapedValue);
+        }
     }
 }

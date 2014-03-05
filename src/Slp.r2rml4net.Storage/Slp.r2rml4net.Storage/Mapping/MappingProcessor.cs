@@ -20,6 +20,11 @@ namespace Slp.r2rml4net.Storage.Mapping
             this.mapping = mapping;
         }
 
+        public IR2RML Mapping
+        {
+            get { return mapping; }
+        }
+
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is BgpOp)

@@ -20,10 +20,12 @@ namespace Slp.r2rml4net.Storage.Sql
     {
         private ConditionBuilder conditionBuilder;
         private TemplateProcessor templateProcessor;
+        private ExpressionBuilder expressionBuilder;
 
         public SqlAlgebraBuilder()
         {
-            this.conditionBuilder = new ConditionBuilder();
+            this.expressionBuilder = new ExpressionBuilder();
+            this.conditionBuilder = new ConditionBuilder(this.expressionBuilder);
             this.templateProcessor = new TemplateProcessor();
         }
 
@@ -61,18 +63,8 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private INotSqlOriginalDbSource ProcessBgp(BgpOp bgpOp, QueryContext context)
         {
-            ISqlOriginalDbSource source = null;
-
-            if (!string.IsNullOrEmpty(bgpOp.R2RMLTripleDef.SqlQuery))
-            {
-                source = new SqlStatement(bgpOp.R2RMLTripleDef.SqlQuery);
-            }
-            else if (!string.IsNullOrEmpty(bgpOp.R2RMLTripleDef.TableName))
-            {
-                source = new SqlTable(bgpOp.R2RMLTripleDef.TableName);
-            }
-
-            SqlSelectOp select = new SqlSelectOp(source);
+            var source = ProcessBgpSource(bgpOp.R2RMLTripleDef);
+            var select = new SqlSelectOp(source);
 
             ProcessBgpSubject(bgpOp, context, select, source);
             ProcessBgpPredicate(bgpOp, context, select, source);
@@ -81,66 +73,109 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
-        private void ProcessBgpObject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)
+        private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap)
+        {
+            if (!string.IsNullOrEmpty(triplesMap.SqlQuery))
+            {
+                return new SqlStatement(triplesMap.SqlQuery);
+            }
+            else if (!string.IsNullOrEmpty(triplesMap.TableName))
+            {
+                return new SqlTable(triplesMap.TableName);
+            }
+            else
+                throw new Exception("Unknown source of bgp");
+        }
+
+        private void ProcessBgpObject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource childSource)
         {
             if (bgpOp.R2RMLObjectMap != null)
             {
                 var objectPattern = bgpOp.ObjectPattern;
 
-                if (objectPattern is VariablePattern)
-                {
-                    ProcessBgpVariable(bgpOp, context, select, source, objectPattern.VariableName, bgpOp.R2RMLObjectMap);
-                }
-                else if (objectPattern is NodeMatchPattern)
-                {
-                    var node = ((NodeMatchPattern)objectPattern).Node;
-
-                    ProcessBgpCondition(bgpOp, context, select, source, node, bgpOp.R2RMLObjectMap);
-                }
-                // TODO: Condition for not variable and node match patterns
-                // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.Query.Patterns.PatternItem.html
+                ProcessBgpPattern(bgpOp, context, select, childSource, objectPattern, bgpOp.R2RMLObjectMap);
             }
             else if (bgpOp.R2RMLRefObjectMap != null)
             {
-                throw new NotImplementedException();
+                var refObjectPatern = bgpOp.R2RMLRefObjectMap;
+                var parentTriplesMap = GetParentTriplesMap(context, refObjectPatern);
+
+                var parentSource = ProcessBgpSource(parentTriplesMap);
+                List<ICondition> conditions = new List<ICondition>();
+
+                foreach (var joinCond in refObjectPatern.JoinConditions)
+                {
+                    var childCol = childSource.GetColumn(joinCond.ChildColumn);
+                    var parentCol = parentSource.GetColumn(joinCond.ParentColumn);
+
+                    conditions.Add(conditionBuilder.CreateEqualsCondition(context, childCol, parentCol));
+                }
+
+                ICondition joinCondition = null;
+                if (conditions.Count == 0)
+                {
+                    joinCondition = conditionBuilder.CreateAlwaysTrueCondition(context);
+                }
+                else if (conditions.Count == 1)
+                {
+                    joinCondition = conditions[0];
+                }
+                else
+                {
+                    joinCondition = conditionBuilder.CreateAndCondition(context, conditions);
+                }
+
+                select.AddJoinedSource(parentSource, joinCondition, context);
+
+                ProcessBgpPattern(bgpOp, context, select, parentSource, bgpOp.ObjectPattern, refObjectPatern.SubjectMap);
             }
             else throw new Exception("BgpOp must have object or ref object map");
+        }
+
+        private ITriplesMap GetParentTriplesMap(QueryContext context, IRefObjectMap refObjectPatern)
+        {
+            // TODO: Remove this method as soon as the reference will be public
+
+            var subjectMap = refObjectPatern.SubjectMap;
+
+            foreach (var tripleMap in context.Mapping.Mapping.TriplesMaps)
+            {
+                if (tripleMap.SubjectMap == subjectMap)
+                    return tripleMap;
+            }
+
+            throw new Exception("Triples map not found");
         }
 
         private void ProcessBgpPredicate(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)
         {
             var predicatePattern = bgpOp.PredicatePattern;
 
-            if (predicatePattern is VariablePattern)
-            {
-                ProcessBgpVariable(bgpOp, context, select, source, predicatePattern.VariableName, bgpOp.R2RMLPredicateMap);
-            }
-            else if (predicatePattern is NodeMatchPattern)
-            {
-                var node = ((NodeMatchPattern)predicatePattern).Node;
-
-                ProcessBgpCondition(bgpOp, context, select, source, node, bgpOp.R2RMLPredicateMap);
-            }
-            // TODO: Condition for not variable and node match patterns
-            // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.Query.Patterns.PatternItem.html
+            ProcessBgpPattern(bgpOp, context, select, source, predicatePattern, bgpOp.R2RMLPredicateMap);
         }
 
         private void ProcessBgpSubject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)
         {
-            // TODO: Merge with predicate
-
             var subjectPattern = bgpOp.SubjectPattern;
 
-            if (subjectPattern is VariablePattern)
-            {
-                ProcessBgpVariable(bgpOp, context, select, source, subjectPattern.VariableName, bgpOp.R2RMLSubjectMap);
-            }
-            else if (subjectPattern is NodeMatchPattern)
-            {
-                var node = ((NodeMatchPattern)subjectPattern).Node;
+            ProcessBgpPattern(bgpOp, context, select, source, subjectPattern, bgpOp.R2RMLSubjectMap);
+        }
 
-                ProcessBgpCondition(bgpOp, context, select, source, node, bgpOp.R2RMLSubjectMap);
+        private void ProcessBgpPattern(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, PatternItem pattern, ITermMap r2rmlMap)
+        {
+            if (pattern is VariablePattern)
+            {
+                ProcessBgpVariable(bgpOp, context, select, source, pattern.VariableName, r2rmlMap);
             }
+            else if (pattern is NodeMatchPattern)
+            {
+                var node = ((NodeMatchPattern)pattern).Node;
+
+                ProcessBgpCondition(bgpOp, context, select, source, node, r2rmlMap);
+            }
+            else
+                throw new NotImplementedException();
+
             // TODO: Condition for not variable and node match patterns
             // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.Query.Patterns.PatternItem.html
         }
@@ -216,28 +251,26 @@ namespace Slp.r2rml4net.Storage.Sql
 
             var neededColumns = valueBinders.SelectMany(x => x.AssignedColumns).Distinct().ToArray();
 
-            if (inner is SqlSelectOp)
+            SqlSelectOp select = inner as SqlSelectOp;
+
+            if (select == null)
             {
-                var select = (SqlSelectOp)inner;
-
-                var notNeeded = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
-
-                foreach (var col in notNeeded)
-                {
-                    select.RemoveColumn(col);
-                }
-
-                var valBindersToRemove = inner.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
-                foreach (var valBinder in valBindersToRemove)
-                {
-                    inner.RemoveValueBinder(valBinder);
-                }
-                return inner;
+                select = TransformToSelect(inner, context);
             }
-            else
+
+            var notNeeded = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
+
+            foreach (var col in notNeeded)
             {
-                throw new NotImplementedException();
+                select.RemoveColumn(col);
             }
+
+            var valBindersToRemove = inner.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
+            foreach (var valBinder in valBindersToRemove)
+            {
+                inner.RemoveValueBinder(valBinder);
+            }
+            return inner;
         }
 
         private INotSqlOriginalDbSource ProcessJoin(JoinOp joinOp, QueryContext context)
@@ -279,9 +312,19 @@ namespace Slp.r2rml4net.Storage.Sql
             }
         }
 
-        private SqlSelectOp TransformToSelect(ISqlSource sqlQuery, QueryContext context)
+        private SqlSelectOp TransformToSelect(INotSqlOriginalDbSource sqlQuery, QueryContext context)
         {
-            throw new NotImplementedException();
+            if (sqlQuery is SqlSelectOp)
+                return (SqlSelectOp)sqlQuery;
+
+            var select = new SqlSelectOp(sqlQuery);
+
+            foreach (var valueBinder in sqlQuery.ValueBinders)
+            {
+                select.AddValueBinder(GetSelectValueBinder(valueBinder, select, context));
+            }
+
+            return select;
         }
 
         private void ProcessJoin(SqlSelectOp first, INotSqlOriginalDbSource second, QueryContext context)
@@ -361,78 +404,31 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private IBaseValueBinder GetSelectValueBinder(IBaseValueBinder binder, SqlSelectOp first, QueryContext context)
         {
-            if (binder is ValueBinder)
+            var newBinder = (IBaseValueBinder)binder.Clone();
+
+            foreach (var col in newBinder.AssignedColumns.ToArray())
             {
-                var oldBinder = (ValueBinder)binder;
-                var newBinder = new ValueBinder(oldBinder.VariableName, oldBinder.R2RMLMap, oldBinder.TemplateProcessor);
-
-                foreach (var colName in newBinder.NeededColumns)
-                {
-                    var oldColumn = oldBinder.GetColumn(colName);
-                    newBinder.SetColumn(colName, first.GetSelectColumn(oldColumn));
-                }
-
-                return newBinder;
+                newBinder.ReplaceAssignedColumn(col, first.GetSelectColumn(col));
             }
-            else if (binder is CollateValueBinder)
-            {
-                var oldBinder = (CollateValueBinder)binder;
-                var newSubBinders = oldBinder.InnerBinders.Select(x => GetSelectValueBinder(x, first, context));
-                var firstNew = newSubBinders.First();
-                newSubBinders = newSubBinders.Skip(1);
 
-                var newBinder = new CollateValueBinder(firstNew);
-
-                foreach (var b in newSubBinders)
-                {
-                    newBinder.AddValueBinder(newBinder);
-                }
-
-                return newBinder;
-            }
-            else
-                throw new Exception("Value binder can be only standard or collate");
+            return newBinder;
         }
 
         private IBaseValueBinder GetOriginalValueBinder(IBaseValueBinder binder, QueryContext context)
         {
-            if (binder is ValueBinder)
+            var newBinder = (IBaseValueBinder)binder.Clone();
+
+            foreach (var oldColumn in newBinder.AssignedColumns.ToArray())
             {
-                var oldBinder = (ValueBinder)binder;
-                var newBinder = new ValueBinder(oldBinder.VariableName, oldBinder.R2RMLMap, oldBinder.TemplateProcessor);
-
-                foreach (var colName in newBinder.NeededColumns)
+                if (!(oldColumn is SqlSelectColumn))
                 {
-                    var oldColumn = oldBinder.GetColumn(colName);
-
-                    if (!(oldColumn is SqlSelectColumn))
-                    {
-                        throw new Exception("Can't get original value binder if it is not from sql select columns");
-                    }
-
-                    newBinder.SetColumn(colName, ((SqlSelectColumn)oldColumn).OriginalColumn);
+                    throw new Exception("Can't get original value binder if it is not from sql select columns");
                 }
 
-                return newBinder;
+                newBinder.ReplaceAssignedColumn(oldColumn, ((SqlSelectColumn)oldColumn).OriginalColumn);
             }
-            else if (binder is CollateValueBinder)
-            {
-                var oldBinder = (CollateValueBinder)binder;
-                var newSubBinders = oldBinder.InnerBinders.Select(x => GetOriginalValueBinder(x, context));
-                var firstNew = newSubBinders.First();
-                newSubBinders = newSubBinders.Skip(1);
 
-                var newBinder = new CollateValueBinder(firstNew);
-
-                foreach (var b in newSubBinders)
-                {
-                    newBinder.AddValueBinder(newBinder);
-                }
-
-                return newBinder;
-            }
-            else
-                throw new Exception("Unknown value binder");
+            return newBinder;
         }
 
         private INotSqlOriginalDbSource ProcessUnion(UnionOp unionOp, QueryContext context)
@@ -441,7 +437,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
             List<SqlSelectOp> selects = new List<SqlSelectOp>();
 
-            foreach (var unionSource in selects)
+            foreach (var unionSource in unioned)
             {
                 if (unionSource is SqlSelectOp)
                 {
@@ -455,9 +451,54 @@ namespace Slp.r2rml4net.Storage.Sql
 
             var variableNames = selects.SelectMany(x => x.ValueBinders).Select(x => x.VariableName).Distinct().ToArray();
 
+            Dictionary<string, CaseValueBinder> valueBinders = new Dictionary<string, CaseValueBinder>();
 
+            foreach (var varName in variableNames)
+            {
+                valueBinders.Add(varName, new CaseValueBinder(varName));
+            }
 
-            throw new NotImplementedException();
+            var sqlUnion = new SqlUnionOp();
+
+            for (int index = 0; index < selects.Count; index++)
+            {
+                Dictionary<ISqlColumn, SqlUnionColumn> unColumns = new Dictionary<ISqlColumn, SqlUnionColumn>();
+
+                var select = selects[index];
+                sqlUnion.AddSource(select);
+
+                var condExpr = expressionBuilder.CreateExpression(context, index);
+                var column = select.GetExpressionColumn(condExpr);
+                sqlUnion.CaseColumn.AddColumn(column);
+                var cond = conditionBuilder.CreateEqualsCondition(context, sqlUnion.CaseColumn, condExpr);
+
+                foreach (var valBinder in select.ValueBinders)
+                {
+                    var caseValBinder = valueBinders[valBinder.VariableName];
+                    var cloned = (IBaseValueBinder)valBinder.Clone();
+
+                    foreach (var neededColumn in cloned.AssignedColumns.ToArray())
+                    {
+                        if (!unColumns.ContainsKey(neededColumn))
+                        {
+                            var newCol = sqlUnion.GetUnionedColumn();
+                            unColumns.Add(neededColumn, newCol);
+                        }
+
+                        var unColumn = unColumns[neededColumn];
+                        cloned.ReplaceAssignedColumn(neededColumn, unColumn);
+                    }
+
+                    caseValBinder.AddValueBinder(cond, cloned);
+                }
+            }
+
+            foreach (var valBinder in valueBinders.Select(x => x.Value))
+            {
+                sqlUnion.AddValueBinder(valBinder);
+            }
+
+            return sqlUnion;
         }
     }
 }

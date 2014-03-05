@@ -16,5 +16,17 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         }
 
         public IEnumerable<IExpression> Parts { get { return parts; } }
+
+        public object Accept(IExpressionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
+
+        public object Clone()
+        {
+            var newParts = this.parts.Select(x => (IExpression)x.Clone());
+
+            return new ConcatenationExpr(newParts);
+        }
     }
 }

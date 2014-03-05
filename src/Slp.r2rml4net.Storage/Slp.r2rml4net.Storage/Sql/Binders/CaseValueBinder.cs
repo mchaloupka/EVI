@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders
@@ -36,7 +37,33 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
         public IEnumerable<ISqlColumn> AssignedColumns
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return this.binders.SelectMany(x => x.ValueBinder.AssignedColumns.Union(x.Condition.GetAllReferencedColumns())).Distinct();
+            }
+        }
+
+        public IEnumerable<CaseStatementBinder> Statements { get { return binders; } }
+
+        public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
+        {
+            foreach (var binder in binders)
+            {
+                binder.ValueBinder.ReplaceAssignedColumn(oldColumn, newColumn);
+                binder.Condition.ReplaceColumnReference(oldColumn, newColumn);
+            }
+        }
+
+        public object Clone()
+        {
+            var newBinder = new CaseValueBinder(this.VariableName);
+
+            foreach (var binder in this.binders)
+            {
+                newBinder.binders.Add(new CaseStatementBinder((ICondition)binder.Condition.Clone(), (IBaseValueBinder)binder.ValueBinder.Clone()));
+            }
+
+            return newBinder;
         }
     }
 

@@ -8,6 +8,6 @@ namespace Slp.r2rml4net.Storage.Utils
 {
     public interface IVisitable<T> where T : IVisitor
     {
-        K Accept<K>(T visitor);
+        object Accept(T visitor, object data);
     }
 }

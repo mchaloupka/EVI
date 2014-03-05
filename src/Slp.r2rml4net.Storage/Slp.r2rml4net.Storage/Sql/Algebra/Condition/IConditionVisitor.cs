@@ -9,12 +9,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
     public interface IConditionVisitor : IVisitor
     {
-        K Visit<K>(AlwaysFalseCondition condition);
-        K Visit<K>(AlwaysTrueCondition condition);
-        K Visit<K>(AndCondition condition);
-        K Visit<K>(EqualsCondition condition);
-        K Visit<K>(IsNullCondition condition);
-        K Visit<K>(NotCondition condition);
-        K Visit<K>(OrCondition condition);
+        object Visit(AlwaysFalseCondition condition, object data);
+        object Visit(AlwaysTrueCondition condition, object data);
+        object Visit(AndCondition condition, object data);
+        object Visit(EqualsCondition condition, object data);
+        object Visit(IsNullCondition condition, object data);
+        object Visit(NotCondition condition, object data);
+        object Visit(OrCondition condition, object data);
     }
 }

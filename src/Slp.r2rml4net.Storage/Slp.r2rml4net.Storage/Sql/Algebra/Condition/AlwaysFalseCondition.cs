@@ -8,9 +8,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
     public class AlwaysFalseCondition : ICondition
     {
-        public K Accept<K>(IConditionVisitor visitor)
+        public object Accept(IConditionVisitor visitor, object data)
         {
-            return visitor.Visit<K>(this);
+            return visitor.Visit(this, data);
+        }
+
+        public object Clone()
+        {
+            return new AlwaysFalseCondition();
         }
     }
 }

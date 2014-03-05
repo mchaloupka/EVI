@@ -121,16 +121,24 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         
 
-        private void GenerateSelectColumnQuery(StringBuilder sb, SqlSelectColumn sqlSelectColumn, QueryContext context)
+        private void GenerateSelectColumnQuery(StringBuilder sb, ISqlColumn column, QueryContext context)
         {
-            GenerateColumnQuery(sb, sqlSelectColumn.OriginalColumn, context);
-
-            if(!string.IsNullOrEmpty(sqlSelectColumn.Name))
+            if (column is SqlSelectColumn)
             {
-                sb.Append(" AS ");
-                sb.Append(sqlSelectColumn.Name);
-            }
+                var sqlSelectColumn = (SqlSelectColumn)column;
 
+                GenerateColumnQuery(sb, sqlSelectColumn.OriginalColumn, context);
+
+                if (!string.IsNullOrEmpty(sqlSelectColumn.Name))
+                {
+                    sb.Append(" AS ");
+                    sb.Append(sqlSelectColumn.Name);
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private void GenerateColumnQuery(StringBuilder sb, ISqlColumn col, QueryContext context)
@@ -246,8 +254,16 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             List<string> colNames = new List<string>();
 
+            foreach (var col in sqlSelectOp.Columns.Where(x => x.Name != null))
+            {
+                colNames.Add(col.Name);
+            }
+
             foreach (var col in sqlSelectOp.Columns)
             {
+                if (col.Name != null)
+                    return;
+
                 var orName = GetOriginalColumnName(col);
                 int counter = 2;
                 var curName = orName;

@@ -8,16 +8,21 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
     public class IsNullCondition : ICondition
     {
-        public ISqlColumn Column { get; private set; }
+        public ISqlColumn Column { get; set; }
 
         public IsNullCondition(ISqlColumn sqlColumn)
         {
             this.Column = sqlColumn;
         }
 
-        public K Accept<K>(IConditionVisitor visitor)
+        public object Accept(IConditionVisitor visitor, object data)
         {
-            return visitor.Visit<K>(this);
+            return visitor.Visit(this, data);
+        }
+
+        public object Clone()
+        {
+            return new IsNullCondition(this.Column);
         }
     }
 }

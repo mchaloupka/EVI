@@ -16,9 +16,9 @@ namespace Slp.r2rml4net.Storage.Sql
     {
         private ExpressionBuilder expressionBuilder;
 
-        public ConditionBuilder()
+        public ConditionBuilder(ExpressionBuilder expressionBuilder)
         {
-            this.expressionBuilder = new ExpressionBuilder();
+            this.expressionBuilder = expressionBuilder;
         }
 
         public ICondition CreateEqualsCondition(QueryContext context, INode node, IBaseValueBinder valueBinder)
@@ -88,6 +88,16 @@ namespace Slp.r2rml4net.Storage.Sql
             }
             else
                 throw new Exception("Value binder can be only standard or collate");
+        }
+
+        public ICondition CreateEqualsCondition(QueryContext context, ISqlColumn column, IExpression expression)
+        {
+            return new EqualsCondition(expressionBuilder.CreateColumnExpression(context, column, false), expression);
+        }
+
+        public ICondition CreateEqualsCondition(QueryContext context, ISqlColumn childCol, ISqlColumn parentCol)
+        {
+            return new EqualsCondition(expressionBuilder.CreateColumnExpression(context, childCol, false), expressionBuilder.CreateColumnExpression(context, parentCol, false));
         }
 
         public ICondition CreateAlwaysTrueCondition(QueryContext context)

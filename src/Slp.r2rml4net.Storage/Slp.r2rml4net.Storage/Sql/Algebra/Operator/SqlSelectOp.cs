@@ -10,8 +10,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     public class SqlSelectOp : INotSqlOriginalDbSource
     {
-        public IEnumerable<SqlSelectColumn> Columns { get { return columns; } }
-
         public ISqlSource OriginalSource { get { return originalSource; } }
 
         public IEnumerable<ConditionedSource> JoinSources { get { return joinSources; } }
@@ -20,7 +18,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public IEnumerable<ICondition> Conditions { get { return conditions; } }
 
-        private List<SqlSelectColumn> columns;
+        private List<ISqlColumn> columns;
         private List<ConditionedSource> joinSources;
         private List<ConditionedSource> leftOuterJoinSources;
         private List<ICondition> conditions;
@@ -29,7 +27,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public SqlSelectOp(ISqlSource originalSource)
         {
             this.originalSource = originalSource;
-            this.columns = new List<SqlSelectColumn>();
+            this.columns = new List<ISqlColumn>();
             this.joinSources = new List<ConditionedSource>();
             this.leftOuterJoinSources = new List<ConditionedSource>();
             this.conditions = new List<ICondition>();
@@ -38,7 +36,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public ISqlColumn GetSelectColumn(ISqlColumn sourceColumn)
         {
-            var col = this.columns.Where(x => x.OriginalColumn == sourceColumn).FirstOrDefault();
+            var col = this.columns.OfType<SqlSelectColumn>().Where(x => x.OriginalColumn == sourceColumn).FirstOrDefault();
 
             if (col == null)
             {
@@ -49,12 +47,19 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             return col;
         }
 
+        public ISqlColumn GetExpressionColumn(IExpression expression)
+        {
+            var col = new SqlExpressionColumn(expression, this);
+            this.columns.Add(col);
+            return col;
+        }
+
         public void AddCondition(ICondition condition)
         {
             this.conditions.Add(condition);
         }
 
-        public void RemoveColumn(SqlSelectColumn col)
+        public void RemoveColumn(ISqlColumn col)
         {
             if (this.columns.Contains(col))
                 this.columns.Remove(col);
@@ -84,9 +89,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public string Name { get; set; }
 
 
-        IEnumerable<ISqlColumn> ISqlSource.Columns
+        public IEnumerable<ISqlColumn> Columns
         {
-            get { return this.Columns.Cast<ISqlColumn>(); }
+            get { return this.columns; }
         }
 
         private List<IBaseValueBinder> valueBinders;
