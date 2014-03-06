@@ -15,9 +15,10 @@ namespace Slp.r2rml4net.Storage.Query
         private Dictionary<string, INode> blankNodesSubjects;
         private Dictionary<string, INode> blankNodesObjects;
 
-        public QueryContext(SparqlQuery query, MappingProcessor mapping)
+        public QueryContext(SparqlQuery query, MappingProcessor mapping, INodeFactory nodeFactory)
         {
             this.OriginalQuery = query;
+            this.NodeFactory = nodeFactory;
             this.Mapping = mapping;
             this.usedSqlSourceNames = new List<string>();
             this.blankNodesSubjects = new Dictionary<string, INode>();
@@ -27,6 +28,8 @@ namespace Slp.r2rml4net.Storage.Query
         public SparqlQuery OriginalQuery { get; private set; }
 
         public MappingProcessor Mapping { get; private set; }
+
+        public INodeFactory NodeFactory { get; private set; }
 
         public bool IsAlreadyUsedSqlSourceName(string name)
         {

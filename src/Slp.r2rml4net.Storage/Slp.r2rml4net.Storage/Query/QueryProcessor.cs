@@ -48,8 +48,40 @@ namespace Slp.r2rml4net.Storage.Query
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             var originalQuery = parser.ParseFromString(sparqlQuery);
 
+            INodeFactory nodeFactory = null;
+            switch (originalQuery.QueryType)
+            {
+                case SparqlQueryType.Ask:
+                    if (resultsHandler == null) 
+                        throw new ArgumentNullException("resultsHandler", "Cannot handle a Ask query with a null SPARQL Results Handler");
+
+                    nodeFactory = resultsHandler;
+                    break;
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    if (rdfHandler == null) 
+                        throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
+
+                    nodeFactory = rdfHandler;
+                    break;
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    if (resultsHandler == null) 
+                        throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
+
+                    nodeFactory = resultsHandler;
+                    break;
+                default:
+                    throw new Exception("Unable to process the results of an Unknown query type");
+            }
+
             // Convert to algebra
-            var context = new QueryContext(originalQuery, mapping);
+            var context = new QueryContext(originalQuery, mapping, nodeFactory);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
@@ -63,10 +95,6 @@ namespace Slp.r2rml4net.Storage.Query
                 switch (originalQuery.QueryType)
                 {
                     case VDS.RDF.Query.SparqlQueryType.Ask:
-                        //Expect a single row and column which contains a boolean
-                        //Ensure Results Handler is not null
-                        if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean Result with a null SPARQL Results Handler");
-
                         resultsHandler.StartResults();
                         try
                         {
@@ -105,8 +133,6 @@ namespace Slp.r2rml4net.Storage.Query
                     case VDS.RDF.Query.SparqlQueryType.Construct:
                     case VDS.RDF.Query.SparqlQueryType.Describe:
                     case VDS.RDF.Query.SparqlQueryType.DescribeAll:
-                        if (rdfHandler == null) throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
-
                         if (sqlAlgebra.ValueBinders.Count() != 3)
                             throw new Exception("Expected 3 value binders in construct or describe query");
 
@@ -144,9 +170,6 @@ namespace Slp.r2rml4net.Storage.Query
                     case VDS.RDF.Query.SparqlQueryType.SelectAllReduced:
                     case VDS.RDF.Query.SparqlQueryType.SelectDistinct:
                     case VDS.RDF.Query.SparqlQueryType.SelectReduced:
-                        //Ensure Results Handler is not null
-                        if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
-
                         resultsHandler.StartResults();
 
                         try

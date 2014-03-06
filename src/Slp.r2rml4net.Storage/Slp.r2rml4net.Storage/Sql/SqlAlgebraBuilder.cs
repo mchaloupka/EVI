@@ -290,7 +290,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 if (!selects.Any())
                 {
-                    var firstNotSelect = TransformToSelect(notSelects.First(), context);
+                    current = TransformToSelect(notSelects.First(), context);
                     notSelects = notSelects.Skip(1);
                 }
                 else
@@ -329,7 +329,12 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private void ProcessJoin(SqlSelectOp first, INotSqlOriginalDbSource second, QueryContext context)
         {
-            if (second is SqlSelectOp && ((SqlSelectOp)second).HaveOnlyOriginalSourceAndConditions)
+            // TODO: Rework the "have only original source and conditions"
+
+            if (!(second is SqlSelectOp))
+                second = TransformToSelect(second, context);
+
+            if (((SqlSelectOp)second).HaveOnlyOriginalSourceAndConditions)
                 ProcessJoin(first, (SqlSelectOp)second, context);
             else
             {

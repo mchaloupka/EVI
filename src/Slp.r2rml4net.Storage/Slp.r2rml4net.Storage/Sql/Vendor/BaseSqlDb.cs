@@ -301,6 +301,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 prefix = "tab";
             else if (source is SqlStatement)
                 prefix = "sta";
+            else if (source is SqlUnionOp)
+                prefix = "un";
             else
                 throw new NotImplementedException();
 
@@ -459,10 +461,16 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var leftExpr = equalsCondition.LeftOperand;
             var rightExpr = equalsCondition.RightOperand;
 
+            // TODO: Decide whether cast needed
+            sb.Append("CAST(");
             GenerateExpressionQuery(sb, leftExpr, context);
+            sb.Append(" AS nvarchar(MAX))");
 
             sb.Append("=");
+
+            sb.Append("CAST(");
             GenerateExpressionQuery(sb, rightExpr, context);
+            sb.Append(" AS nvarchar(MAX))");
         }
 
         private void GenerateOrConditionQuery(StringBuilder sb, OrCondition orCondition, QueryContext context)

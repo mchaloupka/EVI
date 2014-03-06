@@ -10,6 +10,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
+using VDS.RDF.Parsing;
 
 namespace Slp.r2rml4net.Storage.Sql
 {
@@ -21,12 +22,15 @@ namespace Slp.r2rml4net.Storage.Sql
             {
                 return CreateExpression(context, (UriNode)node);
             }
+            else if (node is LiteralNode)
+            {
+                return CreateExpression(context, (LiteralNode)node);
+            }
 
             // TODO: Other INode types
             // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.INode.html
             //BlankNode
             //GraphLiteralNode
-            //LiteralNode
             //BooleanNode
             //ByteNode
             //DateNode
@@ -49,6 +53,52 @@ namespace Slp.r2rml4net.Storage.Sql
             return new ConstantExpr(node.Uri);
         }
 
+        private IExpression CreateExpression(QueryContext context, LiteralNode node)
+        {
+            if(node.DataType == null)
+            {
+                return new ConstantExpr(node.Value);
+            }
+
+            switch (node.DataType.AbsoluteUri)
+            {
+                case XmlSpecsHelper.XmlSchemaDataTypeInt:
+                case XmlSpecsHelper.XmlSchemaDataTypeInteger:
+                    return new ConstantExpr(int.Parse(node.Value));
+                default:
+                    throw new NotImplementedException();
+            }
+
+            // TODO: https://bitbucket.org/dotnetrdf/dotnetrdf/src/b37d1707735f727613d0804a7a81a56b2a7e6ce3/Libraries/core/net40/Parsing/XMLSpecsHelper.cs?at=default
+            //XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
+            //XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
+            //XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
+            //XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
+            //XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
+            //XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
+            //XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
+            //XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
+            //XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
+            //XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
+            //XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
+            //XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
+            //XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
+            //XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
+            //XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
+            //XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
+            //XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
+            //XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
+            //XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
+            //XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
+            //XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
+            //XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
+            //XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
+            //XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
+            //XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
+            //XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
+            throw new NotImplementedException();
+        }
+
         public IExpression CreateExpression(QueryContext context, ValueBinder valueBinder)
         {
             var map = valueBinder.R2RMLMap;
@@ -61,8 +111,28 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
                 else if (map is IObjectMap)
                 {
-                    // TODO: Handle object map
-                    throw new NotImplementedException();
+                    var objectMap = (IObjectMap)map;
+
+                    if (objectMap.URI != null)
+                        return new ConstantExpr(objectMap.URI);
+                    else if (objectMap.Literal != null)
+                    {
+                        // TODO: Rework - better node creation
+
+                        if (objectMap.Literal.Contains("^^"))
+                        {
+                            var split = objectMap.Literal.Split(new string[] { "^^" }, 2, StringSplitOptions.None);
+                            var node = context.NodeFactory.CreateLiteralNode(split[0], UriFactory.Create(split[1]));
+                            return CreateExpression(context, node);
+                        }
+                        else
+                        {
+                            var node = context.NodeFactory.CreateLiteralNode(objectMap.Literal);
+                            return CreateExpression(context, node);
+                        }
+                    }
+                    else
+                        throw new Exception("Object map's value must be IRI or literal.");
                 }
                 else
                 {

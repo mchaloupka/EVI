@@ -284,7 +284,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 else if (objectMap.Literal != null)
                     return factory.CreateLiteralNode(objectMap.Literal);
                 else
-                    throw new Exception("Object map's value cannot be both IRI and literal.");
+                    throw new Exception("Object map's value must be IRI or literal.");
             }
 
             throw new Exception("Constant must be uri valued or an object map");

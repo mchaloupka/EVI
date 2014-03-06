@@ -82,7 +82,26 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return orCondition;
             }
+            else if(firstValBinder is CaseValueBinder)
+            {
+                var statements = ((CaseValueBinder)firstValBinder).Statements.ToArray();
+                var orCondition = new OrCondition();
+
+                foreach (var statement in statements)
+                {
+                    var andCondition = new AndCondition();
+                    andCondition.AddToCondition(statement.Condition);
+                    andCondition.AddToCondition(CreateEqualsCondition(context, statement.ValueBinder, secondValBinder));
+                    orCondition.AddToCondition(andCondition);
+                }
+
+                return orCondition;
+            }
             else if (secondValBinder is CollateValueBinder)
+            {
+                return CreateEqualsCondition(context, secondValBinder, firstValBinder);
+            }
+            else if (secondValBinder is CaseValueBinder)
             {
                 return CreateEqualsCondition(context, secondValBinder, firstValBinder);
             }
@@ -165,6 +184,21 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
 
                 return andCondition;
+            }
+            else if(valueBinder is CaseValueBinder)
+            {
+                var statements = ((CaseValueBinder)valueBinder).Statements.ToArray();
+                var orCondition = new OrCondition();
+
+                foreach (var statement in statements)
+                {
+                    var andCondition = new AndCondition();
+                    andCondition.AddToCondition(statement.Condition);
+                    andCondition.AddToCondition(CreateIsNullCondition(context, statement.ValueBinder));
+                    orCondition.AddToCondition(andCondition);
+                }
+
+                return orCondition;
             }
             else
             {
