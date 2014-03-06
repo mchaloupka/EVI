@@ -91,35 +91,3 @@
 		rr:objectMap [ rr:column "[Id]"; ];
 	];
 .
-
-<#FinalPopulationTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/final-population/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/final-population#"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
-		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
-			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
-		];
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:finalPopulation;
-		rr:objectMap [ rr:column "[EndYearCount]"; ];
-		rr:datatype xsd:int;
-	];
-.

@@ -139,7 +139,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             public DataReaderColumn(string name, object value)
             {
                 this.name = name;
-                this.value = value;
+
+                if (value is System.DBNull)
+                    this.value = null;
+                else
+                    this.value = value;
             }
 
             public string Name { get { return name; } }

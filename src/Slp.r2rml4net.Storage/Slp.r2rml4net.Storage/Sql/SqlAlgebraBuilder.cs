@@ -495,7 +495,7 @@ namespace Slp.r2rml4net.Storage.Sql
                         cloned.ReplaceAssignedColumn(neededColumn, unColumn);
                     }
 
-                    caseValBinder.AddValueBinder(cond, cloned);
+                    caseValBinder.AddValueBinder((ICondition)cond.Clone(), cloned);
                 }
             }
 

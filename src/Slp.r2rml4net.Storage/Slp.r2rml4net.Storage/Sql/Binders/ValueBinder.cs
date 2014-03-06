@@ -147,7 +147,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                     sb.Append(part.Text);
                 else if (part.IsColumn)
                 {
-                    var replaced = ReplaceColumnReference(part.Column, row, context, escape);
+                    var replaced = ReplaceColumnReference(GetColumn(part.Column), row, context, escape);
 
                     if (replaced == null)
                         return null;
@@ -159,9 +159,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return sb.ToString();
         }
 
-        private string ReplaceColumnReference(string column, IQueryResultRow row, QueryContext context, bool escape)
+        private string ReplaceColumnReference(ISqlColumn column, IQueryResultRow row, QueryContext context, bool escape)
         {
-            var dbCol = row.GetColumn(column);
+            var dbCol = row.GetColumn(column.Name);
             var value = dbCol.Value;
 
             if (value == null)

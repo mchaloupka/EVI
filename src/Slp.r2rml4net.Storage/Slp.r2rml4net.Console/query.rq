@@ -1,8 +1,6 @@
-PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
-
 SELECT ?s ?p ?o
 WHERE
 {
-	?s ?p ?o;
-	   ?p "Kolovraty"
+    ?s ?p ?o;
+       ?x "Kolovraty"
 }
