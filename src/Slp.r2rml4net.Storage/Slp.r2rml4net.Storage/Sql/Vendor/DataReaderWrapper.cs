@@ -71,15 +71,20 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         private class DataReaderRow : IQueryResultRow
         {
-            private List<IQueryResultColumn> columns;
+            private Dictionary<string, IQueryResultColumn> columns;
             private DataReaderRow(List<IQueryResultColumn> columns)
             {
-                this.columns = columns;
+                this.columns = new Dictionary<string, IQueryResultColumn>();
+
+                foreach (var col in columns)
+                {
+                    this.columns.Add(col.Name, col);
+                }
             }
 
             public IEnumerable<IQueryResultColumn> Columns
             {
-                get { return columns; }
+                get { return columns.Select(x => x.Value); }
             }
 
             public static IQueryResultRow Create(SqlDataReader dataReader)
@@ -125,7 +130,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 var cName = EnsureColumnNameUndelimited(columnName);
 
-                return columns.FirstOrDefault(x => x.Name == cName);
+                if (columns.ContainsKey(cName))
+                    return columns[cName];
+                else
+                    throw new Exception("Asked for column that is not present");
             }
 
 

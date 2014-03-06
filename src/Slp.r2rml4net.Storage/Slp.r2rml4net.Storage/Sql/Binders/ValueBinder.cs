@@ -56,7 +56,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 var template = r2rmlMap.Template;
 
                 var columns = templateProcessor.GetColumnsFromTemplate(template);
-                templateParts = templateProcessor.ParseTemplate(template);
+                this.templateParts = templateProcessor.ParseTemplate(template).ToArray();
 
                 foreach (var col in columns)
                 {

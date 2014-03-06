@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Console.R2RML;
 using VDS.RDF;
 using VDS.RDF.Query;
+using VDS.RDF.Writing;
 
 namespace Slp.r2rml4net.Console
 {
@@ -39,30 +40,38 @@ namespace Slp.r2rml4net.Console
         {
             var query = string.Empty;
 
-            using (var fs = new FileStream("query.rq", FileMode.Open, FileAccess.Read))
-            using (var sr = new StreamReader(fs))
+            using (var fsr = new FileStream("query.rq", FileMode.Open, FileAccess.Read))
+            using (var sr = new StreamReader(fsr))
             {
                 query = sr.ReadToEnd();
             }
 
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+
             var result = StorageWrapper.Storage.Query(query);
 
-            if (result is SparqlResultSet)
+            watch.Stop();
+
+            System.Console.WriteLine("Query processed in {0}ms", watch.ElapsedMilliseconds);
+
+            using (var fsw = new FileStream("output.txt", FileMode.Create, FileAccess.Write))
+            using (var sw = new StreamWriter(fsw))
             {
-                //Print out the Results
-                SparqlResultSet rset = (SparqlResultSet)result;
-                foreach (SparqlResult res in rset)
+                if (result is SparqlResultSet)
                 {
-                    System.Console.WriteLine(res.ToString());
+
+                    //Print out the Results
+                    SparqlResultSet rset = (SparqlResultSet)result;
+                    foreach (SparqlResult res in rset)
+                    {
+                        sw.WriteLine(res.ToString());
+                    }
                 }
-            }
-            else if (result is IGraph)
-            {
-                //Print out the Results
-                IGraph g = (IGraph)result;
-                foreach (Triple t in g.Triples)
+                else if (result is IGraph)
                 {
-                    System.Console.WriteLine(t.ToString());
+                    CompressingTurtleWriter writer = new CompressingTurtleWriter();
+                    writer.Save((IGraph)result, sw);
                 }
             }
         }

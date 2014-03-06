@@ -1,6 +1,9 @@
-SELECT ?s ?p ?o
+PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
+
+SELECT ?mun ?code ?level ?munName
 WHERE
 {
-    ?s ?p ?o;
-       ?x "Kolovraty"
+    ?mun eugeo:name ?munName;
+         eugeo:regionCode ?code;
+         eugeo:level ?level; 
 }
