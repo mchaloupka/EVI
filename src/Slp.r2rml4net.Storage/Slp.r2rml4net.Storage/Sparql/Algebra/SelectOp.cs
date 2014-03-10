@@ -51,5 +51,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
         {
             return this;
         }
+
+        public object Accept(ISparqlQueryVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }

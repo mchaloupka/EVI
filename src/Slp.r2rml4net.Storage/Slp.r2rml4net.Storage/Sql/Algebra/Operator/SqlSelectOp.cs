@@ -128,5 +128,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             if (index > -1)
                 this.valueBinders.RemoveAt(index);
         }
+
+        public object Accept(ISqlSourceVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }

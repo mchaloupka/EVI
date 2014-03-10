@@ -77,5 +77,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         }
 
         public IEnumerable<SqlSelectOp> Sources { get { return sources; } }
+
+        public object Accept(ISqlSourceVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }

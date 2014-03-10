@@ -16,7 +16,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sql
 {
-    public class SqlAlgebraBuilder
+    public class SqlAlgebraBuilder : ISparqlQueryVisitor
     {
         private ConditionBuilder conditionBuilder;
         private TemplateProcessor templateProcessor;
@@ -29,48 +29,207 @@ namespace Slp.r2rml4net.Storage.Sql
             this.templateProcessor = new TemplateProcessor();
         }
 
-        public INotSqlOriginalDbSource Process(ISparqlQuery query, QueryContext context)
+        public INotSqlOriginalDbSource Process(ISparqlQuery algebra, QueryContext context)
         {
-            if (query is NoSolutionOp)
-            {
-                return new NoRowSource();
-            }
-            else if (query is OneEmptySolutionOp)
-            {
-                return new SingleEmptyRowSource();
-            }
-            else if (query is SelectOp)
-            {
-                return ProcessSelect((SelectOp)query, context);
-            }
-            else if (query is BgpOp)
-            {
-                return ProcessBgp((BgpOp)query, context);
-            }
-            else if (query is JoinOp)
-            {
-                return ProcessJoin((JoinOp)query, context);
-            }
-            else if (query is UnionOp)
-            {
-                return ProcessUnion((UnionOp)query, context);
-            }
-
-            // TODO: Process others
-
-            throw new Exception("Cannot handle unknown sparql algebra type");
+            return (INotSqlOriginalDbSource)algebra.Accept(this, context);
         }
 
-        private INotSqlOriginalDbSource ProcessBgp(BgpOp bgpOp, QueryContext context)
+        public object Visit(BgpOp bgpOp, object data)
         {
             var source = ProcessBgpSource(bgpOp.R2RMLTripleDef);
             var select = new SqlSelectOp(source);
 
-            ProcessBgpSubject(bgpOp, context, select, source);
-            ProcessBgpPredicate(bgpOp, context, select, source);
-            ProcessBgpObject(bgpOp, context, select, source);
+            ProcessBgpSubject(bgpOp, (QueryContext)data, select, source);
+            ProcessBgpPredicate(bgpOp, (QueryContext)data, select, source);
+            ProcessBgpObject(bgpOp, (QueryContext)data, select, source);
 
             return select;
+        }
+
+        public object Visit(JoinOp joinOp, object data)
+        {
+            var context = (QueryContext)data;
+            var joinedProcessed = joinOp.GetInnerQueries().Select(x => x.Accept(this, data)).OfType<INotSqlOriginalDbSource>().ToArray();
+
+            if (joinedProcessed.Length == 0)
+            {
+                return new SingleEmptyRowSource();
+            }
+            else
+            {
+                var selects = joinedProcessed.OfType<SqlSelectOp>();
+                var notSelects = joinedProcessed.Where(x => !(x is SqlSelectOp));
+
+                SqlSelectOp current = null;
+
+                if (!selects.Any())
+                {
+                    current = TransformToSelect(notSelects.First(), context);
+                    notSelects = notSelects.Skip(1);
+                }
+                else
+                {
+                    current = selects.First();
+
+                    foreach (var select in selects.Skip(1))
+                    {
+                        ProcessJoin(current, select, context);
+                    }
+                }
+
+                foreach (var notSelect in notSelects)
+                {
+                    ProcessJoin(current, notSelect, context);
+                }
+
+                return current;
+            }
+        }
+
+        public object Visit(OneEmptySolutionOp oneEmptySolutionOp, object data)
+        {
+            // TODO: Implement this
+            throw new NotImplementedException();
+        }
+
+        public object Visit(UnionOp unionOp, object data)
+        {
+            var context = (QueryContext)data;
+            var unioned = unionOp.GetInnerQueries().Select(x => x.Accept(this, context)).OfType<INotSqlOriginalDbSource>();
+
+            List<SqlSelectOp> selects = new List<SqlSelectOp>();
+
+            foreach (var unionSource in unioned)
+            {
+                if (unionSource is SqlSelectOp)
+                {
+                    selects.Add((SqlSelectOp)unionSource);
+                }
+                else
+                {
+                    selects.Add(TransformToSelect(unionSource, context));
+                }
+            }
+
+            var variableNames = selects.SelectMany(x => x.ValueBinders).Select(x => x.VariableName).Distinct().ToArray();
+
+            Dictionary<string, CaseValueBinder> valueBinders = new Dictionary<string, CaseValueBinder>();
+
+            foreach (var varName in variableNames)
+            {
+                valueBinders.Add(varName, new CaseValueBinder(varName));
+            }
+
+            var sqlUnion = new SqlUnionOp();
+
+            for (int index = 0; index < selects.Count; index++)
+            {
+                Dictionary<ISqlColumn, SqlUnionColumn> unColumns = new Dictionary<ISqlColumn, SqlUnionColumn>();
+
+                var select = selects[index];
+                sqlUnion.AddSource(select);
+
+                var condExpr = expressionBuilder.CreateExpression(context, index);
+                var column = select.GetExpressionColumn(condExpr);
+                sqlUnion.CaseColumn.AddColumn(column);
+                var cond = conditionBuilder.CreateEqualsCondition(context, sqlUnion.CaseColumn, condExpr);
+
+                foreach (var valBinder in select.ValueBinders)
+                {
+                    var caseValBinder = valueBinders[valBinder.VariableName];
+                    var cloned = (IBaseValueBinder)valBinder.Clone();
+
+                    foreach (var neededColumn in cloned.AssignedColumns.ToArray())
+                    {
+                        if (!unColumns.ContainsKey(neededColumn))
+                        {
+                            var newCol = sqlUnion.GetUnionedColumn();
+                            unColumns.Add(neededColumn, newCol);
+                            newCol.AddColumn(neededColumn);
+                        }
+
+                        var unColumn = unColumns[neededColumn];
+                        cloned.ReplaceAssignedColumn(neededColumn, unColumn);
+                    }
+
+                    caseValBinder.AddValueBinder((ICondition)cond.Clone(), cloned);
+                }
+            }
+
+            foreach (var valBinder in valueBinders.Select(x => x.Value))
+            {
+                sqlUnion.AddValueBinder(valBinder);
+            }
+
+            return sqlUnion;
+        }
+
+        public object Visit(NoSolutionOp noSolutionOp, object data)
+        {
+            return new NoRowSource();
+        }
+
+        public object Visit(SelectOp selectOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)selectOp.InnerQuery.Accept(this, context);
+
+            if (selectOp.IsSelectAll)
+            {
+                return inner;
+            }
+
+            var newVariables = selectOp.Variables;
+            var valueBinders = new List<IBaseValueBinder>();
+
+            foreach (var variable in newVariables)
+            {
+                if (variable.IsProjection)
+                {
+                    throw new NotImplementedException();
+                }
+                else if (variable.IsAggregate)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    var valBinder = inner.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
+
+                    if (valBinder == null)
+                    {
+                        throw new Exception("Can't find variable in inner query (sql select operator)");
+                    }
+                    else
+                    {
+                        valueBinders.Add(valBinder);
+                    }
+                }
+            }
+
+            var neededColumns = valueBinders.SelectMany(x => x.AssignedColumns).Distinct().ToArray();
+
+            SqlSelectOp select = inner as SqlSelectOp;
+
+            if (select == null)
+            {
+                select = TransformToSelect(inner, context);
+            }
+
+            var notNeeded = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
+
+            foreach (var col in notNeeded)
+            {
+                select.RemoveColumn(col);
+            }
+
+            var valBindersToRemove = inner.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
+            foreach (var valBinder in valBindersToRemove)
+            {
+                inner.RemoveValueBinder(valBinder);
+            }
+
+            return inner;
         }
 
         private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap)
@@ -212,106 +371,6 @@ namespace Slp.r2rml4net.Storage.Sql
             select.AddValueBinder(valueBinder);
         }
 
-        private INotSqlOriginalDbSource ProcessSelect(SelectOp selectOp, QueryContext context)
-        {
-            var inner = Process(selectOp.InnerQuery, context);
-
-            if (selectOp.IsSelectAll)
-            {
-                return inner;
-            }
-
-            var newVariables = selectOp.Variables;
-            var valueBinders = new List<IBaseValueBinder>();
-
-            foreach (var variable in newVariables)
-            {
-                if (variable.IsProjection)
-                {
-                    throw new NotImplementedException();
-                }
-                else if (variable.IsAggregate)
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    var valBinder = inner.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
-
-                    if (valBinder == null)
-                    {
-                        throw new Exception("Can't find variable in inner query (sql select operator)");
-                    }
-                    else
-                    {
-                        valueBinders.Add(valBinder);
-                    }
-                }
-            }
-
-            var neededColumns = valueBinders.SelectMany(x => x.AssignedColumns).Distinct().ToArray();
-
-            SqlSelectOp select = inner as SqlSelectOp;
-
-            if (select == null)
-            {
-                select = TransformToSelect(inner, context);
-            }
-
-            var notNeeded = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
-
-            foreach (var col in notNeeded)
-            {
-                select.RemoveColumn(col);
-            }
-
-            var valBindersToRemove = inner.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
-            foreach (var valBinder in valBindersToRemove)
-            {
-                inner.RemoveValueBinder(valBinder);
-            }
-            return inner;
-        }
-
-        private INotSqlOriginalDbSource ProcessJoin(JoinOp joinOp, QueryContext context)
-        {
-            var joinedProcessed = joinOp.GetInnerQueries().Select(x => Process(x, context)).ToArray();
-
-            if (joinedProcessed.Length == 0)
-            {
-                return new SingleEmptyRowSource();
-            }
-            else
-            {
-                var selects = joinedProcessed.OfType<SqlSelectOp>();
-                var notSelects = joinedProcessed.Where(x => !(x is SqlSelectOp));
-
-                SqlSelectOp current = null;
-
-                if (!selects.Any())
-                {
-                    current = TransformToSelect(notSelects.First(), context);
-                    notSelects = notSelects.Skip(1);
-                }
-                else
-                {
-                    current = selects.First();
-
-                    foreach (var select in selects.Skip(1))
-                    {
-                        ProcessJoin(current, select, context);
-                    }
-                }
-
-                foreach (var notSelect in notSelects)
-                {
-                    ProcessJoin(current, notSelect, context);
-                }
-
-                return current;
-            }
-        }
-
         private SqlSelectOp TransformToSelect(INotSqlOriginalDbSource sqlQuery, QueryContext context)
         {
             if (sqlQuery is SqlSelectOp)
@@ -434,77 +493,6 @@ namespace Slp.r2rml4net.Storage.Sql
             }
 
             return newBinder;
-        }
-
-        private INotSqlOriginalDbSource ProcessUnion(UnionOp unionOp, QueryContext context)
-        {
-            var unioned = unionOp.GetInnerQueries().Select(x => Process(x, context));
-
-            List<SqlSelectOp> selects = new List<SqlSelectOp>();
-
-            foreach (var unionSource in unioned)
-            {
-                if (unionSource is SqlSelectOp)
-                {
-                    selects.Add((SqlSelectOp)unionSource);
-                }
-                else
-                {
-                    selects.Add(TransformToSelect(unionSource, context));
-                }
-            }
-
-            var variableNames = selects.SelectMany(x => x.ValueBinders).Select(x => x.VariableName).Distinct().ToArray();
-
-            Dictionary<string, CaseValueBinder> valueBinders = new Dictionary<string, CaseValueBinder>();
-
-            foreach (var varName in variableNames)
-            {
-                valueBinders.Add(varName, new CaseValueBinder(varName));
-            }
-
-            var sqlUnion = new SqlUnionOp();
-
-            for (int index = 0; index < selects.Count; index++)
-            {
-                Dictionary<ISqlColumn, SqlUnionColumn> unColumns = new Dictionary<ISqlColumn, SqlUnionColumn>();
-
-                var select = selects[index];
-                sqlUnion.AddSource(select);
-
-                var condExpr = expressionBuilder.CreateExpression(context, index);
-                var column = select.GetExpressionColumn(condExpr);
-                sqlUnion.CaseColumn.AddColumn(column);
-                var cond = conditionBuilder.CreateEqualsCondition(context, sqlUnion.CaseColumn, condExpr);
-
-                foreach (var valBinder in select.ValueBinders)
-                {
-                    var caseValBinder = valueBinders[valBinder.VariableName];
-                    var cloned = (IBaseValueBinder)valBinder.Clone();
-
-                    foreach (var neededColumn in cloned.AssignedColumns.ToArray())
-                    {
-                        if (!unColumns.ContainsKey(neededColumn))
-                        {
-                            var newCol = sqlUnion.GetUnionedColumn();
-                            unColumns.Add(neededColumn, newCol);
-                            newCol.AddColumn(neededColumn);
-                        }
-
-                        var unColumn = unColumns[neededColumn];
-                        cloned.ReplaceAssignedColumn(neededColumn, unColumn);
-                    }
-
-                    caseValBinder.AddValueBinder((ICondition)cond.Clone(), cloned);
-                }
-            }
-
-            foreach (var valBinder in valueBinders.Select(x => x.Value))
-            {
-                sqlUnion.AddValueBinder(valBinder);
-            }
-
-            return sqlUnion;
         }
     }
 }

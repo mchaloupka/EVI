@@ -11,53 +11,43 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer
+    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor, IConditionVisitor
     {
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
-            ProcessSource(algebra, context);
+            algebra.Accept(this, context);
             return algebra;
         }
 
-        public void ProcessSource(ISqlSource source, QueryContext context)
+        public object Visit(NoRowSource noRowSource, object data)
         {
-            if (source is SqlSelectOp)
-            {
-                ProcessSelectOp((SqlSelectOp)source, context);
-            }
+            return null;
         }
 
-        protected virtual void ProcessSelectOp(SqlSelectOp sqlSelectOp, QueryContext context)
+        public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
-            ProcessSource(sqlSelectOp.OriginalSource, context);
-
-            ProcessSelectOpConditions(sqlSelectOp, context);
-
-            foreach (var join in sqlSelectOp.JoinSources)
-            {
-                ProcessSelectOpJoinCondition(join, context);
-            }
-
-            foreach (var join in sqlSelectOp.LeftOuterJoinSources)
-            {
-                ProcessSelectOpJoinCondition(join, context);
-            }
+            return null;
         }
 
-        protected virtual void ProcessSelectOpJoinCondition(ConditionedSource join, QueryContext context)
+        public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
-            var simplified = ProcessCondition(join.Condition, context);
-            if (join.Condition != simplified)
-                join.ReplaceCondition(simplified);
-        }
+            sqlSelectOp.OriginalSource.Accept(this, data);
 
-        protected virtual void ProcessSelectOpConditions(SqlSelectOp sqlSelectOp, QueryContext context)
-        {
+            foreach (var join in sqlSelectOp.JoinSources.Union(sqlSelectOp.LeftOuterJoinSources))
+            {
+                join.Source.Accept(this, data);
+
+                var simplified = (ICondition)join.Condition.Accept(this, data);
+
+                if (simplified != join.Condition)
+                    join.ReplaceCondition(simplified);
+            }
+
             var conditions = sqlSelectOp.Conditions.ToArray();
 
             foreach (var cond in conditions)
             {
-                var simplified = ProcessCondition(cond, context);
+                var simplified = (ICondition)cond.Accept(this, data);
 
                 if (simplified != cond)
                     sqlSelectOp.ReplaceCondition(cond, simplified);
@@ -75,50 +65,83 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 sqlSelectOp.ClearConditions();
                 sqlSelectOp.AddCondition(new AlwaysFalseCondition());
             }
+
+            return null;
         }
 
-        protected virtual ICondition ProcessCondition(ICondition condition, QueryContext context)
+        public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
-            if (condition is AlwaysFalseCondition)
+            foreach (var source in sqlUnionOp.Sources)
             {
-                return condition;
-            }
-            else if (condition is AlwaysTrueCondition)
-            {
-                return condition;
-            }
-            else if (condition is AndCondition)
-            {
-                return ProcessAndCondition((AndCondition)condition, context);
-            }
-            else if (condition is OrCondition)
-            {
-                return ProcessOrCondition((OrCondition)condition, context);
-            }
-            else if (condition is EqualsCondition)
-            {
-                return ProcessEqualsCondition((EqualsCondition)condition, context);
-            }
-            else if (condition is NotCondition)
-            {
-                return ProcessNotCondition((NotCondition)condition, context);
-            }
-            else if(condition is IsNullCondition)
-            {
-                return ProcessIsNullCondition((IsNullCondition)condition, context);
+                source.Accept(this, data);
             }
 
-            throw new NotImplementedException();
+            return null;
         }
 
-        protected virtual ICondition ProcessIsNullCondition(IsNullCondition isNullCondition, QueryContext context)
+        public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
         {
-            return isNullCondition;
+            return null;
         }
 
-        protected virtual ICondition ProcessNotCondition(NotCondition notCondition, QueryContext context)
+        public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
-            var inner = ProcessCondition(notCondition.InnerCondition, context);
+            return null;
+        }
+
+        public object Visit(AlwaysFalseCondition condition, object data)
+        {
+            return ProcessAlwaysFalseCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(AlwaysTrueCondition condition, object data)
+        {
+            return ProcessAlwaysTrueCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(AndCondition condition, object data)
+        {
+            return ProcessAndCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(EqualsCondition condition, object data)
+        {
+            return ProcessEqualsCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(IsNullCondition condition, object data)
+        {
+            return ProcessIsNullCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(NotCondition condition, object data)
+        {
+            return ProcessNotCondition(condition, (QueryContext)data);
+        }
+
+        public object Visit(OrCondition condition, object data)
+        {
+            return ProcessOrCondition(condition, (QueryContext)data);
+        }
+
+        protected virtual ICondition ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, QueryContext data)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, QueryContext data)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessIsNullCondition(IsNullCondition condition, QueryContext context)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessNotCondition(NotCondition condition, QueryContext context)
+        {
+            var inner = ProcessCondition(condition.InnerCondition, context);
 
             if (inner is AlwaysTrueCondition)
                 return new AlwaysFalseCondition();
@@ -126,6 +149,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return new AlwaysTrueCondition();
             else
                 return new NotCondition(inner);
+        }
+
+        protected ICondition ProcessCondition(ICondition condition, QueryContext context)
+        {
+            return (ICondition)condition.Accept(this, context);
         }
 
         protected virtual ICondition ProcessOrCondition(OrCondition orCondition, QueryContext context)

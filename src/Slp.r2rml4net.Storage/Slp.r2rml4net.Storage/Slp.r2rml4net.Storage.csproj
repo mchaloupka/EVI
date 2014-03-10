@@ -71,6 +71,7 @@
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Sparql\Algebra\BgpOp.cs" />
+    <Compile Include="Sparql\Algebra\ISparqlQueryVisitor.cs" />
     <Compile Include="Sparql\Algebra\NoSolutionOp.cs" />
     <Compile Include="Sparql\Algebra\OneEmptySolutionOp.cs" />
     <Compile Include="Sparql\Algebra\UnionOp.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Sql\Algebra\ISqlColumn.cs" />
     <Compile Include="Sql\Algebra\ISqlSource.cs" />
     <Compile Include="Sql\Algebra\Operator\ConditionedSource.cs" />
+    <Compile Include="Sql\Algebra\Operator\ISqlSourceVisitor.cs" />
     <Compile Include="Sql\Algebra\Operator\NoRowSource.cs" />
     <Compile Include="Sql\Algebra\Operator\SingleEmptyRowSource.cs" />
     <Compile Include="Sql\Algebra\Operator\SqlExpressionColumn.cs" />
@@ -121,6 +123,8 @@
     <Compile Include="Sql\SqlAlgebraBuilder.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTable.cs" />
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
+    <Compile Include="Sql\Vendor\BaseSqlNameGenerator.cs" />
+    <Compile Include="Sql\Vendor\BaseSqlQueryBuilder.cs" />
     <Compile Include="Sql\Vendor\DataReaderWrapper.cs" />
     <Compile Include="Sql\Vendor\MSSQLDb.cs" />
     <Compile Include="Utils\IVisitable.cs" />

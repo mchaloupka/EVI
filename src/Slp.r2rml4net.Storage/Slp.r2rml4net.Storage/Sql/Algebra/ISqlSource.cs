@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Binders;
+using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
-    public interface ISqlSource
+    public interface ISqlSource: IVisitable<ISqlSourceVisitor>
     {
         string Name { get; set; }
 
