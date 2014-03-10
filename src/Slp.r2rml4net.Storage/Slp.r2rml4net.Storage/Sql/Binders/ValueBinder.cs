@@ -10,6 +10,7 @@ using TCode.r2rml4net.Mapping;
 using TCode.r2rml4net.Extensions;
 using VDS.RDF;
 using TCode.r2rml4net;
+using System.Linq.Expressions;
 
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/TriplesGeneration/RDFTermGenerator.cs?at=default
 
@@ -38,6 +39,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
         public ValueBinder(string variableName, ITermMap r2rmlMap, TemplateProcessor templateProcessor)
         {
+            this.loadNodeFunc = null;
             this.r2rmlMap = r2rmlMap;
             this.columns = new Dictionary<string, ISqlColumn>();
             this.VariableName = variableName;
@@ -75,6 +77,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
         public void SetColumn(string column, ISqlColumn sqlColumn)
         {
+            loadNodeFunc = null;
+
             if (this.columns.ContainsKey(column))
             {
                 this.columns[column] = sqlColumn;
@@ -99,6 +103,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
         public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
+            loadNodeFunc = null;
+
             var keys = this.columns.Where(x => x.Value == oldColumn).Select(x => x.Key).ToArray();
 
             foreach (var key in keys)
@@ -107,146 +113,187 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> loadNodeFunc;
+
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
+            if (loadNodeFunc == null)
+                loadNodeFunc = GenerateLoadNodeFunc();
+
+            return loadNodeFunc(factory, row, context);
+        }
+
+        #region GenerateLoadNodeFunc
+        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> GenerateLoadNodeFunc()
+        {
+            Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> expr = null;
+
             if (R2RMLMap.IsConstantValued)
             {
-                return CreateNodeFromConstant(factory, context);
+                expr = GenerateLoadNodeFuncFromConstant();
             }
             else if (R2RMLMap.IsColumnValued)
             {
-                return CreateNodeFromColumn(factory, row, context);
+                expr = GenerateLoadNodeFuncFromColumn();
             }
             else if (R2RMLMap.IsTemplateValued)
             {
-                return CreateNodeFromTemplate(factory, row, context);
+                expr = GenerateLoadNodeFuncFromTemplate();
             }
             else
             {
                 throw new Exception("Term map must be either constant, column or template valued");
             }
+
+            return expr.Compile();
         }
 
-        private INode CreateNodeFromTemplate(INodeFactory factory, IQueryResultRow row, QueryContext context)
+        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromTemplate()
         {
-            var val = ReplaceColumnReferences(row, context, R2RMLMap.TermType.IsURI);
+            ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
+            ParameterExpression row = Expression.Parameter(typeof(IQueryResultRow), "row");
+            ParameterExpression context = Expression.Parameter(typeof(QueryContext), "context");
 
-            if (val != null)
-                return GenerateTermForValue(factory, val, context);
-            else
-                return null;
+            ParameterExpression valVar = Expression.Parameter(typeof(string), "val");
+
+            List<Expression> expressions = new List<Expression>();
+            expressions.Add(Expression.Assign(valVar, GenerateReplaceColumnReferencesFunc(nodeFactory, row, context, R2RMLMap.TermType.IsURI)));
+            expressions.Add(Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof(string))),
+                Expression.Constant(null, typeof(INode)),
+                GenerateTermForValueFunc(nodeFactory, valVar, context))); // Change to generate term for value
+
+            var block = Expression.Block(typeof(INode), new ParameterExpression[] { valVar }, expressions);
+            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
         }
 
-        private string ReplaceColumnReferences(IQueryResultRow row, QueryContext context, bool escape)
+        private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, bool escape)
         {
-            StringBuilder sb = new StringBuilder();
+            List<Expression> expressions = new List<Expression>();
+            ParameterExpression sbVar = Expression.Parameter(typeof(StringBuilder), "sb");
+            ParameterExpression replacedVar = Expression.Parameter(typeof(string), "replaced");
+
+            var endLabel = Expression.Label(typeof(string), "returnLabel");
+
+            var appendMethod = typeof(StringBuilder).GetMethod("Append", new Type[] { typeof(string) });
+            expressions.Add(Expression.Assign(sbVar, Expression.New(typeof(StringBuilder))));
 
             foreach (var part in templateParts)
             {
                 if (part.IsText)
-                    sb.Append(part.Text);
+                {
+                    expressions.Add(Expression.Call(sbVar, appendMethod, Expression.Constant(part.Text, typeof(string))));
+                }
                 else if (part.IsColumn)
                 {
-                    var replaced = ReplaceColumnReference(GetColumn(part.Column), row, context, escape);
-
-                    if (replaced == null)
-                        return null;
-
-                    sb.Append(replaced);
+                    expressions.Add(Expression.Assign(replacedVar, GenerateReplaceColumnReferenceFunc(nodeFactory, row, context, part, GetColumn(part.Column), escape)));
+                    expressions.Add(Expression.IfThen(Expression.Equal(replacedVar, Expression.Constant(null, typeof(string))), Expression.Return(endLabel, Expression.Constant(null, typeof(string)))));
+                    expressions.Add(Expression.Call(sbVar, appendMethod, replacedVar));
                 }
             }
 
-            return sb.ToString();
+            expressions.Add(Expression.Label(endLabel, Expression.Call(sbVar, "ToString", new Type[0])));
+
+            return Expression.Block(typeof(string), new ParameterExpression[] { sbVar, replacedVar }, expressions);
         }
 
-        private string ReplaceColumnReference(ISqlColumn column, IQueryResultRow row, QueryContext context, bool escape)
+        private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ISqlColumn column, bool escape)
         {
-            var dbCol = row.GetColumn(column.Name);
-            var value = dbCol.Value;
+            var dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
+            var valueVar = Expression.Parameter(typeof(object), "value");
+            var sValVar = Expression.Parameter(typeof(string), "sVal");
+            var endLabel = Expression.Label(typeof(string), "returnLabel");
 
-            if (value == null)
-                return null;
+            List<Expression> expressions = new List<Expression>();
+            expressions.Add(Expression.Assign(dbColVar, Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name))));
+            expressions.Add(Expression.Assign(valueVar, Expression.Property(dbColVar, "Value")));
+            expressions.Add(Expression.IfThen(Expression.Equal(valueVar, Expression.Constant(null, typeof(object))), Expression.Return(endLabel, Expression.Constant(null, typeof(string)))));
+            expressions.Add(Expression.Assign(sValVar, Expression.Call(valueVar, "ToString", new Type[0])));
 
-            var sVal = value.ToString();
-
-            return escape ? MappingHelper.UrlEncode(sVal) : sVal;
-        }
-
-        private INode CreateNodeFromColumn(INodeFactory factory, IQueryResultRow row, QueryContext context)
-        {
-            var column = this.NeededColumns.Select(x => GetColumn(x)).First();
-
-            var dbCol = row.GetColumn(column.Name);
-
-            if (R2RMLMap.TermType.IsLiteral)
+            if (escape)
             {
-                return GenerateTermForLiteral(factory, dbCol.Value, context);
+                expressions.Add(Expression.Label(endLabel, Expression.Call(typeof(MappingHelper), "UrlEncode", new Type[0], sValVar)));
             }
             else
             {
-                AssertNoIllegalCharacters(new Uri(dbCol.Value.ToString(), UriKind.RelativeOrAbsolute));
-                return GenerateTermForValue(factory, dbCol.Value, context);
+                expressions.Add(Expression.Label(endLabel, sValVar));
+            }
+
+            return Expression.Block(typeof(string), new ParameterExpression[] { dbColVar, valueVar, sValVar }, expressions);
+        }
+
+        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromConstant()
+        {
+            if (R2RMLMap is IUriValuedTermMap)
+            {
+                var uri = ((IUriValuedTermMap)R2RMLMap).URI;
+                return (fact, row, context) => fact.CreateUriNode(uri);
+            }
+            else if (R2RMLMap is IObjectMap)
+            {
+                var objectMap = (IObjectMap)R2RMLMap;
+
+                if (objectMap.URI != null)
+                    return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
+                else if (objectMap.Literal != null)
+                    return (fact, row, context) => fact.CreateLiteralNode(objectMap.Literal);
+                else
+                    throw new Exception("Object map's value must be IRI or literal.");
+            }
+            else
+            {
+                throw new Exception("Constant must be uri valued or an object map");
             }
         }
 
-        private INode GenerateTermForValue(INodeFactory factory, object value, QueryContext context)
+        private Expression GenerateTermForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
-            if (value == null)
-                return null;
+            var endLabel = Expression.Label(typeof(INode), "returnLabel");
+            List<Expression> expressions = new List<Expression>();
+            ParameterExpression nodeVar = Expression.Parameter(typeof(INode), "node");
+
+            expressions.Add(Expression.Assign(nodeVar, Expression.Constant(null, typeof(INode))));
+
+            expressions.Add(Expression.IfThen(Expression.Equal(value, Expression.Constant(null, typeof(object))),
+                Expression.Return(endLabel, Expression.Constant(null, typeof(INode)))));
 
             var termType = R2RMLMap.TermType;
 
             if (termType.IsURI)
             {
-                try
-                {
-                    var uri = new Uri(value.ToString(), UriKind.RelativeOrAbsolute);
-
-                    if (!uri.IsAbsoluteUri)
-                    {
-                        uri = ConstructAbsoluteUri(factory, value.ToString(), context);
-                    }
-
-                    if (uri.IsAbsoluteUri)
-                    {
-                        uri.LeaveDotsAndSlashesEscaped();
-                        return factory.CreateUriNode(uri);
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(string.Format("Value {0} is invalid uri", value));
-                }
+                expressions.Add(Expression.Assign(nodeVar,
+                    Expression.Call(typeof(ValueBinder), "GenerateUriTermForValue", new Type[0],
+                        Expression.Call(value, "ToString", new Type[0]),
+                        factory,
+                        context,
+                        Expression.Constant(R2RMLMap.BaseUri, typeof(Uri)))));
             }
             else if (termType.IsBlankNode)
             {
-                return GenerateBlankNodeForValue(factory, value, context);
+                expressions.Add(Expression.Assign(nodeVar, GenerateBlankNodeForValueFunc(factory, value, context)));
             }
             else if (termType.IsLiteral)
             {
-                return GenerateTermForLiteral(factory, value, context);
+                expressions.Add(Expression.Assign(nodeVar, GenerateTermForLiteralFunc(factory, value, context)));
+            }
+            else
+            {
+                throw new Exception(string.Format("Unhandled term type", value));
             }
 
-            throw new Exception(string.Format("Don't know how to generate term for value {0}", value));
+            expressions.Add(Expression.Label(endLabel, nodeVar));
+
+            return Expression.Block(typeof(INode), new ParameterExpression[] { nodeVar }, expressions);
         }
 
-        private INode GenerateBlankNodeForValue(INodeFactory factory, object value, QueryContext context)
+        private Expression GenerateBlankNodeForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
             if (R2RMLMap is ISubjectMap)
-                return context.GetBlankNodeSubjectForValue(factory, value);
+                return Expression.Call(context, "GetBlankNodeSubjectForValue", new Type[0], factory, value);
             else
-                return context.GetBlankNodeObjectForValue(factory, value);
+                return Expression.Call(context, "GetBlankNodeObjectForValue", new Type[0], factory, value);
         }
 
-        private Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, QueryContext context)
-        {
-            if (relativePart.Split('/').Any(seg => seg == "." || seg == ".."))
-                throw new Exception("The relative IRI cannot contain any . or .. parts");
-
-            return new Uri(R2RMLMap.BaseUri + relativePart);
-        }
-
-        private INode GenerateTermForLiteral(INodeFactory factory, object value, QueryContext context)
+        private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
             if (value == null)
                 return null;
@@ -262,35 +309,49 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 throw new Exception("Literal term map cannot have both language tag and datatype set");
 
             if (language != null)
-                return factory.CreateLiteralNode(value.ToString(), language);
+                return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]), Expression.Constant(language, typeof(string)));
             if (datatypeUri != null)
-                return factory.CreateLiteralNode(value.ToString(), datatypeUri);
+                return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]), Expression.Constant(datatypeUri, typeof(Uri)));
 
-            return factory.CreateLiteralNode(value.ToString());
+            return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]));
         }
 
-        protected INode CreateNodeFromConstant(INodeFactory factory, QueryContext context)
+        private static INode GenerateUriTermForValue(string value, INodeFactory factory, QueryContext context, Uri baseUri)
         {
-            if (R2RMLMap is IUriValuedTermMap)
+            try
             {
-                return factory.CreateUriNode(((IUriValuedTermMap)R2RMLMap).URI);
-            }
-            else if (R2RMLMap is IObjectMap)
-            {
-                var objectMap = R2RMLMap as IObjectMap;
+                var uri = new Uri(value, UriKind.RelativeOrAbsolute);
 
-                if (objectMap.URI != null)
-                    return factory.CreateUriNode(objectMap.URI);
-                else if (objectMap.Literal != null)
-                    return factory.CreateLiteralNode(objectMap.Literal);
+                if (!uri.IsAbsoluteUri)
+                {
+                    uri = ConstructAbsoluteUri(factory, value, baseUri, context);
+                }
+
+                if (uri.IsAbsoluteUri)
+                {
+                    uri.LeaveDotsAndSlashesEscaped();
+                    return factory.CreateUriNode(uri);
+                }
                 else
-                    throw new Exception("Object map's value must be IRI or literal.");
+                {
+                    throw new Exception("Now the uri must be absolute");
+                }
             }
-
-            throw new Exception("Constant must be uri valued or an object map");
+            catch (Exception)
+            {
+                throw new Exception(string.Format("Value {0} is invalid uri", value));
+            }
         }
 
-        private void AssertNoIllegalCharacters(Uri value)
+        private static Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, Uri baseUri, QueryContext context)
+        {
+            if (relativePart.Split('/').Any(seg => seg == "." || seg == ".."))
+                throw new Exception("The relative IRI cannot contain any . or .. parts");
+
+            return new Uri(baseUri + relativePart);
+        }
+
+        private static void AssertNoIllegalCharacters(Uri value)
         {
             IEnumerable<char> disallowedChars = string.Empty;
             IEnumerable<string> segments = value.IsAbsoluteUri ? value.Segments : new[] { value.OriginalString };
@@ -313,6 +374,38 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 throw new Exception(reason);
             }
         }
+
+        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromColumn()
+        {
+            ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
+            ParameterExpression row = Expression.Parameter(typeof(IQueryResultRow), "row");
+            ParameterExpression context = Expression.Parameter(typeof(QueryContext), "context");
+
+            var column = this.NeededColumns.Select(x => GetColumn(x)).First();
+            ParameterExpression dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
+            ParameterExpression valVar = Expression.Parameter(typeof(object), "value");
+
+            List<Expression> expressions = new List<Expression>();
+            expressions.Add(Expression.Assign(dbColVar, Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name, typeof(string)))));
+            expressions.Add(Expression.Assign(valVar, Expression.Property(dbColVar, "Value")));
+
+            if (R2RMLMap.TermType.IsLiteral)
+            {
+                expressions.Add(GenerateTermForLiteralFunc(nodeFactory, valVar, context));
+            }
+            else
+            {
+                expressions.Add(Expression.Call(typeof(ValueBinder), "AssertNoIllegalCharacters", new Type[0],
+                    Expression.New(typeof(Uri).GetConstructor(new Type[] { typeof(string), typeof(UriKind) }),
+                        Expression.Call(valVar, "ToString", new Type[0]),
+                        Expression.Constant(UriKind.RelativeOrAbsolute, typeof(UriKind)))));
+                expressions.Add(GenerateTermForValueFunc(nodeFactory, valVar, context));
+            }
+
+            var block = Expression.Block(typeof(INode), new ParameterExpression[] { dbColVar, valVar }, expressions);
+            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
+        } 
+        #endregion
 
         public IEnumerable<ISqlColumn> AssignedColumns
         {
