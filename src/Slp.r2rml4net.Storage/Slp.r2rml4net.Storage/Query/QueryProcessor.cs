@@ -38,6 +38,7 @@ namespace Slp.r2rml4net.Storage.Query
 
             this.sqlOptimizers = new List<ISqlAlgebraOptimizer>() 
             {
+                new Optimization.SqlAlgebra.IsNullOptimizer(),
                 new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
                 new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer()
             };
