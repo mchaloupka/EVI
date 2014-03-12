@@ -40,7 +40,8 @@ namespace Slp.r2rml4net.Storage.Query
             {
                 new Optimization.SqlAlgebra.IsNullOptimizer(),
                 new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
-                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer()
+                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer(),
+                new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization()
             };
         }
 

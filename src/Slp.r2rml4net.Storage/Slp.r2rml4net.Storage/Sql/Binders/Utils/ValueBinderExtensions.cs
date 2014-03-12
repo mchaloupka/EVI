@@ -7,7 +7,7 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Binders;
 
-namespace Slp.r2rml4net.Storage.Sql.Utils
+namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
 {
     public static class ValueBinderExtensions
     {

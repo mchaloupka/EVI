@@ -9,7 +9,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Binders;
-using Slp.r2rml4net.Storage.Sql.Utils;
+using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {

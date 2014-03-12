@@ -43,5 +43,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         {
             return visitor.Visit(this, data);
         }
+
+        public void RemoveColumn(ISqlColumn col)
+        {
+            if (col is SqlTableColumn)
+            {
+                this.columns.Remove((SqlTableColumn)col);
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
-using Slp.r2rml4net.Storage.Sql.Utils;
+using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;

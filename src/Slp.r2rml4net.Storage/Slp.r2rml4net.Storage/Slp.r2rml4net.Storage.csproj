@@ -68,6 +68,7 @@
     <Compile Include="Optimization\SqlAlgebra\ConcatenationInEqualConditionOptimizer.cs" />
     <Compile Include="Optimization\SqlAlgebra\ConstantExprEqualityOptimizer.cs" />
     <Compile Include="Optimization\SqlAlgebra\IsNullOptimizer.cs" />
+    <Compile Include="Optimization\SqlAlgebra\RemoveUnusedColumnsOptimization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
@@ -124,7 +125,7 @@
     <Compile Include="Sql\ISqlDb.cs" />
     <Compile Include="Sql\SqlAlgebraBuilder.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTable.cs" />
-    <Compile Include="Sql\Utils\ValueBinderExtensions.cs" />
+    <Compile Include="Sql\Binders\Utils\ValueBinderExtensions.cs" />
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
     <Compile Include="Sql\Vendor\BaseSqlNameGenerator.cs" />
     <Compile Include="Sql\Vendor\BaseSqlQueryBuilder.cs" />

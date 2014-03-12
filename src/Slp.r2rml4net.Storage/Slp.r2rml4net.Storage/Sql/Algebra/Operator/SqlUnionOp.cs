@@ -82,5 +82,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         {
             return visitor.Visit(this, data);
         }
+
+        public void RemoveColumn(ISqlColumn col)
+        {
+            if(col is SqlUnionColumn)
+            {
+                this.columns.Remove((SqlUnionColumn)col);
+            }
+        }
     }
 }
