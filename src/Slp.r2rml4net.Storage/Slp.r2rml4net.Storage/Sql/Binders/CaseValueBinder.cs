@@ -74,6 +74,16 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
             return newBinder;
         }
+
+        public object Accept(IValueBinderVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
+
+        public void RemoveStatement(CaseStatementBinder caseStatement)
+        {
+            this.statements.Remove(caseStatement);
+        }
     }
 
     public class CaseStatementBinder
@@ -84,8 +94,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             this.ValueBinder = valueBinder;
         }
 
-        public ICondition Condition { get; private set; }
+        public ICondition Condition { get; set; }
 
-        public IBaseValueBinder ValueBinder { get; private set; }
+        public IBaseValueBinder ValueBinder { get; set; }
     }
 }

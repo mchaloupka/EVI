@@ -86,5 +86,26 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
             return newBinder;
         }
+
+        public object Accept(IValueBinderVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
+
+        public void ReplaceValueBinder(IBaseValueBinder binder, IBaseValueBinder newBinder)
+        {
+            var index = this.binders.IndexOf(binder);
+
+            if (index > -1)
+                this.binders[index] = newBinder;
+        }
+
+        public void RemoveValueBinder(IBaseValueBinder binder)
+        {
+            var index = this.binders.IndexOf(binder);
+
+            if (index > -1)
+                this.binders.RemoveAt(index);
+        }
     }
 }

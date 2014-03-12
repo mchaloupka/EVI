@@ -115,6 +115,7 @@
     <Compile Include="Sql\Binders\CaseValueBinder.cs" />
     <Compile Include="Sql\Binders\IBaseValueBinder.cs" />
     <Compile Include="Sql\Binders\CollateValueBinder.cs" />
+    <Compile Include="Sql\Binders\IValueBinderVisitor.cs" />
     <Compile Include="Sql\Binders\TemplateProcessor.cs" />
     <Compile Include="Sql\Binders\ValueBinder.cs" />
     <Compile Include="Sql\ConditionBuilder.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Sql\ISqlDb.cs" />
     <Compile Include="Sql\SqlAlgebraBuilder.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTable.cs" />
+    <Compile Include="Sql\Utils\ValueBinderExtensions.cs" />
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
     <Compile Include="Sql\Vendor\BaseSqlNameGenerator.cs" />
     <Compile Include="Sql\Vendor\BaseSqlQueryBuilder.cs" />

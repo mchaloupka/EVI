@@ -10,6 +10,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
+using Slp.r2rml4net.Storage.Sql.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
@@ -380,7 +381,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
             foreach (var valueBinder in sqlQuery.ValueBinders)
             {
-                select.AddValueBinder(GetSelectValueBinder(valueBinder, select, context));
+                select.AddValueBinder(valueBinder.GetSelectValueBinder(select, context));
             }
 
             return select;
@@ -411,7 +412,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 {
                     if (firstValBinder.VariableName == secondValBinder.VariableName)
                     {
-                        conditions.Add(conditionBuilder.CreateJoinEqualsCondition(context, GetOriginalValueBinder(firstValBinder, context), GetOriginalValueBinder(secondValBinder, context)));
+                        conditions.Add(conditionBuilder.CreateJoinEqualsCondition(context, firstValBinder.GetOriginalValueBinder(context), secondValBinder.GetOriginalValueBinder(context)));
                     }
                 }
             }
@@ -443,8 +444,8 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 if (sBinder != null)
                 {
-                    var origSBinder = GetOriginalValueBinder(sBinder, context);
-                    var selSBinder = GetSelectValueBinder(origSBinder, first, context);
+                    var origSBinder = sBinder.GetOriginalValueBinder(context);
+                    var selSBinder = origSBinder.GetSelectValueBinder(first, context);
 
                     var newBinder = new CollateValueBinder(fBinder);
                     newBinder.AddValueBinder(selSBinder);
@@ -459,40 +460,11 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 if (fBinder == null)
                 {
-                    var origSBinder = GetOriginalValueBinder(sBinder, context);
-                    var selSBinder = GetSelectValueBinder(origSBinder, first, context);
+                    var origSBinder = sBinder.GetOriginalValueBinder(context);
+                    var selSBinder = origSBinder.GetSelectValueBinder(first, context);
                     first.AddValueBinder(selSBinder);
                 }
             }
-        }
-
-        private IBaseValueBinder GetSelectValueBinder(IBaseValueBinder binder, SqlSelectOp first, QueryContext context)
-        {
-            var newBinder = (IBaseValueBinder)binder.Clone();
-
-            foreach (var col in newBinder.AssignedColumns.ToArray())
-            {
-                newBinder.ReplaceAssignedColumn(col, first.GetSelectColumn(col));
-            }
-
-            return newBinder;
-        }
-
-        private IBaseValueBinder GetOriginalValueBinder(IBaseValueBinder binder, QueryContext context)
-        {
-            var newBinder = (IBaseValueBinder)binder.Clone();
-
-            foreach (var oldColumn in newBinder.AssignedColumns.ToArray())
-            {
-                if (!(oldColumn is SqlSelectColumn))
-                {
-                    throw new Exception("Can't get original value binder if it is not from sql select columns");
-                }
-
-                newBinder.ReplaceAssignedColumn(oldColumn, ((SqlSelectColumn)oldColumn).OriginalColumn);
-            }
-
-            return newBinder;
         }
     }
 }
