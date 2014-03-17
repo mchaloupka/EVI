@@ -33,7 +33,8 @@ namespace Slp.r2rml4net.Storage.Query
 
             this.sparqlOptimizers = new List<ISparqlAlgebraOptimizer>()
             {
-                new Optimization.SparqlAlgebra.R2RMLOptimizer()
+                new Optimization.SparqlAlgebra.R2RMLOptimizer(),
+                new Optimization.SparqlAlgebra.UnionOptimizer()
             };
 
             this.sqlOptimizers = new List<ISqlAlgebraOptimizer>() 

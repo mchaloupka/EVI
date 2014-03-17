@@ -13,4 +13,9 @@ namespace Slp.r2rml4net.Storage.Optimization
     {
         INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context);
     }
+
+    public interface ISqlAlgebraOptimizerOnTheFly
+    {
+        INotSqlOriginalDbSource ProcessAlgebraOnTheFly(INotSqlOriginalDbSource algebra, QueryContext context);
+    }
 }
