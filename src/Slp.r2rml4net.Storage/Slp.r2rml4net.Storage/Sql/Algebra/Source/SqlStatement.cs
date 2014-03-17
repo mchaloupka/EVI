@@ -39,6 +39,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
             get { return columns.AsEnumerable(); }
         }
 
+        [DebuggerStepThrough]
         public object Accept(Operator.ISqlSourceVisitor visitor, object data)
         {
             return visitor.Visit(this, data);

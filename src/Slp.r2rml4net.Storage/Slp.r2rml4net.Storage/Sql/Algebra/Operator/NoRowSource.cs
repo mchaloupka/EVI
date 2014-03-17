@@ -38,6 +38,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             throw new NotSupportedException("No row source cannot have any value binder");
         }
 
+        [DebuggerStepThrough]
         public object Accept(ISqlSourceVisitor visitor, object data)
         {
             return visitor.Visit(this, data);

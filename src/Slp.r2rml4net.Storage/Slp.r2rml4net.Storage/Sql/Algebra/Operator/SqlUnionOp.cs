@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,6 +79,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public IEnumerable<SqlSelectOp> Sources { get { return sources; } }
 
+        [DebuggerStepThrough]
         public object Accept(ISqlSourceVisitor visitor, object data)
         {
             return visitor.Visit(this, data);

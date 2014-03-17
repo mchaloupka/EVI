@@ -11,6 +11,7 @@ using TCode.r2rml4net.Extensions;
 using VDS.RDF;
 using TCode.r2rml4net;
 using System.Linq.Expressions;
+using System.Diagnostics;
 
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/TriplesGeneration/RDFTermGenerator.cs?at=default
 
@@ -429,6 +430,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return newBinder;
         }
 
+        [DebuggerStepThrough]
         public object Accept(IValueBinderVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
