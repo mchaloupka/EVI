@@ -13,7 +13,7 @@ using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public class IsNullOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor, IConditionVisitor, IValueBinderVisitor
+    public class IsNullOptimizer : ISqlAlgebraOptimizer, ISqlAlgebraOptimizerOnTheFly, ISqlSourceVisitor, IConditionVisitor, IValueBinderVisitor
     {
         private ConditionBuilder conditionBuilder;
 
@@ -22,9 +22,15 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             this.conditionBuilder = new ConditionBuilder(new ExpressionBuilder());
         }
 
-        public Sql.Algebra.INotSqlOriginalDbSource ProcessAlgebra(Sql.Algebra.INotSqlOriginalDbSource algebra, Query.QueryContext context)
+        public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
-            algebra.Accept(this, new VisitData(new GetIsNullList(), new GetIsNullList.GetIsNullListResult(), context));
+            algebra.Accept(this, new VisitData(new GetIsNullList(), new GetIsNullList.GetIsNullListResult(), context, true));
+            return algebra;
+        }
+
+        public INotSqlOriginalDbSource ProcessAlgebraOnTheFly(INotSqlOriginalDbSource algebra, QueryContext context)
+        {
+            algebra.Accept(this, new VisitData(new GetIsNullList(), new GetIsNullList.GetIsNullListResult(), context, false));
             return algebra;
         }
 
@@ -40,36 +46,29 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
-            sqlSelectOp.OriginalSource.Accept(this, data);
-
-            foreach (var join in sqlSelectOp.JoinSources)
-            {
-                join.Source.Accept(this, data);
-            }
-
-            foreach (var join in sqlSelectOp.LeftOuterJoinSources)
-            {
-                join.Source.Accept(this, data);
-            }
-
             var cvd = (VisitData)data;
 
-            var gres = new GetIsNullList.GetIsNullListResult();
-
-            foreach (var cond in sqlSelectOp.Conditions)
+            if (cvd.Recurse)
             {
-                gres.MergeWith(cvd.GINL.Process(cond));
+                sqlSelectOp.OriginalSource.Accept(this, data);
+
+                foreach (var join in sqlSelectOp.JoinSources)
+                {
+                    join.Source.Accept(this, data);
+                }
+
+                foreach (var join in sqlSelectOp.LeftOuterJoinSources)
+                {
+                    join.Source.Accept(this, data);
+                }
             }
 
-            foreach (var join in sqlSelectOp.JoinSources)
-            {
-                gres.MergeWith(cvd.GINL.Process(join.Condition));
-            }
+            var gres = cvd.GINL.Process(sqlSelectOp);
 
             List<ICondition> conditions = new List<ICondition>();
             foreach (var cond in sqlSelectOp.Conditions)
             {
-                var resCond = (ICondition)cond.Accept(this, new VisitData(cvd.GINL, gres, cvd.Context));
+                var resCond = (ICondition)cond.Accept(this, cvd.SetGlobalResult(gres));
                 conditions.Add(resCond);
             }
 
@@ -89,19 +88,19 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             foreach (var join in sqlSelectOp.JoinSources)
             {
-                var resCond = (ICondition)join.Condition.Accept(this, new VisitData(cvd.GINL, gres, cvd.Context));
+                var resCond = (ICondition)join.Condition.Accept(this, cvd.SetGlobalResult(gres));
                 join.ReplaceCondition(resCond);
             }
 
             foreach (var join in sqlSelectOp.LeftOuterJoinSources)
             {
-                var resCond = (ICondition)join.Condition.Accept(this, new VisitData(cvd.GINL, gres, cvd.Context));
+                var resCond = (ICondition)join.Condition.Accept(this, cvd.SetGlobalResult(gres));
                 join.ReplaceCondition(resCond);
             }
 
             foreach (var binder in sqlSelectOp.ValueBinders.ToArray())
             {
-                var newBinder = (IBaseValueBinder)binder.Accept(this, new VisitData(cvd.GINL, gres, cvd.Context));
+                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(gres));
 
                 if (newBinder != binder)
                     sqlSelectOp.ReplaceValueBinder(binder, newBinder);
@@ -112,12 +111,25 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
-            foreach (var inner in sqlUnionOp.Sources)
+            var cvd = (VisitData)data;
+
+            if(cvd.Recurse)
             {
-                inner.Accept(this, data);
+                foreach (var inner in sqlUnionOp.Sources)
+                {
+                    inner.Accept(this, data);
+                }
             }
 
-            // TODO: Rework that we take the is null info from sources and then modify the value binders
+            var gres = cvd.GINL.Process(sqlUnionOp);
+
+            foreach (var binder in sqlUnionOp.ValueBinders.ToArray())
+            {
+                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(gres));
+
+                if (newBinder != binder)
+                    sqlUnionOp.ReplaceValueBinder(binder, newBinder);
+            }
 
             return null;
         }
@@ -150,7 +162,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             mres.MergeWith(cvd.GlobalResult);
             mres.MergeWith(lres);
 
-            var d = new VisitData(cvd.GINL, mres, cvd.Context);
+            var d = cvd.SetGlobalResult(mres);
 
             List<ICondition> conditions = new List<ICondition>();
 
@@ -184,7 +196,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             mres.MergeWith(cvd.GlobalResult);
             mres.MergeWith(lres);
 
-            var d = new VisitData(cvd.GINL, mres, cvd.Context);
+            var d = cvd.SetGlobalResult(mres);
 
             List<ICondition> conditions = new List<ICondition>();
 
@@ -232,7 +244,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             var cvd = (VisitData)data;
             var gres = cvd.GlobalResult.GetInverse();
 
-            var inner = (ICondition)condition.InnerCondition.Accept(this, new VisitData(cvd.GINL, gres, cvd.Context));
+            var inner = (ICondition)condition.InnerCondition.Accept(this, cvd.SetGlobalResult(gres));
 
             if (inner is AlwaysFalseCondition)
                 return new AlwaysTrueCondition();
@@ -240,22 +252,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return new AlwaysFalseCondition();
             else
                 return new NotCondition(inner);
-        }
-
-        private class VisitData
-        {
-            public VisitData(GetIsNullList ginl, GetIsNullList.GetIsNullListResult gres, QueryContext context)
-            {
-                this.GINL = ginl;
-                this.GlobalResult = gres;
-                this.Context = context;
-            }
-
-            public GetIsNullList GINL { get; private set; }
-
-            public GetIsNullList.GetIsNullListResult GlobalResult { get; private set; }
-
-            public QueryContext Context { get; private set; }
         }
 
         public object Visit(CaseValueBinder caseValueBinder, object data)
@@ -267,7 +263,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 var lres = new GetIsNullList.GetIsNullListResult();
                 lres.MergeWith(cvd.GlobalResult);
                 lres.MergeWith(cvd.GINL.Process(caseStatement.Condition));
-                var ncvd = new VisitData(cvd.GINL, lres, cvd.Context);
+                var ncvd = cvd.SetGlobalResult(lres);
 
                 var cond = (ICondition)caseStatement.Condition.Accept(this, ncvd);
                 if (cond != caseStatement.Condition)
@@ -334,20 +330,108 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return valueBinder;
         }
 
-        // TODO: It can be modified to calculate null list even from subsources
-        private class GetIsNullList : IConditionVisitor
+        private class VisitData
         {
-            private Dictionary<ICondition, GetIsNullListResult> cache = new Dictionary<ICondition, GetIsNullListResult>();
+            public VisitData(GetIsNullList ginl, GetIsNullList.GetIsNullListResult gres, QueryContext context, bool recurse)
+            {
+                this.GINL = ginl;
+                this.GlobalResult = gres;
+                this.Context = context;
+                this.Recurse = recurse;
+            }
+
+            public VisitData SetGlobalResult(GetIsNullList.GetIsNullListResult gres)
+            {
+                return new VisitData(this.GINL, gres, this.Context, this.Recurse);
+            }
+
+            public GetIsNullList GINL { get; private set; }
+
+            public GetIsNullList.GetIsNullListResult GlobalResult { get; private set; }
+
+            public QueryContext Context { get; private set; }
+
+            public bool Recurse { get; private set; }
+        }
+
+        private class GetIsNullList : ISqlSourceVisitor, IConditionVisitor
+        {
+            private Dictionary<ICondition, GetIsNullListResult> conditionCache = new Dictionary<ICondition, GetIsNullListResult>();
+            private Dictionary<ISqlSource, GetIsNullListResult> sqlCache = new Dictionary<ISqlSource, GetIsNullListResult>();
 
             public GetIsNullListResult Process(ICondition condition)
             {
-                if(!cache.ContainsKey(condition))
+                if(!conditionCache.ContainsKey(condition))
                 {
                     var res = (GetIsNullListResult)condition.Accept(this, null);
-                    cache.Add(condition, res);
+                    conditionCache.Add(condition, res);
                 }
 
-                return cache[condition];
+                return conditionCache[condition];
+            }
+
+            public GetIsNullListResult Process(ISqlSource source)
+            {
+                if(!sqlCache.ContainsKey(source))
+                {
+                    var res = (GetIsNullListResult)source.Accept(this, null);
+                    sqlCache.Add(source, res);
+                }
+
+                return sqlCache[source];
+            }
+
+            public object Visit(NoRowSource noRowSource, object data)
+            {
+                return new GetIsNullListResult();
+            }
+
+            public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
+            {
+                return new GetIsNullListResult();
+            }
+
+            public object Visit(SqlSelectOp sqlSelectOp, object data)
+            {
+                var gres = new GetIsNullListResult();
+
+                foreach (var cond in sqlSelectOp.Conditions)
+                {
+                    gres.MergeWith(this.Process(cond));
+                }
+
+                gres.MergeWith(this.Process(sqlSelectOp.OriginalSource));
+
+                foreach (var join in sqlSelectOp.JoinSources)
+                {
+                    gres.MergeWith(this.Process(join.Condition));
+                    gres.MergeWith(this.Process(join.Source));
+                }
+
+                return gres;
+            }
+
+            public object Visit(SqlUnionOp sqlUnionOp, object data)
+            {
+                var gres = new GetIsNullListResult();
+
+                foreach (var source in sqlUnionOp.Sources)
+                {
+                    gres.IntersectWith(this.Process(source));
+                }
+
+                return gres;
+            }
+
+            public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+            {
+                return new GetIsNullListResult();
+            }
+
+            public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+            {
+                // TODO: Get info from db schema
+                return new GetIsNullListResult();
             }
 
             public class GetIsNullListResult

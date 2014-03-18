@@ -37,6 +37,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
         public object Visit(BgpOp bgpOp, object data)
         {
+            var context = (QueryContext)data;
             var source = ProcessBgpSource(bgpOp.R2RMLTripleDef);
             var select = new SqlSelectOp(source);
 
@@ -44,7 +45,7 @@ namespace Slp.r2rml4net.Storage.Sql
             ProcessBgpPredicate(bgpOp, (QueryContext)data, select, source);
             ProcessBgpObject(bgpOp, (QueryContext)data, select, source);
 
-            return select;
+            return context.OptimizeOnTheFly(select);
         }
 
         public object Visit(JoinOp joinOp, object data)
@@ -83,7 +84,7 @@ namespace Slp.r2rml4net.Storage.Sql
                     ProcessJoin(current, notSelect, context);
                 }
 
-                return current;
+                return context.OptimizeOnTheFly(current);
             }
         }
 
@@ -162,7 +163,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 sqlUnion.AddValueBinder(valBinder);
             }
 
-            return sqlUnion;
+            return context.OptimizeOnTheFly(sqlUnion);
         }
 
         public object Visit(NoSolutionOp noSolutionOp, object data)
@@ -180,6 +181,13 @@ namespace Slp.r2rml4net.Storage.Sql
                 return inner;
             }
 
+            SqlSelectOp select = inner as SqlSelectOp;
+
+            if (select == null)
+            {
+                select = TransformToSelect(inner, context);
+            }
+
             var newVariables = selectOp.Variables;
             var valueBinders = new List<IBaseValueBinder>();
 
@@ -195,7 +203,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
                 else
                 {
-                    var valBinder = inner.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
+                    var valBinder = select.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
 
                     if (valBinder == null)
                     {
@@ -209,14 +217,6 @@ namespace Slp.r2rml4net.Storage.Sql
             }
 
             var neededColumns = valueBinders.SelectMany(x => x.AssignedColumns).Distinct().ToArray();
-
-            SqlSelectOp select = inner as SqlSelectOp;
-
-            if (select == null)
-            {
-                select = TransformToSelect(inner, context);
-            }
-
             var notNeeded = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
 
             foreach (var col in notNeeded)
@@ -224,13 +224,13 @@ namespace Slp.r2rml4net.Storage.Sql
                 select.RemoveColumn(col);
             }
 
-            var valBindersToRemove = inner.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
+            var valBindersToRemove = select.ValueBinders.Where(x => !valueBinders.Contains(x)).ToArray();
             foreach (var valBinder in valBindersToRemove)
             {
-                inner.RemoveValueBinder(valBinder);
+                select.RemoveValueBinder(valBinder);
             }
 
-            return inner;
+            return context.OptimizeOnTheFly(select);
         }
 
         private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap)

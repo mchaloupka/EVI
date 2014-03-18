@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
+using Slp.r2rml4net.Storage.Optimization;
+using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
 
@@ -14,8 +16,9 @@ namespace Slp.r2rml4net.Storage.Query
         private List<string> usedSqlSourceNames;
         private Dictionary<string, INode> blankNodesSubjects;
         private Dictionary<string, INode> blankNodesObjects;
+        private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers;
 
-        public QueryContext(SparqlQuery query, MappingProcessor mapping, INodeFactory nodeFactory)
+        public QueryContext(SparqlQuery query, MappingProcessor mapping, INodeFactory nodeFactory, ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers)
         {
             this.OriginalQuery = query;
             this.NodeFactory = nodeFactory;
@@ -23,6 +26,7 @@ namespace Slp.r2rml4net.Storage.Query
             this.usedSqlSourceNames = new List<string>();
             this.blankNodesSubjects = new Dictionary<string, INode>();
             this.blankNodesObjects = new Dictionary<string, INode>();
+            this.sqlOptimizers = sqlOptimizers;
         }
 
         public SparqlQuery OriginalQuery { get; private set; }
@@ -70,6 +74,18 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             return blankNodesObjects[sVal];
+        }
+
+        public INotSqlOriginalDbSource OptimizeOnTheFly(INotSqlOriginalDbSource algebra)
+        {
+            var currentAlgebra = algebra;
+
+            foreach (var optimizer in sqlOptimizers)
+            {
+                currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
+            }
+
+            return currentAlgebra;
         }
     }
 }

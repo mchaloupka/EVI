@@ -20,9 +20,10 @@ namespace Slp.r2rml4net.Storage.Query
         private MappingProcessor mapping;
         private ISqlDb db;
         private SparqlAlgebraBuilder sparqlAlgebraBuilder;
-        private List<ISparqlAlgebraOptimizer> sparqlOptimizers;
+        private ISparqlAlgebraOptimizer[] sparqlOptimizers;
         private SqlAlgebraBuilder sqlAlgebraBuilder;
-        private List<ISqlAlgebraOptimizer> sqlOptimizers;
+        private ISqlAlgebraOptimizer[] sqlOptimizers;
+        private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizersOnTheFly;
 
         public QueryProcessor(MappingProcessor mapping, ISqlDb db)
         {
@@ -31,18 +32,23 @@ namespace Slp.r2rml4net.Storage.Query
             this.sparqlAlgebraBuilder = new SparqlAlgebraBuilder();
             this.sqlAlgebraBuilder = new SqlAlgebraBuilder();
 
-            this.sparqlOptimizers = new List<ISparqlAlgebraOptimizer>()
+            this.sparqlOptimizers = new ISparqlAlgebraOptimizer[]
             {
                 new Optimization.SparqlAlgebra.R2RMLOptimizer(),
                 new Optimization.SparqlAlgebra.UnionOptimizer()
             };
 
-            this.sqlOptimizers = new List<ISqlAlgebraOptimizer>() 
+            this.sqlOptimizers = new ISqlAlgebraOptimizer[]
             {
                 new Optimization.SqlAlgebra.IsNullOptimizer(),
                 new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
                 new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer(),
                 new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization()
+            };
+
+            this.sqlOptimizersOnTheFly = new ISqlAlgebraOptimizerOnTheFly[]
+            {
+                new Optimization.SqlAlgebra.IsNullOptimizer()
             };
         }
 
@@ -84,7 +90,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             // Convert to algebra
-            var context = new QueryContext(originalQuery, mapping, nodeFactory);
+            var context = new QueryContext(originalQuery, mapping, nodeFactory, this.sqlOptimizersOnTheFly);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
