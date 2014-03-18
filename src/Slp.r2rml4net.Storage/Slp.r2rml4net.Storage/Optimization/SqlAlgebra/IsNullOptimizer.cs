@@ -8,6 +8,7 @@ using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 
@@ -98,9 +99,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 join.ReplaceCondition(resCond);
             }
 
+            var bres = gres.GetForParentSource(sqlSelectOp);
+
             foreach (var binder in sqlSelectOp.ValueBinders.ToArray())
             {
-                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(gres));
+                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(bres));
 
                 if (newBinder != binder)
                     sqlSelectOp.ReplaceValueBinder(binder, newBinder);
@@ -122,10 +125,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
 
             var gres = cvd.GINL.Process(sqlUnionOp);
+            var bres = gres.GetForParentSource(sqlUnionOp);
 
             foreach (var binder in sqlUnionOp.ValueBinders.ToArray())
             {
-                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(gres));
+                var newBinder = (IBaseValueBinder)binder.Accept(this, cvd.SetGlobalResult(bres));
 
                 if (newBinder != binder)
                     sqlUnionOp.ReplaceValueBinder(binder, newBinder);
@@ -299,7 +303,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 if (binder != newBinder)
                     collateValueBinder.ReplaceValueBinder(binder, newBinder);
 
-                var isNullCondition = conditionBuilder.CreateIsNullCondition(cvd.Context, binder.GetOriginalValueBinder(cvd.Context));
+                var isNullCondition = conditionBuilder.CreateIsNullCondition(cvd.Context, binder);
                 var modified = isNullCondition.Accept(this, cvd);
 
                 if (modified is AlwaysTrueCondition)
@@ -394,21 +398,24 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             public object Visit(SqlSelectOp sqlSelectOp, object data)
             {
                 var gres = new GetIsNullListResult();
+                var sres = new GetIsNullListResult();
 
                 foreach (var cond in sqlSelectOp.Conditions)
                 {
                     gres.MergeWith(this.Process(cond));
                 }
 
-                gres.MergeWith(this.Process(sqlSelectOp.OriginalSource));
+                sres.MergeWith(this.Process(sqlSelectOp.OriginalSource).GetForParentSource(sqlSelectOp.OriginalSource));
 
                 foreach (var join in sqlSelectOp.JoinSources)
                 {
                     gres.MergeWith(this.Process(join.Condition));
-                    gres.MergeWith(this.Process(join.Source));
+                    sres.MergeWith(this.Process(join.Source).GetForParentSource(join.Source));
                 }
 
-                return gres;
+                sres.MergeWith(gres);
+
+                return sres;
             }
 
             public object Visit(SqlUnionOp sqlUnionOp, object data)
@@ -417,7 +424,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 foreach (var source in sqlUnionOp.Sources)
                 {
-                    gres.IntersectWith(this.Process(source));
+                    gres.MergeWith(this.Process(source).GetForParentSource(source));
                 }
 
                 return gres;
@@ -460,6 +467,22 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 public void AddIsNullCondition(IsNullCondition condition)
                 {
                     this.isNullColumns.Add(condition.Column, condition);
+                }
+
+                private void AddIsNotNullColumn(ISqlColumn col)
+                {
+                    if (this.isNotNullColumns.ContainsKey(col))
+                        this.isNotNullColumns[col] = null;
+                    else
+                        this.isNotNullColumns.Add(col, null);
+                }
+
+                private void AddIsNullColumn(ISqlColumn col)
+                {
+                    if (this.isNullColumns.ContainsKey(col))
+                        this.isNullColumns[col] = null;
+                    else
+                        this.isNullColumns.Add(col, null);
                 }
 
                 private void MergeWith(Dictionary<ISqlColumn, IsNullCondition> source, Dictionary<ISqlColumn, IsNullCondition> with)
@@ -508,6 +531,66 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                     }
 
                     return false;
+                }
+
+                public GetIsNullListResult GetForParentSource(ISqlSource source)
+                {
+                    var res = new GetIsNullListResult();
+
+                    foreach (var col in source.Columns)
+                    {
+                        if (col is SqlExpressionColumn)
+                        {
+                            // TODO: now expression cannot be null, it can change in the future
+                            res.AddIsNotNullColumn(col);
+                        }
+                        else if(col is SqlUnionColumn)
+                        {
+                            if(source is SqlUnionOp)
+                            {
+                                var unCol = (SqlUnionColumn)col;
+                                var unOp = (SqlUnionOp)source;
+
+                                if(unCol.OriginalColumns.Count() == unOp.Sources.Count()) // Can decide only when it contains columns from all sources
+                                {
+                                    if(unCol.OriginalColumns.All(x => this.IsInNullColumns(x)))
+                                    {
+                                        res.AddIsNullColumn(col);
+                                    }
+                                    if (unCol.OriginalColumns.All(x => this.IsInNotNullColumns(x)))
+                                    {
+                                        res.AddIsNotNullColumn(col);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("SqlUnionColumn should be only in SqlUnionOp");
+                            }
+                        }
+                        else if(col is SqlSelectColumn)
+                        {
+                            var selCol = (SqlSelectColumn)col;
+
+                            if (this.IsInNullColumns(selCol.OriginalColumn))
+                                res.AddIsNullColumn(col);
+                            if(this.IsInNotNullColumns(selCol.OriginalColumn))
+                                res.AddIsNotNullColumn(col);
+                        }
+                        else if(col is SqlTableColumn)
+                        {
+                            if (this.IsInNullColumns(col))
+                                res.AddIsNullColumn(col);
+                            if (this.IsInNotNullColumns(col))
+                                res.AddIsNotNullColumn(col);
+                        }
+                        else
+                        {
+                            throw new Exception("Other column type than expected");
+                        }
+                    }
+
+                    return res;
                 }
             }
 
