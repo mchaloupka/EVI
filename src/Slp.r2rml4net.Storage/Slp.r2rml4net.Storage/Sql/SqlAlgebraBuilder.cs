@@ -59,7 +59,7 @@ namespace Slp.r2rml4net.Storage.Sql
             }
             else
             {
-                var selects = joinedProcessed.OfType<SqlSelectOp>();
+                var selects = joinedProcessed.Where(x => x is SqlSelectOp);
                 var notSelects = joinedProcessed.Where(x => !(x is SqlSelectOp));
 
                 SqlSelectOp current = null;
@@ -71,7 +71,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
                 else
                 {
-                    current = selects.First();
+                    current = (SqlSelectOp)selects.First();
 
                     foreach (var select in selects.Skip(1))
                     {
@@ -421,12 +421,7 @@ namespace Slp.r2rml4net.Storage.Sql
             if (!(second is SqlSelectOp))
                 second = TransformToSelect(second, context);
 
-            if (((SqlSelectOp)second).HaveOnlyOriginalSourceAndConditions)
-                ProcessJoin(first, (SqlSelectOp)second, context);
-            else
-            {
-                throw new NotImplementedException();
-            }
+            ProcessJoin(first, (SqlSelectOp)second, context);
         }
 
         private void ProcessJoin(SqlSelectOp first, SqlSelectOp second, QueryContext context)
@@ -456,6 +451,16 @@ namespace Slp.r2rml4net.Storage.Sql
             }
 
             first.AddJoinedSource(second.OriginalSource, condition, context);
+
+            foreach (var secondJoin in second.JoinSources)
+            {
+                first.AddJoinedSource(secondJoin.Source, secondJoin.Condition, context);
+            }
+
+            foreach (var secondJoin in second.LeftOuterJoinSources)
+            {
+                first.AddLeftOuterJoinedSource(secondJoin.Source, secondJoin.Condition, context);
+            }
 
             foreach (var cond in second.Conditions)
             {

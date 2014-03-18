@@ -107,11 +107,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             get { return valueBinders; }
         }
 
-        public bool HaveOnlyOriginalSourceAndConditions { get { return joinSources.Count == 0 && leftOuterJoinSources.Count == 0; } }
-
         public void AddJoinedSource(ISqlSource sqlSource, ICondition condition, Query.QueryContext context)
         {
             this.joinSources.Add(new ConditionedSource(condition, sqlSource));
+        }
+
+        public void AddLeftOuterJoinedSource(ISqlSource sqlSource, ICondition condition, Query.QueryContext context)
+        {
+            this.leftOuterJoinSources.Add(new ConditionedSource(condition, sqlSource));
         }
 
         public void ReplaceValueBinder(IBaseValueBinder fBinder, IBaseValueBinder sBinder)
