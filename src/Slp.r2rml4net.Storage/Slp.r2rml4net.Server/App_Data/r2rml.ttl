@@ -123,3 +123,131 @@
 		rr:datatype xsd:int;
 	];
 .
+
+<#BirthTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
+	rr:subjectMap [ 
+		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/births/{[MunNumber]}-{[Year]}";
+		rr:class qb:Observation;
+	];	
+	rr:predicateObjectMap [
+		rr:predicate qb:dataSet;
+		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/births#"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refArea;
+		rr:objectMap [
+			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:joinCondition [
+	            rr:child "[MunNumber]";
+	            rr:parent "[Id]";
+	        ];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refPeriod;
+		rr:objectMap [ rr:column "[Year]"; ];
+		rr:datatype xsd:gYear;
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:births;
+		rr:objectMap [ rr:column "[BirthCount]"; ];
+		rr:datatype xsd:int;
+	];
+.
+
+<#DeathTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
+	rr:subjectMap [ 
+		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/deaths/{[MunNumber]}-{[Year]}";
+		rr:class qb:Observation;
+	];	
+	rr:predicateObjectMap [
+		rr:predicate qb:dataSet;
+		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/deaths#"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refArea;
+		rr:objectMap [
+			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:joinCondition [
+	            rr:child "[MunNumber]";
+	            rr:parent "[Id]";
+	        ];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refPeriod;
+		rr:objectMap [ rr:column "[Year]"; ];
+		rr:datatype xsd:gYear;
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:deaths;
+		rr:objectMap [ rr:column "[DeathCount]"; ];
+		rr:datatype xsd:int;
+	];
+.
+
+<#ImmigrantsTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
+	rr:subjectMap [ 
+		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/immigrants/{[MunNumber]}-{[Year]}";
+		rr:class qb:Observation;
+	];	
+	rr:predicateObjectMap [
+		rr:predicate qb:dataSet;
+		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/immigrants#"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refArea;
+		rr:objectMap [
+			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:joinCondition [
+	            rr:child "[MunNumber]";
+	            rr:parent "[Id]";
+	        ];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refPeriod;
+		rr:objectMap [ rr:column "[Year]"; ];
+		rr:datatype xsd:gYear;
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:immigrants;
+		rr:objectMap [ rr:column "[ImmigrantsCount]"; ];
+		rr:datatype xsd:int;
+	];
+.
+
+<#EmmigrantsTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
+	rr:subjectMap [ 
+		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/emmigrants/{[MunNumber]}-{[Year]}";
+		rr:class qb:Observation;
+	];	
+	rr:predicateObjectMap [
+		rr:predicate qb:dataSet;
+		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/emmigrants#"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refArea;
+		rr:objectMap [
+			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:joinCondition [
+	            rr:child "[MunNumber]";
+	            rr:parent "[Id]";
+	        ];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:refPeriod;
+		rr:objectMap [ rr:column "[Year]"; ];
+		rr:datatype xsd:gYear;
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-ds-def:emmigrants;
+		rr:objectMap [ rr:column "[EmmigrantsCount]"; ];
+		rr:datatype xsd:int;
+	];
+.

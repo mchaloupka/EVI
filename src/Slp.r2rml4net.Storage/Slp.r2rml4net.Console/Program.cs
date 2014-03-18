@@ -63,6 +63,8 @@ namespace Slp.r2rml4net.Console
 
                     //Print out the Results
                     SparqlResultSet rset = (SparqlResultSet)result;
+                    System.Console.WriteLine("Returned {0} results", rset.Count);
+
                     foreach (SparqlResult res in rset)
                     {
                         sw.WriteLine(res.ToString());
@@ -70,8 +72,11 @@ namespace Slp.r2rml4net.Console
                 }
                 else if (result is IGraph)
                 {
+                    var graph = (IGraph)result;
+                    System.Console.WriteLine("Returned {0} triples", graph.Triples.Count);
+
                     CompressingTurtleWriter writer = new CompressingTurtleWriter();
-                    writer.Save((IGraph)result, sw);
+                    writer.Save((IGraph)graph, sw);
                 }
             }
         }
