@@ -90,7 +90,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             // Convert to algebra
-            var context = new QueryContext(originalQuery, mapping, nodeFactory, this.sqlOptimizersOnTheFly);
+            var context = new QueryContext(originalQuery, mapping, db, nodeFactory, this.sqlOptimizersOnTheFly);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);

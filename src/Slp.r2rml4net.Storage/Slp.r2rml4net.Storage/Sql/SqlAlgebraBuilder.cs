@@ -145,9 +145,8 @@ namespace Slp.r2rml4net.Storage.Sql
                     {
                         if (!unColumns.ContainsKey(neededColumn))
                         {
-                            var newCol = sqlUnion.GetUnionedColumn();
+                            var newCol = GetUnionedColumn(sqlUnion, neededColumn, (QueryContext)data);
                             unColumns.Add(neededColumn, newCol);
-                            newCol.AddColumn(neededColumn);
                         }
 
                         var unColumn = unColumns[neededColumn];
@@ -164,6 +163,34 @@ namespace Slp.r2rml4net.Storage.Sql
             }
 
             return context.OptimizeOnTheFly(sqlUnion);
+        }
+
+        private static SqlUnionColumn GetUnionedColumn(SqlUnionOp sqlUnion, ISqlColumn neededColumn, QueryContext context)
+        {
+            SqlUnionColumn newCol = null;
+
+            foreach (var column in sqlUnion.Columns.OfType<SqlUnionColumn>())
+            {
+                var sources = column.OriginalColumns.Select(x => x.Source);
+
+                if (sources.Contains(neededColumn.Source))
+                    continue;
+                else
+                {
+                    if (column.OriginalColumns.Any(x => !context.Db.CanBeUnioned(x, neededColumn)))
+                        continue;
+
+                    newCol = column;
+                    break;
+                }
+            }
+
+            if(newCol == null)
+                newCol = sqlUnion.GetUnionedColumn();
+
+            newCol.AddColumn(neededColumn);
+
+            return newCol;
         }
 
         public object Visit(NoSolutionOp noSolutionOp, object data)

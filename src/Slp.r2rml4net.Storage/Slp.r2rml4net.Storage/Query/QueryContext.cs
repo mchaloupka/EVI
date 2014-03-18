@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
+using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -18,10 +19,11 @@ namespace Slp.r2rml4net.Storage.Query
         private Dictionary<string, INode> blankNodesObjects;
         private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers;
 
-        public QueryContext(SparqlQuery query, MappingProcessor mapping, INodeFactory nodeFactory, ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers)
+        public QueryContext(SparqlQuery query, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers)
         {
             this.OriginalQuery = query;
             this.NodeFactory = nodeFactory;
+            this.Db = db;
             this.Mapping = mapping;
             this.usedSqlSourceNames = new List<string>();
             this.blankNodesSubjects = new Dictionary<string, INode>();
@@ -34,6 +36,8 @@ namespace Slp.r2rml4net.Storage.Query
         public MappingProcessor Mapping { get; private set; }
 
         public INodeFactory NodeFactory { get; private set; }
+
+        public ISqlDb Db { get; private set; }
 
         public bool IsAlreadyUsedSqlSourceName(string name)
         {

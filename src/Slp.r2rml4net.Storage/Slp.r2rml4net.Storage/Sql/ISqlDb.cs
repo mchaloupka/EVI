@@ -13,5 +13,7 @@ namespace Slp.r2rml4net.Storage.Sql
         string GenerateQuery(INotSqlOriginalDbSource sqlAlgebra, QueryContext context);
 
         IQueryResultReader ExecuteQuery(string query, QueryContext context);
+
+        bool CanBeUnioned(ISqlColumn column, ISqlColumn other);
     }
 }
