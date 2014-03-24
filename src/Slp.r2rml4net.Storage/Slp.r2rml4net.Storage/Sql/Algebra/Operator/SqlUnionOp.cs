@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Sql.Binders;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
@@ -90,6 +91,46 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             if(col is SqlUnionColumn)
             {
                 this.columns.Remove((SqlUnionColumn)col);
+            }
+        }
+
+        public void RemoveSource(ISqlSource source)
+        {
+            if (source is SqlSelectOp)
+            {
+                this.sources.Remove((SqlSelectOp)source);
+
+                List<SqlUnionColumn> colToDelete = new List<SqlUnionColumn>();
+
+                foreach (var col in this.columns)
+                {
+                    var containedColumns = col.OriginalColumns.Where(x => x.Source == source).ToList();
+
+                    foreach (var ccol in containedColumns)
+                    {
+                        col.RemoveColumn(ccol);
+                    }
+
+                    if(!col.OriginalColumns.Any())
+                    {
+                        colToDelete.Add(col);
+                    }
+                }
+
+                foreach (var item in colToDelete)
+                {
+                    RemoveColumn(item);
+                }
+
+                foreach (var valBinder in this.valueBinders.Cast<CaseValueBinder>())
+                {
+                    var sourceStatements = valBinder.Statements.Where(x => x.Condition.GetAllReferencedColumns().All(y => y.Source == source)).ToList();
+
+                    foreach (var statement in sourceStatements)
+                    {
+                        valBinder.RemoveStatement(statement);
+                    }
+                }
             }
         }
     }

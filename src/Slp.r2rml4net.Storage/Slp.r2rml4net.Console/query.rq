@@ -2,4 +2,5 @@ SELECT ?s ?p ?o
 WHERE
 {
     ?s ?p ?o;
+       ?p "Kolovraty"
 }

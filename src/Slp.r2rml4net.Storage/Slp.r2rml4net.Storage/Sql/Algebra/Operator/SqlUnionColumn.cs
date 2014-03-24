@@ -26,5 +26,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public string Name { get; set; }
 
         public ISqlSource Source { get; private set; }
+
+        public void RemoveColumn(ISqlColumn ccol)
+        {
+            this.originalColumns.Remove(ccol);
+        }
     }
 }
