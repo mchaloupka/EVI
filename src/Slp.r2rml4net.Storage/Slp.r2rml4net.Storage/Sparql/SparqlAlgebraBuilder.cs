@@ -5,8 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sparql
 {
@@ -81,10 +86,39 @@ namespace Slp.r2rml4net.Storage.Sparql
                     return new SelectOp(innerAlgebra);
                 }
             }
-            else if (originalAlgebra is VDS.RDF.Query.Algebra.Bgp)
+            else if (originalAlgebra is IBgp)
             {
-                var orBgp = (VDS.RDF.Query.Algebra.Bgp)originalAlgebra;
+                var orBgp = (IBgp)originalAlgebra;
                 return ProcessITriplePatterns(orBgp.TriplePatterns, context);
+            }
+            else if(originalAlgebra is Slice)
+            {
+                var orSlice = (Slice)originalAlgebra;
+                var inner = ProcessAlgebra(orSlice.InnerAlgebra, context);
+                var slice = new SliceOp(inner);
+
+                if (orSlice.Limit > -1)
+                    slice.Limit = orSlice.Limit;
+                if (orSlice.Offset > 0)
+                    slice.Offset = orSlice.Offset;
+
+                return slice;
+            }
+            else if(originalAlgebra is OrderBy)
+            {
+                var orOrderBy = (OrderBy)originalAlgebra;
+                var inner = ProcessAlgebra(orOrderBy.InnerAlgebra, context);
+                var order = new OrderByOp(inner);
+
+                var ordering = orOrderBy.Ordering;
+
+                while(ordering != null)
+                {
+                    order.AddOrdering(ProcessExpression(ordering.Expression, context), ordering.Descending);
+                    ordering = ordering.Child;
+                }
+
+                return order;
             }
 
             throw new NotImplementedException();
@@ -146,9 +180,181 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         }
 
-        private ISparqlQuery ProcessITriplePatterns(IEnumerable<VDS.RDF.Query.Patterns.ITriplePattern> enumerable, QueryContext context)
+        private ISparqlQueryExpression ProcessExpression(ISparqlExpression sparqlExpression, QueryContext context)
         {
-            var triples = enumerable.OfType<VDS.RDF.Query.Patterns.TriplePattern>();
+            if(sparqlExpression is VariableTerm)
+            {
+                var orVar = (VariableTerm)sparqlExpression;
+                return new VariableExpression(orVar.Variables.Single());
+            }
+
+            throw new NotImplementedException();
+
+// http://www.dotnetrdf.org/api/dotNetRDF~VDS.RDF.Query.Expressions.ISparqlExpression.html
+//AdditionExpression
+//DivisionExpression
+//MinusExpression
+//MultiplicationExpression
+//SubtractionExpression
+//BaseBinaryExpression
+//BaseUnaryExpression
+//EqualsExpression
+//GreaterThanExpression
+//GreaterThanOrEqualToExpression
+//LessThanExpression
+//LessThanOrEqualToExpression
+//NotEqualsExpression
+//AndExpression
+//NotExpression
+//OrExpression
+//BNodeFunction
+//EFunction
+//LocalNameFunction
+//MaxFunction
+//MinFunction
+//NamespaceFunction
+//NowFunction
+//PiFunction
+//Sha1Function
+//StringJoinFunction
+//SubstringFunction
+//MD5HashFunction
+//Sha256HashFunction
+//CartesianFunction
+//CubeFunction
+//EFunction
+//FactorialFunction
+//LeviathanNaturalLogFunction
+//LogFunction
+//PowerFunction
+//PythagoreanDistanceFunction
+//RandomFunction
+//ReciprocalFunction
+//RootFunction
+//SquareFunction
+//SquareRootFunction
+//TenFunction
+//BaseTrigonometricFunction
+//CosecantFunction
+//CosineFunction
+//CotangentFunction
+//DegreesToRadiansFunction
+//RadiansToDegreesFunction
+//SecantFunction
+//SineFunction
+//TangentFunction
+//BoundFunction
+//ExistsFunction
+//IsBlankFunction
+//IsIriFunction
+//IsLiteralFunction
+//IsNumericFunction
+//IsUriFunction
+//LangMatchesFunction
+//RegexFunction
+//SameTermFunction
+//CallFunction
+//CoalesceFunction
+//BNodeFunction
+//IriFunction
+//StrDtFunction
+//StrLangFunction
+//DayFunction
+//HoursFunction
+//MinutesFunction
+//MonthFunction
+//NowFunction
+//SecondsFunction
+//TimezoneFunction
+//TZFunction
+//YearFunction
+//BaseHashFunction
+//MD5HashFunction
+//Sha1HashFunction
+//Sha256HashFunction
+//Sha384HashFunction
+//Sha512HashFunction
+//IfElseFunction
+//AbsFunction
+//CeilFunction
+//FloorFunction
+//RandFunction
+//RoundFunction
+//BaseSetFunction
+//InFunction
+//NotInFunction
+//BaseBinaryStringFunction
+//BaseUUIDFunction
+//ConcatFunction
+//ContainsFunction
+//DataType11Function
+//DataTypeFunction
+//EncodeForUriFunction
+//LangFunction
+//LCaseFunction
+//ReplaceFunction
+//StrAfterFunction
+//StrBeforeFunction
+//StrEndsFunction
+//StrFunction
+//StrLenFunction
+//StrStartsFunction
+//StrUUIDFunction
+//SubStrFunction
+//UCaseFunction
+//UUIDFunction
+//UnknownFunction
+//BooleanFunction
+//BaseCast
+//BooleanCast
+//DateTimeCast
+//DecimalCast
+//DoubleCast
+//FloatCast
+//IntegerCast
+//StringCast
+//BaseUnaryDateTimeFunction
+//DayFromDateTimeFunction
+//HoursFromDateTimeFunction
+//MinutesFromDateTimeFunction
+//MonthFromDateTimeFunction
+//SecondsFromDateTimeFunction
+//TimezoneFromDateTimeFunction
+//YearFromDateTimeFunction
+//AbsFunction
+//CeilingFunction
+//FloorFunction
+//RoundFunction
+//RoundHalfToEvenFunction
+//BaseBinaryStringFunction
+//BaseUnaryStringFunction
+//CompareFunction
+//ConcatFunction
+//ContainsFunction
+//EncodeForUriFunction
+//EndsWithFunction
+//EscapeHtmlUriFunction
+//LowerCaseFunction
+//NormalizeSpaceFunction
+//NormalizeUnicodeFunction
+//ReplaceFunction
+//StartsWithFunction
+//StringLengthFunction
+//SubstringAfterFunction
+//SubstringBeforeFunction
+//SubstringFunction
+//UpperCaseFunction
+//AggregateTerm
+//AllModifier
+//ConstantTerm
+//DistinctModifier
+//GraphPatternTerm
+//VariableTerm
+        }
+
+        private ISparqlQuery ProcessITriplePatterns(IEnumerable<ITriplePattern> enumerable, QueryContext context)
+        {
+            var triples = enumerable.OfType<TriplePattern>();
             ISparqlQuery triplesOp = null;
 
             // Process triples

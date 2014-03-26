@@ -11,11 +11,11 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor, IConditionVisitor
+    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
     {
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
-            algebra.Accept(this, context);
+            algebra.Accept(this, new VisitData() { Context = context, SecondRun = false });
             return algebra;
         }
 
@@ -32,6 +32,19 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             sqlSelectOp.OriginalSource.Accept(this, data);
+
+            foreach (var column in sqlSelectOp.Columns.OfType<SqlExpressionColumn>())
+            {
+                var newExpr = (IExpression)column.Expression.Accept(this, data);
+
+                if (newExpr != column.Expression)
+                    column.Expression = newExpr;
+            }
+
+            foreach (var ordering in sqlSelectOp.Orderings)
+            {
+                ordering.Expression = (IExpression)ordering.Expression.Accept(this, data);
+            }
 
             foreach (var join in sqlSelectOp.JoinSources.Union(sqlSelectOp.LeftOuterJoinSources))
             {
@@ -91,57 +104,92 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         public object Visit(AlwaysFalseCondition condition, object data)
         {
-            return ProcessAlwaysFalseCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessAlwaysFalseCondition(condition, visitData.Context);
+            else
+                return _ProcessAlwaysFalseCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(AlwaysTrueCondition condition, object data)
         {
-            return ProcessAlwaysTrueCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessAlwaysTrueCondition(condition, visitData.Context);
+            else
+                return _ProcessAlwaysTrueCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(AndCondition condition, object data)
         {
-            return ProcessAndCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessAndCondition(condition, visitData.Context);
+            else
+                return _ProcessAndCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(EqualsCondition condition, object data)
         {
-            return ProcessEqualsCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessEqualsCondition(condition, visitData.Context);
+            else
+                return _ProcessEqualsCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(IsNullCondition condition, object data)
         {
-            return ProcessIsNullCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessIsNullCondition(condition, visitData.Context);
+            else
+                return _ProcessIsNullCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(NotCondition condition, object data)
         {
-            return ProcessNotCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessNotCondition(condition, visitData.Context);
+            else
+                return _ProcessNotCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
         public object Visit(OrCondition condition, object data)
         {
-            return ProcessOrCondition(condition, (QueryContext)data);
+            var visitData = (VisitData)data;
+
+            if (visitData.SecondRun)
+                return ProcessOrCondition(condition, visitData.Context);
+            else
+                return _ProcessOrCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
-        protected virtual ICondition ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, QueryContext data)
+        private ICondition _ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, VisitData data)
         {
             return condition;
         }
 
-        protected virtual ICondition ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, QueryContext data)
+        private ICondition _ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, VisitData data)
         {
             return condition;
         }
 
-        protected virtual ICondition ProcessIsNullCondition(IsNullCondition condition, QueryContext context)
+        private ICondition _ProcessIsNullCondition(IsNullCondition condition, VisitData data)
         {
             return condition;
         }
 
-        protected virtual ICondition ProcessNotCondition(NotCondition condition, QueryContext context)
+        private ICondition _ProcessNotCondition(NotCondition condition, VisitData data)
         {
-            var inner = ProcessCondition(condition.InnerCondition, context);
+            var inner = (ICondition)condition.InnerCondition.Accept(this, data);
 
             if (inner is AlwaysTrueCondition)
                 return new AlwaysFalseCondition();
@@ -151,18 +199,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return new NotCondition(inner);
         }
 
-        protected ICondition ProcessCondition(ICondition condition, QueryContext context)
-        {
-            return (ICondition)condition.Accept(this, context);
-        }
-
-        protected virtual ICondition ProcessOrCondition(OrCondition orCondition, QueryContext context)
+        private ICondition _ProcessOrCondition(OrCondition orCondition, VisitData data)
         {
             List<ICondition> conditions = new List<ICondition>();
 
             foreach (var cond in orCondition.Conditions)
             {
-                var simpl = ProcessCondition(cond, context);
+                var simpl = (ICondition)cond.Accept(this, data);
 
                 if (simpl is AlwaysTrueCondition)
                     return new AlwaysTrueCondition();
@@ -187,13 +230,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        protected virtual ICondition ProcessAndCondition(AndCondition andCondition, QueryContext context)
+        private ICondition _ProcessAndCondition(AndCondition andCondition, VisitData data)
         {
             List<ICondition> conditions = new List<ICondition>();
 
             foreach (var cond in andCondition.Conditions)
             {
-                var simpl = ProcessCondition(cond, context);
+                var simpl = (ICondition)cond.Accept(this, data);
 
                 if (simpl is AlwaysFalseCondition)
                     return new AlwaysFalseCondition();
@@ -218,9 +261,163 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
-        protected virtual ICondition ProcessEqualsCondition(EqualsCondition equalsCondition, QueryContext context)
+        private ICondition _ProcessEqualsCondition(EqualsCondition equalsCondition, VisitData data)
         {
+            var leftOperand = (IExpression)equalsCondition.LeftOperand.Accept(this, data);
+            var rightOperand = (IExpression)equalsCondition.RightOperand.Accept(this, data);
+
+            equalsCondition.LeftOperand = leftOperand;
+            equalsCondition.RightOperand = rightOperand;
+
             return equalsCondition;
+        }
+
+        public object Visit(ColumnExpr expression, object data)
+        {
+            return expression;
+        }
+
+        public object Visit(ConstantExpr expression, object data)
+        {
+            return expression;
+        }
+
+        public object Visit(ConcatenationExpr expression, object data)
+        {
+            foreach (var part in expression.Parts.ToArray())
+            {
+                var newPart = (IExpression)part.Accept(this, data);
+
+                if (newPart != part)
+                    expression.ReplacePart(part, newPart);
+            }
+
+            return expression;
+        }
+
+        public object Visit(NullExpr nullExpr, object data)
+        {
+            return nullExpr;
+        }
+
+        public object Visit(CoalesceExpr collateExpr, object data)
+        {
+            foreach (var subExpr in collateExpr.Expressions.ToArray())
+            {
+                var newExpr = (IExpression)subExpr.Accept(this, data);
+
+                if (newExpr is NullExpr)
+                {
+                    collateExpr.RemoveExpression(subExpr);
+                }
+                else if (newExpr != subExpr)
+                    collateExpr.ReplaceExpression(subExpr, newExpr);
+            }
+
+            if(collateExpr.Expressions.Any())
+            {
+                if(collateExpr.Expressions.Count() == 1)
+                {
+                    return collateExpr.Expressions.First();
+                }
+                else
+                {
+                    return collateExpr;
+                }
+            }
+            else
+            {
+                return new NullExpr();
+            }
+        }
+
+        public object Visit(CaseExpr caseExpr, object data)
+        {
+            bool removeRest = false;
+
+            foreach (var statement in caseExpr.Statements.ToArray())
+            {
+                if (removeRest)
+                {
+                    caseExpr.RemoveStatement(statement);
+                }
+                else
+                {
+                    var newCond = (ICondition)statement.Condition.Accept(this, data);
+
+                    if (newCond is AlwaysFalseCondition)
+                    {
+                        caseExpr.RemoveStatement(statement);
+                    }
+                    else
+                    {
+                        var newExpr = (IExpression)statement.Expression.Accept(this, data);
+
+                        statement.Condition = newCond;
+                        statement.Expression = newExpr;
+
+                        if (statement.Condition is AlwaysTrueCondition)
+                        {
+                            removeRest = true;
+                        }
+                    }
+                }
+            }
+
+            if (caseExpr.Statements.Any())
+                return caseExpr;
+            else
+                return new NullExpr();
+        }
+
+        protected virtual ICondition ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, QueryContext visitData)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessAndCondition(AndCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessEqualsCondition(EqualsCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessIsNullCondition(IsNullCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessNotCondition(NotCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        protected virtual ICondition ProcessOrCondition(OrCondition condition, QueryContext queryContext)
+        {
+            return condition;
+        }
+
+        private class VisitData
+        {
+            public QueryContext Context { get; set; }
+            public bool SecondRun { get; set; }
+
+            public VisitData ForSecondRun()
+            {
+                return new VisitData()
+                {
+                    Context = Context,
+                    SecondRun = true
+                };
+            }
         }
     }
 }

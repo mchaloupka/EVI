@@ -19,10 +19,17 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public IEnumerable<ICondition> Conditions { get { return conditions; } }
 
+        public IEnumerable<SqlOrderByComparator> Orderings { get { return orderings; } }
+
+        public int? Offset { get; set; }
+
+        public int? Limit { get; set; }
+
         private List<ISqlColumn> columns;
         private List<ConditionedSource> joinSources;
         private List<ConditionedSource> leftOuterJoinSources;
         private List<ICondition> conditions;
+        private List<SqlOrderByComparator> orderings;
         private ISqlSource originalSource;
 
         public SqlSelectOp(ISqlSource originalSource)
@@ -33,6 +40,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             this.leftOuterJoinSources = new List<ConditionedSource>();
             this.conditions = new List<ICondition>();
             this.valueBinders = new List<IBaseValueBinder>();
+            this.orderings = new List<SqlOrderByComparator>();
         }
 
         public ISqlColumn GetSelectColumn(ISqlColumn sourceColumn)
@@ -137,6 +145,19 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public object Accept(ISqlSourceVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
+        }
+
+        public bool IsMergeable
+        {
+            get
+            {
+                return !(this.Offset.HasValue || this.Limit.HasValue || this.orderings.Count > 0);
+            }
+        }
+
+        public void InsertOrdering(IExpression expression, bool descending)
+        {
+            this.orderings.Insert(0, new SqlOrderByComparator(expression, descending));
         }
     }
 }

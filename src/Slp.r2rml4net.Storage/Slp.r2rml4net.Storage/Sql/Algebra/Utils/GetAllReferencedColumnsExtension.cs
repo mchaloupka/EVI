@@ -101,6 +101,39 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            public IEnumerable<ISqlColumn> Visit(CoalesceExpr collateExpr, object data)
+            {
+                foreach (var subExpr in collateExpr.Expressions)
+                {
+                    var res = (IEnumerable<ISqlColumn>)subExpr.Accept(this, data);
+
+                    foreach (var item in res)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+
+            public IEnumerable<ISqlColumn> Visit(CaseExpr caseExpr, object data)
+            {
+                foreach (var subExpr in caseExpr.Statements)
+                {
+                    var res = (IEnumerable<ISqlColumn>)subExpr.Condition.Accept(this, data);
+
+                    foreach (var item in res)
+                    {
+                        yield return item;
+                    }
+
+                    res = (IEnumerable<ISqlColumn>)subExpr.Expression.Accept(this, data);
+
+                    foreach (var item in res)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+
             public IEnumerable<ISqlColumn> Visit(NullExpr nullExpr, object data)
             {
                 yield break;
@@ -157,6 +190,16 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             object IExpressionVisitor.Visit(NullExpr expression, object data)
+            {
+                return Visit(expression, data);
+            }
+
+            object IExpressionVisitor.Visit(CoalesceExpr expression, object data)
+            {
+                return Visit(expression, data);
+            }
+
+            object IExpressionVisitor.Visit(CaseExpr expression, object data)
             {
                 return Visit(expression, data);
             }

@@ -47,6 +47,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             var needed = new List<ISqlColumn>();
             needed.AddRange(cvd.NeededColumns);
             needed.AddRange(GetNeededColumnsOfValueVariables(sqlSelectOp));
+            needed.AddRange(GetNeededColumnsOfOrderings(sqlSelectOp));
 
             foreach (var col in cols)
             {
@@ -128,6 +129,17 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             foreach (var binder in source.ValueBinders)
             {
                 foreach (var col in binder.AssignedColumns)
+                {
+                    yield return col;
+                }
+            }
+        }
+
+        private IEnumerable<ISqlColumn> GetNeededColumnsOfOrderings(SqlSelectOp sqlSelectOp)
+        {
+            foreach (var ordering in sqlSelectOp.Orderings)
+            {
+                foreach (var col in ordering.Expression.GetAllReferencedColumns())
                 {
                     yield return col;
                 }

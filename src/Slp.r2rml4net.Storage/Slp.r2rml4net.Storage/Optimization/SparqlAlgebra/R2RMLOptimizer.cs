@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
@@ -14,7 +14,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
     public class R2RMLOptimizer : ISparqlAlgebraOptimizer
     {
-        public Sparql.ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
+        public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is BgpOp)
             {

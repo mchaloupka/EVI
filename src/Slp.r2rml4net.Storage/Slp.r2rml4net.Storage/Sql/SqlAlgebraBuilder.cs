@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
@@ -196,6 +196,56 @@ namespace Slp.r2rml4net.Storage.Sql
         public object Visit(NoSolutionOp noSolutionOp, object data)
         {
             return new NoRowSource();
+        }
+
+        public object Visit(SliceOp sliceOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)sliceOp.InnerQuery.Accept(this, context);
+
+            var select = inner as SqlSelectOp;
+
+            if (select == null)
+                select = TransformToSelect(inner, context);
+            
+            if(select.Limit.HasValue && sliceOp.Limit.HasValue)
+            {
+                select.Limit = Math.Min(select.Limit.Value, sliceOp.Limit.Value);
+            }
+            else if(sliceOp.Limit.HasValue)
+            {
+                select.Limit = sliceOp.Limit.Value;
+            }
+
+            if (select.Offset.HasValue && sliceOp.Offset.HasValue)
+            {
+                select.Offset = Math.Max(select.Offset.Value, sliceOp.Offset.Value);
+            }
+            else if (sliceOp.Offset.HasValue)
+            {
+                select.Offset = sliceOp.Offset.Value;
+            }
+
+            return select;
+        }
+
+        public object Visit(OrderByOp orderByOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)orderByOp.InnerQuery.Accept(this, context);
+
+            var select = inner as SqlSelectOp;
+
+            if (select == null)
+                select = TransformToSelect(inner, context);
+
+            foreach (var ordering in orderByOp.Orderings.Reverse())
+            {
+                var expression = expressionBuilder.CreateOrderByExpression(ordering.Expression, select, context);
+                select.InsertOrdering(expression, ordering.Descending);
+            }
+
+            return select;
         }
 
         public object Visit(SelectOp selectOp, object data)
@@ -401,9 +451,6 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private SqlSelectOp TransformToSelect(INotSqlOriginalDbSource sqlQuery, QueryContext context)
         {
-            if (sqlQuery is SqlSelectOp)
-                return (SqlSelectOp)sqlQuery;
-
             var select = new SqlSelectOp(sqlQuery);
 
             foreach (var valueBinder in sqlQuery.ValueBinders)
@@ -416,9 +463,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private void ProcessJoin(SqlSelectOp first, INotSqlOriginalDbSource second, QueryContext context)
         {
-            // TODO: Rework the "have only original source and conditions"
-
-            if (!(second is SqlSelectOp))
+            if (!(second is SqlSelectOp) || !((SqlSelectOp)second).IsMergeable)
                 second = TransformToSelect(second, context);
 
             ProcessJoin(first, (SqlSelectOp)second, context);
@@ -479,7 +524,7 @@ namespace Slp.r2rml4net.Storage.Sql
                     var origSBinder = sBinder.GetOriginalValueBinder(context);
                     var selSBinder = origSBinder.GetSelectValueBinder(first, context);
 
-                    var newBinder = new CollateValueBinder(fBinder);
+                    var newBinder = new CoalesceValueBinder(fBinder);
                     newBinder.AddValueBinder(selSBinder);
 
                     first.ReplaceValueBinder(fBinder, newBinder);

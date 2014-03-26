@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Sparql
+namespace Slp.r2rml4net.Storage.Sparql.Algebra
 {
     public interface ISparqlQuery : IVisitable<ISparqlQueryVisitor>
     {

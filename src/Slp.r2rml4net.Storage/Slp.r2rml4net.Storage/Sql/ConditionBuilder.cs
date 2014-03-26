@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Binders;
@@ -30,10 +30,10 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return new EqualsCondition(leftOperand, rightOperand);
             }
-            else if (valueBinder is CollateValueBinder)
+            else if (valueBinder is CoalesceValueBinder)
             {
                 var orCondition = new OrCondition();
-                var binders = ((CollateValueBinder)valueBinder).InnerBinders.ToArray();
+                var binders = ((CoalesceValueBinder)valueBinder).InnerBinders.ToArray();
 
                 for (int curIndex = 0; curIndex < binders.Length; curIndex++)
                 {
@@ -62,10 +62,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 var rightOperand = expressionBuilder.CreateExpression(context, (ValueBinder)secondValBinder);
                 return new EqualsCondition(leftOperand, rightOperand);
             }
-            else if (firstValBinder is CollateValueBinder)
+            else if (firstValBinder is CoalesceValueBinder)
             {
                 var orCondition = new OrCondition();
-                var binders = ((CollateValueBinder)firstValBinder).InnerBinders.ToArray();
+                var binders = ((CoalesceValueBinder)firstValBinder).InnerBinders.ToArray();
 
                 for (int curIndex = 0; curIndex < binders.Length; curIndex++)
                 {
@@ -97,7 +97,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return orCondition;
             }
-            else if (secondValBinder is CollateValueBinder)
+            else if (secondValBinder is CoalesceValueBinder)
             {
                 return CreateEqualsCondition(context, secondValBinder, firstValBinder);
             }
@@ -173,9 +173,9 @@ namespace Slp.r2rml4net.Storage.Sql
                     return orCondition;
                 }
             }
-            else if (valueBinder is CollateValueBinder)
+            else if (valueBinder is CoalesceValueBinder)
             {
-                var binders = ((CollateValueBinder)valueBinder).InnerBinders.ToArray();
+                var binders = ((CoalesceValueBinder)valueBinder).InnerBinders.ToArray();
                 var andCondition = new AndCondition();
 
                 foreach (var binder in binders)

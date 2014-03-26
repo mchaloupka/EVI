@@ -50,6 +50,13 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var context = (VisitorContext)data;
 
             context.SB.Append("SELECT");
+
+            if (sqlSelectOp.Limit.HasValue && !sqlSelectOp.Offset.HasValue)
+            {
+                context.SB.Append(" TOP ");
+                context.SB.Append(sqlSelectOp.Limit.Value);
+            }
+
             var cols = sqlSelectOp.Columns.OrderBy(x => x.Name).ToArray();
             for (int i = 0; i < cols.Length; i++)
             {
@@ -93,6 +100,48 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 }
 
                 conditions[i].Accept(this, context);
+            }
+
+            var orderings = sqlSelectOp.Orderings.ToArray();
+
+            for (int i = 0; i < orderings.Length; i++)
+            {
+                if (i == 0)
+                {
+                    context.SB.Append(" ORDER BY ");
+                }
+                else
+                {
+                    context.SB.Append(", ");
+                }
+
+                orderings[i].Expression.Accept(this, context);
+
+                if (orderings[i].Descending)
+                {
+                    context.SB.Append(" DESC");
+                }
+                else
+                {
+                    context.SB.Append(" ASC");
+                }
+            }
+
+            if (sqlSelectOp.Offset.HasValue)
+            {
+                if (orderings.Length == 0)
+                    throw new Exception("To enable limit and offset, it is needed to use also order by clause");
+
+                context.SB.Append(" OFFSET ");
+                context.SB.Append(sqlSelectOp.Offset ?? 0);
+                context.SB.Append(" ROWS");
+
+                if (sqlSelectOp.Limit.HasValue)
+                {
+                    context.SB.Append(" FETCH NEXT ");
+                    context.SB.Append(sqlSelectOp.Limit.Value);
+                    context.SB.Append(" ROWS ONLY");
+                }
             }
 
             return null;
@@ -182,15 +231,18 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         private void GenerateColumnQuery(ISqlColumn col, VisitorContext context)
         {
-            context.SB.Append(col.Source.Name);
-            context.SB.Append(".");
+            if (!string.IsNullOrEmpty(col.Source.Name)) // root is not named
+            {
+                context.SB.Append(col.Source.Name);
+                context.SB.Append(".");
+            }
             context.SB.Append(col.Name);
         }
 
         private bool IsDelimiterNeeded(ISqlSource sqlSource)
         {
             return !(sqlSource is SqlTable);
-        } 
+        }
         #endregion
 
         #region ICondition
@@ -300,7 +352,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             }
 
             return null;
-        } 
+        }
         #endregion
 
         #region IExpression
@@ -346,7 +398,47 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var context = (VisitorContext)data;
             context.SB.Append("NULL");
             return null;
-        } 
+        }
+
+        public object Visit(CoalesceExpr collateExpr, object data)
+        {
+            var context = (VisitorContext)data;
+
+            context.SB.Append("COALESCE(");
+
+            var inners = collateExpr.Expressions.ToArray();
+
+            for (int i = 0; i < inners.Length; i++)
+            {
+                if (i > 0)
+                    context.SB.Append(", ");
+
+                inners[i].Accept(this, data);
+            }
+
+            context.SB.Append(")");
+
+            return null;
+        }
+
+        public object Visit(CaseExpr caseExpr, object data)
+        {
+            var context = (VisitorContext)data;
+
+            context.SB.Append("CASE");
+
+            foreach (var statement in caseExpr.Statements)
+            {
+                context.SB.Append(" WHEN ");
+                statement.Condition.Accept(this, data);
+                context.SB.Append(" THEN ");
+                statement.Expression.Accept(this, data);
+            }
+
+            context.SB.Append(" END");
+
+            return null;
+        }
         #endregion
     }
 }

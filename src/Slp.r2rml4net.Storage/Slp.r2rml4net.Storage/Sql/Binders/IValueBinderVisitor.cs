@@ -11,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
     {
         object Visit(CaseValueBinder caseValueBinder, object data);
 
-        object Visit(CollateValueBinder collateValueBinder, object data);
+        object Visit(CoalesceValueBinder collateValueBinder, object data);
 
         object Visit(ValueBinder valueBinder, object data);
     }

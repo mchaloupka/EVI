@@ -288,7 +288,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return caseValueBinder;
         }
 
-        public object Visit(CollateValueBinder collateValueBinder, object data)
+        public object Visit(CoalesceValueBinder collateValueBinder, object data)
         {
             var cvd = (VisitData)data;
 

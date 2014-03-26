@@ -10,21 +10,21 @@ using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
-    public class CollateValueBinder : IBaseValueBinder
+    public class CoalesceValueBinder : IBaseValueBinder
     {
         private List<IBaseValueBinder> binders;
 
-        private CollateValueBinder()
+        private CoalesceValueBinder()
         {
             this.binders = new List<IBaseValueBinder>();
         }
 
-        public CollateValueBinder(IBaseValueBinder originalValueBinder)
+        public CoalesceValueBinder(IBaseValueBinder originalValueBinder)
         {
             this.binders = new List<IBaseValueBinder>();
 
-            if (originalValueBinder is CollateValueBinder)
-                this.binders.AddRange(((CollateValueBinder)originalValueBinder).binders);
+            if (originalValueBinder is CoalesceValueBinder)
+                this.binders.AddRange(((CoalesceValueBinder)originalValueBinder).binders);
             else
                 this.binders.Add(originalValueBinder);
         }
@@ -34,8 +34,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             if (valueBinder.VariableName != VariableName)
                 throw new Exception("Cannot collate value binders for different variables");
 
-            if (valueBinder is CollateValueBinder)
-                this.binders.AddRange(((CollateValueBinder)valueBinder).binders);
+            if (valueBinder is CoalesceValueBinder)
+                this.binders.AddRange(((CoalesceValueBinder)valueBinder).binders);
             else
                 this.binders.Add(valueBinder);
         }
@@ -78,7 +78,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
         public object Clone()
         {
-            var newBinder = new CollateValueBinder();
+            var newBinder = new CoalesceValueBinder();
 
             foreach (var binder in this.InnerBinders)
             {

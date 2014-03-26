@@ -18,6 +18,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public ISqlSource Source { get; private set; }
 
-        public IExpression Expression { get; private set; }
+        public IExpression Expression { get; set; }
     }
 }

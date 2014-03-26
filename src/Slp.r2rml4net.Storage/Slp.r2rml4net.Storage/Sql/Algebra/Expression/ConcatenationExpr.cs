@@ -30,5 +30,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 
             return new ConcatenationExpr(newParts);
         }
+
+        public void ReplacePart(IExpression part, IExpression newPart)
+        {
+            int index = parts.IndexOf(part);
+
+            if (index > -1)
+                parts[index] = newPart;
+        }
     }
 }

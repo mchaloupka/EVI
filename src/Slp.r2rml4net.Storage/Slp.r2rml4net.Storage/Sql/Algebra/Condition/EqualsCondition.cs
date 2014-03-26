@@ -15,9 +15,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
             this.RightOperand = rightOperand;
         }
 
-        public IExpression RightOperand { get; private set; }
+        public IExpression RightOperand { get; set; }
 
-        public IExpression LeftOperand { get; private set; }
+        public IExpression LeftOperand { get; set; }
 
         [DebuggerStepThrough]
         public object Accept(IConditionVisitor visitor, object data)

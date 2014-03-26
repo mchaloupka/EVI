@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
-    [DebuggerDisplay("Empty")]
-    public class OneEmptySolutionOp : ISparqlQueryPart
+    [DebuggerDisplay("None")]
+    public class NoSolutionOp : ISparqlQueryPart
     {
         public IEnumerable<ISparqlQuery> GetInnerQueries()
         {
@@ -17,12 +17,12 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
 
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            throw new Exception("Should not be called, OneEmptySolutionOp has no subqueries");
+            throw new Exception("Should not be called, NoSolutionOp has no subqueries");
         }
 
         public override string ToString()
         {
-            return "Empty";
+            return "None";
         }
 
         public ISparqlQuery FinalizeAfterTransform()

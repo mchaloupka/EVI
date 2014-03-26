@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
     [DebuggerDisplay("JOIN(Count = {joined.Count})")]
     public class JoinOp : ISparqlQueryPart
@@ -17,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             joined = new List<ISparqlQuery>();
         }
 
-        public void AddToJoin(Sparql.ISparqlQuery sparqlQuery)
+        public void AddToJoin(ISparqlQuery sparqlQuery)
         {
             joined.Add(sparqlQuery);
         }

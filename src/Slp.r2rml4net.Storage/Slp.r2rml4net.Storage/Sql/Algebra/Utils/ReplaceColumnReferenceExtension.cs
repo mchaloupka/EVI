@@ -111,6 +111,28 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             {
                 return null;
             }
+
+
+            public object Visit(CoalesceExpr collateExpr, object data)
+            {
+                foreach (var expr in collateExpr.Expressions)
+                {
+                    expr.Accept(this, data);
+                }
+
+                return null;
+            }
+
+            public object Visit(CaseExpr caseExpr, object data)
+            {
+                foreach (var statement in caseExpr.Statements)
+                {
+                    statement.Condition.Accept(this, data);
+                    statement.Expression.Accept(this, data);
+                }
+
+                return null;
+            }
         }
     }
 }

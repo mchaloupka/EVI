@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
+using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Binders;
+using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -193,6 +196,57 @@ namespace Slp.r2rml4net.Storage.Sql
         public IExpression CreateExpression(QueryContext context, int number)
         {
             return new ConstantExpr(number);
+        }
+
+        public IExpression CreateOrderByExpression(ISparqlQueryExpression sparqlQueryExpression, SqlSelectOp select, QueryContext context)
+        {
+            if (sparqlQueryExpression is VariableExpression)
+            {
+                var varExpr = (VariableExpression)sparqlQueryExpression;
+                var valueBinder = select.ValueBinders.FirstOrDefault(x => x.VariableName == varExpr.Variable);
+
+                if(valueBinder == null)
+                    throw new Exception("Variable not found");
+
+                // TODO: Handle order specifics
+                // http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#modOrderBy
+
+                return CreateExpression(context, valueBinder.GetOriginalValueBinder(context));
+            }
+            else
+                throw new NotImplementedException();
+        }
+
+        public IExpression CreateExpression(QueryContext context, IBaseValueBinder binder)
+        {
+            if (binder is ValueBinder)
+            {
+                return CreateExpression(context, (ValueBinder)binder);
+            }
+            else if (binder is CoalesceValueBinder)
+            {
+                var col = new CoalesceExpr();
+
+                foreach (var innerBinder in ((CoalesceValueBinder)binder).InnerBinders)
+                {
+                    col.AddExpression(CreateExpression(context, innerBinder));
+                }
+
+                return col;
+            }
+            else if (binder is CaseValueBinder)
+            {
+                var cas = new CaseExpr();
+
+                foreach (var statement in ((CaseValueBinder)binder).Statements)
+                {
+                    cas.AddStatement(statement.Condition, CreateExpression(context, statement.ValueBinder));
+                }
+
+                return cas;
+            }
+            else
+                throw new NotImplementedException();
         }
     }
 }

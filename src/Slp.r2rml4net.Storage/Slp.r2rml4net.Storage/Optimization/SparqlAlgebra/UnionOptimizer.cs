@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
@@ -191,6 +191,34 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
             ((VisitData)data).Visit(selectOp);
             return selectOp;
+        }
+
+        public object Visit(SliceOp sliceOp, object data)
+        {
+            if (((VisitData)data).IsVisited(sliceOp))
+                return sliceOp;
+
+            var inner = (ISparqlQuery)sliceOp.InnerQuery.Accept(this, data);
+
+            if (inner != sliceOp.InnerQuery)
+                sliceOp.ReplaceInnerQuery(sliceOp.InnerQuery, inner);
+
+            ((VisitData)data).Visit(sliceOp);
+            return sliceOp;
+        }
+
+        public object Visit(OrderByOp orderByOp, object data)
+        {
+            if (((VisitData)data).IsVisited(orderByOp))
+                return orderByOp;
+
+            var inner = (ISparqlQuery)orderByOp.InnerQuery.Accept(this, data);
+
+            if (inner != orderByOp.InnerQuery)
+                orderByOp.ReplaceInnerQuery(orderByOp.InnerQuery, inner);
+
+            ((VisitData)data).Visit(orderByOp);
+            return orderByOp;
         }
 
         private class VisitData

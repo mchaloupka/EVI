@@ -13,5 +13,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         object Visit(ConstantExpr expression, object data);
         object Visit(ConcatenationExpr expression, object data);
         object Visit(NullExpr nullExpr, object data);
+        object Visit(CoalesceExpr collateExpr, object data);
+        object Visit(CaseExpr caseExpr, object data);
     }
 }

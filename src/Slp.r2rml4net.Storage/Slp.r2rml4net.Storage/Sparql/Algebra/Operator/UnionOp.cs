@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
     [DebuggerDisplay("UNION(Count = {unioned.Count})")]
     public class UnionOp : ISparqlQueryPart
@@ -17,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             unioned = new List<ISparqlQuery>();
         }
 
-        public void AddToUnion(Sparql.ISparqlQuery sparqlQuery)
+        public void AddToUnion(ISparqlQuery sparqlQuery)
         {
             unioned.Add(sparqlQuery);
         }

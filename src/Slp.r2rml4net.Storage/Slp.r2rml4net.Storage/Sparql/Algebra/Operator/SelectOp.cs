@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
     [DebuggerDisplay("SELECT({InnerQuery})")]
     public class SelectOp : ISparqlQueryModifier

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
     public interface ISparqlQueryVisitor : IVisitor
     {
@@ -20,5 +20,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
         object Visit(NoSolutionOp noSolutionOp, object data);
 
         object Visit(SelectOp selectOp, object data);
+
+        object Visit(SliceOp sliceOp, object data);
+
+        //object Visit(OrderByOp orderByOp, object data);
+
+        object Visit(OrderByOp orderByOp, object data);
     }
 }
