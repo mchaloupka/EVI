@@ -193,6 +193,7 @@
     <Content Include="Content\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\fonts\FontAwesome.otf" />
     <Content Include="Views\Main\AppStartFailed.cshtml" />
+    <None Include="Properties\PublishProfiles\r2rmlstore.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
