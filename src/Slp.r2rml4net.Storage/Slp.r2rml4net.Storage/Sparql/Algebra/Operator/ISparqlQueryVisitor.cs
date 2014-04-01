@@ -23,8 +23,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 
         object Visit(SliceOp sliceOp, object data);
 
-        //object Visit(OrderByOp orderByOp, object data);
-
         object Visit(OrderByOp orderByOp, object data);
+
+        object Visit(DistinctOp distinctOp, object data);
     }
 }

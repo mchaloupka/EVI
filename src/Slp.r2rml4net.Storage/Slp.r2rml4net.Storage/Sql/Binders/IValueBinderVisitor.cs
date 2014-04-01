@@ -14,5 +14,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         object Visit(CoalesceValueBinder collateValueBinder, object data);
 
         object Visit(ValueBinder valueBinder, object data);
+
+        object Visit(SqlSideValueBinder sqlSideValueBinder, object data);
     }
 }

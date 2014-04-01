@@ -120,6 +120,13 @@ namespace Slp.r2rml4net.Storage.Sparql
 
                 return order;
             }
+            else if(originalAlgebra is Distinct)
+            {
+                var orDistinct = (Distinct)originalAlgebra;
+                var inner = ProcessAlgebra(orDistinct.InnerAlgebra, context);
+
+                return new DistinctOp(inner);
+            }
 
             throw new NotImplementedException();
 

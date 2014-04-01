@@ -51,6 +51,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             context.SB.Append("SELECT");
 
+            if(sqlSelectOp.IsDistinct)
+            {
+                context.SB.Append(" DISTINCT");
+            }
+
             if (sqlSelectOp.Limit.HasValue && !sqlSelectOp.Offset.HasValue)
             {
                 context.SB.Append(" TOP ");

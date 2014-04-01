@@ -7,6 +7,7 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
@@ -14,7 +15,7 @@ using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public class IsNullOptimizer : ISqlAlgebraOptimizer, ISqlAlgebraOptimizerOnTheFly, ISqlSourceVisitor, IConditionVisitor, IValueBinderVisitor
+    public class IsNullOptimizer : ISqlAlgebraOptimizer, ISqlAlgebraOptimizerOnTheFly, ISqlSourceVisitor, IConditionVisitor, IValueBinderVisitor, IExpressionVisitor
     {
         private ConditionBuilder conditionBuilder;
 
@@ -75,7 +76,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             sqlSelectOp.ClearConditions();
 
-            if(conditions.OfType<AlwaysFalseCondition>().Any())
+            if (conditions.OfType<AlwaysFalseCondition>().Any())
             {
                 sqlSelectOp.AddCondition(new AlwaysFalseCondition());
             }
@@ -109,6 +110,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                     sqlSelectOp.ReplaceValueBinder(binder, newBinder);
             }
 
+            foreach (var exprColumn in sqlSelectOp.Columns.OfType<SqlExpressionColumn>())
+            {
+                var expression = (IExpression)exprColumn.Expression.Accept(this, cvd.SetGlobalResult(gres));
+
+                if (exprColumn.Expression != expression)
+                    exprColumn.Expression = expression;
+            }
+
             return null;
         }
 
@@ -116,7 +125,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         {
             var cvd = (VisitData)data;
 
-            if(cvd.Recurse)
+            if (cvd.Recurse)
             {
                 foreach (var inner in sqlUnionOp.Sources)
                 {
@@ -228,6 +237,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         public object Visit(EqualsCondition condition, object data)
         {
+            var leftExpr = (IExpression)condition.LeftOperand.Accept(this, data);
+            var rightExpr = (IExpression)condition.RightOperand.Accept(this, data);
+
+            if (condition.LeftOperand != leftExpr)
+                condition.LeftOperand = leftExpr;
+            if (condition.RightOperand != rightExpr)
+                condition.RightOperand = rightExpr;
+
             return condition;
         }
 
@@ -288,6 +305,21 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return caseValueBinder;
         }
 
+        public object Visit(SqlSideValueBinder sqlSideValueBinder, object data)
+        {
+            var expressionCol = sqlSideValueBinder.Column as SqlExpressionColumn;
+
+            if (expressionCol != null)
+            {
+                var expr = (IExpression)expressionCol.Expression.Accept(this, data);
+
+                if (expr != expressionCol.Expression)
+                    expressionCol.Expression = expr;
+            }
+
+            return sqlSideValueBinder;
+        }
+
         public object Visit(CoalesceValueBinder collateValueBinder, object data)
         {
             var cvd = (VisitData)data;
@@ -308,7 +340,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 if (modified is AlwaysTrueCondition)
                     bindersToRemove.Add(newBinder);
-                else if(modified is AlwaysFalseCondition)
+                else if (modified is AlwaysFalseCondition)
                 {
                     for (int y = i + 1; y < innerBinders.Length; y++)
                     {
@@ -332,6 +364,105 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(ValueBinder valueBinder, object data)
         {
             return valueBinder;
+        }
+
+        public object Visit(ColumnExpr expression, object data)
+        {
+            var cvd = (VisitData)data;
+
+            if (cvd.GlobalResult.IsInNullColumns(expression.Column))
+                return new NullExpr();
+            else
+                return expression;
+        }
+
+        public object Visit(ConstantExpr expression, object data)
+        {
+            return expression;
+        }
+
+        public object Visit(ConcatenationExpr expression, object data)
+        {
+            foreach (var item in expression.Parts.ToArray())
+            {
+                var nItem = (IExpression)item.Accept(this, data);
+
+                if(nItem is NullExpr)
+                {
+                    return new NullExpr();
+                }
+                if (item != nItem)
+                    expression.ReplacePart(item, nItem);
+            }
+
+            return expression;
+        }
+
+        public object Visit(NullExpr nullExpr, object data)
+        {
+            return nullExpr;
+        }
+
+        public object Visit(CoalesceExpr collateExpr, object data)
+        {
+            foreach (var expr in collateExpr.Expressions.ToArray())
+            {
+                var nExpr = (IExpression)expr.Accept(this, data);
+
+                if (nExpr is NullExpr)
+                {
+                    collateExpr.RemoveExpression(expr);
+                }
+                if (expr != nExpr)
+                {
+                    collateExpr.ReplaceExpression(expr, nExpr);
+                }
+            }
+
+            if (!collateExpr.Expressions.Any())
+            {
+                return new NullExpr();
+            }
+            else if (collateExpr.Expressions.Count() == 1)
+            {
+                return collateExpr.Expressions.First();
+            }
+            else
+            {
+                return collateExpr;
+            }
+        }
+
+        public object Visit(CaseExpr caseExpr, object data)
+        {
+            foreach (var statement in caseExpr.Statements.ToArray())
+            {
+                var condition = (ICondition)statement.Condition.Accept(this, data);
+
+                if (condition is AlwaysFalseCondition)
+                {
+                    caseExpr.RemoveStatement(statement);
+                }
+                else
+                {
+                    if (condition != statement.Condition)
+                        statement.Condition = condition;
+
+                    var expr = (IExpression)statement.Expression.Accept(this, data);
+
+                    if (expr != statement.Expression)
+                        statement.Expression = expr;
+                }
+            }
+
+            if (!caseExpr.Statements.Any())
+            {
+                return new NullExpr();
+            }
+            else
+            {
+                return caseExpr;
+            }
         }
 
         private class VisitData
@@ -365,7 +496,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             public GetIsNullListResult Process(ICondition condition)
             {
-                if(!conditionCache.ContainsKey(condition))
+                if (!conditionCache.ContainsKey(condition))
                 {
                     var res = (GetIsNullListResult)condition.Accept(this, null);
                     conditionCache.Add(condition, res);
@@ -376,7 +507,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             public GetIsNullListResult Process(ISqlSource source)
             {
-                if(!sqlCache.ContainsKey(source))
+                if (!sqlCache.ContainsKey(source))
                 {
                     var res = (GetIsNullListResult)source.Accept(this, null);
                     sqlCache.Add(source, res);
@@ -523,7 +654,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 public bool IsInNullColumns(IsNullCondition condition)
                 {
-                    if(this.isNullColumns.ContainsKey(condition.Column))
+                    if (this.isNullColumns.ContainsKey(condition.Column))
                     {
                         var cond = this.isNullColumns[condition.Column];
 
@@ -544,16 +675,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                             // TODO: now expression cannot be null, it can change in the future
                             res.AddIsNotNullColumn(col);
                         }
-                        else if(col is SqlUnionColumn)
+                        else if (col is SqlUnionColumn)
                         {
-                            if(source is SqlUnionOp)
+                            if (source is SqlUnionOp)
                             {
                                 var unCol = (SqlUnionColumn)col;
                                 var unOp = (SqlUnionOp)source;
 
-                                if(unCol.OriginalColumns.Count() == unOp.Sources.Count()) // Can decide only when it contains columns from all sources
+                                if (unCol.OriginalColumns.Count() == unOp.Sources.Count()) // Can decide only when it contains columns from all sources
                                 {
-                                    if(unCol.OriginalColumns.All(x => this.IsInNullColumns(x)))
+                                    if (unCol.OriginalColumns.All(x => this.IsInNullColumns(x)))
                                     {
                                         res.AddIsNullColumn(col);
                                     }
@@ -568,16 +699,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                                 throw new Exception("SqlUnionColumn should be only in SqlUnionOp");
                             }
                         }
-                        else if(col is SqlSelectColumn)
+                        else if (col is SqlSelectColumn)
                         {
                             var selCol = (SqlSelectColumn)col;
 
                             if (this.IsInNullColumns(selCol.OriginalColumn))
                                 res.AddIsNullColumn(col);
-                            if(this.IsInNotNullColumns(selCol.OriginalColumn))
+                            if (this.IsInNotNullColumns(selCol.OriginalColumn))
                                 res.AddIsNotNullColumn(col);
                         }
-                        else if(col is SqlTableColumn)
+                        else if (col is SqlTableColumn)
                         {
                             if (this.IsInNullColumns(col))
                                 res.AddIsNullColumn(col);

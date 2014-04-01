@@ -248,5 +248,10 @@ namespace Slp.r2rml4net.Storage.Sql
             else
                 throw new NotImplementedException();
         }
+
+        public IExpression CreateExpressionForSqlSideValueBinder(IBaseValueBinder binder, QueryContext context)
+        {
+            return CreateExpression(context, binder.GetOriginalValueBinder(context));
+        }
     }
 }

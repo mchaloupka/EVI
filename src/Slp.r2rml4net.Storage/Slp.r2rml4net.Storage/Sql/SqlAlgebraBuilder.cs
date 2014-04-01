@@ -248,6 +248,40 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        public object Visit(DistinctOp distinctOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)distinctOp.InnerQuery.Accept(this, context);
+
+            var select = inner as SqlSelectOp;
+
+            if (select == null)
+                select = TransformToSelect(inner, context);
+
+            select.IsDistinct = true;
+
+            foreach (var binder in select.ValueBinders.ToArray())
+            {
+                if (binder is ValueBinder || binder is SqlSideValueBinder)
+                    continue;
+
+                var expression = expressionBuilder.CreateExpressionForSqlSideValueBinder(binder, context);
+
+                var newBinder = new SqlSideValueBinder(select.GetExpressionColumn(expression), binder);
+                select.ReplaceValueBinder(binder, newBinder);
+            }
+
+            var neededColumns = select.ValueBinders.SelectMany(x => x.AssignedColumns).Distinct().ToArray();
+            var notNeededColumns = select.Columns.Where(x => !neededColumns.Contains(x)).ToArray();
+
+            foreach (var col in notNeededColumns)
+            {
+                select.RemoveColumn(col);
+            }
+
+            return select;
+        }
+
         public object Visit(SelectOp selectOp, object data)
         {
             var context = (QueryContext)data;
