@@ -58,14 +58,22 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             }
 
             var cols = sqlSelectOp.Columns.OrderBy(x => x.Name).ToArray();
-            for (int i = 0; i < cols.Length; i++)
+            if(cols.Length > 0)
             {
-                if (i != 0)
-                    context.SB.Append(",");
-                context.SB.Append(" ");
+                for (int i = 0; i < cols.Length; i++)
+                {
+                    if (i != 0)
+                        context.SB.Append(",");
+                    context.SB.Append(" ");
 
-                GenerateSelectColumnQuery(cols[i], context);
+                    GenerateSelectColumnQuery(cols[i], context);
+                }
             }
+            else
+            {
+                context.SB.Append("NULL");
+            }
+            
 
             context.SB.Append(" FROM ");
             GenerateInnerQuery(sqlSelectOp.OriginalSource, context);

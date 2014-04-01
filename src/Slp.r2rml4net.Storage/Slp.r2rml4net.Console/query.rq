@@ -1,6 +1,8 @@
-SELECT ?s ?p ?o
+PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
+
+SELECT ?o
 WHERE
 {
-    ?s ?p ?o;
+    ?s eugeo:level ?o;
 }
-LIMIT 10
+LIMIT 1000
