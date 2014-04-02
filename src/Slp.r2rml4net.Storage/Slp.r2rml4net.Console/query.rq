@@ -1,8 +1,5 @@
-PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
-
 SELECT DISTINCT ?p
 WHERE
 {
     ?s ?p ?o;
 }
-LIMIT 1000

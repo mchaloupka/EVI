@@ -151,7 +151,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         {
             get
             {
-                return !(this.Offset.HasValue || this.Limit.HasValue || this.orderings.Count > 0 || IsDistinct);
+                return !(this.Offset.HasValue || this.Limit.HasValue || this.orderings.Count > 0 || IsDistinct || IsReduced);
             }
         }
 
@@ -161,5 +161,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         }
 
         public bool IsDistinct { get; set; }
+
+        public bool IsReduced { get; set; }
     }
 }

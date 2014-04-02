@@ -45,7 +45,8 @@ namespace Slp.r2rml4net.Storage.Query
                 new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
                 new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer(),
                 new Optimization.SqlAlgebra.RemoveNoRowSourcesOptimizer(),
-                new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization()
+                new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization(),
+                new Optimization.SqlAlgebra.ReducedSelectOptimization()
             };
 
             this.sqlOptimizersOnTheFly = new ISqlAlgebraOptimizerOnTheFly[]
@@ -63,7 +64,7 @@ namespace Slp.r2rml4net.Storage.Query
             switch (originalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    if (resultsHandler == null) 
+                    if (resultsHandler == null)
                         throw new ArgumentNullException("resultsHandler", "Cannot handle a Ask query with a null SPARQL Results Handler");
 
                     nodeFactory = resultsHandler;
@@ -71,7 +72,7 @@ namespace Slp.r2rml4net.Storage.Query
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    if (rdfHandler == null) 
+                    if (rdfHandler == null)
                         throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
 
                     nodeFactory = rdfHandler;
@@ -82,7 +83,7 @@ namespace Slp.r2rml4net.Storage.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (resultsHandler == null) 
+                    if (resultsHandler == null)
                         throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
                     nodeFactory = resultsHandler;
@@ -138,7 +139,7 @@ namespace Slp.r2rml4net.Storage.Query
                             resultsHandler.EndResults(false);
                             throw;
                         }
-                        
+
 
                         break;
                     case VDS.RDF.Query.SparqlQueryType.Construct:
