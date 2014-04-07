@@ -185,7 +185,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
             }
 
-            if(newCol == null)
+            if (newCol == null)
                 newCol = sqlUnion.GetUnionedColumn();
 
             newCol.AddColumn(neededColumn);
@@ -207,12 +207,12 @@ namespace Slp.r2rml4net.Storage.Sql
 
             if (select == null)
                 select = TransformToSelect(inner, context);
-            
-            if(select.Limit.HasValue && sliceOp.Limit.HasValue)
+
+            if (select.Limit.HasValue && sliceOp.Limit.HasValue)
             {
                 select.Limit = Math.Min(select.Limit.Value, sliceOp.Limit.Value);
             }
-            else if(sliceOp.Limit.HasValue)
+            else if (sliceOp.Limit.HasValue)
             {
                 select.Limit = sliceOp.Limit.Value;
             }
@@ -316,11 +316,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 {
                     var valBinder = select.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
 
-                    if (valBinder == null)
-                    {
-                        throw new Exception("Can't find variable in inner query (sql select operator)");
-                    }
-                    else
+                    if (valBinder != null)
                     {
                         valueBinders.Add(valBinder);
                     }
@@ -443,6 +439,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 var node = ((NodeMatchPattern)pattern).Node;
 
                 ProcessBgpCondition(bgpOp, context, select, source, node, r2rmlMap);
+            }
+            else if (pattern is BlankNodePattern)
+            {
+                ProcessBgpVariable(bgpOp, context, select, source, ((BlankNodePattern)pattern).ID, r2rmlMap);
             }
             else
                 throw new NotImplementedException();

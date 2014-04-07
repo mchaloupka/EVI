@@ -76,7 +76,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             }
             else
             {
-                context.SB.Append("NULL");
+                context.SB.Append(" NULL AS c");
             }
             
 
