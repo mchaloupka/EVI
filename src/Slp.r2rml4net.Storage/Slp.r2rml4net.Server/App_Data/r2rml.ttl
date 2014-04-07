@@ -49,31 +49,12 @@
 @prefix eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#> .
 @prefix czso-ds-def:   <http://linked.opendata.cz/resource/czso.cz/dataset-definitions#> .
 
-# Views for generating the dataset definition
-#<#DemographyDataStructureView> rr:sqlQuery """
-#SELECT [Id], [Name], [Label]
-#FROM (VALUES 
-#	(1, 'DemographyFinalPopulationDefinition', 'The definition of the structure of the data set containing demographical data about population in Czech municipalities.'),
-#	(2, 'DemographyBirthsDefinition', 'The definition of the structure of the data set containing demographical data about birhts in Czech municipalities.'),
-#	(3, 'DemographyDeathsDefinition', 'The definition of the structure of the data set containing demographical data about deaths in Czech municipalities.'),
-#	(4, 'DemographyImmigrantsDefinition', 'The definition of the structure of the data set containing demographical data about immigrants to Czech municipalities.'),
-#	(5, 'DemographyEmmigrantsDefinition', 'The definition of the structure of the data set containing demographical data about emmigrants from Czech municipalities.')
-#) AS tmp([Id], [Name], [Label]);
-#""".
-#
-#<#DemographyDataStructureTriples>
-#	rr:logicalTable <#DemographyDataStructureView>;
-#	rr:subjectMap [ rr:template "http://linked.opendata.cz/resource/czso.cz/dataset-definitions/{[Name]}" ];
-#	rr:class qb:DataStructureDefinition;
-#	rr:predicateObjectMap [
-#		rr:predicate rdfs:label;
-#		rr:column "[Label]";
-#	];
-#.
-
 <#MunicipalityTriples> a rr:TriplesMap;
 	rr:logicalTable [ rr:tableName "[dbo].[Municipality]" ];
-	rr:subjectMap [ rr:template "http://linked.opendata.cz/resource/region/{[Id]}" ];
+	rr:subjectMap [ 
+		rr:template "http://linked.opendata.cz/resource/region/{[Id]}";
+		rr:class czso-ds-def:LAURegion
+	];
 	rr:predicateObjectMap [
 		rr:predicate rdfs:label;
 		rr:objectMap [ rr:column "[Name]"; ];

@@ -110,18 +110,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
                     {
                         col.RemoveColumn(ccol);
                     }
-
-                    if(!col.OriginalColumns.Any())
-                    {
-                        colToDelete.Add(col);
-                    }
                 }
-
-                foreach (var item in colToDelete)
-                {
-                    RemoveColumn(item);
-                }
-
+                
                 foreach (var valBinder in this.valueBinders.Cast<CaseValueBinder>())
                 {
                     var sourceStatements = valBinder.Statements.Where(x => x.Condition.GetAllReferencedColumns().All(y => y.Source == source)).ToList();
