@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
@@ -14,12 +15,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
             var vData = new VisitData(context, false);
-
-            foreach (var variable in algebra.ValueBinders.Select(x => x.VariableName))
-            {
-                vData.AddVariable(variable);
-            }
-
             algebra.Accept(this, vData);
             return algebra;
         }
@@ -64,13 +59,20 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (isReduced)
             {
-                var valueBindersNeedsColumns = sqlSelectOp.ValueBinders
-                    .Where(x => vData.HasVariable(x.VariableName))
-                    .SelectMany(x => x.AssignedColumns).Any();
+                bool constantResult = true;
 
-                if (!valueBindersNeedsColumns && (!sqlSelectOp.Limit.HasValue || sqlSelectOp.Limit.Value > 1))
+                if (sqlSelectOp.Columns.OfType<SqlSelectColumn>().Any())
+                    constantResult = false;
+
+                if (sqlSelectOp.Columns.OfType<SqlExpressionColumn>().SelectMany(x => x.Expression.GetAllReferencedColumns()).Any())
+                    constantResult = false;
+
+                if (constantResult)
                 {
-                    sqlSelectOp.Limit = 1;
+                    if (!sqlSelectOp.Limit.HasValue || sqlSelectOp.Limit.Value > 1)
+                    { 
+                        sqlSelectOp.Limit = 1;
+                    }
                 }
             }
 
@@ -103,23 +105,15 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             public bool IsParentReduced { get; private set; }
 
-            private HashSet<string> variables;
-
             public VisitData(QueryContext context, bool isParentReduced)
             {
                 this.Context = context;
                 this.IsParentReduced = isParentReduced;
-                this.variables = new HashSet<string>();
             }
 
             public VisitData Clone()
             {
                 var vd = new VisitData(Context, IsParentReduced);
-
-                foreach (var variable in this.variables)
-                {
-                    vd.AddVariable(variable);
-                }
 
                 return vd;
             }
@@ -129,17 +123,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 var vd = this.Clone();
                 vd.IsParentReduced = isReduced;
                 return vd;
-            }
-
-            public void AddVariable(string variable)
-            {
-                if (!variables.Contains(variable))
-                    variables.Add(variable);
-            }
-
-            public bool HasVariable(string variable)
-            {
-                return variables.Contains(variable);
             }
         }
     }

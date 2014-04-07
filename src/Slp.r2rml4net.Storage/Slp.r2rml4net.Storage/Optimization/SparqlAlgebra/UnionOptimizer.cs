@@ -181,7 +181,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         public object Visit(SelectOp selectOp, object data)
         {
-            if (((VisitData)data).IsVisited(selectOp))
+            var vd = (VisitData)data;
+
+            if (vd.IsVisited(selectOp))
                 return selectOp;
 
             var inner = (ISparqlQuery)selectOp.InnerQuery.Accept(this, data);
@@ -189,8 +191,40 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             if (inner != selectOp.InnerQuery)
                 selectOp.ReplaceInnerQuery(selectOp.InnerQuery, inner);
 
-            ((VisitData)data).Visit(selectOp);
-            return selectOp;
+            if(inner is UnionOp && IsProjectionOnly(selectOp))
+            {
+                UnionOp union = new UnionOp();
+
+                foreach (var source in ((UnionOp)inner).GetInnerQueries())
+                {
+                    var projectedSource = CreateProjection(selectOp, source, vd);
+                    union.AddToUnion(projectedSource);
+                }
+
+                vd.Visit(union);
+                return union;
+            }
+            else
+            {
+                vd.Visit(selectOp);
+                return selectOp;
+            }
+        }
+
+        private SelectOp CreateProjection(SelectOp selectOp, ISparqlQuery source, VisitData vd)
+        {
+            if (selectOp.IsSelectAll)
+                return new SelectOp(source);
+            else
+                return new SelectOp(source, selectOp.Variables);
+        }
+
+        private bool IsProjectionOnly(SelectOp selectOp)
+        {
+            if (selectOp.Variables.Where(x => x.IsAggregate).Any())
+                return false;
+            else
+                return true;
         }
 
         public object Visit(SliceOp sliceOp, object data)
