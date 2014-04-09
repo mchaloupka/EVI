@@ -287,11 +287,6 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)selectOp.InnerQuery.Accept(this, context);
 
-            if (selectOp.IsSelectAll)
-            {
-                return inner;
-            }
-
             SqlSelectOp select = inner as SqlSelectOp;
 
             if (select == null)
@@ -299,26 +294,40 @@ namespace Slp.r2rml4net.Storage.Sql
                 select = TransformToSelect(inner, context);
             }
 
-            var newVariables = selectOp.Variables;
             var valueBinders = new List<IBaseValueBinder>();
 
-            foreach (var variable in newVariables)
+            if (selectOp.IsSelectAll)
             {
-                if (variable.IsProjection)
+                foreach (var valBinder in select.ValueBinders)
                 {
-                    throw new NotImplementedException();
-                }
-                else if (variable.IsAggregate)
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    var valBinder = select.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
-
-                    if (valBinder != null)
-                    {
+                    if (valBinder.VariableName.StartsWith("_:")) // blank node match
+                        continue;
+                    else
                         valueBinders.Add(valBinder);
+                }
+            }
+            else
+            {
+                var newVariables = selectOp.Variables;
+
+                foreach (var variable in newVariables)
+                {
+                    if (variable.IsProjection)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else if (variable.IsAggregate)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else
+                    {
+                        var valBinder = select.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
+
+                        if (valBinder != null)
+                        {
+                            valueBinders.Add(valBinder);
+                        }
                     }
                 }
             }

@@ -221,7 +221,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         private bool IsProjectionOnly(SelectOp selectOp)
         {
-            if (selectOp.Variables.Where(x => x.IsAggregate).Any())
+            if (selectOp.IsSelectAll)
+                return true;
+            else if (selectOp.Variables.Where(x => x.IsAggregate).Any())
                 return false;
             else
                 return true;

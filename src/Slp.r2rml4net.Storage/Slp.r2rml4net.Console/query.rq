@@ -1,6 +1,6 @@
-SELECT DISTINCT ?d
+SELECT DISTINCT *
 WHERE
 {
-    ?s a <http://purl.org/linked-data/cube#Observation>;
+    [] a <http://purl.org/linked-data/cube#Observation>;
         <http://purl.org/linked-data/cube#dataSet> ?d
 }
