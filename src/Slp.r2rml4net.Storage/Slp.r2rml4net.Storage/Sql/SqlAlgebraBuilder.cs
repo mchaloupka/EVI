@@ -282,6 +282,21 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        public object Visit(ReducedOp reducedOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)reducedOp.InnerQuery.Accept(this, context);
+
+            var select = inner as SqlSelectOp;
+
+            if (select == null)
+                select = TransformToSelect(inner, context);
+
+            select.IsDistinct = true;
+
+            return select;
+        }
+
         public object Visit(SelectOp selectOp, object data)
         {
             var context = (QueryContext)data;

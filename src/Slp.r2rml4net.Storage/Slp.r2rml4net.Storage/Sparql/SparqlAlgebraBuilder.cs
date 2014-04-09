@@ -127,6 +127,13 @@ namespace Slp.r2rml4net.Storage.Sparql
 
                 return new DistinctOp(inner);
             }
+            else if(originalAlgebra is Reduced)
+            {
+                var orReduced = (Reduced)originalAlgebra;
+                var inner = ProcessAlgebra(orReduced.InnerAlgebra, context);
+
+                return new ReducedOp(inner);
+            }
 
             throw new NotImplementedException();
 

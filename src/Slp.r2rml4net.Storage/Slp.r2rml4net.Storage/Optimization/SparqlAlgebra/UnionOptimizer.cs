@@ -271,6 +271,20 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return distinctOp;
         }
 
+        public object Visit(ReducedOp reducedOp, object data)
+        {
+            if (((VisitData)data).IsVisited(reducedOp))
+                return reducedOp;
+
+            var inner = (ISparqlQuery)reducedOp.InnerQuery.Accept(this, data);
+
+            if (inner != reducedOp.InnerQuery)
+                reducedOp.ReplaceInnerQuery(reducedOp.InnerQuery, inner);
+
+            ((VisitData)data).Visit(reducedOp);
+            return reducedOp;
+        }
+
         private class VisitData
         {
             private HashSet<ISparqlQuery> visited;
@@ -293,8 +307,5 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 visited.Add(query);
             }
         }
-
-
-        
     }
 }

@@ -84,6 +84,7 @@
     <Compile Include="Sparql\Algebra\Operator\NoSolutionOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\OneEmptySolutionOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\OrderByOp.cs" />
+    <Compile Include="Sparql\Algebra\Operator\ReducedOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\SliceOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\UnionOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\JoinOp.cs" />

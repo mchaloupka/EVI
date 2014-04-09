@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
-    public class DistinctOp : ISparqlQueryModifier
+    public class ReducedOp : ISparqlQueryModifier
     {
-        public DistinctOp(ISparqlQuery innerQuery)
+        public ISparqlQuery InnerQuery { get; private set; }
+
+        public ReducedOp(ISparqlQuery innerQuery)
         {
             this.InnerQuery = innerQuery;
         }
-
-        public ISparqlQuery InnerQuery { get; private set; }
 
         public IEnumerable<ISparqlQuery> GetInnerQueries()
         {
@@ -22,7 +22,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            if (originalQuery == InnerQuery)
+            if (InnerQuery == originalQuery)
                 InnerQuery = newQuery;
         }
 
