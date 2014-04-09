@@ -31,7 +31,8 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="@Url.Action("Query")">SPARQL Query</a></li>
-                        <li><a href="@Url.Action("GraphList")">Graph list</a></li>
+                        @*<li><a href="@Url.Action("GraphList")">Graph list</a></li>*@
+                        <li><a href="@Url.Content("~/sparql")">SPARQL Endpoint</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div><!--/.container-fluid -->
