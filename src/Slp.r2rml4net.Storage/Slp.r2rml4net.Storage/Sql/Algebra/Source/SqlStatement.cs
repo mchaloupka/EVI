@@ -14,6 +14,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         public SqlStatement(string query)
         {
             this.SqlQuery = query;
+            this.columns = new List<SqlTableColumn>();
         }
 
         private List<SqlTableColumn> columns;

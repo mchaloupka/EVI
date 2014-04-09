@@ -1,0 +1,8 @@
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+<dotnetrdf:/sparql> a dnr:HttpHandler ;
+  dnr:type "Slp.r2rml4net.Server.R2RML.QueryHandlerWrapper" ;
+  dnr:queryProcessor _:proc .
+  
+_:proc a dnr:SparqlQueryProcessor ;
+  dnr:type "Slp.r2rml4net.Server.R2RML.QueryProcessorWrapper" .
