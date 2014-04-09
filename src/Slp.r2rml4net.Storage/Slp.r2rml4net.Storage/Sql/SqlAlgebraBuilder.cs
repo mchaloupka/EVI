@@ -489,7 +489,15 @@ namespace Slp.r2rml4net.Storage.Sql
                 select.AddCondition(condition);
             }
 
-            select.AddValueBinder(valueBinder);
+            var sameVarValueBinder = select.ValueBinders.Where(x => x.VariableName == variableName).FirstOrDefault();
+
+            if(sameVarValueBinder == null)
+                select.AddValueBinder(valueBinder);
+            else
+            {
+                var condition = conditionBuilder.CreateEqualsCondition(context, sameVarValueBinder.GetOriginalValueBinder(context), valueBinder.GetOriginalValueBinder(context));
+                select.AddCondition(condition);
+            }
         }
 
         private SqlSelectOp TransformToSelect(INotSqlOriginalDbSource sqlQuery, QueryContext context)
