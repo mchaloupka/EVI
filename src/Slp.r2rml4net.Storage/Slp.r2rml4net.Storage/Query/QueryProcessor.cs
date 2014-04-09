@@ -10,6 +10,8 @@ using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
+using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.SqlQuery;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -98,13 +100,30 @@ namespace Slp.r2rml4net.Storage.Query
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
 
-            // Query
-            var query = db.GenerateQuery(sqlAlgebra, context);
-
-            // Execute query
-            using (var result = db.ExecuteQuery(query, context))
+            if(sqlAlgebra is NoRowSource)
             {
-                ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
+                using(var result = new StaticDataReader())
+                {
+                    ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
+                }
+            }
+            else if(sqlAlgebra is SingleEmptyRowSource)
+            {
+                using (var result = new StaticDataReader(new StaticDataReaderRow()))
+                {
+                    ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
+                }
+            }
+            else
+            {
+                // Query
+                var query = db.GenerateQuery(sqlAlgebra, context);
+
+                // Execute query
+                using (var result = db.ExecuteQuery(query, context))
+                {
+                    ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
+                }
             }
         }
 

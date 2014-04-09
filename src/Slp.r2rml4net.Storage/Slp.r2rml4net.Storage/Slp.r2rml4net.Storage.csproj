@@ -138,6 +138,7 @@
     <Compile Include="Sql\SqlAlgebraBuilder.cs" />
     <Compile Include="Sql\Algebra\Source\SqlTable.cs" />
     <Compile Include="Sql\Binders\Utils\ValueBinderExtensions.cs" />
+    <Compile Include="Sql\SqlQuery\StaticDataReader.cs" />
     <Compile Include="Sql\Vendor\BaseSqlDb.cs" />
     <Compile Include="Sql\Vendor\BaseSqlNameGenerator.cs" />
     <Compile Include="Sql\Vendor\BaseSqlQueryBuilder.cs" />
