@@ -173,8 +173,7 @@
     <Compile Include="Models\Json\QueryResultModel.cs" />
     <Compile Include="Models\Main\GraphModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="R2RML\QueryHandlerWrapper.cs" />
-    <Compile Include="R2RML\QueryProcessorWrapper.cs" />
+    <Compile Include="R2RML\R2RMLStorageFactoryForQueryHandler.cs" />
     <Compile Include="R2RML\StorageWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
