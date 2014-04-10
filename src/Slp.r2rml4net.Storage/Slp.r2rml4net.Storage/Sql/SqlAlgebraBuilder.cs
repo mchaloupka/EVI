@@ -90,8 +90,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
         public object Visit(OneEmptySolutionOp oneEmptySolutionOp, object data)
         {
-            // TODO: Implement this
-            throw new NotImplementedException();
+            return new SingleEmptyRowSource();
         }
 
         public object Visit(UnionOp unionOp, object data)

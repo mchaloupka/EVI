@@ -10,8 +10,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     public class NoRowSource : INotSqlOriginalDbSource
     {
+        private List<IBaseValueBinder> valueBinders;
+
         public string Name { get; set; }
 
+        public NoRowSource()
+        {
+            valueBinders = new List<IBaseValueBinder>();
+        }
 
         public IEnumerable<ISqlColumn> Columns
         {
@@ -20,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public void AddValueBinder(IBaseValueBinder valueBinder)
         {
-            throw new NotSupportedException("No row source cannot have any value binder");
+            this.valueBinders.Add(valueBinder);
         }
 
         public IEnumerable<IBaseValueBinder> ValueBinders
@@ -30,12 +36,18 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public void ReplaceValueBinder(IBaseValueBinder oldBinder, IBaseValueBinder newBinder)
         {
-            throw new NotSupportedException("No row source cannot have any value binder");
+            var index = this.valueBinders.IndexOf(oldBinder);
+
+            if (index > -1)
+                this.valueBinders[index] = newBinder;
         }
 
         public void RemoveValueBinder(IBaseValueBinder valueBinder)
         {
-            throw new NotSupportedException("No row source cannot have any value binder");
+            var index = this.valueBinders.IndexOf(valueBinder);
+
+            if (index > -1)
+                this.valueBinders.RemoveAt(index);
         }
 
         [DebuggerStepThrough]
