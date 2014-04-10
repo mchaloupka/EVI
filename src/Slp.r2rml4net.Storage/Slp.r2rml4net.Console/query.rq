@@ -1,6 +1,5 @@
-SELECT REDUCED ?d
+SELECT ?x
 WHERE
 {
-    ?s a <http://purl.org/linked-data/cube#Observation>;
-        <http://purl.org/linked-data/cube#dataSet> ?d
+    ?x ?x ?x
 }
