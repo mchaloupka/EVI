@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
@@ -29,18 +30,18 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             if (sqlSelectOp.Conditions.OfType<AlwaysFalseCondition>().Any())
-                return new NoRowSource();
+                return CreateNoRowSource(sqlSelectOp);
 
             if (sqlSelectOp.JoinSources.Select(x => x.Condition).OfType<AlwaysFalseCondition>().Any())
-                return new NoRowSource();
+                return CreateNoRowSource(sqlSelectOp);
 
             var originalSource = (ISqlSource)sqlSelectOp.OriginalSource.Accept(this, data);
 
             if (originalSource is NoRowSource)
-                return new NoRowSource();
+                return CreateNoRowSource(sqlSelectOp);
 
             if (sqlSelectOp.JoinSources.Select(x => x.Source).Select(x => x.Accept(this, data)).OfType<NoRowSource>().Any())
-                return new NoRowSource();
+                return CreateNoRowSource(sqlSelectOp);
 
             return sqlSelectOp;
         }
@@ -58,7 +59,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
 
             if (toRemove.Count == sqlUnionOp.Sources.Count())
-                return new NoRowSource();
+                return CreateNoRowSource(sqlUnionOp);
 
             foreach (var source in toRemove)
             {
@@ -76,6 +77,18 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
             return sqlTable;
+        }
+
+        private NoRowSource CreateNoRowSource(INotSqlOriginalDbSource sqlSelectOp)
+        {
+            var noRowSource = new NoRowSource();
+
+            foreach (var valBinder in sqlSelectOp.ValueBinders)
+            {
+                noRowSource.AddValueBinder(new BlankValueBinder(valBinder.VariableName));
+            }
+
+            return noRowSource;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 
         public IEnumerable<IBaseValueBinder> ValueBinders
         {
-            get { yield break; }
+            get { return this.valueBinders; }
         }
 
         public void ReplaceValueBinder(IBaseValueBinder oldBinder, IBaseValueBinder newBinder)
