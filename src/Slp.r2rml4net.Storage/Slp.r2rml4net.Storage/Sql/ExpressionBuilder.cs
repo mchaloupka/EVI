@@ -245,6 +245,10 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return cas;
             }
+            else if(binder is BlankValueBinder)
+            {
+                return new NullExpr();
+            }
             else
                 throw new NotImplementedException();
         }

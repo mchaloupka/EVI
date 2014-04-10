@@ -361,6 +361,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return collateValueBinder;
         }
 
+        public object Visit(BlankValueBinder blankValueBinder, object data)
+        {
+            return blankValueBinder;
+        }
+
         public object Visit(ValueBinder valueBinder, object data)
         {
             return valueBinder;

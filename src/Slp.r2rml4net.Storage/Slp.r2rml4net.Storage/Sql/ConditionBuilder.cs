@@ -50,8 +50,27 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return orCondition;
             }
+            else if (valueBinder is CaseValueBinder)
+            {
+                var orCondition = new OrCondition();
+                var statements = ((CaseValueBinder)valueBinder).Statements;
+
+                foreach (var statement in statements)
+                {
+                    var andCondition = new AndCondition();
+                    andCondition.AddToCondition(statement.Condition);
+                    andCondition.AddToCondition(CreateEqualsCondition(context, node, statement.ValueBinder));
+                    orCondition.AddToCondition(andCondition);
+                }
+
+                return orCondition;
+            }
+            else if(valueBinder is BlankValueBinder)
+            {
+                return new AlwaysFalseCondition();
+            }
             else
-                throw new Exception("Value binder can be only standard or collate");
+                throw new NotImplementedException("Not supported value binder in method CreateEqualsCondition");
         }
 
         public ICondition CreateEqualsCondition(QueryContext context, IBaseValueBinder firstValBinder, IBaseValueBinder secondValBinder)
@@ -96,6 +115,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
 
                 return orCondition;
+            }
+            else if (firstValBinder is ValueBinder)
+            {
+                return CreateIsNullCondition(context, secondValBinder);
             }
             else if (secondValBinder is CoalesceValueBinder)
             {
@@ -199,6 +222,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
 
                 return orCondition;
+            }
+            else if(valueBinder is BlankValueBinder)
+            {
+                return new AlwaysTrueCondition();
             }
             else
             {
