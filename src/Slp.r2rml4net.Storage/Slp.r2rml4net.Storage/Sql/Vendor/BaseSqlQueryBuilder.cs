@@ -169,8 +169,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 if (first)
                     first = false;
-                else
+                else if(sqlUnionOp.IsReduced)
                     context.SB.Append(" UNION ");
+                else
+                    context.SB.Append(" UNION ALL ");
 
                 select.Accept(this, context);
             }

@@ -123,5 +123,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
                 }
             }
         }
+
+        public bool IsReduced { get; set; }
     }
 }

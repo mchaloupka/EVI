@@ -81,6 +81,17 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
+            var vData = (VisitData)data;
+
+            if (sqlUnionOp.IsReduced)
+            {
+                vData = vData.SetReduced(true);
+            }
+            else if (vData.IsParentReduced)
+            {
+                sqlUnionOp.IsReduced = true;
+            }
+
             foreach (var source in sqlUnionOp.Sources)
             {
                 source.Accept(this, data);
