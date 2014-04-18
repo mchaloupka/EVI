@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         private PatternItem objectPattern;
         private PatternItem subjectPattern;
 
-        public BgpOp(PatternItem objectPattern, PatternItem predicatePattern, PatternItem subjectPattern)
+        public BgpOp(PatternItem subjectPattern, PatternItem predicatePattern, PatternItem objectPattern)
         {
             this.objectPattern = objectPattern;
             this.predicatePattern = predicatePattern;
@@ -34,7 +34,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 
         public BgpOp Clone()
         {
-            return new BgpOp(objectPattern, predicatePattern, subjectPattern);
+            return new BgpOp(subjectPattern, predicatePattern, objectPattern);
         }
 
         public PatternItem PredicatePattern { get { return predicatePattern; } }

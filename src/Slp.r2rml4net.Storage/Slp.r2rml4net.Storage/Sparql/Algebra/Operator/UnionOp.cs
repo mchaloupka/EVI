@@ -19,7 +19,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 
         public void AddToUnion(ISparqlQuery sparqlQuery)
         {
-            unioned.Add(sparqlQuery);
+            if(sparqlQuery is UnionOp)
+            {
+                foreach (var inner in ((UnionOp)sparqlQuery).GetInnerQueries())
+                {
+                    unioned.Add(inner);
+                }
+            }
+            else
+            {
+                unioned.Add(sparqlQuery);
+            }
         }
 
         public IEnumerable<ISparqlQuery> GetInnerQueries()

@@ -1,5 +1,13 @@
-SELECT ?x
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
+PREFIX czso-ds-def:   <http://linked.opendata.cz/resource/czso.cz/dataset-definitions#>
+PREFIX qb:              <http://purl.org/linked-data/cube#>
+
+SELECT ?regionName
 WHERE
 {
-    ?x ?x ?x
+	#[] czso-ds-def:refArea / eugeo:name ?regionName.
+	[] czso-ds-def:refArea _:a.
+	_:a eugeo:name ?regionName.
 }
+LIMIT 1000

@@ -147,14 +147,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
             return visitor.Visit(this, data);
         }
 
-        public bool IsMergeable
-        {
-            get
-            {
-                return !(this.Offset.HasValue || this.Limit.HasValue || this.orderings.Count > 0 || IsDistinct || IsReduced);
-            }
-        }
-
         public void InsertOrdering(IExpression expression, bool descending)
         {
             this.orderings.Insert(0, new SqlOrderByComparator(expression, descending));

@@ -9,6 +9,7 @@ using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 
 namespace Slp.r2rml4net.Storage.Query
 {
@@ -18,16 +19,19 @@ namespace Slp.r2rml4net.Storage.Query
         private Dictionary<string, INode> blankNodesSubjects;
         private Dictionary<string, INode> blankNodesObjects;
         private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers;
+        private HashSet<string> usedVariables;
 
         public QueryContext(SparqlQuery query, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers)
         {
             this.OriginalQuery = query;
+            this.OriginalAlgebra = query.ToAlgebra();
             this.NodeFactory = nodeFactory;
             this.Db = db;
             this.Mapping = mapping;
             this.usedSqlSourceNames = new List<string>();
             this.blankNodesSubjects = new Dictionary<string, INode>();
             this.blankNodesObjects = new Dictionary<string, INode>();
+            this.usedVariables = new HashSet<string>(this.OriginalAlgebra.Variables);
             this.sqlOptimizers = sqlOptimizers;
         }
 
@@ -36,6 +40,8 @@ namespace Slp.r2rml4net.Storage.Query
         public MappingProcessor Mapping { get; private set; }
 
         public INodeFactory NodeFactory { get; private set; }
+
+        public ISparqlAlgebra OriginalAlgebra { get; private set; }
 
         public ISqlDb Db { get; private set; }
 
@@ -90,6 +96,20 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             return currentAlgebra;
+        }
+
+        public string CreateSparqlVariable()
+        {
+            int counter = 1;
+            string varName = null;
+
+            do
+            {
+                varName = string.Format("_:context-autos{0}", counter++);
+            } while (this.usedVariables.Contains(varName));
+
+            this.usedVariables.Add(varName);
+            return varName;
         }
     }
 }

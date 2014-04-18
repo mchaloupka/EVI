@@ -124,6 +124,7 @@
     <Compile Include="Sql\Algebra\Source\SqlTableColumn.cs" />
     <Compile Include="Sql\Algebra\Source\SqlStatement.cs" />
     <Compile Include="Sql\Algebra\Utils\GetAllReferencedColumnsExtension.cs" />
+    <Compile Include="Sql\Algebra\Utils\OperatorInfoExtension.cs" />
     <Compile Include="Sql\Algebra\Utils\ReplaceColumnReferenceExtension.cs" />
     <Compile Include="Sql\Algebra\Utils\StaticExpressionEvaluationExtension.cs" />
     <Compile Include="Sql\Binders\BlankValueBinder.cs" />

@@ -11,6 +11,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sparql
@@ -23,51 +24,45 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         public ISparqlQuery Process(QueryContext context)
         {
-            var originalQuery = context.OriginalQuery;
-
-            switch (originalQuery.QueryType)
+            switch (context.OriginalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    return ProcessAsk(originalQuery, context);
+                    return ProcessAsk(context);
                 case SparqlQueryType.Construct:
-                    return ProcessConstruct(originalQuery, context);
+                    return ProcessConstruct(context);
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    return ProcessDescribe(originalQuery, context);
+                    return ProcessDescribe(context);
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    return ProcessSelect(originalQuery, context);
+                    return ProcessSelect(context);
                 default:
                     throw new Exception("Cannot handle unknown query type");
             }
         }
 
-        private ISparqlQuery ProcessAsk(SparqlQuery originalQuery, QueryContext context)
+        private ISparqlQuery ProcessAsk(QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessConstruct(SparqlQuery originalQuery, QueryContext context)
+        private ISparqlQuery ProcessConstruct(QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessDescribe(SparqlQuery originalQuery, QueryContext context)
+        private ISparqlQuery ProcessDescribe(QueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        private ISparqlQuery ProcessSelect(SparqlQuery originalQuery, QueryContext context)
+        private ISparqlQuery ProcessSelect(QueryContext context)
         {
-            var originalAlgebra = originalQuery.ToAlgebra();
-
-            var resultingAlgebra = ProcessAlgebra(originalAlgebra, context);
-
-            return resultingAlgebra;
+            return ProcessAlgebra(context.OriginalAlgebra, context);
         }
 
         private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, QueryContext context)
@@ -368,10 +363,10 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         private ISparqlQuery ProcessITriplePatterns(IEnumerable<ITriplePattern> enumerable, QueryContext context)
         {
-            var triples = enumerable.OfType<TriplePattern>();
             ISparqlQuery triplesOp = null;
 
             // Process triples
+            var triples = enumerable.OfType<TriplePattern>().ToArray();
             if (triples.Any())
             {
                 if (triples.Count() > 1)
@@ -380,21 +375,53 @@ namespace Slp.r2rml4net.Storage.Sparql
 
                     foreach (var triple in triples)
                     {
-                        join.AddToJoin(new BgpOp(triple.Object, triple.Predicate, triple.Subject));
+                        join.AddToJoin(new BgpOp(triple.Subject, triple.Predicate, triple.Object));
                     }
 
                     triplesOp = join;
                 }
                 else
                 {
-                    var triple = triples.First();
-                    triplesOp = new BgpOp(triple.Object, triple.Predicate, triple.Subject);
+                    var triple = triples[0];
+                    triplesOp = new BgpOp(triple.Subject, triple.Predicate, triple.Object);
                 }
             }
-            else
+
+            // Process property paths
+            var propertyPaths = enumerable.OfType<PropertyPathPattern>().ToArray();
+            if (propertyPaths.Any())
             {
-                throw new NotImplementedException();
+                var resulting = propertyPaths.Select(x => ProcessPropertyPath(x, context)).ToArray();
+
+                if (triplesOp != null && !(triplesOp is JoinOp))
+                {
+                    var join = new JoinOp();
+                    join.AddToJoin(triplesOp);
+                    triplesOp = join;
+                }
+
+                if(triplesOp == null && resulting.Length > 1)
+                {
+                    triplesOp = new JoinOp();
+                }
+                
+                if(triplesOp == null && resulting.Length == 1) // The second condition is always true
+                {
+                    triplesOp = resulting[0];
+                }
+                else
+                {
+                    var join = (JoinOp)triplesOp;
+
+                    foreach (var res in resulting)
+                    {
+                        join.AddToJoin(res);
+                    }
+                }
             }
+
+            if (enumerable.Count() != triples.Length + propertyPaths.Length)
+                throw new NotImplementedException();
 
             return triplesOp;
 
@@ -408,6 +435,57 @@ namespace Slp.r2rml4net.Storage.Sparql
 //PropertyPathPattern
 //SubQueryPattern
 //TriplePattern
+        }
+
+        private ISparqlQuery ProcessPropertyPath(PropertyPathPattern pathPattern, QueryContext context)
+        {
+            return ProcessPropertyPath(pathPattern.Subject, pathPattern.Path, pathPattern.Object, context);
+        }
+
+        private ISparqlQuery ProcessPropertyPath(PatternItem subject, ISparqlPath path, PatternItem obj, QueryContext context)
+        {
+            if(path is SequencePath)
+            {
+                var sPath = (SequencePath)path;
+                var helpVar = context.CreateSparqlVariable();
+                var helpPattern = new VariablePattern(helpVar);
+
+                var join = new JoinOp();
+                var lRes = ProcessPropertyPath(subject, sPath.LhsPath, helpPattern, context);
+                var rRes = ProcessPropertyPath(helpPattern, sPath.RhsPath, obj, context);
+
+                join.AddToJoin(lRes);
+                join.AddToJoin(rRes);
+                return join;
+            }
+            else if (path is Property)
+            {
+                var pPath = (Property)path;
+                var predicatePattern = new NodeMatchPattern(pPath.Predicate);
+                return new BgpOp(subject, predicatePattern, obj);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+
+// http://www.dotnetrdf.org/api/dotNetRDF~VDS.RDF.Query.Paths.ISparqlPath.html
+//AlternativePath	 Represents Alternative Paths
+//BaseBinaryPath	 Abstract Base Class for Binary Path operators
+//BaseUnaryPath	 Abstract Base Class for Unary Path operators
+//Cardinality	 Represents a Cardinality restriction on a Path
+//FixedCardinality	 Represents a Fixed Cardinality restriction on a Path
+//InversePath	 Represents an Inverse Path
+//NegatedSet	 Represents a Negated Property Set
+//NOrMore	 Represents a N or More cardinality restriction on a Path
+//NToM	 Represents a N to M cardinality restriction on a Path
+//OneOrMore	 Represents a One or More cardinality restriction on a Path
+//Property	 Represents a Predicate which is part of a Path
+//SequencePath	 Represents a standard forwards path
+//ZeroOrMore	 Represents a Zero or More cardinality restriction on a Path
+//ZeroOrOne	 Represents a Zero or One cardinality restriction on a Path
+//ZeroToN	 Represents a Zero to N cardinality restriction on a Path
         }
     }
 }

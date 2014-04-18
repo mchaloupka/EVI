@@ -9,6 +9,7 @@ using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
@@ -528,7 +529,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
         private void ProcessJoin(SqlSelectOp first, INotSqlOriginalDbSource second, QueryContext context)
         {
-            if (!(second is SqlSelectOp) || !((SqlSelectOp)second).IsMergeable)
+            if (!(second is SqlSelectOp) || !((SqlSelectOp)second).IsMergeableTo(first))
                 second = TransformToSelect(second, context);
 
             ProcessJoin(first, (SqlSelectOp)second, context);
