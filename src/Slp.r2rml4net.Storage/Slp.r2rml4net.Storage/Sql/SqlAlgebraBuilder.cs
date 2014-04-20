@@ -389,9 +389,10 @@ namespace Slp.r2rml4net.Storage.Sql
             else if (bgpOp.R2RMLRefObjectMap != null)
             {
                 var refObjectPatern = bgpOp.R2RMLRefObjectMap;
-                var parentTriplesMap = GetParentTriplesMap(context, refObjectPatern);
 
+                var parentTriplesMap = GetParentTriplesMap(context, refObjectPatern);
                 var parentSource = ProcessBgpSource(parentTriplesMap);
+
                 List<ICondition> conditions = new List<ICondition>();
 
                 foreach (var joinCond in refObjectPatern.JoinConditions)

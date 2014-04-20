@@ -4,21 +4,54 @@
 # Database tables:
 # ***
 
-#TABLE [dbo].[Municipality] (
-#    [Id]   INT            NOT NULL,
-#    [Name] NVARCHAR (255) NOT NULL,
-#    PRIMARY KEY CLUSTERED ([Id] ASC)
+#TABLE [dbo].[Ban](
+#	[Id] [nvarchar](20) NOT NULL,
+#	[CheckActionId] [nvarchar](20) NOT NULL,
+#	[Object] [nvarchar](max) NOT NULL,
+#	[Count] [int] NOT NULL,
+#	[Price] [int] NOT NULL,
+#	[Law] [nvarchar](max) NULL
 #);
 
-#TABLE [dbo].[DemographyData] (
-#    [MunNumber]       INT NOT NULL,
-#    [Year]            INT NOT NULL,
-#    [BeginYearCount]  INT NULL,
-#    [EndYearCount]    INT NULL,
-#    [BirthCount]      INT NULL,
-#    [DeathCount]      INT NULL,
-#    [EmmigrantsCount] INT NULL,
-#    [ImmigrantsCount] INT NULL
+#TABLE [dbo].[CheckAction](
+#	[Id] [nvarchar](20) NOT NULL,
+#	[Date] [date] NOT NULL,
+#	[Ic] [nvarchar](20) NULL
+#);
+
+#TABLE [dbo].[CheckActionLocation](
+#	[Id] [nvarchar](20) NOT NULL,
+#	[NUTS3] [nvarchar](5) NOT NULL,
+#	[NUTS4] [nvarchar](6) NULL,
+#	[NUTS5] [nvarchar](6) NULL,
+#	[Street] [nvarchar](255) NULL,
+#	[No] [int] NULL,
+#	[Hn] [int] NULL,
+#	[ZipCode] [int] NULL
+#);
+
+#TABLE [dbo].[CheckActionSubject](
+#	[CheckActionId] [nvarchar](20) NOT NULL,
+#	[LawId] [int] NOT NULL
+#);
+
+#CREATE TABLE [dbo].[Laws](
+#	[LawId] [int] IDENTITY(1,1) NOT NULL,
+#	[Law] [nvarchar](255) NOT NULL
+#);
+
+#TABLE [dbo].[Sanction](
+#	[Id] [nvarchar](20) NOT NULL,
+#	[CheckActionId] [nvarchar](20) NOT NULL,
+#	[Sanction] [int] NOT NULL,
+#	[Date] [date] NOT NULL
+#);
+
+#TABLE [dbo].[SanctionReason](
+#	[SanctionReasonId] [int] IDENTITY(1,1) NOT NULL,
+#	[SactionId] [nvarchar](20) NOT NULL,
+#	[LawId] [int] NULL,
+#	[Article] [nvarchar](255) NULL
 #);
 
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
@@ -26,209 +59,323 @@
 
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
-@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix scovo:   <http://purl.org/NET/scovo#> .
-@prefix void:    <http://rdfs.org/ns/void#> .
-@prefix vcard:   <http://www.w3.org/2006/vcard/ns#> .
+@prefix adms:    <http://www.w3.org/ns/adms#> .
+@prefix schema:  <http://schema.org/> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix dcterms: <http://purl.org/dc/terms/>.
-@prefix czso-reg: <http://www.czso.cz/vocabularies/regions#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix gr:      <http://purl.org/goodrelations/v1#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix odcz:    <http://linked.opendata.cz/ontology/coi.cz/> .
 
-@prefix qb:              <http://purl.org/linked-data/cube#> .
-@prefix sdmx:            <http://purl.org/linked-data/sdmx#> .
-@prefix sdmx-concept:    <http://purl.org/linked-data/sdmx/2009/concept#> .
-@prefix sdmx-dimension:  <http://purl.org/linked-data/sdmx/2009/dimension#> .
-@prefix sdmx-attribute:  <http://purl.org/linked-data/sdmx/2009/attribute#> .
-@prefix sdmx-measure:    <http://purl.org/linked-data/sdmx/2009/measure#> .
-@prefix sdmx-metadata:   <http://purl.org/linked-data/sdmx/2009/metadata#> .
-@prefix sdmx-code:       <http://purl.org/linked-data/sdmx/2009/code#> .
-@prefix sdmx-subject:    <http://purl.org/linked-data/sdmx/2009/subject#> .
 
-@prefix eugeo: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#> .
-@prefix czso-ds-def:   <http://linked.opendata.cz/resource/czso.cz/dataset-definitions#> .
-
-<#MunicipalityTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Municipality]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/region/{[Id]}";
-		rr:class czso-ds-def:LAURegion
+<#LawTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Laws]" ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/law/{LawId}";
+		rr:class schema:Law;
 	];
 	rr:predicateObjectMap [
 		rr:predicate rdfs:label;
-		rr:objectMap [ rr:column "[Name]"; ];
+		rr:objectMap [ rr:column "[Law]"; ];
+	];		
+.
+
+<#CheckActionLocationTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[CheckActionLocation]" ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/check-action/{Id}/postal-address";
+		rr:class schema:PostalAddress;
 	];
 	rr:predicateObjectMap [
-		rr:predicate eugeo:name;
-		rr:objectMap [ rr:column "[Name]"; ];
+		rr:predicate schema:location;
+		rr:objectMap [
+			rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{NUTS3}";
+		];
+		rr:objectMap [
+			rr:template "http://linked.opendata.cz/resource/region/{NUTS4}";
+		];
+		rr:objectMap [
+			rr:template "http://linked.opendata.cz/resource/region/{NUTS5}";
+		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate eugeo:level;
-		rr:objectMap [ rr:constant 2; ];
+		rr:predicate schema:streetAddress;
+		rr:objectMap [ rr:column "[Street]"; ];
 	];
 	rr:predicateObjectMap [
-		rr:predicate eugeo:regionCode;
+		rr:predicate schema:postalCode;
+		rr:objectMap [ rr:column "[ZipCode]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:no;
+		rr:objectMap [ rr:column "[No]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:HouseNumber;
+		rr:objectMap [ rr:column "[Hn]"; ];
+	];
+.
+
+<#CheckActionSubjectTriplesMapToLaws> rr:parentTriplesMap <#LawTriples>;
+	rr:joinCondition [
+		rr:child "[LawId]";
+		rr:parent "[LawId]";		
+	];
+.
+
+<#CheckActionSubjectTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[CheckActionSubject]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/check-action/{CheckActionId}/subject";
+		rr:class schema:CheckActionSubject;
+	];
+	rr:predicateObjectMap [
+		rr:predicate odcz:zakon;
+		rr:objectMap <#CheckActionSubjectTriplesMapToLaws>;
+	];
+.
+
+<#BanItemDescriptionTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Ban]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/ban/{Id}/some-items";
+		rr:class gr:SomeItems;
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:category;
+		rr:objectMap [ rr:column "[Object]"; ]
+	];
+.
+
+<#BanItemTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Ban]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/ban/{Id}/type-and-quantity-node";
+		rr:class gr:TypeAndQuantityNode;
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:amountOfThisGood;
+		rr:objectMap [ rr:column "[Count]"; ];
+		rr:datatype xsd:decimal;
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:hasUnitOfMeasurement;
+		rr:object "C62";
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:includesObject;
+		rr:objectMap [
+			rr:parentTriplesMap <#BanItemDescriptionTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[Id]";
+			];
+		];
+	];
+.
+
+<#BanItemPriceTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Ban]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/ban/{Id}/price-specification";
+		rr:class odcz:Fine;
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:hasCurrency;
+		rr:object "CZK";
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:hasCurrencyValue;
+		rr:objectMap [ rr:column "[Price]"; ];
+		rr:datatype xsd:decimal;
+	];
+.
+
+<#BanTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Ban]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/ban/{Id}";
+		rr:class odcz:Ban;
+	];
+	rr:predicateObjectMap [
+		rr:predicate odcz:zakon;
+		rr:objectMap [ rr:column "[Law]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:hasPriceSpecification;
+		rr:objectMap [
+			rr:parentTriplesMap <#BanItemPriceTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[Id]";
+			];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate gr:includesObject;
+		rr:objectMap [
+			rr:parentTriplesMap <#BanItemTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[Id]";
+			];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate void:inDataset;
+		rr:object <http://linked.opendata.cz/resource/dataset/coi.cz/kontroly-sankce-zakazy>;
+	];
+	rr:predicateObjectMap [
+		rr:predicate skos:notation;
 		rr:objectMap [ rr:column "[Id]"; ];
 	];
 .
 
-<#FinalPopulationTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/final-population/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/final-population#"; ];
+<#SanctionPriceTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Sanction]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/sanction/{Id}/price-specification";
+		rr:class odcz:Fine;
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
-		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
-			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
-		];
+		rr:predicate gr:hasCurrency;
+		rr:object "CZK";
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:finalPopulation;
-		rr:objectMap [ rr:column "[EndYearCount]"; ];
-		rr:datatype xsd:int;
+		rr:predicate gr:hasCurrencyValue;
+		rr:objectMap [ rr:column "[Sanction]" ];
+		rr:datatype xsd:decimal;
 	];
 .
 
-<#BirthTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/births/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/births#"; ];
+<#SanctionReasonTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[SanctionReason]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/sanction/{SactionId}/reason/{SanctionReasonId}";
+		rr:class odcz:SanctionReason;
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
+		rr:predicate odcz:zakon;
 		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:parentTriplesMap <#LawTriples>;
 			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
+				rr:child "[LawId]";
+				rr:parent "[LawId]";
+			];
 		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:births;
-		rr:objectMap [ rr:column "[BirthCount]"; ];
-		rr:datatype xsd:int;
+		rr:predicate odcz:paragraf;
+		rr:objectMap [ rr:column "[Article]"; ];
 	];
 .
 
-<#DeathTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/deaths/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/deaths#"; ];
+<#SanctionTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Sanction]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/sanction/{Id}";
+		rr:class odcz:Sanction;
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
+		rr:predicate dcterms:valid;
+		rr:objectMap [ rr:column "[Date]"; ];
+		rr:datatype xsd:date;
+	];
+	rr:predicateObjectMap [
+		rr:predicate void:inDataset;
+		rr:object <http://linked.opendata.cz/resource/dataset/coi.cz/kontroly-sankce-zakazy>;
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:result;
 		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:parentTriplesMap <#SanctionPriceTriples>;
 			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
+				rr:child "[Id]";
+				rr:parent "[Id]";
+			];
 		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
+		rr:predicate schema:reason;
+		rr:objectMap [
+			rr:parentTriplesMap <#SanctionReasonTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[SanctionId]";
+			];	
+		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:deaths;
-		rr:objectMap [ rr:column "[DeathCount]"; ];
-		rr:datatype xsd:int;
+		rr:predicate skos:notation;
+		rr:objectMap [ rr:column "[Id]"; ];
 	];
 .
 
-<#ImmigrantsTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/immigrants/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/immigrants#"; ];
+<#CheckActionTriples> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[CheckAction]" ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/check-action/{Id}";
+		rr:class schema:CheckAction;
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
+		rr:predicate dcterms:date;
+		rr:objectMap [ rr:column "[Date]"; ];
+		rr:datatype xsd:date;
+	];
+	rr:predicateObjectMap [
+		rr:predicate void:inDataset;
+		rr:object <http://linked.opendata.cz/resource/dataset/coi.cz/kontroly-sankce-zakazy>;
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:agent;
+		rr:object <http://www.coi.cz/>;
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:location;
 		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:parentTriplesMap <#CheckActionLocationTriples>;
 			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
+				rr:child "[Id]";
+				rr:parent "[Id]";
+			];
 		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:immigrants;
-		rr:objectMap [ rr:column "[ImmigrantsCount]"; ];
-		rr:datatype xsd:int;
-	];
-.
-
-<#EmmigrantsTriples> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[DemographyData]" ];
-	rr:subjectMap [ 
-		rr:template "http://linked.opendata.cz/resource/czso.cz/dataset/demography/emmigrants/{[MunNumber]}-{[Year]}";
-		rr:class qb:Observation;
-	];	
-	rr:predicateObjectMap [
-		rr:predicate qb:dataSet;
-		rr:objectMap [ rr:constant "http://linked.opendata.cz/resource/czso.cz/dataset/demography/emmigrants#"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refArea;
+		rr:predicate schema:subject;
 		rr:objectMap [
-			rr:parentTriplesMap <#MunicipalityTriples>;
+			rr:parentTriplesMap <#CheckActionSubjectTriples>;
 			rr:joinCondition [
-	            rr:child "[MunNumber]";
-	            rr:parent "[Id]";
-	        ];
+				rr:child "[Id]";
+				rr:parent "[CheckActionId]";
+			];
 		];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:refPeriod;
-		rr:objectMap [ rr:column "[Year]"; ];
-		rr:datatype xsd:gYear;
+		rr:predicate skos:notation;
+		rr:objectMap [ rr:column "[Id]"; ];
 	];
 	rr:predicateObjectMap [
-		rr:predicate czso-ds-def:emmigrants;
-		rr:objectMap [ rr:column "[EmmigrantsCount]"; ];
-		rr:datatype xsd:int;
+		rr:predicate schema:object;
+		rr:objectMap [
+			rr:template "http://linked.opendata.cz/resource/business-entity/CZ{Ic}";	
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate schema:result;
+		rr:objectMap [
+			rr:parentTriplesMap <#BanTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[CheckActionId]";
+			];
+		];
+		rr:objectMap [
+			rr:parentTriplesMap <#SanctionTriples>;
+			rr:joinCondition [
+				rr:child "[Id]";
+				rr:parent "[CheckActionId]";
+			];
+		];
 	];
 .
