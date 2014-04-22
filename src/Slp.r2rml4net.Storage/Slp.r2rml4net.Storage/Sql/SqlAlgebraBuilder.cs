@@ -13,6 +13,7 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 
@@ -395,7 +396,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 List<ICondition> conditions = new List<ICondition>();
 
-                foreach (var joinCond in refObjectPatern.JoinConditions)
+                foreach (var joinCond in refObjectPatern.GetJoinConditions())
                 {
                     var childCol = childSource.GetColumn(joinCond.ChildColumn);
                     var parentCol = parentSource.GetColumn(joinCond.ParentColumn);
