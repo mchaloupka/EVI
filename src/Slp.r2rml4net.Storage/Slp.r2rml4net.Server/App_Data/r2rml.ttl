@@ -117,13 +117,6 @@
 	];
 .
 
-<#CheckActionSubjectTriplesMapToLaws> rr:parentTriplesMap <#LawTriples>;
-	rr:joinCondition [
-		rr:child "[LawId]";
-		rr:parent "[LawId]";		
-	];
-.
-
 <#CheckActionSubjectTriples> a rr:TriplesMap;
 	rr:logicalTable [ rr:tableName "[dbo].[CheckActionSubject]"; ];
 	rr:subjectMap [
@@ -132,7 +125,13 @@
 	];
 	rr:predicateObjectMap [
 		rr:predicate odcz:zakon;
-		rr:objectMap <#CheckActionSubjectTriplesMapToLaws>;
+		rr:objectMap [
+			rr:parentTriplesMap <#LawTriples>;
+			rr:joinCondition [
+				rr:child "[LawId]";
+				rr:parent "[LawId]";		
+			];
+		];
 	];
 .
 
