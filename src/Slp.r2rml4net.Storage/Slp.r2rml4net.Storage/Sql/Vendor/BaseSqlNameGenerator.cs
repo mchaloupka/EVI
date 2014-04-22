@@ -133,12 +133,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                     appendString = "]";
                 }
 
-                while (colNames.Contains(curName))
+                while (colNames.Contains(DataReaderWrapper.GetColumnNameUnquoted(curName)))
                 {
                     curName = string.Format("{0}{1}{2}", orName, counter++, appendString);
                 }
 
-                colNames.Add(curName);
+                colNames.Add(DataReaderWrapper.GetColumnNameUnquoted((curName)));
                 col.Name = curName;
             }
         }

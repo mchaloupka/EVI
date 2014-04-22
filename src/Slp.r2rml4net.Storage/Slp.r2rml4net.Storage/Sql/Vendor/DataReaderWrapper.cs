@@ -17,6 +17,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
         private IQueryResultRow currentRow;
 
+        public static string GetColumnNameUnquoted(string col) 
+        {
+            return DataReaderRow.GetColumnNameUnquoted(col);
+        }
+
         public DataReaderWrapper(SqlDataReader dataReader, Func<bool> needsDisposeAction, Action disposeAction)
         {
             this.dataReader = dataReader;
@@ -108,7 +113,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             private static readonly Regex ColumnNameRegex = new Regex(@"^[\""`'\[](.+[^\""`'\]])[\""`'\]]$");
 
-            private static string GetColumnNameUnquoted(string columnName)
+            public static string GetColumnNameUnquoted(string columnName)
             {
                 return columnName.TrimStart(StartDelimiters).TrimEnd(EndDelimiters);
             }
