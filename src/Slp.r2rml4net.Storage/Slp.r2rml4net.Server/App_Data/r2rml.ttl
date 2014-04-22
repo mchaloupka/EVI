@@ -49,7 +49,7 @@
 
 #TABLE [dbo].[SanctionReason](
 #	[SanctionReasonId] [int] IDENTITY(1,1) NOT NULL,
-#	[SactionId] [nvarchar](20) NOT NULL,
+#	[SanctionId] [nvarchar](20) NOT NULL,
 #	[LawId] [int] NULL,
 #	[Article] [nvarchar](255) NULL
 #);
@@ -251,7 +251,7 @@
 <#SanctionReasonTriples> a rr:TriplesMap;
 	rr:logicalTable [ rr:tableName "[dbo].[SanctionReason]"; ];
 	rr:subjectMap [
-		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/sanction/{SactionId}/reason/{SanctionReasonId}";
+		rr:template "http://linked.opendata.cz/resource/domain/coi.cz/sanction/{SanctionId}/reason/{SanctionReasonId}";
 		rr:class odcz:SanctionReason;
 	];
 	rr:predicateObjectMap [
