@@ -11,6 +11,7 @@ using Slp.r2rml4net.Storage.Utils;
 using VDS.RDF.Query.Patterns;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Mapping.Utils;
+using TCode.r2rml4net;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
@@ -332,17 +333,44 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         private bool TemplateMatchCheck(string firstPrefix, string firstSuffix, int firstIndex, int firstEndIndex, ITemplatePart[] firstParts,
             string secondPrefix, string secondSuffix, int secondIndex, int secondEndIndex, ITemplatePart[] secondParts, bool isIri)
         {
-            ExtractStartEndFromTemplates(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
-            ExtractStartEndFromTemplates(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
+            while (firstIndex != firstEndIndex || secondIndex != secondEndIndex)
+            {
+                ExtractStartEndFromTemplates(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
+                ExtractStartEndFromTemplates(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
 
-            if (!PrefixMatch(ref firstPrefix, ref secondPrefix))
-                return false;
+                if (!PrefixMatch(ref firstPrefix, ref secondPrefix))
+                    return false;
 
-            if (!SuffixMatch(ref firstSuffix, ref secondSuffix))
-                return false;
+                if (!SuffixMatch(ref firstSuffix, ref secondSuffix))
+                    return false;
 
-            // TODO: Work with escaped column values
-            return true;
+                if (!isIri)
+                    return true;
+
+                CanColumnMatch(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts, ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
+            }
+
+            return firstPrefix == secondPrefix && firstSuffix == secondSuffix;
+        }
+
+        private void CanColumnMatch(ref string firstPrefix, ref string firstSuffix, ref int firstIndex, ref int firstEndIndex, ITemplatePart[] firstParts, ref string secondPrefix, ref string secondSuffix, ref int secondIndex, ref int secondEndIndex, ITemplatePart[] secondParts)
+        {
+            if(firstIndex < firstEndIndex && firstParts[firstIndex].IsColumn)
+            {
+                firstIndex++;
+            }
+            else if (secondIndex < secondEndIndex && secondParts[secondIndex].IsColumn)
+            {
+                secondIndex++;
+            }
+            else
+            {
+                return; // No colums found
+            }
+
+            SkipToFirstNotIUnreserverdCharacter(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
+            SkipToFirstNotIUnreserverdCharacter(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
+            return;
         }
 
         private bool SuffixMatch(ref string firstSuffix, ref string secondSuffix)
@@ -405,6 +433,45 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             while (endIndex > index && parts[endIndex - 1].IsText)
             {
                 suffix = parts[endIndex-- - 1].Text + suffix;
+            }
+        }
+
+        private void SkipToFirstNotIUnreserverdCharacter(ref string prefix, ref string suffix, ref int index, ref int endIndex, ITemplatePart[] parts)
+        {
+            int prefixSkip;
+            for (prefixSkip = 0; prefixSkip < prefix.Length; prefixSkip++)
+            {
+                if(!MappingHelper.IsIUnreserved(prefix[prefixSkip]))
+                {
+                    prefix = prefix.Substring(prefixSkip);
+                    return;
+                }
+            }
+
+            prefix = string.Empty;
+
+            while (index < endIndex)
+            {
+                var current = parts[index];
+
+                if (current.IsText)
+                {
+                    ExtractStartEndFromTemplates(ref prefix, ref suffix, ref index, ref endIndex, parts);
+                    SkipToFirstNotIUnreserverdCharacter(ref prefix, ref suffix, ref index, ref endIndex, parts);
+                    return;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+
+            if(!string.IsNullOrEmpty(suffix))
+            {
+                prefix = suffix;
+                suffix = string.Empty;
+                SkipToFirstNotIUnreserverdCharacter(ref prefix, ref suffix, ref index, ref endIndex, parts);
+                return;
             }
         }
     }
