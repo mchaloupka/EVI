@@ -23,6 +23,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         {
             this.InnerQuery = innerQuery;
             this.variables = variables.ToList();
+            this.CanBeRemoved = false;
         }
 
         public bool IsSelectAll { get { return variables == null; } }
@@ -49,6 +50,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 
         public ISparqlQuery FinalizeAfterTransform()
         {
+            if (CanBeRemoved)
+            {
+                if (InnerQuery is OneEmptySolutionOp)
+                    return InnerQuery;
+                else if (InnerQuery is NoSolutionOp)
+                    return InnerQuery;
+            }
+
             return this;
         }
 
@@ -57,5 +66,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         {
             return visitor.Visit(this, data);
         }
+
+        public bool CanBeRemoved { get; set; }
     }
 }

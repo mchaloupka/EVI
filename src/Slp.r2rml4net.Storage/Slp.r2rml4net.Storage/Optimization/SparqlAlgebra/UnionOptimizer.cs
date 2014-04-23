@@ -214,9 +214,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         private SelectOp CreateProjection(SelectOp selectOp, ISparqlQuery source, VisitData vd)
         {
             if (selectOp.IsSelectAll)
-                return new SelectOp(source);
+                return new SelectOp(source) { CanBeRemoved = true };
             else
-                return new SelectOp(source, selectOp.Variables);
+                return new SelectOp(source, selectOp.Variables) { CanBeRemoved = true };
         }
 
         private bool IsProjectionOnly(SelectOp selectOp)
