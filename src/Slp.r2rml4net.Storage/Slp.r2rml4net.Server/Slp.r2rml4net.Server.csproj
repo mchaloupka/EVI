@@ -119,6 +119,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\ctia_r2rml.ttl" />
+    <Content Include="App_Data\demography_r2rml.ttl" />
     <Content Include="App_Data\rdf_config.ttl" />
     <Content Include="Content\css\bootstrap-theme.css" />
     <Content Include="Content\css\bootstrap-theme.min.css">
@@ -151,7 +153,6 @@
       <DependentUpon>jquery-2.1.0.js</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="App_Data\r2rml.ttl" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
