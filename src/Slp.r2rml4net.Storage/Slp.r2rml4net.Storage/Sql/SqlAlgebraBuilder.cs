@@ -391,7 +391,7 @@ namespace Slp.r2rml4net.Storage.Sql
             {
                 var refObjectPatern = bgpOp.R2RMLRefObjectMap;
 
-                var parentTriplesMap = GetParentTriplesMap(context, refObjectPatern);
+                var parentTriplesMap = refObjectPatern.GetParentTriplesMap(context.Mapping.Mapping);
                 var parentSource = ProcessBgpSource(parentTriplesMap);
 
                 List<ICondition> conditions = new List<ICondition>();
@@ -423,21 +423,6 @@ namespace Slp.r2rml4net.Storage.Sql
                 ProcessBgpPattern(bgpOp, context, select, parentSource, bgpOp.ObjectPattern, refObjectPatern.SubjectMap);
             }
             else throw new Exception("BgpOp must have object or ref object map");
-        }
-
-        private ITriplesMap GetParentTriplesMap(QueryContext context, IRefObjectMap refObjectPatern)
-        {
-            // TODO: Remove this method as soon as the reference will be public
-
-            var subjectMap = refObjectPatern.SubjectMap;
-
-            foreach (var tripleMap in context.Mapping.Mapping.TriplesMaps)
-            {
-                if (tripleMap.SubjectMap == subjectMap)
-                    return tripleMap;
-            }
-
-            throw new Exception("Triples map not found");
         }
 
         private void ProcessBgpPredicate(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)

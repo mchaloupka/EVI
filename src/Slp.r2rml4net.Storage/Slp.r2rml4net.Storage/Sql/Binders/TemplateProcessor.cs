@@ -40,7 +40,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
-        private class ColumnTemplatePart : ITemplatePart
+        public class ColumnTemplatePart : ITemplatePart
         {
             public ColumnTemplatePart(string column)
             {
@@ -65,7 +65,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
-        private class TextTemplatePart : ITemplatePart
+        public class TextTemplatePart : ITemplatePart
         {
             public TextTemplatePart(string text)
             {

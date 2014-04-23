@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
@@ -34,6 +35,21 @@ namespace Slp.r2rml4net.Storage.Mapping.Utils
 
 
             //return refObjectPattern.JoinConditions;
+        }
+
+        public static ITriplesMap GetParentTriplesMap(this IRefObjectMap refObjectPattern, IR2RML mapping)
+        {
+            // TODO: Remove this method as soon as the reference will be public
+
+            var subjectMap = refObjectPattern.SubjectMap;
+
+            foreach (var tripleMap in mapping.TriplesMaps)
+            {
+                if (tripleMap.SubjectMap == subjectMap)
+                    return tripleMap;
+            }
+
+            throw new Exception("Parent triples map not found");
         }
     }
 }

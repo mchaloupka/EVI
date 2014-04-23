@@ -65,6 +65,7 @@
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />
     <Compile Include="Optimization\ISparqlAlgebraOptimizer.cs" />
     <Compile Include="Optimization\ISqlAlgebraOptimizer.cs" />
+    <Compile Include="Optimization\SparqlAlgebra\JoinOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\R2RMLOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\UnionOptimizer.cs" />
     <Compile Include="Optimization\SqlAlgebra\BaseConditionOptimizer.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Sql\Vendor\MSSQLDb.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
+    <Compile Include="Utils\UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

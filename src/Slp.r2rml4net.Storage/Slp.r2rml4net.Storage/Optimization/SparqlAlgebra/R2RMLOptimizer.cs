@@ -9,6 +9,7 @@ using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
+using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
@@ -20,7 +21,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             {
                 return ProcessBgp((BgpOp)algebra, context).FinalizeAfterTransform();
             }
-            // TODO: Optimize joins
             else
             {
                 var innerQueries = algebra.GetInnerQueries().ToList();
@@ -139,7 +139,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                     {
                         var uNode = (UriNode)node;
 
-                        return UriEquals(uriValued.URI, uNode.Uri);
+                        return uriValued.URI.UriEquals(uNode.Uri);
                     }
                     else
                     {
@@ -156,7 +156,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                         {
                             var uNode = (UriNode)node;
 
-                            return UriEquals(objectMap.URI, uNode.Uri);
+                            return objectMap.URI.UriEquals(uNode.Uri);
                         }
                         else
                         {
@@ -173,11 +173,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
 
             return true;
-        }
-
-        private static bool UriEquals(Uri first, Uri second)
-        {
-            return first.Equals(second) && string.Equals(first.Fragment, second.Fragment);
         }
     }
 }
