@@ -54,7 +54,9 @@ namespace Slp.r2rml4net.Storage.Query
 
             this.sqlOptimizersOnTheFly = new ISqlAlgebraOptimizerOnTheFly[]
             {
-                new Optimization.SqlAlgebra.IsNullOptimizer()
+                new Optimization.SqlAlgebra.IsNullOptimizer(),
+                new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
+                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer()
             };
         }
 

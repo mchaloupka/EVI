@@ -1,7 +1,6 @@
-SELECT DISTINCT ?class ?prop
+SELECT REDUCED ?class ?prop
 WHERE
 {
 	[] a ?class;
 		?prop [];
 }
-LIMIT 1000

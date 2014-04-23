@@ -8,30 +8,40 @@ using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
-    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
+    public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlAlgebraOptimizerOnTheFly, ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
     {
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
-            algebra.Accept(this, new VisitData() { Context = context, SecondRun = false });
-            return algebra;
+            return (INotSqlOriginalDbSource)algebra.Accept(this, new VisitData() { Context = context, SecondRun = false, IsOnTheFly = false });
+        }
+
+        public INotSqlOriginalDbSource ProcessAlgebraOnTheFly(INotSqlOriginalDbSource algebra, QueryContext context)
+        {
+            return (INotSqlOriginalDbSource)algebra.Accept(this, new VisitData() { Context = context, SecondRun = false, IsOnTheFly = true });
         }
 
         public object Visit(NoRowSource noRowSource, object data)
         {
-            return null;
+            return noRowSource;
         }
 
         public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
-            return null;
+            return singleEmptyRowSource;
         }
 
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
-            sqlSelectOp.OriginalSource.Accept(this, data);
+            var vd = (VisitData)data;
+
+            if (!vd.IsOnTheFly)
+            {
+                sqlSelectOp.OriginalSource.Accept(this, data);
+            }
 
             foreach (var column in sqlSelectOp.Columns.OfType<SqlExpressionColumn>())
             {
@@ -48,7 +58,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             foreach (var join in sqlSelectOp.JoinSources.Union(sqlSelectOp.LeftOuterJoinSources))
             {
-                join.Source.Accept(this, data);
+                if (!vd.IsOnTheFly)
+                {
+                    join.Source.Accept(this, data);
+                }
 
                 var simplified = (ICondition)join.Condition.Accept(this, data);
 
@@ -79,27 +92,50 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 sqlSelectOp.AddCondition(new AlwaysFalseCondition());
             }
 
-            return null;
+            if (vd.IsOnTheFly)
+            {
+                if ((sqlSelectOp.OriginalSource is NoRowSource)
+                    || sqlSelectOp.JoinSources.Select(x => x.Source).OfType<NoRowSource>().Any()
+                    || sqlSelectOp.JoinSources.Select(x => x.Condition).OfType<AlwaysFalseCondition>().Any()
+                    || sqlSelectOp.Conditions.OfType<AlwaysFalseCondition>().Any())
+                {
+                    var noRowSource = new NoRowSource();
+
+                    foreach (var valBinder in sqlSelectOp.ValueBinders)
+                    {
+                        noRowSource.AddValueBinder(new BlankValueBinder(valBinder.VariableName));
+                    }
+
+                    return noRowSource;
+                }
+            }
+
+            return sqlSelectOp;
         }
 
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
-            foreach (var source in sqlUnionOp.Sources)
+            var vd = (VisitData)data;
+
+            if (!vd.IsOnTheFly)
             {
-                source.Accept(this, data);
+                foreach (var source in sqlUnionOp.Sources)
+                {
+                    source.Accept(this, data);
+                }
             }
 
-            return null;
+            return sqlUnionOp;
         }
 
         public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
         {
-            return null;
+            return sqlStatement;
         }
 
         public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
-            return null;
+            return sqlTable;
         }
 
         public object Visit(AlwaysFalseCondition condition, object data)
@@ -409,13 +445,15 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         {
             public QueryContext Context { get; set; }
             public bool SecondRun { get; set; }
+            public bool IsOnTheFly { get; set; }
 
             public VisitData ForSecondRun()
             {
                 return new VisitData()
                 {
                     Context = Context,
-                    SecondRun = true
+                    SecondRun = true,
+                    IsOnTheFly = IsOnTheFly
                 };
             }
         }
