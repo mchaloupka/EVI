@@ -52,7 +52,7 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         private ISparqlQuery ProcessConstruct(QueryContext context)
         {
-            throw new NotImplementedException();
+            return ProcessAlgebra(context.OriginalAlgebra, context);
         }
 
         private ISparqlQuery ProcessDescribe(QueryContext context)

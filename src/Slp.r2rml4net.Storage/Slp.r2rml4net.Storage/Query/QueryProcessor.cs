@@ -15,6 +15,7 @@ using Slp.r2rml4net.Storage.Sql.SqlQuery;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Query
 {
@@ -75,6 +76,11 @@ namespace Slp.r2rml4net.Storage.Query
                     nodeFactory = resultsHandler;
                     break;
                 case SparqlQueryType.Construct:
+                    if (rdfHandler == null)
+                        throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
+
+                    nodeFactory = rdfHandler;
+                    break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
                     if (rdfHandler == null)
@@ -171,6 +177,28 @@ namespace Slp.r2rml4net.Storage.Query
 
                     break;
                 case VDS.RDF.Query.SparqlQueryType.Construct:
+                    rdfHandler.StartRdf();
+
+                    try
+                    {
+                        var template = context.OriginalQuery.ConstructTemplate;
+
+                        while (result.HasNextRow)
+                        {
+                            var row = result.Read();
+
+                            ProcessConstructTemplate(rdfHandler, row, template, sqlAlgebra, context);
+                        }
+
+                        rdfHandler.EndRdf(true);
+                    }
+                    catch
+                    {
+                        rdfHandler.EndRdf(false);
+                        break;
+                    }
+
+                    break;
                 case VDS.RDF.Query.SparqlQueryType.Describe:
                 case VDS.RDF.Query.SparqlQueryType.DescribeAll:
                     if (sqlAlgebra.ValueBinders.Count() != 3)
@@ -196,6 +224,8 @@ namespace Slp.r2rml4net.Storage.Query
 
                             if (!rdfHandler.HandleTriple(new Triple(sNode, pNode, oNode))) break;
                         }
+
+                        rdfHandler.EndRdf(true);
                     }
                     catch
                     {
@@ -253,6 +283,17 @@ namespace Slp.r2rml4net.Storage.Query
                 default:
                     break;
             }
+        }
+
+        private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
+        {
+            // NOTE: Currently we support only simple triples
+            foreach (var triple in template.TriplePatterns)
+            {
+                
+            }
+
+            throw new NotImplementedException();
         }
 
         private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)
