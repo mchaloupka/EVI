@@ -1,8 +1,315 @@
 # The R2RML mapping file for demography data
 
-# ***
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@base <http://example.com/base/> .
+
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix adms:    <http://www.w3.org/ns/adms#> .
+@prefix schema:  <http://schema.org/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix gr:      <http://purl.org/goodrelations/v1#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix odcz:    <http://linked.opendata.cz/ontology/coi.cz/> .
+@prefix ec: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#> .
+@prefix czso-reg: <http://www.czso.cz/vocabularies/regions#> .
+
+### Regions ###
 # Database tables:
-# ***
+#TABLE [dbo].[Lau1] (
+#	[Code] [nvarchar](10) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[ParentRegion] [nvarchar](5) NOT NULL);
+#
+#TABLE [dbo].[Lau2](
+#	[Code] [nvarchar](10) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[ParentRegion] [nvarchar](10) NOT NULL,
+#	[AuthorizedMunicipality] [nvarchar](10) NOT NULL,
+#	[Statute] [nvarchar](10) NOT NULL);
+#
+#TABLE [dbo].[Nuts0](
+#	[Code] [nvarchar](5) NOT NULL,
+#	[Name] [nvarchar](255) NULL);
+#
+#TABLE [dbo].[Nuts1](
+#	[Code] [nvarchar](5) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[ParentRegion] [nvarchar](5) NOT NULL);
+#
+#TABLE [dbo].[Nuts2](
+#	[Code] [nvarchar](5) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[ParentRegion] [nvarchar](5) NOT NULL);
+#
+#TABLE [dbo].[Nuts3](
+#	[Code] [nvarchar](5) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[OfficialNumber] [nvarchar](50) NOT NULL,
+#	[Population] [int] NOT NULL,
+#	[ParentRegion] [nvarchar](5) NOT NULL);
+	
+<#Nuts0> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Nuts0]"; ];
+	rr:subjectMap [
+		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
+		rr:class ec:NUTSRegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 0; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ 
+			rr:template "{Code} - {Name}";
+			rr:termType rr:Literal;
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasSubRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts1>;
+			rr:joinCondition [
+				rr:child "[Code]";
+				rr:parent "[ParentRegion]";	
+			];
+		];
+	];
+.
+
+<#Nuts1> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Nuts1]"; ];
+	rr:subjectMap [
+		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
+		rr:class ec:NUTSRegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 1; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ 
+			rr:template "{Code} - {Name}";
+			rr:termType rr:Literal;
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasSubRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts2>;
+			rr:joinCondition [
+				rr:child "[Code]";
+				rr:parent "[ParentRegion]";	
+			];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasParentRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts0>;
+			rr:joinCondition [
+				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+	];
+.
+
+<#Nuts2> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Nuts2]"; ];
+	rr:subjectMap [
+		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
+		rr:class ec:NUTSRegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 2; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ 
+			rr:template "{Code} - {Name}";
+			rr:termType rr:Literal;
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasSubRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts3>;
+			rr:joinCondition [
+				rr:child "[Code]";
+				rr:parent "[ParentRegion]";	
+			];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasParentRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts1>;
+			rr:joinCondition [
+				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+	];
+.
+
+<#Nuts3> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Nuts3]"; ];
+	rr:subjectMap [
+		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
+		rr:class ec:NUTSRegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 3; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ 
+			rr:template "{Code} - {Name}";
+			rr:termType rr:Literal;
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasParentRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts2>;
+			rr:joinCondition [
+				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+	];
+.
+
+<#Lau1> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Lau1]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/region/{Code}";
+		rr:class ec:LAURegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 1; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate dcterms:title;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasParentRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts2>;
+			rr:joinCondition [
+				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+	];
+.
+
+<#Lau2> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Lau2]"; ];
+	rr:subjectMap [
+		rr:template "http://linked.opendata.cz/resource/region/{Code}";
+		rr:class ec:LAURegion
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:level;
+		rr:objectMap [ rr:constant 2; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate rdfs:label;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:name;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate dcterms:title;
+		rr:objectMap [ rr:column "[Name]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:regionCode;
+		rr:objectMap [ rr:column "[Code]"; ];
+	];
+	rr:predicateObjectMap [
+		rr:predicate ec:hasParentRegion;
+		rr:objectMap [
+			rr:parentTriplesMap <#Lau1>;
+			rr:joinCondition [
+				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-reg:hasAuthorizedMunicipality;
+		rr:objectMap [
+			rr:template "http://linked.opendata.cz/resource/region/{AuthorizedMunicipality}";
+		];
+	];
+	rr:predicateObjectMap [
+		rr:predicate czso-reg:statute;
+		rr:objectMap [
+			rr:template "http://www.czso.cz/vocabularies/regions#Statute-{Statute}";
+		];
+	]
+.
+	
+
+### Check Actions ###
+# Database tables:
 
 #TABLE [dbo].[Ban](
 #	[Id] [nvarchar](20) NOT NULL,
@@ -35,7 +342,7 @@
 #	[LawId] [int] NOT NULL
 #);
 
-#CREATE TABLE [dbo].[Laws](
+#TABLE [dbo].[Laws](
 #	[LawId] [int] IDENTITY(1,1) NOT NULL,
 #	[Law] [nvarchar](255) NOT NULL
 #);
@@ -53,21 +360,6 @@
 #	[LawId] [int] NULL,
 #	[Article] [nvarchar](255) NULL
 #);
-
-@prefix rr: <http://www.w3.org/ns/r2rml#> .
-@base <http://example.com/base/> .
-
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix adms:    <http://www.w3.org/ns/adms#> .
-@prefix schema:  <http://schema.org/> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix void:    <http://rdfs.org/ns/void#> .
-@prefix gr:      <http://purl.org/goodrelations/v1#> .
-@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
-@prefix dcterms:  <http://purl.org/dc/terms/> .
-@prefix odcz:    <http://linked.opendata.cz/ontology/coi.cz/> .
-
 
 <#LawTriples> a rr:TriplesMap;
 	rr:logicalTable [ rr:tableName "[dbo].[Laws]" ];
