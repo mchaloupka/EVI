@@ -17,6 +17,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
     public class JoinOptimizer : ISparqlAlgebraOptimizer
     {
+        public JoinOptimizer()
+        {
+            this.canMatchCache = new Dictionary<ITermMap, Dictionary<ITermMap, bool>>();
+        }
+
         private TemplateProcessor templateProcessor = new TemplateProcessor();
 
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
@@ -152,13 +157,59 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        private Dictionary<ITermMap, Dictionary<ITermMap, bool>> canMatchCache;
+
+        private bool? GetCachedCanMatch(ITermMap first, ITermMap second)
+        {
+            if(canMatchCache.ContainsKey(first))
+            {
+                var c = canMatchCache[first];
+
+                if (c.ContainsKey(second))
+                    return c[second];
+            }
+            
+            if(canMatchCache.ContainsKey(second))
+            {
+                var c = canMatchCache[second];
+
+                if (c.ContainsKey(first))
+                    return c[first];
+            }
+
+            return null;
+        }
+
+        private void SetCanMatchCache(ITermMap first, ITermMap second, bool value)
+        {
+            if (!canMatchCache.ContainsKey(first))
+                canMatchCache.Add(first, new Dictionary<ITermMap, bool>());
+
+            if (!canMatchCache[first].ContainsKey(second))
+                canMatchCache[first].Add(second, value);
+            else
+                canMatchCache[first][second] = value;
+        }
+
         private bool CanMatch(ITermMap first, ITermMap second, QueryContext context)
         {
-            return CanMatchFunction<bool>(first,
-                constantUriFunc: x => CanMatch(x, second, context),
-                constantLiteralFunc: x => CanMatch(x, second, context),
-                columnFunc: x => CanColumnMatch(x, second, context),
-                templateFunc: x => CanTemplateMatch(x, second, context));
+            var res = GetCachedCanMatch(first, second);
+
+            if (!res.HasValue)
+            {
+                var result = CanMatchFunction<bool>(first,
+                    constantUriFunc: x => CanMatch(x, second, context),
+                    constantLiteralFunc: x => CanMatch(x, second, context),
+                    columnFunc: x => CanColumnMatch(x, second, context),
+                    templateFunc: x => CanTemplateMatch(x, second, context));
+
+                SetCanMatchCache(first, second, result);
+                return result;
+            }
+            else
+            {
+                return res.Value;
+            }
         }
 
         private bool CanTemplateMatch(ITermMap first, ITermMap second, QueryContext context)
