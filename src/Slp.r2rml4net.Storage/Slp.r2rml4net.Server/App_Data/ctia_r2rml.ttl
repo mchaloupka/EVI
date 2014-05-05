@@ -248,7 +248,7 @@
 	rr:predicateObjectMap [
 		rr:predicate ec:hasParentRegion;
 		rr:objectMap [
-			rr:parentTriplesMap <#Nuts2>;
+			rr:parentTriplesMap <#Nuts3>;
 			rr:joinCondition [
 				rr:child "[ParentRegion]";
 				rr:parent "[Code]";	
