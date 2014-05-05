@@ -54,8 +54,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 GetBgpInfo(bgp, variables, context);
             }
 
-            var ok = true;
-
             foreach (var bgp in bgps)
             {
                 if (!ProcessBgp(bgp, variables, context))
@@ -65,7 +63,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return joinOp;
         }
 
-        private void GetBgpInfo(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
+        public void GetBgpInfo(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             if (bgp.SubjectPattern is VariablePattern)
                 GetPatternInfo(((VariablePattern)bgp.SubjectPattern).VariableName, bgp.R2RMLSubjectMap, variables, context);
@@ -107,7 +105,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             variables[varName].Add(termMap);
         }
 
-        private bool ProcessBgp(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
+        public bool ProcessBgp(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             bool ok = true;
 

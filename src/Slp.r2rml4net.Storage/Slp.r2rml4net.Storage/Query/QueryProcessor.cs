@@ -40,7 +40,8 @@ namespace Slp.r2rml4net.Storage.Query
             {
                 new Optimization.SparqlAlgebra.R2RMLOptimizer(),
                 new Optimization.SparqlAlgebra.UnionOptimizer(),
-                new Optimization.SparqlAlgebra.JoinOptimizer()
+                new Optimization.SparqlAlgebra.JoinOptimizer(),
+                new Optimization.SparqlAlgebra.SelectIntoUnionOptimizer()
             };
 
             this.sqlOptimizers = new ISqlAlgebraOptimizer[]

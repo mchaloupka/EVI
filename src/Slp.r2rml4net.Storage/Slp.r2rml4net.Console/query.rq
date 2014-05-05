@@ -15,11 +15,11 @@ s:result/s:result [] .
 ec:level 2;
 dcterms:title ?l2label ;
 ec:hasParentRegion ?lau1.
-?lau1 dcterms:title ?l1label ;
-ec:hasParentRegion ?nuts3 .
-?nuts3 rdfs:label ?n3label ;
-ec:hasParentRegion ?nuts2 .
-?nuts2 rdfs:label ?n2label ;
-ec:hasParentRegion ?nuts1 .
-?nuts1 rdfs:label ?n1label.
+#?lau1 dcterms:title ?l1label ;
+#ec:hasParentRegion ?nuts3 .
+#?nuts3 rdfs:label ?n3label ;
+#ec:hasParentRegion ?nuts2 .
+#?nuts2 rdfs:label ?n2label ;
+#ec:hasParentRegion ?nuts1 .
+#?nuts1 rdfs:label ?n1label.
 }

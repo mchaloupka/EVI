@@ -67,6 +67,7 @@
     <Compile Include="Optimization\ISqlAlgebraOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\JoinOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\R2RMLOptimizer.cs" />
+    <Compile Include="Optimization\SparqlAlgebra\SelectIntoUnionOptimizer.cs" />
     <Compile Include="Optimization\SparqlAlgebra\UnionOptimizer.cs" />
     <Compile Include="Optimization\SqlAlgebra\BaseConditionOptimizer.cs" />
     <Compile Include="Optimization\SqlAlgebra\ConcatenationInEqualConditionOptimizer.cs" />

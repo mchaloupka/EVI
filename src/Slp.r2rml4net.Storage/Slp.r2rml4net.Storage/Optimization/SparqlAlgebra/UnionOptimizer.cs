@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using TCode.r2rml4net.Mapping;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
     public class UnionOptimizer : ISparqlAlgebraOptimizer, ISparqlQueryVisitor
     {
+        private JoinOptimizer _joinOptimizer;
+
+        public UnionOptimizer()
+        {
+            this._joinOptimizer = new JoinOptimizer();
+        }
+
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             return (ISparqlQuery)algebra.Accept(this, new VisitData(context));
@@ -18,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         public object Visit(BgpOp bgpOp, object data)
         {
-            return bgpOp;
+            return bgpOp.FinalizeAfterTransform();
         }
 
         public object Visit(JoinOp joinOp, object data)
@@ -27,7 +35,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 return joinOp;
 
             List<ISparqlQuery> subQueries = new List<ISparqlQuery>();
-            List<ISparqlQuery> subUnions = new List<ISparqlQuery>();
+            List<UnionOp> subUnions = new List<UnionOp>();
 
             bool changed = false;
 
@@ -42,15 +50,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             {
                 ((VisitData)data).Visit(joinOp);
 
-                return joinOp;
+                return joinOp.FinalizeAfterTransform();
             }
 
-            IEnumerable<IEnumerable<ISparqlQuery>> cartesian = new List<List<ISparqlQuery>>() { subQueries };
-
-            foreach (var subUnion in subUnions)
-            {
-                cartesian = ProcessJoinCartesian(cartesian, (UnionOp)subUnion);
-            }
+            IEnumerable<IEnumerable<ISparqlQuery>> cartesian = CreateCartesians(subQueries, subUnions, ((VisitData)data).Context);
 
             List<JoinOp> resultJoins = new List<JoinOp>();
             foreach (var cartesItem in cartesian)
@@ -63,7 +66,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 resultJoins.Add(join);
             }
 
-            if (resultJoins.Count == 1)
+            if (resultJoins.Count == 0)
+            {
+                return new NoSolutionOp();
+            }
+            else if (resultJoins.Count == 1)
             {
                 return resultJoins[0].Accept(this, data);
             }
@@ -80,32 +87,88 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
-        private IEnumerable<IEnumerable<ISparqlQuery>> ProcessJoinCartesian(IEnumerable<IEnumerable<ISparqlQuery>> cartesian, UnionOp unionOp)
+        private IEnumerable<IEnumerable<ISparqlQuery>> CreateCartesians(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, QueryContext context)
         {
-            foreach (var subCar in cartesian)
+            var leftCartesian = new List<List<ISparqlQuery>>() { subQueries };
+
+            if (subUnions.Count == 0)
+                return leftCartesian;
+
+            var right = subUnions.Select(x => x.GetInnerQueries().ToList()).ToList();
+            var rightCartesian = CreateCartesians(right, context);
+
+            return ProcessCartesian(leftCartesian, rightCartesian, context);
+        }
+
+        private List<List<ISparqlQuery>> CreateCartesians(IEnumerable<IEnumerable<ISparqlQuery>> unions, QueryContext context)
+        {
+            var count = unions.Count();
+
+            if (count == 1)
             {
-                foreach (var subUnion in unionOp.GetInnerQueries())
+                var union = unions.First();
+                return new List<List<ISparqlQuery>>(union.Select(x => new List<ISparqlQuery>() { x }));
+            }
+
+            var splitCount = count / 2;
+
+            var left = unions.Take(splitCount);
+            var right = unions.Skip(splitCount);
+
+            var leftCartesian = CreateCartesians(left, context);
+            var rightCartesian = CreateCartesians(right, context);
+
+            return ProcessCartesian(leftCartesian, rightCartesian, context);
+        }
+
+        private List<List<ISparqlQuery>> ProcessCartesian(List<List<ISparqlQuery>> left, List<List<ISparqlQuery>> right, QueryContext context)
+        {
+            List<List<ISparqlQuery>> result = new List<List<ISparqlQuery>>();
+
+            foreach (var li in left)
+            {
+                foreach (var ri in right)
                 {
-                    yield return ProcessJoinCartesian(subCar, subUnion);
+                    var item = ProcessCartesian(li, ri, context);
+
+                    if (item != null)
+                        result.Add(item);
                 }
             }
+
+            return result;
         }
 
-        private IEnumerable<ISparqlQuery> ProcessJoinCartesian(IEnumerable<ISparqlQuery> subCar, ISparqlQuery subUnion)
+        private List<ISparqlQuery> ProcessCartesian(List<ISparqlQuery> li, List<ISparqlQuery> ri, QueryContext context)
         {
-            foreach (var item in subCar)
+            Dictionary<string, List<ITermMap>> variables = new Dictionary<string, List<ITermMap>>();
+
+            List<ISparqlQuery> result = new List<ISparqlQuery>();
+
+            var subItems = li.Union(ri);
+
+            foreach (var item in subItems)
             {
-                yield return item;
+                if(item is BgpOp)
+                {
+                    var bgp = (BgpOp)item;
+
+                    this._joinOptimizer.GetBgpInfo(bgp, variables, context);
+                    if (!this._joinOptimizer.ProcessBgp(bgp, variables, context))
+                        return null;
+                }
+
+                result.Add(item);
             }
 
-            yield return subUnion;
+            return result;
         }
 
-        private static bool ProcessJoinChild(List<ISparqlQuery> subQueries, List<ISparqlQuery> subUnions, ISparqlQuery inner, ISparqlQuery oldInner)
+        private static bool ProcessJoinChild(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, ISparqlQuery inner, ISparqlQuery oldInner)
         {
             if (inner is UnionOp)
             {
-                subUnions.Add(inner);
+                subUnions.Add((UnionOp)inner);
 
                 return true;
             }
@@ -128,7 +191,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         public object Visit(OneEmptySolutionOp oneEmptySolutionOp, object data)
         {
-            return oneEmptySolutionOp;
+            return oneEmptySolutionOp.FinalizeAfterTransform();
         }
 
         public object Visit(UnionOp unionOp, object data)
@@ -143,7 +206,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             {
                 var inner = (ISparqlQuery)oldInner.Accept(this, data);
 
-                changed = ProcessUnionChild(newUnion, inner, oldInner) || changed;
+                changed = ProcessUnionChild(newUnion, inner, oldInner) || (inner != oldInner);
             }
 
             if (changed)
@@ -151,7 +214,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             else
             {
                 ((VisitData)data).Visit(unionOp);
-                return unionOp;
+                return unionOp.FinalizeAfterTransform();
             }
         }
 
@@ -169,14 +232,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             else
             {
                 newUnion.AddToUnion(inner);
-
-                return inner != oldInner;
+                return false;
             }
         }
 
         public object Visit(NoSolutionOp noSolutionOp, object data)
         {
-            return noSolutionOp;
+            return noSolutionOp.FinalizeAfterTransform();
         }
 
         public object Visit(SelectOp selectOp, object data)
@@ -191,42 +253,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             if (inner != selectOp.InnerQuery)
                 selectOp.ReplaceInnerQuery(selectOp.InnerQuery, inner);
 
-            if(inner is UnionOp && IsProjectionOnly(selectOp))
-            {
-                UnionOp union = new UnionOp();
-
-                foreach (var source in ((UnionOp)inner).GetInnerQueries())
-                {
-                    var projectedSource = CreateProjection(selectOp, source, vd);
-                    union.AddToUnion(projectedSource);
-                }
-
-                vd.Visit(union);
-                return union;
-            }
-            else
-            {
-                vd.Visit(selectOp);
-                return selectOp;
-            }
-        }
-
-        private SelectOp CreateProjection(SelectOp selectOp, ISparqlQuery source, VisitData vd)
-        {
-            if (selectOp.IsSelectAll)
-                return new SelectOp(source) { CanBeRemoved = true };
-            else
-                return new SelectOp(source, selectOp.Variables) { CanBeRemoved = true };
-        }
-
-        private bool IsProjectionOnly(SelectOp selectOp)
-        {
-            if (selectOp.IsSelectAll)
-                return true;
-            else if (selectOp.Variables.Where(x => x.IsAggregate).Any())
-                return false;
-            else
-                return true;
+            return selectOp.FinalizeAfterTransform();
         }
 
         public object Visit(SliceOp sliceOp, object data)
@@ -240,7 +267,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 sliceOp.ReplaceInnerQuery(sliceOp.InnerQuery, inner);
 
             ((VisitData)data).Visit(sliceOp);
-            return sliceOp;
+            return sliceOp.FinalizeAfterTransform();
         }
 
         public object Visit(OrderByOp orderByOp, object data)
@@ -254,7 +281,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 orderByOp.ReplaceInnerQuery(orderByOp.InnerQuery, inner);
 
             ((VisitData)data).Visit(orderByOp);
-            return orderByOp;
+            return orderByOp.FinalizeAfterTransform();
         }
 
         public object Visit(DistinctOp distinctOp, object data)
@@ -268,7 +295,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 distinctOp.ReplaceInnerQuery(distinctOp.InnerQuery, inner);
 
             ((VisitData)data).Visit(distinctOp);
-            return distinctOp;
+            return distinctOp.FinalizeAfterTransform();
         }
 
         public object Visit(ReducedOp reducedOp, object data)
@@ -282,7 +309,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 reducedOp.ReplaceInnerQuery(reducedOp.InnerQuery, inner);
 
             ((VisitData)data).Visit(reducedOp);
-            return reducedOp;
+            return reducedOp.FinalizeAfterTransform();
         }
 
         private class VisitData
