@@ -18,6 +18,13 @@
 
 ### Regions ###
 # Database tables:
+#TABLE [dbo].[Lau] (
+#	[Code] [nvarchar](10) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[Level] [int] NOT NULL,
+#	[ParentRegion] [nvarchar](10) NULL,
+#	[ParentNuts] [nvarchar](5) NULL);
+#
 #TABLE [dbo].[Lau1] (
 #	[Code] [nvarchar](10) NOT NULL,
 #	[Name] [nvarchar](255) NOT NULL,
@@ -29,6 +36,12 @@
 #	[ParentRegion] [nvarchar](10) NOT NULL,
 #	[AuthorizedMunicipality] [nvarchar](10) NOT NULL,
 #	[Statute] [nvarchar](10) NOT NULL);
+#
+#TABLE [dbo].[Nuts](
+#	[Code] [nvarchar](5) NOT NULL,
+#	[Name] [nvarchar](255) NOT NULL,
+#	[Level] [int] NOT NULL,
+#	[ParentRegion] [nvarchar](5) NULL);
 #
 #TABLE [dbo].[Nuts0](
 #	[Code] [nvarchar](5) NOT NULL,
@@ -51,15 +64,18 @@
 #	[Population] [int] NOT NULL,
 #	[ParentRegion] [nvarchar](5) NOT NULL);
 	
-<#Nuts0> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Nuts0]"; ];
+<#Nuts> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Nuts]"; ];
 	rr:subjectMap [
 		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
 		rr:class ec:NUTSRegion
 	];
 	rr:predicateObjectMap [
 		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 0; ];
+		rr:objectMap [ 
+			rr:column "Level"; 
+			rr:datatype xsd:int;
+		];
 	];
 	rr:predicateObjectMap [
 		rr:predicate rdfs:label;
@@ -79,44 +95,7 @@
 	rr:predicateObjectMap [
 		rr:predicate ec:hasSubRegion;
 		rr:objectMap [
-			rr:parentTriplesMap <#Nuts1>;
-			rr:joinCondition [
-				rr:child "[Code]";
-				rr:parent "[ParentRegion]";	
-			];
-		];
-	];
-.
-
-<#Nuts1> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Nuts1]"; ];
-	rr:subjectMap [
-		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
-		rr:class ec:NUTSRegion
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 1; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate rdfs:label;
-		rr:objectMap [ 
-			rr:template "{Code} - {Name}";
-			rr:termType rr:Literal;
-		];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:name;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:regionCode;
-		rr:objectMap [ rr:column "[Code]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:hasSubRegion;
-		rr:objectMap [
-			rr:parentTriplesMap <#Nuts2>;
+			rr:parentTriplesMap <#Nuts>;
 			rr:joinCondition [
 				rr:child "[Code]";
 				rr:parent "[ParentRegion]";	
@@ -126,7 +105,7 @@
 	rr:predicateObjectMap [
 		rr:predicate ec:hasParentRegion;
 		rr:objectMap [
-			rr:parentTriplesMap <#Nuts0>;
+			rr:parentTriplesMap <#Nuts>;
 			rr:joinCondition [
 				rr:child "[ParentRegion]";
 				rr:parent "[Code]";	
@@ -135,99 +114,18 @@
 	];
 .
 
-<#Nuts2> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Nuts2]"; ];
-	rr:subjectMap [
-		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
-		rr:class ec:NUTSRegion
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 2; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate rdfs:label;
-		rr:objectMap [ 
-			rr:template "{Code} - {Name}";
-			rr:termType rr:Literal;
-		];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:name;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:regionCode;
-		rr:objectMap [ rr:column "[Code]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:hasSubRegion;
-		rr:objectMap [
-			rr:parentTriplesMap <#Nuts3>;
-			rr:joinCondition [
-				rr:child "[Code]";
-				rr:parent "[ParentRegion]";	
-			];
-		];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:hasParentRegion;
-		rr:objectMap [
-			rr:parentTriplesMap <#Nuts1>;
-			rr:joinCondition [
-				rr:child "[ParentRegion]";
-				rr:parent "[Code]";	
-			];
-		];
-	];
-.
-
-<#Nuts3> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Nuts3]"; ];
-	rr:subjectMap [
-		rr:template "http://ec.europa.eu/eurostat/ramon/rdfdata/nuts2008/{Code}";
-		rr:class ec:NUTSRegion
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 3; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate rdfs:label;
-		rr:objectMap [ 
-			rr:template "{Code} - {Name}";
-			rr:termType rr:Literal;
-		];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:name;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:regionCode;
-		rr:objectMap [ rr:column "[Code]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:hasParentRegion;
-		rr:objectMap [
-			rr:parentTriplesMap <#Nuts2>;
-			rr:joinCondition [
-				rr:child "[ParentRegion]";
-				rr:parent "[Code]";	
-			];
-		];
-	];
-.
-
-<#Lau1> a rr:TriplesMap;
-	rr:logicalTable [ rr:tableName "[dbo].[Lau1]"; ];
+<#Lau> a rr:TriplesMap;
+	rr:logicalTable [ rr:tableName "[dbo].[Lau]"; ];
 	rr:subjectMap [
 		rr:template "http://linked.opendata.cz/resource/region/{Code}";
 		rr:class ec:LAURegion
 	];
 	rr:predicateObjectMap [
 		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 1; ];
+		rr:objectMap [ 
+			rr:column "Level"; 
+			rr:datatype xsd:int; 
+		];
 	];
 	rr:predicateObjectMap [
 		rr:predicate rdfs:label;
@@ -248,9 +146,16 @@
 	rr:predicateObjectMap [
 		rr:predicate ec:hasParentRegion;
 		rr:objectMap [
-			rr:parentTriplesMap <#Nuts3>;
+			rr:parentTriplesMap <#Lau>;
 			rr:joinCondition [
 				rr:child "[ParentRegion]";
+				rr:parent "[Code]";	
+			];
+		];
+		rr:objectMap [
+			rr:parentTriplesMap <#Nuts>;
+			rr:joinCondition [
+				rr:child "[ParentNuts]";
 				rr:parent "[Code]";	
 			];
 		];
@@ -261,37 +166,6 @@
 	rr:logicalTable [ rr:tableName "[dbo].[Lau2]"; ];
 	rr:subjectMap [
 		rr:template "http://linked.opendata.cz/resource/region/{Code}";
-		rr:class ec:LAURegion
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:level;
-		rr:objectMap [ rr:constant 2; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate rdfs:label;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:name;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate dcterms:title;
-		rr:objectMap [ rr:column "[Name]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:regionCode;
-		rr:objectMap [ rr:column "[Code]"; ];
-	];
-	rr:predicateObjectMap [
-		rr:predicate ec:hasParentRegion;
-		rr:objectMap [
-			rr:parentTriplesMap <#Lau1>;
-			rr:joinCondition [
-				rr:child "[ParentRegion]";
-				rr:parent "[Code]";	
-			];
-		];
 	];
 	rr:predicateObjectMap [
 		rr:predicate czso-reg:hasAuthorizedMunicipality;
