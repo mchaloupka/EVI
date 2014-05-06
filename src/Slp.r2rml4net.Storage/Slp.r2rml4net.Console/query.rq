@@ -8,24 +8,18 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select *
 where
 {
-#?check a s:CheckAction;
-#s:location/s:location ?region;
-#s:result/s:result [] .
-#?region a ec:LAURegion;
-#ec:level 2;
-#dcterms:title ?l2label ;
-#ec:hasParentRegion ?lau1.
-?lau1 a ec:LAURegion;
-dcterms:title ?l1label ;
-ec:level 1;
+?check a s:CheckAction;
+s:location/s:location ?region;
+s:result/s:result [] .
+?region a ec:LAURegion;
+ec:level 2;
+dcterms:title ?l2label ;
+ec:hasParentRegion ?lau1.
+?lau1 dcterms:title ?l1label ;
 ec:hasParentRegion ?nuts3 .
-?nuts3 a ec:NUTSRegion;
-rdfs:label ?n3label ;
-ec:level 3;
+?nuts3 rdfs:label ?n3label ;
 ec:hasParentRegion ?nuts2 .
-#?nuts2 rdfs:label ?n2label ;
-#ec:level 2;
-#ec:hasParentRegion ?nuts1 .
-#?nuts1 rdfs:label ?n1label;
-#ec:level 1.
+?nuts2 rdfs:label ?n2label ;
+ec:hasParentRegion ?nuts1 .
+?nuts1 rdfs:label ?n1label.
 }

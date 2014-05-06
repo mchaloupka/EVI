@@ -62,7 +62,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                     var columnTableName = ((SqlTable)column.Source).TableName;
                     var otherTableName = ((SqlTable)other.Source).TableName;
 
-                    return columnTableName == otherTableName && (((SqlTableColumn)column).OriginalName == ((SqlTableColumn)other).OriginalName);
+                    return DataReaderWrapper.GetTableNameUnquoted(columnTableName) == DataReaderWrapper.GetTableNameUnquoted(otherTableName) && (DataReaderWrapper.GetColumnNameUnquoted(((SqlTableColumn)column).OriginalName) == DataReaderWrapper.GetColumnNameUnquoted(((SqlTableColumn)other).OriginalName));
                 }
                 else
                 {

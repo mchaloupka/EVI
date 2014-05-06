@@ -22,6 +22,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return DataReaderRow.GetColumnNameUnquoted(col);
         }
 
+        public static string GetTableNameUnquoted(string col)
+        {
+            return DataReaderRow.GetColumnNameUnquoted(col);
+        }
+
         public DataReaderWrapper(SqlDataReader dataReader, Func<bool> needsDisposeAction, Action disposeAction)
         {
             this.dataReader = dataReader;
