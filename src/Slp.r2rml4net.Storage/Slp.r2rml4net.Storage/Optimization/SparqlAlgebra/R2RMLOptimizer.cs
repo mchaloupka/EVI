@@ -165,7 +165,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                     }
                     else if (objectMap.Literal != null)
                     {
-                        // TODO: Static literal comparison
+                        if (nmp.Node.NodeType == NodeType.Uri)
+                            return false;
+                        else if(nmp.Node.NodeType == NodeType.Literal)
+                        {
+                            // NOTE: Better comparison
+                            var ln = (LiteralNode)nmp.Node;
+                            var literal = objectMap.Literal;
+
+                            return ln.ToString() == literal;
+                        }
                     }
                     else
                         throw new Exception("IObjectMap must have URI or Literal assigned.");

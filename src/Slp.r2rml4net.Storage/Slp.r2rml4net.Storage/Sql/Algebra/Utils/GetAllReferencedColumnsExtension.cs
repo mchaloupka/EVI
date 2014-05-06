@@ -52,7 +52,15 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 var leftRes = (IEnumerable<ISqlColumn>)condition.LeftOperand.Accept(this, data);
                 var rightRes = (IEnumerable<ISqlColumn>)condition.RightOperand.Accept(this, data);
 
-                return leftRes.Union(rightRes);
+                foreach (var item in leftRes)
+                {
+                    yield return item;
+                }
+
+                foreach (var item in rightRes)
+                {
+                    yield return item;
+                }
             }
 
             public IEnumerable<ISqlColumn> Visit(IsNullCondition condition, object data)

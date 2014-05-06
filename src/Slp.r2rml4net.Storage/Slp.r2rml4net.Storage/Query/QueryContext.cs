@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Query
 {
     public class QueryContext
     {
-        private List<string> usedSqlSourceNames;
+        private HashSet<string> usedSqlSourceNames;
         private Dictionary<string, INode> blankNodesSubjects;
         private Dictionary<string, INode> blankNodesObjects;
         private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers;
@@ -28,7 +28,7 @@ namespace Slp.r2rml4net.Storage.Query
             this.NodeFactory = nodeFactory;
             this.Db = db;
             this.Mapping = mapping;
-            this.usedSqlSourceNames = new List<string>();
+            this.usedSqlSourceNames = new HashSet<string>();
             this.blankNodesSubjects = new Dictionary<string, INode>();
             this.blankNodesObjects = new Dictionary<string, INode>();
             this.usedVariables = new HashSet<string>(this.OriginalAlgebra.Variables);

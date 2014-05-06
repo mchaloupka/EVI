@@ -12,11 +12,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
     public class UnionOptimizer : ISparqlAlgebraOptimizer, ISparqlQueryVisitor
     {
-        private JoinOptimizer _joinOptimizer;
+        private JoinOptimizer joinOptimizer;
 
         public UnionOptimizer()
         {
-            this._joinOptimizer = new JoinOptimizer();
+            this.joinOptimizer = new JoinOptimizer();
         }
 
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
@@ -89,80 +89,173 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         private IEnumerable<IEnumerable<ISparqlQuery>> CreateCartesians(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, QueryContext context)
         {
-            var leftCartesian = new List<List<ISparqlQuery>>() { subQueries };
+            var leftCartesian = new CartesianResult();
+            bool leftOk = true;
 
-            if (subUnions.Count == 0)
-                return leftCartesian;
-
-            var right = subUnions.Select(x => x.GetInnerQueries().ToList()).ToList();
-            var rightCartesian = CreateCartesians(right, context);
-
-            return ProcessCartesian(leftCartesian, rightCartesian, context);
-        }
-
-        private List<List<ISparqlQuery>> CreateCartesians(IEnumerable<IEnumerable<ISparqlQuery>> unions, QueryContext context)
-        {
-            var count = unions.Count();
-
-            if (count == 1)
+            foreach (var query in subQueries)
             {
-                var union = unions.First();
-                return new List<List<ISparqlQuery>>(union.Select(x => new List<ISparqlQuery>() { x }));
+                if(query is BgpOp)
+                {
+                    var bgp = (BgpOp)query;
+
+                    this.joinOptimizer.GetBgpInfo(bgp, leftCartesian.Variables, context);
+
+                    if(!this.joinOptimizer.ProcessBgp(bgp, leftCartesian.Variables, context))
+                    {
+                        leftOk = false;
+                        break;
+                    }
+                }
+
+                leftCartesian.Queries.Add(query);
             }
 
-            var splitCount = count / 2;
+            var currentCartesians = new List<CartesianResult>();
 
-            var left = unions.Take(splitCount);
-            var right = unions.Skip(splitCount);
+            if (leftOk)
+            {
+                currentCartesians.Add(leftCartesian);
 
-            var leftCartesian = CreateCartesians(left, context);
-            var rightCartesian = CreateCartesians(right, context);
+                var right = subUnions.Select(x => x.GetInnerQueries());
 
-            return ProcessCartesian(leftCartesian, rightCartesian, context);
+                foreach (var union in right)
+                {
+                    currentCartesians = ProcessCartesian(currentCartesians, union, context);
+                }
+            }
+
+            return currentCartesians.Select(x => x.Queries);
         }
 
-        private List<List<ISparqlQuery>> ProcessCartesian(List<List<ISparqlQuery>> left, List<List<ISparqlQuery>> right, QueryContext context)
+        private List<CartesianResult> ProcessCartesian(List<CartesianResult> currentCartesians, IEnumerable<ISparqlQuery> union, QueryContext context)
         {
-            List<List<ISparqlQuery>> result = new List<List<ISparqlQuery>>();
+            List<CartesianResult> result = new List<CartesianResult>();
 
-            foreach (var li in left)
+            foreach (var cartesian in currentCartesians)
             {
-                foreach (var ri in right)
+                foreach (var query in union)
                 {
-                    var item = ProcessCartesian(li, ri, context);
+                    var bgp = query as BgpOp;
 
-                    if (item != null)
-                        result.Add(item);
+                    if (bgp != null)
+                    {
+                        if (!this.joinOptimizer.ProcessBgp(bgp, cartesian.Variables, context))
+                            continue;
+                    }
+
+                    var cart = cartesian.Clone();
+
+                    if(bgp != null)
+                    {
+                        this.joinOptimizer.GetBgpInfo(bgp, cart.Variables, context);
+                    }
+
+                    cart.Queries.Add(query);
+                    result.Add(cart);
                 }
             }
 
             return result;
         }
 
-        private List<ISparqlQuery> ProcessCartesian(List<ISparqlQuery> li, List<ISparqlQuery> ri, QueryContext context)
+        private class CartesianResult
         {
-            Dictionary<string, List<ITermMap>> variables = new Dictionary<string, List<ITermMap>>();
-
-            List<ISparqlQuery> result = new List<ISparqlQuery>();
-
-            var subItems = li.Union(ri);
-
-            foreach (var item in subItems)
+            public CartesianResult()
             {
-                if(item is BgpOp)
-                {
-                    var bgp = (BgpOp)item;
-
-                    this._joinOptimizer.GetBgpInfo(bgp, variables, context);
-                    if (!this._joinOptimizer.ProcessBgp(bgp, variables, context))
-                        return null;
-                }
-
-                result.Add(item);
+                this.Variables = new Dictionary<string, List<ITermMap>>();
+                this.Queries = new List<ISparqlQuery>();
             }
 
-            return result;
+            public CartesianResult Clone()
+            {
+                var cr = new CartesianResult();
+
+                foreach (var q in this.Queries)
+                {
+                    cr.Queries.Add(q);
+                }
+
+                foreach (var variable in this.Variables.Keys)
+                {
+                    cr.Variables[variable] = new List<ITermMap>();
+
+                    foreach (var termMap in this.Variables[variable])
+                    {
+                        cr.Variables[variable].Add(termMap);
+                    }
+                }
+
+                return cr;
+            }
+
+            public Dictionary<string, List<ITermMap>> Variables { get; private set; }
+
+            public List<ISparqlQuery> Queries { get; private set; }
         }
+
+        //private List<List<ISparqlQuery>> CreateCartesians(IEnumerable<IEnumerable<ISparqlQuery>> unions, QueryContext context)
+        //{
+        //    var count = unions.Count();
+
+        //    if (count == 1)
+        //    {
+        //        var union = unions.First();
+        //        return new List<List<ISparqlQuery>>(union.Select(x => new List<ISparqlQuery>() { x }));
+        //    }
+
+        //    var splitCount = count / 2;
+
+        //    var left = unions.Take(splitCount);
+        //    var right = unions.Skip(splitCount);
+
+        //    var leftCartesian = CreateCartesians(left, context);
+        //    var rightCartesian = CreateCartesians(right, context);
+
+        //    return ProcessCartesian(leftCartesian, rightCartesian, context);
+        //}
+
+        //private List<List<ISparqlQuery>> ProcessCartesian(List<List<ISparqlQuery>> left, List<List<ISparqlQuery>> right, QueryContext context)
+        //{
+        //    List<List<ISparqlQuery>> result = new List<List<ISparqlQuery>>();
+
+        //    foreach (var li in left)
+        //    {
+        //        foreach (var ri in right)
+        //        {
+        //            var item = ProcessCartesian(li, ri, context);
+
+        //            if (item != null)
+        //                result.Add(item);
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
+        //private List<ISparqlQuery> ProcessCartesian(List<ISparqlQuery> li, List<ISparqlQuery> ri, QueryContext context)
+        //{
+        //    Dictionary<string, List<ITermMap>> variables = new Dictionary<string, List<ITermMap>>();
+
+        //    List<ISparqlQuery> result = new List<ISparqlQuery>();
+
+        //    var subItems = li.Union(ri);
+
+        //    foreach (var item in subItems)
+        //    {
+        //        if(item is BgpOp)
+        //        {
+        //            var bgp = (BgpOp)item;
+
+        //            this.joinOptimizer.GetBgpInfo(bgp, variables, context);
+        //            if (!this.joinOptimizer.ProcessBgp(bgp, variables, context))
+        //                return null;
+        //        }
+
+        //        result.Add(item);
+        //    }
+
+        //    return result;
+        //}
 
         private static bool ProcessJoinChild(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, ISparqlQuery inner, ISparqlQuery oldInner)
         {

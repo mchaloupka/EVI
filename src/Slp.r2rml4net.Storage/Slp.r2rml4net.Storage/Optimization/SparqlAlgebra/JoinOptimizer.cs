@@ -146,12 +146,15 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
         private bool ProcessPatternInfo(string varName, ITermMap termMap, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
-            var termMaps = variables[varName];
-
-            foreach (var item in termMaps)
+            if(variables.ContainsKey(varName))
             {
-                if (!CanMatch(termMap, item, context))
-                    return false;
+                var termMaps = variables[varName];
+
+                foreach (var item in termMaps)
+                {
+                    if (!CanMatch(termMap, item, context))
+                        return false;
+                }
             }
 
             return true;
@@ -174,7 +177,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 var c = canMatchCache[second];
 
                 if (c.ContainsKey(first))
-                    return c[first];
+                {
+                    var val = c[first];
+                    SetCanMatchCache(first, second, val);
+                    return val;
+                }
             }
 
             return null;
