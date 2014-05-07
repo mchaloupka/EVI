@@ -15,6 +15,7 @@ using Slp.r2rml4net.Storage.Sql.SqlQuery;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Query
@@ -196,7 +197,7 @@ namespace Slp.r2rml4net.Storage.Query
                     catch
                     {
                         rdfHandler.EndRdf(false);
-                        break;
+                        throw;
                     }
 
                     break;
@@ -250,9 +251,6 @@ namespace Slp.r2rml4net.Storage.Query
                             if (!resultsHandler.HandleVariable(binder.VariableName)) ParserHelper.Stop();
                         }
 
-                        Graph temp = new Graph();
-
-                        //var s = new VDS.RDF.Query.Algebra.Set();
                         while (result.HasNextRow)
                         {
                             var row = result.Read();
@@ -261,7 +259,7 @@ namespace Slp.r2rml4net.Storage.Query
 
                             foreach (var binder in sqlAlgebra.ValueBinders)
                             {
-                                var val = binder.LoadNode(temp, row, context);
+                                var val = binder.LoadNode(resultsHandler, row, context);
 
                                 if (val != null)
                                     s.Add(binder.VariableName, val);
@@ -288,13 +286,30 @@ namespace Slp.r2rml4net.Storage.Query
 
         private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
         {
-            // NOTE: Currently we support only simple triples
-            foreach (var triple in template.TriplePatterns)
+            var s = new VDS.RDF.Query.Algebra.Set();
+
+            foreach (var binder in sqlAlgebra.ValueBinders)
             {
-                
+                var val = binder.LoadNode(rdfHandler, row, context);
+
+                if (val != null)
+                    s.Add(binder.VariableName, val);
             }
 
-            throw new NotImplementedException();
+            var constructContext = new ConstructContext(rdfHandler, s, false);
+
+            // NOTE: Currently we support only simple triples
+            foreach (var pattern in template.TriplePatterns)
+            {
+                if (pattern is TriplePattern)
+                {
+                    var triplePattern = (TriplePattern)pattern;
+                    var triple = triplePattern.Construct(constructContext);
+                    rdfHandler.HandleTriple(triple);
+                }
+                else
+                    throw new NotImplementedException();
+            }
         }
 
         private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)

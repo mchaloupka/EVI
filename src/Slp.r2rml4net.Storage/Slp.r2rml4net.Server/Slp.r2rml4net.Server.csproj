@@ -120,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ctia_r2rml.ttl" />
+    <Content Include="App_Data\ctia_r2rml_opt.ttl" />
     <Content Include="App_Data\demography_r2rml.ttl" />
     <Content Include="App_Data\rdf_config.ttl" />
     <Content Include="Content\css\bootstrap-theme.css" />
