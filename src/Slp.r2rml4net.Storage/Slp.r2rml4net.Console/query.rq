@@ -4,35 +4,21 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ec: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
 PREFIX s: <http://schema.org/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-construct {
-?region a ec:LAURegion;
-ec:level 2;
-rdfs:label ?l2label ;
-ec:hasParentRegion ?lau1.
-?lau1 rdfs:label ?l1label ;
-ec:hasParentRegion ?nuts3 .
-?nuts3 rdfs:label ?n3label ;
-ec:hasParentRegion ?nuts2 .
-?nuts2 rdfs:label ?n2label ;
-ec:hasParentRegion ?nuts1 .
-?nuts1 rdfs:label ?n1label.
-}
+select *
 where
 {
-?check a s:CheckAction;
+?ca a s:CheckAction;
 s:location/s:location ?region;
-s:result/s:result [] .
+s:location/s:geo ?geo;
+s:object ?object;
+dcterms:date ?date ;
+s:result ?result.
+?result a <http://linked.opendata.cz/ontology/coi.cz/Sanction>;
+s:result/gr:hasCurrencyValue ?value.
+?object gr:legalName ?title .
 ?region a ec:LAURegion;
-ec:level 2;
-dcterms:title ?l2label ;
-ec:hasParentRegion ?lau1.
-?lau1 dcterms:title ?l1label ;
-ec:hasParentRegion ?nuts3 .
-?nuts3 rdfs:label ?n3label ;
-ec:hasParentRegion ?nuts2 .
-?nuts2 rdfs:label ?n2label ;
-ec:hasParentRegion ?nuts1 .
-?nuts1 rdfs:label ?n1label.
+ec:level 2.
+?geo s:latitude ?lat;
+s:longitude ?lon.
 }
