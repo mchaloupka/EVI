@@ -320,6 +320,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return sqlSideValueBinder;
         }
 
+        public object Visit(ExpressionValueBinder expressionValueBinder, object data)
+        {
+            var expr = (IExpression)expressionValueBinder.Expression.Accept(this, data);
+
+            if (expr != expressionValueBinder.Expression)
+                expressionValueBinder.Expression = expr;
+
+            return expressionValueBinder;
+        }
+
         public object Visit(CoalesceValueBinder collateValueBinder, object data)
         {
             var cvd = (VisitData)data;

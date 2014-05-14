@@ -18,5 +18,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         object Visit(SqlSideValueBinder sqlSideValueBinder, object data);
 
         object Visit(BlankValueBinder blankValueBinder, object data);
+
+        object Visit(ExpressionValueBinder expressionValueBinder, object data);
     }
 }

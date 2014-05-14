@@ -249,6 +249,16 @@ namespace Slp.r2rml4net.Storage.Sql
             {
                 return new NullExpr();
             }
+            else if (binder is SqlSideValueBinder)
+            {
+                var sqlSide = (SqlSideValueBinder)binder;
+                var column = sqlSide.Column;
+                return CreateColumnExpression(context, column, false);
+            }
+            else if (binder is ExpressionValueBinder)
+            {
+                return (IExpression)((ExpressionValueBinder)binder).Expression.Clone();
+            }
             else
                 throw new NotImplementedException();
         }

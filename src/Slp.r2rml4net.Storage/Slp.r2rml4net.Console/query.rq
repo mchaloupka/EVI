@@ -21,4 +21,5 @@ s:result/gr:hasCurrencyValue ?value.
 ec:level 2.
 ?geo s:latitude ?lat;
 s:longitude ?lon.
+BIND (CONCAT('<a href="', ?object,'">', ?title, '</a>') as ?desc)
 }

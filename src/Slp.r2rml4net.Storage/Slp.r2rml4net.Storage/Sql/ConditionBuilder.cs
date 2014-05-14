@@ -7,6 +7,7 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using VDS.RDF;
 
@@ -64,6 +65,22 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
 
                 return orCondition;
+            }
+            else if (valueBinder is SqlSideValueBinder)
+            {
+                var sqlSideValueBinder = (SqlSideValueBinder)valueBinder;
+                var column = sqlSideValueBinder.Column;
+
+                var leftOperand = expressionBuilder.CreateColumnExpression(context, column, false);
+                var rightOperand = expressionBuilder.CreateExpression(context, node);
+
+                return new EqualsCondition(leftOperand, rightOperand);
+            }
+            else if (valueBinder is ExpressionValueBinder)
+            {
+                var leftOperand = (IExpression)((ExpressionValueBinder)valueBinder).Expression.Clone();
+                var rightOperand = expressionBuilder.CreateExpression(context, node);
+                return new EqualsCondition(leftOperand, rightOperand);
             }
             else if(valueBinder is BlankValueBinder)
             {
@@ -223,6 +240,11 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 return orCondition;
             }
+            else if (valueBinder is ExpressionValueBinder)
+            {
+                var expression = ((ExpressionValueBinder)valueBinder).Expression;
+                return CreateIsNullCondition(context, expression);
+            }
             else if(valueBinder is BlankValueBinder)
             {
                 return new AlwaysTrueCondition();
@@ -231,6 +253,98 @@ namespace Slp.r2rml4net.Storage.Sql
             {
                 throw new Exception("Value binder can be only standard or collate");
             }
+        }
+
+        private ICondition CreateIsNullCondition(QueryContext context, IExpression expression)
+        {
+            if (expression is ColumnExpr)
+            {
+                var column = ((ColumnExpr)expression).Column;
+                return CreateIsNullCondition(context, column);
+            }
+            else if (expression is CoalesceExpr)
+            {
+                var coalesce = (CoalesceExpr)expression;
+                var conditions = coalesce.Expressions.Select(x => CreateIsNullCondition(context, x))
+                    .ToArray();
+
+                if (conditions.Length == 1)
+                {
+                    return conditions[0];
+                }
+                else
+                {
+                    var andCond = new AndCondition();
+
+                    foreach (var cond in conditions)
+                    {
+                        andCond.AddToCondition(cond);
+                    }
+
+                    return andCond;
+                }
+            }
+            else if (expression is CaseExpr)
+            {
+                var caseExpr = (CaseExpr)expression;
+                List<ICondition> conditions = new List<ICondition>();
+
+                foreach (var statement in caseExpr.Statements)
+                {
+                    var orCond = new OrCondition();
+                    orCond.AddToCondition(new NotCondition(statement.Condition));
+                    orCond.AddToCondition(CreateIsNullCondition(context, statement.Expression));
+                    conditions.Add(orCond);
+                }
+
+                if(conditions.Count == 1)
+                {
+                    return conditions[0];
+                }
+                else
+                {
+                    var andCond = new AndCondition();
+
+                    foreach (var cond in conditions)
+                    {
+                        andCond.AddToCondition(cond);
+                    }
+
+                    return andCond;
+                }
+            }
+            else if (expression is ConcatenationExpr)
+            {
+                var concatExpr = (ConcatenationExpr)expression;
+                var conditions = concatExpr.Parts.Select(x => CreateIsNullCondition(context, x))
+                    .ToArray();
+
+                if(conditions.Length == 1)
+                {
+                    return conditions[0];
+                }
+                else
+                {
+                    var orCond = new OrCondition();
+
+                    foreach (var cond in conditions)
+                    {
+                        orCond.AddToCondition(cond);
+                    }
+
+                    return orCond;
+                }
+            }
+            else if (expression is ConstantExpr)
+            {
+                return new AlwaysFalseCondition();
+            }
+            else if (expression is NullExpr)
+            {
+                return new AlwaysTrueCondition();
+            }
+            else
+                throw new Exception("Not implemented expression");
         }
 
         public ICondition CreateIsNullCondition(QueryContext context, ISqlColumn sqlColumn)

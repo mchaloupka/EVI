@@ -132,6 +132,7 @@
     <Compile Include="Sql\Algebra\Utils\StaticExpressionEvaluationExtension.cs" />
     <Compile Include="Sql\Binders\BlankValueBinder.cs" />
     <Compile Include="Sql\Binders\CaseValueBinder.cs" />
+    <Compile Include="Sql\Binders\ExpressionValueBinder.cs" />
     <Compile Include="Sql\Binders\IBaseValueBinder.cs" />
     <Compile Include="Sql\Binders\CoalesceValueBinder.cs" />
     <Compile Include="Sql\Binders\IValueBinderVisitor.cs" />
