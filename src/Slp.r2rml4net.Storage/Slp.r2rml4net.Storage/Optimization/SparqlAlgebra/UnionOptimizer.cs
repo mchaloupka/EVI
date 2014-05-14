@@ -405,6 +405,20 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return reducedOp.FinalizeAfterTransform();
         }
 
+        public object Visit(BindOp bindOp, object data)
+        {
+            if (((VisitData)data).IsVisited(bindOp))
+                return bindOp;
+
+            var inner = (ISparqlQuery)bindOp.InnerQuery.Accept(this, data);
+
+            if (inner != bindOp.InnerQuery)
+                bindOp.ReplaceInnerQuery(bindOp.InnerQuery, inner);
+
+            ((VisitData)data).Visit(bindOp);
+            return bindOp.FinalizeAfterTransform();
+        }
+
         private class VisitData
         {
             private HashSet<ISparqlQuery> visited;

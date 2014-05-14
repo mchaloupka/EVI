@@ -361,69 +361,37 @@ namespace Slp.r2rml4net.Storage.Sparql
 //VariableTerm
         }
 
-        private ISparqlQuery ProcessITriplePatterns(IEnumerable<ITriplePattern> enumerable, QueryContext context)
+        private ISparqlQuery ProcessITriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
         {
-            ISparqlQuery triplesOp = null;
+            ISparqlQuery current = new OneEmptySolutionOp();
 
-            // Process triples
-            var triples = enumerable.OfType<TriplePattern>().ToArray();
-            if (triples.Any())
+            foreach (var part in triplePatterns)
             {
-                if (triples.Count() > 1)
+                if (part is TriplePattern)
                 {
-                    var join = new JoinOp();
-
-                    foreach (var triple in triples)
-                    {
-                        join.AddToJoin(new BgpOp(triple.Subject, triple.Predicate, triple.Object));
-                    }
-
-                    triplesOp = join;
+                    var triplePattern = (TriplePattern)part;
+                    current = JoinWithCurrentTriplePattern(current, new BgpOp(triplePattern.Subject, triplePattern.Predicate, triplePattern.Object), context);
+                }
+                else if (part is PropertyPathPattern)
+                {
+                    var propertyPathPattern = (PropertyPathPattern)part;
+                    var processed = ProcessPropertyPath(propertyPathPattern, context);
+                    current = JoinWithCurrentTriplePattern(current, processed, context);
+                }
+                else if (part is BindPattern)
+                {
+                    var bindPattern = (BindPattern)part;
+                    var varName = bindPattern.VariableName;
+                    var expression = ProcessExpression(bindPattern.AssignExpression, context);
+                    current = new BindOp(varName, expression, current);
                 }
                 else
                 {
-                    var triple = triples[0];
-                    triplesOp = new BgpOp(triple.Subject, triple.Predicate, triple.Object);
+                    throw new NotImplementedException();
                 }
             }
 
-            // Process property paths
-            var propertyPaths = enumerable.OfType<PropertyPathPattern>().ToArray();
-            if (propertyPaths.Any())
-            {
-                var resulting = propertyPaths.Select(x => ProcessPropertyPath(x, context)).ToArray();
-
-                if (triplesOp != null && !(triplesOp is JoinOp))
-                {
-                    var join = new JoinOp();
-                    join.AddToJoin(triplesOp);
-                    triplesOp = join;
-                }
-
-                if(triplesOp == null && resulting.Length > 1)
-                {
-                    triplesOp = new JoinOp();
-                }
-                
-                if(triplesOp == null && resulting.Length == 1) // The second condition is always true
-                {
-                    triplesOp = resulting[0];
-                }
-                else
-                {
-                    var join = (JoinOp)triplesOp;
-
-                    foreach (var res in resulting)
-                    {
-                        join.AddToJoin(res);
-                    }
-                }
-            }
-
-            if (enumerable.Count() != triples.Length + propertyPaths.Length)
-                throw new NotImplementedException();
-
-            return triplesOp;
+            return current;
 
             // TODO: Process other parts
 
@@ -435,6 +403,28 @@ namespace Slp.r2rml4net.Storage.Sparql
 //PropertyPathPattern
 //SubQueryPattern
 //TriplePattern
+        }
+
+        private ISparqlQuery JoinWithCurrentTriplePattern(ISparqlQuery current, ISparqlQuery query, QueryContext context)
+        {
+            if (current is OneEmptySolutionOp)
+            {
+                return query;
+            }
+            else
+            {
+                var joinOp = current as JoinOp;
+
+                if (joinOp == null)
+                {
+                    joinOp = new JoinOp();
+                    joinOp.AddToJoin(current);
+                    current = joinOp;
+                }
+
+                joinOp.AddToJoin(query);
+                return joinOp;
+            }
         }
 
         private ISparqlQuery ProcessPropertyPath(PropertyPathPattern pathPattern, QueryContext context)

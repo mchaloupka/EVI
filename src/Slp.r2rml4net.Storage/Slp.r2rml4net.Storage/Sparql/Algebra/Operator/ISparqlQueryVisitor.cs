@@ -28,5 +28,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         object Visit(DistinctOp distinctOp, object data);
 
         object Visit(ReducedOp reducedOp, object data);
+
+        object Visit(BindOp bindOp, object data);
     }
 }

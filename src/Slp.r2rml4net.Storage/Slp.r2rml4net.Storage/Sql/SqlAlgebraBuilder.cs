@@ -95,6 +95,8 @@ namespace Slp.r2rml4net.Storage.Sql
             return new SingleEmptyRowSource();
         }
 
+        
+
         public object Visit(UnionOp unionOp, object data)
         {
             var context = (QueryContext)data;
@@ -296,6 +298,18 @@ namespace Slp.r2rml4net.Storage.Sql
             select.IsDistinct = true;
 
             return select;
+        }
+
+        public object Visit(BindOp bindOp, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = (INotSqlOriginalDbSource)bindOp.InnerQuery.Accept(this, context);
+
+            var expression = expressionBuilder.ConvertExpression(bindOp.Expression, inner.ValueBinders, context);
+            var valBinder = new ExpressionValueBinder(bindOp.VariableName, expression);
+
+            inner.AddValueBinder(valBinder);
+            return inner;
         }
 
         public object Visit(SelectOp selectOp, object data)

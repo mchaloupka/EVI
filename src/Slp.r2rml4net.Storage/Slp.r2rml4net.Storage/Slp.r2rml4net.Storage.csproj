@@ -82,6 +82,7 @@
     <Compile Include="Sparql\Algebra\Expression\VariableExpression.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQueryExpression.cs" />
     <Compile Include="Sparql\Algebra\Operator\BgpOp.cs" />
+    <Compile Include="Sparql\Algebra\Operator\BindOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\DistinctOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\ISparqlQueryVisitor.cs" />
     <Compile Include="Sparql\Algebra\Operator\NoSolutionOp.cs" />

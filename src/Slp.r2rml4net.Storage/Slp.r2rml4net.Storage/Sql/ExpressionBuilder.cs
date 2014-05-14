@@ -267,5 +267,10 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             return CreateExpression(context, binder.GetOriginalValueBinder(context));
         }
+
+        public IExpression ConvertExpression(ISparqlQueryExpression sparqlQueryExpression, IEnumerable<IBaseValueBinder> enumerable, QueryContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
