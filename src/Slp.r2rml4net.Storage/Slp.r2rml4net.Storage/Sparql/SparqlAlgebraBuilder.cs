@@ -7,9 +7,11 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sparql.Utils;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
@@ -194,7 +196,19 @@ namespace Slp.r2rml4net.Storage.Sparql
             if(sparqlExpression is VariableTerm)
             {
                 var orVar = (VariableTerm)sparqlExpression;
-                return new VariableExpression(orVar.Variables.Single());
+                return new VariableT(orVar.Variables.Single());
+            }
+            else if (sparqlExpression is ConcatFunction)
+            {
+                var cF = (ConcatFunction)sparqlExpression;
+                var parts = cF.Arguments.Select(x => ProcessExpression(x, context));
+                return new ConcatF(parts);
+            }
+            else if (sparqlExpression is ConstantTerm)
+            {
+                var cT = (ConstantTerm)sparqlExpression;
+                var node = cT.Node();
+                return new ConstantT(node);
             }
 
             throw new NotImplementedException();

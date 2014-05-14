@@ -79,7 +79,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
-    <Compile Include="Sparql\Algebra\Expression\VariableExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expression\ConcatF.cs" />
+    <Compile Include="Sparql\Algebra\Expression\ConstantT.cs" />
+    <Compile Include="Sparql\Algebra\Expression\VariableT.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQueryExpression.cs" />
     <Compile Include="Sparql\Algebra\Operator\BgpOp.cs" />
     <Compile Include="Sparql\Algebra\Operator\BindOp.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Sparql\Algebra\ISparqlQueryPart.cs" />
     <Compile Include="Query\QueryContext.cs" />
     <Compile Include="Sparql\SparqlAlgebraBuilder.cs" />
+    <Compile Include="Sparql\Utils\FixesExtension.cs" />
     <Compile Include="Sql\Algebra\Condition\AlwaysFalseCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\AlwaysTrueCondition.cs" />
     <Compile Include="Sql\Algebra\Condition\AndCondition.cs" />

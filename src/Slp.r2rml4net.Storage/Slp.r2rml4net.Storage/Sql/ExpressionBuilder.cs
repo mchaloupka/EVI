@@ -13,6 +13,7 @@ using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace Slp.r2rml4net.Storage.Sql
@@ -200,21 +201,10 @@ namespace Slp.r2rml4net.Storage.Sql
 
         public IExpression CreateOrderByExpression(ISparqlQueryExpression sparqlQueryExpression, SqlSelectOp select, QueryContext context)
         {
-            if (sparqlQueryExpression is VariableExpression)
-            {
-                var varExpr = (VariableExpression)sparqlQueryExpression;
-                var valueBinder = select.ValueBinders.FirstOrDefault(x => x.VariableName == varExpr.Variable);
+            // TODO: Handle order specifics
+            // http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#modOrderBy
 
-                if(valueBinder == null)
-                    throw new Exception("Variable not found");
-
-                // TODO: Handle order specifics
-                // http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#modOrderBy
-
-                return CreateExpression(context, valueBinder.GetOriginalValueBinder(context));
-            }
-            else
-                throw new NotImplementedException();
+            return ConvertExpression(sparqlQueryExpression, select.ValueBinders.Select(x => x.GetOriginalValueBinder(context)).ToList(), context);
         }
 
         public IExpression CreateExpression(QueryContext context, IBaseValueBinder binder)
@@ -268,9 +258,47 @@ namespace Slp.r2rml4net.Storage.Sql
             return CreateExpression(context, binder.GetOriginalValueBinder(context));
         }
 
-        public IExpression ConvertExpression(ISparqlQueryExpression sparqlQueryExpression, IEnumerable<IBaseValueBinder> enumerable, QueryContext context)
+        public IExpression ConvertExpression(ISparqlQueryExpression sparqlQueryExpression, ICollection<IBaseValueBinder> valueBinders, QueryContext context)
         {
-            throw new NotImplementedException();
+            if (sparqlQueryExpression is VariableT)
+            {
+                var varExpr = (VariableT)sparqlQueryExpression;
+                var valueBinder = valueBinders.FirstOrDefault(x => x.VariableName == varExpr.Variable);
+
+                if (valueBinder == null)
+                    throw new Exception("Variable not found");
+
+                return CreateExpression(context, valueBinder);
+            }
+            else if (sparqlQueryExpression is ConcatF)
+            {
+                var concExpr = (ConcatF)sparqlQueryExpression;
+                var parts = concExpr.Parts.Select(x => ConvertExpression(x, valueBinders, context));
+
+                return new ConcatenationExpr(parts);
+            }
+            else if (sparqlQueryExpression is ConstantT)
+            {
+                var constT = (ConstantT)sparqlQueryExpression;
+                var node = constT.Node;
+                return ConvertExpression(node, context);
+            }
+            else
+                throw new NotImplementedException();
+        }
+
+        private IExpression ConvertExpression(IValuedNode node, QueryContext context)
+        {
+            if (node is StringNode)
+            {
+                var sn = (StringNode)node;
+                return new ConstantExpr(sn.Value);
+            }
+            else
+                throw new NotImplementedException();
+
+            // TODO: Implement the rest
+            // http://www.dotnetrdf.org/api/dotNetRDF~VDS.RDF.Nodes.IValuedNode.html
         }
     }
 }

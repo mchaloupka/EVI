@@ -145,8 +145,6 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 else
                     throw new Exception("Asked for column that is not present");
             }
-
-
         }
 
         private class DataReaderColumn : IQueryResultColumn

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
 {
-    public class VariableExpression : ISparqlQueryExpression
+    public class VariableT : ISparqlQueryExpression
     {
         public string Variable { get; private set; }
 
-        public VariableExpression(string variable)
+        public VariableT(string variable)
         {
             this.Variable = variable;
         }
