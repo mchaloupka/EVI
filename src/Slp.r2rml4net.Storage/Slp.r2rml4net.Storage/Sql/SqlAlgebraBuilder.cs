@@ -75,6 +75,9 @@ namespace Slp.r2rml4net.Storage.Sql
                 {
                     current = (SqlSelectOp)selects.First();
 
+                    if (!current.CanBeMergedTo())
+                        current = TransformToSelect(current, context);
+
                     foreach (var select in selects.Skip(1))
                     {
                         ProcessJoin(current, select, context);

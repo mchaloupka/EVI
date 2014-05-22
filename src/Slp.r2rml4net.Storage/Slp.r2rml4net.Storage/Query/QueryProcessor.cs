@@ -316,12 +316,12 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var algebra = sparqlAlgebraBuilder.Process(context);
 
-            // Transform graph and from statements
+            // TODO: Transform graph and from statements
+
+            // TODO: Make algebra valid, take filters up as possible
 
             // Transform using R2RML
             algebra = mapping.ProcessAlgebra(algebra, context);
-
-            // TODO: Make algebra valid, take filters up as possible
 
             // Optimize sparql algebra
             foreach (var optimizer in sparqlOptimizers)

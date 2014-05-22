@@ -9,9 +9,17 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 {
     public static class OperatorInfoExtension
     {
+        public static bool CanBeMergedTo(this SqlSelectOp joinOp)
+        {
+            if (joinOp.Offset.HasValue || joinOp.Limit.HasValue || joinOp.Orderings.Any() || joinOp.IsDistinct || joinOp.IsReduced)
+                return false;
+            else
+                return true;
+        }
+
         public static bool IsMergeableTo(this SqlSelectOp second, SqlSelectOp first)
         {
-            if (first.Offset.HasValue || first.Limit.HasValue || first.Orderings.Any() || first.IsDistinct || first.IsReduced)
+            if (!second.CanBeMergedTo())
                 return false;
 
             foreach (var secondValBinder in second.ValueBinders)
