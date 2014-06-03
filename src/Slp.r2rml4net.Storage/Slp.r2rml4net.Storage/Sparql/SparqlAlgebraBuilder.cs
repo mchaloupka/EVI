@@ -468,6 +468,19 @@ namespace Slp.r2rml4net.Storage.Sparql
                 var predicatePattern = new NodeMatchPattern(pPath.Predicate);
                 return new BgpOp(subject, predicatePattern, obj);
             }
+            else if (path is InversePath)
+            {
+                var iPath = (InversePath)path;
+                return ProcessPropertyPath(obj, iPath.Path, subject, context);
+            }
+            else if (path is AlternativePath)
+            {
+                var aPath = (AlternativePath)path;
+                var unionOp = new UnionOp();
+                unionOp.AddToUnion(ProcessPropertyPath(subject, aPath.LhsPath, obj, context));
+                unionOp.AddToUnion(ProcessPropertyPath(subject, aPath.RhsPath, obj, context));
+                return unionOp;
+            }
             else
             {
                 throw new NotImplementedException();
