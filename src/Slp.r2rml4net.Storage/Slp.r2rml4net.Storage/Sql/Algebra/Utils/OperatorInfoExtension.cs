@@ -29,7 +29,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 if (firstValBinder == null)
                     continue;
 
-                var neededColumns = secondValBinder.AssignedColumns;
+                var neededColumns = secondValBinder.AssignedColumns.OfType<SqlSelectColumn>().Select(x => x.OriginalColumn);
                 var neededColumnsNotInOriginalSource = neededColumns.Where(x => x.Source != second.OriginalSource);
 
                 if (neededColumnsNotInOriginalSource.Any())
