@@ -40,12 +40,12 @@ namespace Slp.r2rml4net.Storage.Sql
         public object Visit(BgpOp bgpOp, object data)
         {
             var context = (QueryContext)data;
-            var source = ProcessBgpSource(bgpOp.R2RMLTripleDef);
+            var source = ProcessBgpSource(bgpOp.R2RMLTripleDef, context);
             var select = new SqlSelectOp(source);
 
-            ProcessBgpSubject(bgpOp, (QueryContext)data, select, source);
-            ProcessBgpPredicate(bgpOp, (QueryContext)data, select, source);
-            ProcessBgpObject(bgpOp, (QueryContext)data, select, source);
+            ProcessBgpSubject(bgpOp, context, select, source);
+            ProcessBgpPredicate(bgpOp, context, select, source);
+            ProcessBgpObject(bgpOp, context, select, source);
 
             return context.OptimizeOnTheFly(select);
         }
@@ -385,15 +385,25 @@ namespace Slp.r2rml4net.Storage.Sql
             return context.OptimizeOnTheFly(select);
         }
 
-        private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap)
+        private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap, QueryContext context)
         {
-            if (!string.IsNullOrEmpty(triplesMap.SqlQuery))
+            //if (!string.IsNullOrEmpty(triplesMap.SqlQuery))
+            //{
+            //    return new SqlStatement(triplesMap.SqlQuery);
+            //}
+            //else if (!string.IsNullOrEmpty(triplesMap.TableName))
+            //{
+            //    return new SqlTable(triplesMap.TableName);
+            //}
+            //else
+            //    throw new Exception("Unknown source of bgp");
+            if (!string.IsNullOrEmpty(context.Mapping.Cache.GetSqlStatement(triplesMap)))
             {
-                return new SqlStatement(triplesMap.SqlQuery);
+                return new SqlStatement(context.Mapping.Cache.GetSqlStatement(triplesMap));
             }
-            else if (!string.IsNullOrEmpty(triplesMap.TableName))
+            else if (!string.IsNullOrEmpty(context.Mapping.Cache.GetSqlTable(triplesMap)))
             {
-                return new SqlTable(triplesMap.TableName);
+                return new SqlTable(context.Mapping.Cache.GetSqlTable(triplesMap));
             }
             else
                 throw new Exception("Unknown source of bgp");
@@ -412,7 +422,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 var refObjectPatern = bgpOp.R2RMLRefObjectMap;
 
                 var parentTriplesMap = refObjectPatern.GetParentTriplesMap(context.Mapping.Mapping);
-                var parentSource = ProcessBgpSource(parentTriplesMap);
+                var parentSource = ProcessBgpSource(parentTriplesMap, context);
 
                 List<ICondition> conditions = new List<ICondition>();
 

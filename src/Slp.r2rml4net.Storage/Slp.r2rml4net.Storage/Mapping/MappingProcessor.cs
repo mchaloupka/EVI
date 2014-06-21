@@ -14,17 +14,15 @@ namespace Slp.r2rml4net.Storage.Mapping
 {
     public class MappingProcessor
     {
-        private IR2RML mapping;
-
         public MappingProcessor(IR2RML mapping)
         {
-            this.mapping = mapping;
+            this.Mapping = mapping;
+            this.Cache = new R2RMLCache(this);
         }
 
-        public IR2RML Mapping
-        {
-            get { return mapping; }
-        }
+        public IR2RML Mapping { get; private set; }
+
+        public R2RMLCache Cache { get; private set; }
 
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
@@ -54,7 +52,7 @@ namespace Slp.r2rml4net.Storage.Mapping
         {
             var union = new UnionOp();
 
-            foreach (var tripleDef in this.mapping.TriplesMaps)
+            foreach (var tripleDef in this.Mapping.TriplesMaps)
             {
                 var subjectMap = tripleDef.SubjectMap;
                 var graphMaps = subjectMap.GraphMaps;

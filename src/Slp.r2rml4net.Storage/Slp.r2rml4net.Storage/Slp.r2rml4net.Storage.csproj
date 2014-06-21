@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mapping\MappingProcessor.cs" />
+    <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />
     <Compile Include="Optimization\ISparqlAlgebraOptimizer.cs" />
     <Compile Include="Optimization\ISqlAlgebraOptimizer.cs" />
