@@ -10,3 +10,5 @@ _:proc a dnr:SparqlQueryProcessor ;
  
 _:manager a dnr:StorageProvider ;
   dnr:type "Slp.r2rml4net.Storage.R2RMLStorage, Slp.r2rml4net.Storage, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" .
+
+<dotnetrdf-configure:VDS.RDF.Options#InternUris> dnr:configure false .

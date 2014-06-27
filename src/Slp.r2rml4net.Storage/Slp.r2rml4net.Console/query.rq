@@ -1,9 +1,6 @@
-PREFIX ec: <http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf#>
-
-SELECT *
+SELECT REDUCED ?class ?prop
 WHERE
 {
-	?nuts2 a ec:NUTSRegion;
-		ec:regionCode "CZ03";
-		^ec:hasSubRegion | ec:hasParentRegion ?nuts1.
+  [] a ?class;
+    ?prop [].
 }
