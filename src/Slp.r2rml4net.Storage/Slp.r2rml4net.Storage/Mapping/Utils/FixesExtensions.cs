@@ -10,6 +10,9 @@ using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Mapping.Utils
 {
+    /// <summary>
+    /// Extension class for r2rml4net fixes
+    /// </summary>
     public static class FixesExtensions
     {
         private const string rrPrefix = "http://www.w3.org/ns/r2rml#";
@@ -17,6 +20,11 @@ namespace Slp.r2rml4net.Storage.Mapping.Utils
         private const string rrChild = rrPrefix + "child";
         private const string rrParent = rrPrefix + "parent";
 
+        /// <summary>
+        /// Gets the join conditions.
+        /// </summary>
+        /// <param name="refObjectPattern">The reference object pattern.</param>
+        /// <returns>IEnumerable&lt;JoinCondition&gt;.</returns>
         public static IEnumerable<JoinCondition> GetJoinConditions(this IRefObjectMap refObjectPattern)
         {
             var mapping = (IGraph)refObjectPattern.GetType().GetProperty("R2RMLMappings", BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic).GetValue(refObjectPattern);
@@ -37,6 +45,13 @@ namespace Slp.r2rml4net.Storage.Mapping.Utils
             //return refObjectPattern.JoinConditions;
         }
 
+        /// <summary>
+        /// Gets the parent triples map.
+        /// </summary>
+        /// <param name="refObjectPattern">The reference object pattern.</param>
+        /// <param name="mapping">The mapping.</param>
+        /// <returns>ITriplesMap.</returns>
+        /// <exception cref="System.Exception">Parent triples map not found</exception>
         public static ITriplesMap GetParentTriplesMap(this IRefObjectMap refObjectPattern, IR2RML mapping)
         {
             // TODO: Remove this method as soon as the reference will be public
