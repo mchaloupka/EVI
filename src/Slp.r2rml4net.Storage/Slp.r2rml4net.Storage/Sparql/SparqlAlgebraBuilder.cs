@@ -18,12 +18,25 @@ using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sparql
 {
+    /// <summary>
+    /// SPARQL algebra builder.
+    /// </summary>
     public class SparqlAlgebraBuilder
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SparqlAlgebraBuilder"/> class.
+        /// </summary>
         public SparqlAlgebraBuilder()
         {
+
         }
 
+        /// <summary>
+        /// Processes the specified context.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.Exception">Cannot handle unknown query type</exception>
         public ISparqlQuery Process(QueryContext context)
         {
             switch (context.OriginalQuery.QueryType)
@@ -47,26 +60,55 @@ namespace Slp.r2rml4net.Storage.Sparql
             }
         }
 
+        /// <summary>
+        /// Processes the ask query.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessAsk(QueryContext context)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Processes the construct query.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
         private ISparqlQuery ProcessConstruct(QueryContext context)
         {
             return ProcessAlgebra(context.OriginalAlgebra, context);
         }
 
+        /// <summary>
+        /// Processes the describe query.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessDescribe(QueryContext context)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Processes the select query.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
         private ISparqlQuery ProcessSelect(QueryContext context)
         {
             return ProcessAlgebra(context.OriginalAlgebra, context);
         }
 
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="originalAlgebra">The original algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, QueryContext context)
         {
             if (originalAlgebra is Select)
@@ -191,6 +233,13 @@ namespace Slp.r2rml4net.Storage.Sparql
 
         }
 
+        /// <summary>
+        /// Processes the expression.
+        /// </summary>
+        /// <param name="sparqlExpression">The SPARQL expression.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The query expression.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQueryExpression ProcessExpression(ISparqlExpression sparqlExpression, QueryContext context)
         {
             if(sparqlExpression is VariableTerm)
@@ -375,6 +424,13 @@ namespace Slp.r2rml4net.Storage.Sparql
 //VariableTerm
         }
 
+        /// <summary>
+        /// Processes the triple patterns.
+        /// </summary>
+        /// <param name="triplePatterns">The triple patterns.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessITriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
         {
             ISparqlQuery current = new OneEmptySolutionOp();
@@ -419,6 +475,13 @@ namespace Slp.r2rml4net.Storage.Sparql
 //TriplePattern
         }
 
+        /// <summary>
+        /// Joins the with current triple pattern.
+        /// </summary>
+        /// <param name="current">The current query.</param>
+        /// <param name="query">The other query.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The resulting join.</returns>
         private ISparqlQuery JoinWithCurrentTriplePattern(ISparqlQuery current, ISparqlQuery query, QueryContext context)
         {
             if (current is OneEmptySolutionOp)
@@ -441,11 +504,26 @@ namespace Slp.r2rml4net.Storage.Sparql
             }
         }
 
+        /// <summary>
+        /// Processes the property path.
+        /// </summary>
+        /// <param name="pathPattern">The path pattern.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
         private ISparqlQuery ProcessPropertyPath(PropertyPathPattern pathPattern, QueryContext context)
         {
             return ProcessPropertyPath(pathPattern.Subject, pathPattern.Path, pathPattern.Object, context);
         }
 
+        /// <summary>
+        /// Processes the property path.
+        /// </summary>
+        /// <param name="subject">The subject.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="obj">The object.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SPARQL query.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessPropertyPath(PatternItem subject, ISparqlPath path, PatternItem obj, QueryContext context)
         {
             if(path is SequencePath)
