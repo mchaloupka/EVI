@@ -10,11 +10,21 @@ using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 using Slp.r2rml4net.Storage.Utils;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
+    /// <summary>
+    /// R2RML mapping optimization
+    /// </summary>
     public class R2RMLOptimizer : ISparqlAlgebraOptimizer
     {
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is BgpOp)
@@ -39,6 +49,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Processes the BGP.
+        /// </summary>
+        /// <param name="bgpOp">The BGP op.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>The processed algebra.</returns>
         private ISparqlQuery ProcessBgp(BgpOp bgpOp, QueryContext context)
         {
             if (!CanObjectMatch(bgpOp, context))
@@ -53,6 +69,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return bgpOp;
         }
 
+        /// <summary>
+        /// Can the predicate match.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if it can match the specified BGP operator; otherwise, <c>false</c>.</returns>
         private bool CanPredicateMatch(BgpOp bgpOp, QueryContext context)
         {
             var pattern = bgpOp.PredicatePattern;
@@ -68,6 +90,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// Can the subject match.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if it can match the specified BGP operator; otherwise, <c>false</c>.</returns>
         private bool CanSubjectMatch(BgpOp bgpOp, QueryContext context)
         {
             var pattern = bgpOp.SubjectPattern;
@@ -83,6 +111,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// Can the object match.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if it can match the specified BGP operator; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.Exception">R2RMLObjectMap or R2RMLRefObjectMap must be assigned</exception>
         private bool CanObjectMatch(BgpOp bgpOp, QueryContext context)
         {
             var pattern = bgpOp.ObjectPattern;
@@ -94,7 +129,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
             else if(bgpOp.R2RMLRefObjectMap != null)
             {
-                var parentTriples = GetParentTriplesMap(context, bgpOp.R2RMLRefObjectMap);
+                var parentTriples = bgpOp.R2RMLRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
                 r2rmlDef = parentTriples.SubjectMap;
             }
             else
@@ -110,21 +145,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
-        private ITriplesMap GetParentTriplesMap(QueryContext context, IRefObjectMap refObjectPatern)
-        {
-            // TODO: Remove this method as soon as the reference will be public
-
-            var subjectMap = refObjectPatern.SubjectMap;
-
-            foreach (var tripleMap in context.Mapping.Mapping.TriplesMaps)
-            {
-                if (tripleMap.SubjectMap == subjectMap)
-                    return tripleMap;
-            }
-
-            throw new Exception("Triples map not found");
-        }
-
+        /// <summary>
+        /// Determines whether the pattern can match the mapping.
+        /// </summary>
+        /// <param name="nmp">The pattern.</param>
+        /// <param name="r2rmlTerm">The R2RML mapping.</param>
+        /// <returns><c>true</c> if the pattern can match the mapping; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.Exception">IObjectMap must have URI or Literal assigned.</exception>
         private bool CanMatch(NodeMatchPattern nmp, ITermMap r2rmlTerm)
         {
             var node = nmp.Node;

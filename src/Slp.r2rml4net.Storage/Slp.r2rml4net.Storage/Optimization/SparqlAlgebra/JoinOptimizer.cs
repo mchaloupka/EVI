@@ -15,15 +15,30 @@ using TCode.r2rml4net;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
+    /// <summary>
+    /// Join optimizer.
+    /// </summary>
     public class JoinOptimizer : ISparqlAlgebraOptimizer
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JoinOptimizer"/> class.
+        /// </summary>
         public JoinOptimizer()
         {
             this.canMatchCache = new Dictionary<ITermMap, Dictionary<ITermMap, bool>>();
         }
 
+        /// <summary>
+        /// The template processor
+        /// </summary>
         private TemplateProcessor templateProcessor = new TemplateProcessor();
 
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is JoinOp)
@@ -48,6 +63,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Processes the join.
+        /// </summary>
+        /// <param name="joinOp">The join operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         private ISparqlQuery ProcessJoin(JoinOp joinOp, QueryContext context)
         {
             var bgps = joinOp.GetInnerQueries().OfType<BgpOp>();
@@ -68,6 +89,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return joinOp;
         }
 
+        /// <summary>
+        /// Gets the BGP information.
+        /// </summary>
+        /// <param name="bgp">The BGP.</param>
+        /// <param name="variables">The variables mappings.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.Exception">There must be an object map or ref object map</exception>
         public void GetBgpInfo(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             if (bgp.SubjectPattern is VariablePattern)
@@ -100,6 +128,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 throw new Exception("There must be an object map or ref object map");
         }
 
+        /// <summary>
+        /// Gets the pattern information.
+        /// </summary>
+        /// <param name="varName">Name of the variable.</param>
+        /// <param name="termMap">The term map.</param>
+        /// <param name="variables">The variables mappings.</param>
+        /// <param name="context">The query context.</param>
         private void GetPatternInfo(string varName, ITermMap termMap, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             if (!variables.ContainsKey(varName))
@@ -110,6 +145,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             variables[varName].Add(termMap);
         }
 
+        /// <summary>
+        /// Processes the BGP.
+        /// </summary>
+        /// <param name="bgp">The BGP.</param>
+        /// <param name="variables">The variables mappings.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the variables can match also other mappings, <c>false</c> otherwise.</returns>
         public bool ProcessBgp(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             bool ok = true;
@@ -144,6 +186,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return ok;
         }
 
+        /// <summary>
+        /// Processes the pattern information.
+        /// </summary>
+        /// <param name="varName">Name of the variable.</param>
+        /// <param name="termMap">The term map.</param>
+        /// <param name="variables">The variables mappings.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the pattern can match also other mappings, <c>false</c> otherwise.</returns>
         private bool ProcessPatternInfo(string varName, ITermMap termMap, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             if(variables.ContainsKey(varName))
@@ -160,8 +210,17 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// The cache for can match
+        /// </summary>
         private Dictionary<ITermMap, Dictionary<ITermMap, bool>> canMatchCache;
 
+        /// <summary>
+        /// Gets the cached can match.
+        /// </summary>
+        /// <param name="first">The first mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
         private bool? GetCachedCanMatch(ITermMap first, ITermMap second)
         {
             if(canMatchCache.ContainsKey(first))
@@ -187,6 +246,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return null;
         }
 
+        /// <summary>
+        /// Sets the can match cache.
+        /// </summary>
+        /// <param name="first">The first term.</param>
+        /// <param name="second">The second term.</param>
+        /// <param name="value">The value to set.</param>
         private void SetCanMatchCache(ITermMap first, ITermMap second, bool value)
         {
             if (!canMatchCache.ContainsKey(first))
@@ -198,6 +263,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 canMatchCache[first][second] = value;
         }
 
+        /// <summary>
+        /// Determines whether the first mapping can match the second mapping.
+        /// </summary>
+        /// <param name="first">The first mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanMatch(ITermMap first, ITermMap second, QueryContext context)
         {
             var res = GetCachedCanMatch(first, second);
@@ -219,6 +291,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Determines whether the first template mapping can match the second mapping.
+        /// </summary>
+        /// <param name="first">The first template mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanTemplateMatch(ITermMap first, ITermMap second, QueryContext context)
         {
             return CanMatchFunction<bool>(second,
@@ -228,6 +307,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 templateFunc: x => CanTemplatesMatch(first, x, context));
         }
 
+        /// <summary>
+        /// Determines whether the first column mapping can match the second mapping.
+        /// </summary>
+        /// <param name="first">The first column mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanColumnMatch(ITermMap first, ITermMap second, QueryContext context)
         {
             return CanMatchFunction<bool>(second,
@@ -237,6 +323,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 templateFunc: x => CanTemplateMatchColumn(x, first, context));
         }
 
+        /// <summary>
+        /// Determines whether the first literal mapping can match the second mapping.
+        /// </summary>
+        /// <param name="first">The first literal mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanMatch(string literal, ITermMap second, QueryContext context)
         {
             return CanMatchFunction<bool>(second,
@@ -247,6 +340,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 );
         }
 
+        /// <summary>
+        /// Determines whether the first URI mapping can match the second mapping.
+        /// </summary>
+        /// <param name="uri">The first URI mapping.</param>
+        /// <param name="second">The second mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanMatch(Uri uri, ITermMap second, QueryContext context)
         {
             return CanMatchFunction<bool>(second,
@@ -256,21 +356,49 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 templateFunc: x => CanMatchTemplate(uri, x, context));
         }
 
+        /// <summary>
+        /// Determines whether the URIs can match.
+        /// </summary>
+        /// <param name="firstUri">The first URI.</param>
+        /// <param name="secondUri">The second URI.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the URIs can match; otherwise, <c>false</c>.</returns>
         private bool CanMatch(Uri firstUri, Uri secondUri, QueryContext context)
         {
             return firstUri.UriEquals(secondUri);
         }
 
+        /// <summary>
+        /// Determines whether the literals can match.
+        /// </summary>
+        /// <param name="firstLiteral">The first literal.</param>
+        /// <param name="secondLiteral">The second literal.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the literals can match; otherwise, <c>false</c>.</returns>
         private bool CanMatch(string firstLiteral, string secondLiteral, QueryContext context)
         {
             return firstLiteral == secondLiteral;
         }
 
+        /// <summary>
+        /// Determines whether the literal can match uri.
+        /// </summary>
+        /// <param name="literal">The first literal.</param>
+        /// <param name="uri">The second URI.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>false</c>.</returns>
         private bool CanMatch(string literal, Uri uri, QueryContext context)
         {
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the template mappings can match.
+        /// </summary>
+        /// <param name="firstUri">The first template mapping.</param>
+        /// <param name="secondUri">The second template mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the template mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanTemplatesMatch(ITermMap firstTemplateTermMap, ITermMap secondTemplateTermMap, QueryContext context)
         {
             if ((firstTemplateTermMap.TermType.IsLiteral && secondTemplateTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondTemplateTermMap.TermType.IsLiteral))
@@ -279,6 +407,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return TemplatesMatchCheck(firstTemplateTermMap.Template, secondTemplateTermMap.Template, firstTemplateTermMap.TermType.IsURI);
         }
 
+        /// <summary>
+        /// Determines whether the template mapping can match the column mapping.
+        /// </summary>
+        /// <param name="firstTemplateTermMap">The first template mapping.</param>
+        /// <param name="secondColumnTermMap">The second column mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanTemplateMatchColumn(ITermMap firstTemplateTermMap, ITermMap secondColumnTermMap, QueryContext context)
         {
             if ((firstTemplateTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral))
@@ -287,6 +422,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// Determines whether the literal can match the template mapping.
+        /// </summary>
+        /// <param name="literal">The literal.</param>
+        /// <param name="templateTermMap">The template mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanMatchTemplate(string literal, ITermMap templateTermMap, QueryContext context)
         {
             if (templateTermMap.TermType.IsURI)
@@ -295,6 +437,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return TemplateMatchCheck(templateTermMap.Template, literal, false);
         }
 
+        /// <summary>
+        /// Determines whether the URI can match the template mapping.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="templateTermMap">The template mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanMatchTemplate(Uri uri, ITermMap templateTermMap, QueryContext context)
         {
             if (templateTermMap.TermType.IsLiteral)
@@ -303,6 +452,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return TemplateMatchCheck(templateTermMap.Template, uri.ToString(), true);
         }
 
+        /// <summary>
+        /// Determines whether the column mappings can match.
+        /// </summary>
+        /// <param name="firstColumnTermMap">The first column mapping.</param>
+        /// <param name="secondColumnTermMap">The second column mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanColumnsMatch(ITermMap firstColumnTermMap, ITermMap secondColumnTermMap, QueryContext context)
         {
             bool ok = true;
@@ -315,6 +471,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return ok;
         }
 
+        /// <summary>
+        /// Determines whether the literal can match the column mapping.
+        /// </summary>
+        /// <param name="literal">The literal.</param>
+        /// <param name="columnTermMap">The column mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanMatchColumn(string literal, ITermMap columnTermMap, QueryContext context)
         {
             if (columnTermMap.TermType.IsLiteral)
@@ -323,6 +486,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 return false;
         }
 
+        /// <summary>
+        /// Determines whether the URI can match the column mapping.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="columnTermMap">The column mapping.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanMatchColumn(Uri uri, ITermMap columnTermMap, QueryContext context)
         {
             if (columnTermMap.TermType.IsURI)
@@ -331,6 +501,22 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 return false;
         }
 
+        /// <summary>
+        /// The can match function.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="decider">The mapping chosen as decider which function will be used.</param>
+        /// <param name="constantUriFunc">The constant URI function.</param>
+        /// <param name="constantLiteralFunc">The constant literal function.</param>
+        /// <param name="columnFunc">The column function.</param>
+        /// <param name="templateFunc">The template function.</param>
+        /// <exception cref="System.Exception">
+        /// Object map must be an IRI or Literal
+        /// or
+        /// Constant value term must be uri valued or an object map
+        /// or
+        /// Term must be constant, column or template valued
+        /// </exception>
         private T CanMatchFunction<T>(ITermMap decider, Func<Uri, T> constantUriFunc, Func<string, T> constantLiteralFunc, Func<ITermMap, T> columnFunc, Func<ITermMap, T> templateFunc)
         {
             if (decider.IsConstantValued)
@@ -370,6 +556,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 throw new Exception("Term must be constant, column or template valued");
         }
 
+        /// <summary>
+        /// Can the template match the value.
+        /// </summary>
+        /// <param name="template">The template.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="isIri">if set to <c>true</c> the values are IRI.</param>
+        /// <returns><c>true</c> if the template can match the value, <c>false</c> otherwise.</returns>
         private bool TemplateMatchCheck(string template, string value, bool isIri)
         {
             var templateParts = this.templateProcessor.ParseTemplate(template).ToArray();
@@ -378,6 +571,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return TemplateMatchCheck(string.Empty, string.Empty, 0, templateParts.Length, templateParts, string.Empty, string.Empty, 0, secondParts.Length, secondParts, isIri);
         }
 
+        /// <summary>
+        /// Can the templates match.
+        /// </summary>
+        /// <param name="firstTemplate">The first template.</param>
+        /// <param name="secondTemplate">The second template.</param>
+        /// <param name="isIri">if set to <c>true</c> the values are IRI.</param>
+        /// <returns><c>true</c> if the templates can match, <c>false</c> otherwise.</returns>
         private bool TemplatesMatchCheck(string firstTemplate, string secondTemplate, bool isIri)
         {
             var firstTemplateParts = this.templateProcessor.ParseTemplate(firstTemplate).ToArray();
@@ -386,6 +586,21 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return TemplateMatchCheck(string.Empty, string.Empty, 0, firstTemplateParts.Length, firstTemplateParts, string.Empty, string.Empty, 0, secondTemplateParts.Length, secondTemplateParts, isIri);
         }
 
+        /// <summary>
+        /// Can the templates match.
+        /// </summary>
+        /// <param name="firstPrefix">The first prefix.</param>
+        /// <param name="firstSuffix">The first suffix.</param>
+        /// <param name="firstIndex">The first index.</param>
+        /// <param name="firstEndIndex">The first index of the end.</param>
+        /// <param name="firstParts">The first parts.</param>
+        /// <param name="secondPrefix">The second prefix.</param>
+        /// <param name="secondSuffix">The second suffix.</param>
+        /// <param name="secondIndex">The index of the second.</param>
+        /// <param name="secondEndIndex">the end index of the second.</param>
+        /// <param name="secondParts">The second parts.</param>
+        /// <param name="isIri">if set to <c>true</c> the values are IRI.</param>
+        /// <returns><c>true</c> if the templates can match, <c>false</c> otherwise.</returns>
         private bool TemplateMatchCheck(string firstPrefix, string firstSuffix, int firstIndex, int firstEndIndex, ITemplatePart[] firstParts,
             string secondPrefix, string secondSuffix, int secondIndex, int secondEndIndex, ITemplatePart[] secondParts, bool isIri)
         {
@@ -409,6 +624,20 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return firstPrefix == secondPrefix && firstSuffix == secondSuffix;
         }
 
+        /// <summary>
+        /// Can the templates match, when one of them starts with column
+        /// </summary>
+        /// <param name="firstPrefix">The first prefix.</param>
+        /// <param name="firstSuffix">The first suffix.</param>
+        /// <param name="firstIndex">The first index.</param>
+        /// <param name="firstEndIndex">The first index of the end.</param>
+        /// <param name="firstParts">The first parts.</param>
+        /// <param name="secondPrefix">The second prefix.</param>
+        /// <param name="secondSuffix">The second suffix.</param>
+        /// <param name="secondIndex">The index of the second.</param>
+        /// <param name="secondEndIndex">the end index of the second.</param>
+        /// <param name="secondParts">The second parts.</param>
+        /// <remarks>It does not return a value, it only skips the parts that can match</remarks>
         private void CanColumnMatch(ref string firstPrefix, ref string firstSuffix, ref int firstIndex, ref int firstEndIndex, ITemplatePart[] firstParts, ref string secondPrefix, ref string secondSuffix, ref int secondIndex, ref int secondEndIndex, ITemplatePart[] secondParts)
         {
             if(firstIndex < firstEndIndex && firstParts[firstIndex].IsColumn)
@@ -429,6 +658,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return;
         }
 
+        /// <summary>
+        /// Can suffixes match
+        /// </summary>
+        /// <param name="firstSuffix">The first suffix.</param>
+        /// <param name="secondSuffix">The second suffix.</param>
+        /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
         private bool SuffixMatch(ref string firstSuffix, ref string secondSuffix)
         {
             int index = 0;
@@ -454,6 +689,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// Can prefixes match.
+        /// </summary>
+        /// <param name="firstPrefix">The first prefix.</param>
+        /// <param name="secondPrefix">The second prefix.</param>
+        /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
         private bool PrefixMatch(ref string firstPrefix, ref string secondPrefix)
         {
             int index = 0;
@@ -479,6 +720,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return true;
         }
 
+        /// <summary>
+        /// Extracts the start and end from template.
+        /// </summary>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="suffix">The suffix.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="endIndex">The end index.</param>
+        /// <param name="parts">The parts.</param>
         private static void ExtractStartEndFromTemplates(ref string prefix, ref string suffix, ref int index, ref int endIndex, ITemplatePart[] parts)
         {
             while (index < endIndex && parts[index].IsText)
@@ -492,6 +741,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Skips to first not iunreserverd character.
+        /// </summary>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="suffix">The suffix.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="endIndex">The end index.</param>
+        /// <param name="parts">The parts.</param>
         private void SkipToFirstNotIUnreserverdCharacter(ref string prefix, ref string suffix, ref int index, ref int endIndex, ITemplatePart[] parts)
         {
             int prefixSkip;

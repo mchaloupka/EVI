@@ -8,8 +8,17 @@ using Slp.r2rml4net.Storage.Sparql.Algebra;
 
 namespace Slp.r2rml4net.Storage.Optimization
 {
+    /// <summary>
+    /// Interface for SPARQL algebra optimizer
+    /// </summary>
     public interface ISparqlAlgebraOptimizer
     {
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context);
     }
 }

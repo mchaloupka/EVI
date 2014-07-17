@@ -9,8 +9,17 @@ using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
+    /// <summary>
+    /// Select into union optimization
+    /// </summary>
     public class SelectIntoUnionOptimizer : ISparqlAlgebraOptimizer
     {
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public ISparqlQuery ProcessAlgebra(Sparql.Algebra.ISparqlQuery algebra, Query.QueryContext context)
         {
             if (algebra is SelectOp)
@@ -35,6 +44,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Processes the select.
+        /// </summary>
+        /// <param name="selectOp">The select operator.</param>
+        /// <param name="data">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public ISparqlQuery ProcessSelect(SelectOp selectOp, object data)
         {
             var context = (QueryContext)data;
@@ -63,7 +78,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
-        private SelectOp CreateProjection(SelectOp selectOp, ISparqlQuery source, QueryContext vd)
+        /// <summary>
+        /// Creates the projection.
+        /// </summary>
+        /// <param name="selectOp">The select operator.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The select operator.</returns>
+        private SelectOp CreateProjection(SelectOp selectOp, ISparqlQuery source, QueryContext context)
         {
             if (selectOp.IsSelectAll)
                 return new SelectOp(source);
@@ -71,6 +93,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 return new SelectOp(source, selectOp.Variables);
         }
 
+        /// <summary>
+        /// Determines whether the specified select op is projection only.
+        /// </summary>
+        /// <param name="selectOp">The select operator.</param>
+        /// <returns><c>true</c> if the specified select op is projection only; otherwise, <c>false</c>.</returns>
         private bool IsProjectionOnly(SelectOp selectOp)
         {
             if (selectOp.IsSelectAll)

@@ -10,25 +10,52 @@ using TCode.r2rml4net.Mapping;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
+    /// <summary>
+    /// The union optimizer
+    /// </summary>
     public class UnionOptimizer : ISparqlAlgebraOptimizer, ISparqlQueryVisitor
     {
+        /// <summary>
+        /// The join optimizer
+        /// </summary>
         private JoinOptimizer joinOptimizer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnionOptimizer"/> class.
+        /// </summary>
         public UnionOptimizer()
         {
             this.joinOptimizer = new JoinOptimizer();
         }
 
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             return (ISparqlQuery)algebra.Accept(this, new VisitData(context));
         }
 
+        /// <summary>
+        /// Visits the specified BGP operator.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(BgpOp bgpOp, object data)
         {
             return bgpOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified join operator.
+        /// </summary>
+        /// <param name="joinOp">The join operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(JoinOp joinOp, object data)
         {
             if (((VisitData)data).IsVisited(joinOp))
@@ -87,6 +114,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Creates the cartesian product.
+        /// </summary>
+        /// <param name="subQueries">The sub queries.</param>
+        /// <param name="subUnions">The sub unions.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The cartesian product.</returns>
         private IEnumerable<IEnumerable<ISparqlQuery>> CreateCartesians(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, QueryContext context)
         {
             var leftCartesian = new CartesianResult();
@@ -127,6 +161,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return currentCartesians.Select(x => x.Queries);
         }
 
+        /// <summary>
+        /// Processes the current cartesian product.
+        /// </summary>
+        /// <param name="currentCartesians">The current cartesian product.</param>
+        /// <param name="union">The union.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The cartesian product.</returns>
         private List<CartesianResult> ProcessCartesian(List<CartesianResult> currentCartesians, IEnumerable<ISparqlQuery> union, QueryContext context)
         {
             List<CartesianResult> result = new List<CartesianResult>();
@@ -158,14 +199,24 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return result;
         }
 
+        /// <summary>
+        /// Cartesian result
+        /// </summary>
         private class CartesianResult
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CartesianResult"/> class.
+            /// </summary>
             public CartesianResult()
             {
                 this.Variables = new Dictionary<string, List<ITermMap>>();
                 this.Queries = new List<ISparqlQuery>();
             }
 
+            /// <summary>
+            /// Clones this instance.
+            /// </summary>
+            /// <returns>The cloned instance.</returns>
             public CartesianResult Clone()
             {
                 var cr = new CartesianResult();
@@ -188,75 +239,27 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 return cr;
             }
 
+            /// <summary>
+            /// Gets the variables mappings.
+            /// </summary>
+            /// <value>The variables.</value>
             public Dictionary<string, List<ITermMap>> Variables { get; private set; }
 
+            /// <summary>
+            /// Gets the queries.
+            /// </summary>
+            /// <value>The queries.</value>
             public List<ISparqlQuery> Queries { get; private set; }
         }
 
-        //private List<List<ISparqlQuery>> CreateCartesians(IEnumerable<IEnumerable<ISparqlQuery>> unions, QueryContext context)
-        //{
-        //    var count = unions.Count();
-
-        //    if (count == 1)
-        //    {
-        //        var union = unions.First();
-        //        return new List<List<ISparqlQuery>>(union.Select(x => new List<ISparqlQuery>() { x }));
-        //    }
-
-        //    var splitCount = count / 2;
-
-        //    var left = unions.Take(splitCount);
-        //    var right = unions.Skip(splitCount);
-
-        //    var leftCartesian = CreateCartesians(left, context);
-        //    var rightCartesian = CreateCartesians(right, context);
-
-        //    return ProcessCartesian(leftCartesian, rightCartesian, context);
-        //}
-
-        //private List<List<ISparqlQuery>> ProcessCartesian(List<List<ISparqlQuery>> left, List<List<ISparqlQuery>> right, QueryContext context)
-        //{
-        //    List<List<ISparqlQuery>> result = new List<List<ISparqlQuery>>();
-
-        //    foreach (var li in left)
-        //    {
-        //        foreach (var ri in right)
-        //        {
-        //            var item = ProcessCartesian(li, ri, context);
-
-        //            if (item != null)
-        //                result.Add(item);
-        //        }
-        //    }
-
-        //    return result;
-        //}
-
-        //private List<ISparqlQuery> ProcessCartesian(List<ISparqlQuery> li, List<ISparqlQuery> ri, QueryContext context)
-        //{
-        //    Dictionary<string, List<ITermMap>> variables = new Dictionary<string, List<ITermMap>>();
-
-        //    List<ISparqlQuery> result = new List<ISparqlQuery>();
-
-        //    var subItems = li.Union(ri);
-
-        //    foreach (var item in subItems)
-        //    {
-        //        if(item is BgpOp)
-        //        {
-        //            var bgp = (BgpOp)item;
-
-        //            this.joinOptimizer.GetBgpInfo(bgp, variables, context);
-        //            if (!this.joinOptimizer.ProcessBgp(bgp, variables, context))
-        //                return null;
-        //        }
-
-        //        result.Add(item);
-        //    }
-
-        //    return result;
-        //}
-
+        /// <summary>
+        /// Processes the join child.
+        /// </summary>
+        /// <param name="subQueries">The sub queries.</param>
+        /// <param name="subUnions">The sub unions.</param>
+        /// <param name="inner">The inner query.</param>
+        /// <param name="oldInner">The old inner query.</param>
+        /// <returns><c>true</c> if modified, <c>false</c> otherwise.</returns>
         private static bool ProcessJoinChild(List<ISparqlQuery> subQueries, List<UnionOp> subUnions, ISparqlQuery inner, ISparqlQuery oldInner)
         {
             if (inner is UnionOp)
@@ -282,11 +285,23 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Visits the specified one empty solution operator.
+        /// </summary>
+        /// <param name="oneEmptySolutionOp">The one empty solution operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(OneEmptySolutionOp oneEmptySolutionOp, object data)
         {
             return oneEmptySolutionOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified union operator.
+        /// </summary>
+        /// <param name="unionOp">The union operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(UnionOp unionOp, object data)
         {
             if (((VisitData)data).IsVisited(unionOp))
@@ -311,6 +326,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Processes the union child.
+        /// </summary>
+        /// <param name="newUnion">The new union.</param>
+        /// <param name="inner">The inner query.</param>
+        /// <param name="oldInner">The old inner query.</param>
+        /// <returns><c>true</c> if modified, <c>false</c> otherwise.</returns>
         private bool ProcessUnionChild(UnionOp newUnion, ISparqlQuery inner, ISparqlQuery oldInner)
         {
             if (inner is UnionOp)
@@ -329,11 +351,23 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Visits the specified no solution operator.
+        /// </summary>
+        /// <param name="noSolutionOp">The no solution operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(NoSolutionOp noSolutionOp, object data)
         {
             return noSolutionOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified select operator.
+        /// </summary>
+        /// <param name="selectOp">The select operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(SelectOp selectOp, object data)
         {
             var vd = (VisitData)data;
@@ -349,6 +383,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return selectOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified slice operator.
+        /// </summary>
+        /// <param name="sliceOp">The slice operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(SliceOp sliceOp, object data)
         {
             if (((VisitData)data).IsVisited(sliceOp))
@@ -363,6 +403,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return sliceOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified order by operator.
+        /// </summary>
+        /// <param name="orderByOp">The order by operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(OrderByOp orderByOp, object data)
         {
             if (((VisitData)data).IsVisited(orderByOp))
@@ -377,6 +423,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return orderByOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified distinct operator.
+        /// </summary>
+        /// <param name="distinctOp">The distinct operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(DistinctOp distinctOp, object data)
         {
             if (((VisitData)data).IsVisited(distinctOp))
@@ -391,6 +443,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return distinctOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified reduced operator.
+        /// </summary>
+        /// <param name="reducedOp">The reduced operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(ReducedOp reducedOp, object data)
         {
             if (((VisitData)data).IsVisited(reducedOp))
@@ -405,6 +463,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return reducedOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// Visits the specified bind operator.
+        /// </summary>
+        /// <param name="bindOp">The bind operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(BindOp bindOp, object data)
         {
             if (((VisitData)data).IsVisited(bindOp))
@@ -419,23 +483,46 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             return bindOp.FinalizeAfterTransform();
         }
 
+        /// <summary>
+        /// The visit data.
+        /// </summary>
         private class VisitData
         {
+            /// <summary>
+            /// The visited operators
+            /// </summary>
             private HashSet<ISparqlQuery> visited;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="VisitData"/> class.
+            /// </summary>
+            /// <param name="context">The query context.</param>
             public VisitData(QueryContext context)
             {
                 this.Context = context;
                 this.visited = new HashSet<ISparqlQuery>();
             }
 
+            /// <summary>
+            /// Gets or sets the query context.
+            /// </summary>
+            /// <value>The query context.</value>
             public QueryContext Context { get; private set; }
 
+            /// <summary>
+            /// Determines whether the specified query is visited.
+            /// </summary>
+            /// <param name="query">The query.</param>
+            /// <returns><c>true</c> if the specified query is visited; otherwise, <c>false</c>.</returns>
             public bool IsVisited(ISparqlQuery query)
             {
                 return visited.Contains(query);
             }
 
+            /// <summary>
+            /// Visits the specified query.
+            /// </summary>
+            /// <param name="query">The query context.</param>
             public void Visit(ISparqlQuery query)
             {
                 visited.Add(query);
