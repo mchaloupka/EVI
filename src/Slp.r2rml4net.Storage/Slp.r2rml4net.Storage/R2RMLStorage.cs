@@ -178,6 +178,17 @@ namespace Slp.r2rml4net.Storage
             this.Query(handler, new ResultSetHandler(new SparqlResultSet()), queryString.ToString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks><para>
+        /// If the Graph being loaded into is Empty then it's Base Uri should become the Uri of the Graph being loaded, otherwise it should be merged into the existing non-empty Graph whose Base Uri should be unaffected.
+        /// </para>
+        /// <para>
+        /// Behaviour of this method with regards to non-existent Graphs is up to the implementor, an empty Graph may be returned or an error thrown.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
+        /// </para></remarks>
         public void LoadGraph(IGraph g, string graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))

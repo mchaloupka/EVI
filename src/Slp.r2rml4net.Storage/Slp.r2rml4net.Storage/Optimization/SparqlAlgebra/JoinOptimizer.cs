@@ -326,7 +326,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <summary>
         /// Determines whether the first literal mapping can match the second mapping.
         /// </summary>
-        /// <param name="first">The first literal mapping.</param>
+        /// <param name="literal">The literal mapping.</param>
         /// <param name="second">The second mapping.</param>
         /// <param name="context">The query context.</param>
         /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
@@ -395,8 +395,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <summary>
         /// Determines whether the template mappings can match.
         /// </summary>
-        /// <param name="firstUri">The first template mapping.</param>
-        /// <param name="secondUri">The second template mapping.</param>
+        /// <param name="firstTemplateTermMap">The first template mapping.</param>
+        /// <param name="secondTemplateTermMap">The second template mapping.</param>
         /// <param name="context">The query context.</param>
         /// <returns><c>true</c> if the template mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanTemplatesMatch(ITermMap firstTemplateTermMap, ITermMap secondTemplateTermMap, QueryContext context)
