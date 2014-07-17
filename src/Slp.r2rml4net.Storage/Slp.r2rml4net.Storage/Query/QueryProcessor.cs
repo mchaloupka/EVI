@@ -20,16 +20,51 @@ using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Query
 {
+    /// <summary>
+    /// Query processor
+    /// </summary>
     public class QueryProcessor
     {
+        /// <summary>
+        /// The mapping processor
+        /// </summary>
         private MappingProcessor mapping;
+
+        /// <summary>
+        /// The database
+        /// </summary>
         private ISqlDb db;
+
+        /// <summary>
+        /// The sparql algebra builder
+        /// </summary>
         private SparqlAlgebraBuilder sparqlAlgebraBuilder;
+
+        /// <summary>
+        /// The sparql optimizers
+        /// </summary>
         private ISparqlAlgebraOptimizer[] sparqlOptimizers;
+
+        /// <summary>
+        /// The SQL algebra builder
+        /// </summary>
         private SqlAlgebraBuilder sqlAlgebraBuilder;
+
+        /// <summary>
+        /// The SQL optimizers
+        /// </summary>
         private ISqlAlgebraOptimizer[] sqlOptimizers;
+
+        /// <summary>
+        /// The SQL optimizers on the fly
+        /// </summary>
         private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizersOnTheFly;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryProcessor"/> class.
+        /// </summary>
+        /// <param name="mapping">The mapping.</param>
+        /// <param name="db">The database.</param>
         public QueryProcessor(MappingProcessor mapping, ISqlDb db)
         {
             this.mapping = mapping;
@@ -63,6 +98,22 @@ namespace Slp.r2rml4net.Storage.Query
             };
         }
 
+        /// <summary>
+        /// Executes the query.
+        /// </summary>
+        /// <param name="rdfHandler">The RDF handler.</param>
+        /// <param name="resultsHandler">The results handler.</param>
+        /// <param name="sparqlQuery">The sparql query.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// resultsHandler;Cannot handle a Ask query with a null SPARQL Results Handler
+        /// or
+        /// rdfHandler;Cannot handle a Graph result with a null RDF Handler
+        /// or
+        /// rdfHandler;Cannot handle a Graph result with a null RDF Handler
+        /// or
+        /// resultsHandler;Cannot handle SPARQL Results with a null Results Handler
+        /// </exception>
+        /// <exception cref="System.Exception">Unable to process the results of an Unknown query type</exception>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
@@ -138,6 +189,26 @@ namespace Slp.r2rml4net.Storage.Query
             }
         }
 
+        /// <summary>
+        /// Processes the query result.
+        /// </summary>
+        /// <param name="rdfHandler">The RDF handler.</param>
+        /// <param name="resultsHandler">The results handler.</param>
+        /// <param name="originalQuery">The original query.</param>
+        /// <param name="context">The query context.</param>
+        /// <param name="sqlAlgebra">The SQL algebra.</param>
+        /// <param name="result">The SQL execution result.</param>
+        /// <exception cref="System.Exception">
+        /// Expected a column from sql query execution
+        /// or
+        /// Expected a single column from sql query execution
+        /// or
+        /// Expected a row from sql query execution
+        /// or
+        /// Expected 3 value binders in construct or describe query
+        /// or
+        /// Unable to process the results of an Unknown query type
+        /// </exception>
         private static void ProcessResult(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery originalQuery, QueryContext context, INotSqlOriginalDbSource sqlAlgebra, IQueryResultReader result)
         {
             switch (originalQuery.QueryType)
@@ -284,6 +355,15 @@ namespace Slp.r2rml4net.Storage.Query
             }
         }
 
+        /// <summary>
+        /// Processes the construct template.
+        /// </summary>
+        /// <param name="rdfHandler">The RDF handler.</param>
+        /// <param name="row">The database row.</param>
+        /// <param name="template">The template.</param>
+        /// <param name="sqlAlgebra">The SQL algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
         private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
         {
             var s = new VDS.RDF.Query.Algebra.Set();
@@ -312,6 +392,11 @@ namespace Slp.r2rml4net.Storage.Query
             }
         }
 
+        /// <summary>
+        /// Generates the SQL algebra.
+        /// </summary>
+        /// <param name="context">The query context.</param>
+        /// <returns>The SQL algebra.</returns>
         private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)
         {
             var algebra = sparqlAlgebraBuilder.Process(context);
