@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
+    /// <summary>
+    /// SQL Column
+    /// </summary>
     public interface ISqlColumn
     {
         string Name { get; set; }
@@ -13,6 +16,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra
         ISqlSource Source { get; }
     }
 
+    /// <summary>
+    /// SQL Column that is really in the database
+    /// </summary>
     public interface IOriginalSqlColumn : ISqlColumn
     {
         string OriginalName { get; }
