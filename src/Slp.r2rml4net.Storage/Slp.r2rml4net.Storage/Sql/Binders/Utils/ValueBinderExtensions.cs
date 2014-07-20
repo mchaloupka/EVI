@@ -12,8 +12,17 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
 {
+    /// <summary>
+    /// Extensions for value binders
+    /// </summary>
     public static class ValueBinderExtensions
     {
+        /// <summary>
+        /// Gets the value binder for SELECT operator.
+        /// </summary>
+        /// <param name="binder">The binder.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="context">The context.</param>
         public static IBaseValueBinder GetSelectValueBinder(this IBaseValueBinder binder, SqlSelectOp select, QueryContext context)
         {
             var newBinder = (IBaseValueBinder)binder.Clone();
@@ -26,6 +35,17 @@ namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
             return newBinder;
         }
 
+        /// <summary>
+        /// Gets the select column.
+        /// </summary>
+        /// <param name="select">The select.</param>
+        /// <param name="column">The column.</param>
+        /// <param name="context">The context.</param>
+        /// <exception cref="System.Exception">
+        /// Can't get select column from created column
+        /// or
+        /// Can't get select column
+        /// </exception>
         private static ISqlColumn GetSelectColumn(SqlSelectOp select, ISqlColumn column, QueryContext context)
         {
             if(column is SqlSelectColumn)
@@ -69,6 +89,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
             }
         }
 
+        /// <summary>
+        /// Gets the original value binder (value binder from original columns).
+        /// </summary>
+        /// <param name="binder">The value binder.</param>
+        /// <param name="context">The query context.</param>
         public static IBaseValueBinder GetOriginalValueBinder(this IBaseValueBinder binder, QueryContext context)
         {
             var newBinder = (IBaseValueBinder)binder.Clone();
@@ -82,6 +107,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
             return newBinder;
         }
 
+        /// <summary>
+        /// Gets the original column.
+        /// </summary>
+        /// <param name="oldColumn">The old column.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.Exception">Can't get original column</exception>
         private static ISqlColumn GetOriginalColumn(ISqlColumn oldColumn, QueryContext context)
         {
             if (oldColumn is SqlSelectColumn)

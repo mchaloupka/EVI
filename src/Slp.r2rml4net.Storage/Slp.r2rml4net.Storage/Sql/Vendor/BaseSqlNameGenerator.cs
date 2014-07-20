@@ -11,23 +11,51 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 
 namespace Slp.r2rml4net.Storage.Sql.Vendor
 {
+    /// <summary>
+    /// Name generator for SQL query
+    /// </summary>
     public class BaseSqlNameGenerator : ISqlSourceVisitor
     {
+        /// <summary>
+        /// Generates the names.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The context.</param>
         public void GenerateNames(INotSqlOriginalDbSource source, QueryContext context)
         {
             source.Accept(this, context);
         }
 
+        /// <summary>
+        /// Visits the specified no row source.
+        /// </summary>
+        /// <param name="noRowSource">The no row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public object Visit(NoRowSource noRowSource, object data)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Visits the specified single empty row source.
+        /// </summary>
+        /// <param name="singleEmptyRowSource">The single empty row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Visits the specified SQL select operator.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             var context = (QueryContext)data;
@@ -51,6 +79,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL union operator.
+        /// </summary>
+        /// <param name="sqlUnionOp">The SQL union operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
             foreach (var unColumn in sqlUnionOp.Columns.Cast<SqlUnionColumn>())
@@ -88,6 +122,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Algebra.Source.SqlStatement sqlStatement, object data)
         {
             foreach (var col in sqlStatement.Columns.OfType<IOriginalSqlColumn>())
@@ -98,6 +138,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL table.
+        /// </summary>
+        /// <param name="sqlTable">The SQL table.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Algebra.Source.SqlTable sqlTable, object data)
         {
             foreach (var col in sqlTable.Columns.OfType<IOriginalSqlColumn>())
@@ -108,6 +154,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             return null;
         }
 
+        /// <summary>
+        /// Generates the column names.
+        /// </summary>
+        /// <param name="columns">The columns.</param>
+        /// <param name="queryContext">The query context.</param>
         private void GenerateColumnNames(IEnumerable<ISqlColumn> columns, QueryContext queryContext)
         {
             List<string> colNames = new List<string>();
@@ -143,6 +194,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             }
         }
 
+        /// <summary>
+        /// Generates the name of the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The context.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
         private void GenerateSourceName(ISqlSource source, QueryContext context)
         {
             string prefix = string.Empty;
@@ -177,6 +234,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             source.Name = curName;
         }
 
+        /// <summary>
+        /// Gets the name of the original column.
+        /// </summary>
+        /// <param name="col">The column.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
         private string GetOriginalColumnName(ISqlColumn col)
         {
             if (col is IOriginalSqlColumn)

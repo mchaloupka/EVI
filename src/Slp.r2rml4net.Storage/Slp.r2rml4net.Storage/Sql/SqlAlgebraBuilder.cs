@@ -19,12 +19,29 @@ using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sql
 {
+    /// <summary>
+    /// SQL algebra builder
+    /// </summary>
     public class SqlAlgebraBuilder : ISparqlQueryVisitor
     {
+        /// <summary>
+        /// The condition builder
+        /// </summary>
         private ConditionBuilder conditionBuilder;
+
+        /// <summary>
+        /// The template processor
+        /// </summary>
         private TemplateProcessor templateProcessor;
+
+        /// <summary>
+        /// The expression builder
+        /// </summary>
         private ExpressionBuilder expressionBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlAlgebraBuilder"/> class.
+        /// </summary>
         public SqlAlgebraBuilder()
         {
             this.expressionBuilder = new ExpressionBuilder();
@@ -32,11 +49,22 @@ namespace Slp.r2rml4net.Storage.Sql
             this.templateProcessor = new TemplateProcessor();
         }
 
+        /// <summary>
+        /// Processes the specified algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The context.</param>
         public INotSqlOriginalDbSource Process(ISparqlQuery algebra, QueryContext context)
         {
             return (INotSqlOriginalDbSource)algebra.Accept(this, context);
         }
 
+        /// <summary>
+        /// Visits the specified BGP operator.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(BgpOp bgpOp, object data)
         {
             var context = (QueryContext)data;
@@ -50,6 +78,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return context.OptimizeOnTheFly(select);
         }
 
+        /// <summary>
+        /// Visits the specified join operator.
+        /// </summary>
+        /// <param name="joinOp">The join operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(JoinOp joinOp, object data)
         {
             var context = (QueryContext)data;
@@ -93,11 +127,23 @@ namespace Slp.r2rml4net.Storage.Sql
             }
         }
 
+        /// <summary>
+        /// Visits the specified one empty solution operator.
+        /// </summary>
+        /// <param name="oneEmptySolutionOp">The one empty solution operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(OneEmptySolutionOp oneEmptySolutionOp, object data)
         {
             return new SingleEmptyRowSource();
         }
 
+        /// <summary>
+        /// Visits the specified union operator.
+        /// </summary>
+        /// <param name="unionOp">The union operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(UnionOp unionOp, object data)
         {
             var context = (QueryContext)data;
@@ -169,6 +215,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return context.OptimizeOnTheFly(sqlUnion);
         }
 
+        /// <summary>
+        /// Gets the unioned column.
+        /// </summary>
+        /// <param name="sqlUnion">The SQL union.</param>
+        /// <param name="neededColumn">The needed column.</param>
+        /// <param name="context">The query context.</param>
         private static SqlUnionColumn GetUnionedColumn(SqlUnionOp sqlUnion, ISqlColumn neededColumn, QueryContext context)
         {
             SqlUnionColumn newCol = null;
@@ -197,11 +249,23 @@ namespace Slp.r2rml4net.Storage.Sql
             return newCol;
         }
 
+        /// <summary>
+        /// Visits the specified no solution operator.
+        /// </summary>
+        /// <param name="noSolutionOp">The no solution operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(NoSolutionOp noSolutionOp, object data)
         {
             return new NoRowSource();
         }
 
+        /// <summary>
+        /// Visits the specified slice operator.
+        /// </summary>
+        /// <param name="sliceOp">The slice operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(SliceOp sliceOp, object data)
         {
             var context = (QueryContext)data;
@@ -233,6 +297,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Visits the specified order by operator.
+        /// </summary>
+        /// <param name="orderByOp">The order by operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(OrderByOp orderByOp, object data)
         {
             var context = (QueryContext)data;
@@ -252,6 +322,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Visits the specified distinct operator.
+        /// </summary>
+        /// <param name="distinctOp">The distinct operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(DistinctOp distinctOp, object data)
         {
             var context = (QueryContext)data;
@@ -286,6 +362,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Visits the specified reduced operator.
+        /// </summary>
+        /// <param name="reducedOp">The reduced operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(ReducedOp reducedOp, object data)
         {
             var context = (QueryContext)data;
@@ -301,6 +383,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Visits the specified bind operator.
+        /// </summary>
+        /// <param name="bindOp">The bind operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
         public object Visit(BindOp bindOp, object data)
         {
             var context = (QueryContext)data;
@@ -318,6 +406,14 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Visits the specified select operator.
+        /// </summary>
+        /// <param name="selectOp">The select operator.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value.</returns>
+        /// <exception cref="System.NotImplementedException">
+        /// </exception>
         public object Visit(SelectOp selectOp, object data)
         {
             var context = (QueryContext)data;
@@ -385,18 +481,14 @@ namespace Slp.r2rml4net.Storage.Sql
             return context.OptimizeOnTheFly(select);
         }
 
+        /// <summary>
+        /// Processes the BGP source.
+        /// </summary>
+        /// <param name="triplesMap">The triples map.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.Exception">Unknown source of bgp</exception>
         private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap, QueryContext context)
         {
-            //if (!string.IsNullOrEmpty(triplesMap.SqlQuery))
-            //{
-            //    return new SqlStatement(triplesMap.SqlQuery);
-            //}
-            //else if (!string.IsNullOrEmpty(triplesMap.TableName))
-            //{
-            //    return new SqlTable(triplesMap.TableName);
-            //}
-            //else
-            //    throw new Exception("Unknown source of bgp");
             if (!string.IsNullOrEmpty(context.Mapping.Cache.GetSqlStatement(triplesMap)))
             {
                 return new SqlStatement(context.Mapping.Cache.GetSqlStatement(triplesMap));
@@ -409,6 +501,14 @@ namespace Slp.r2rml4net.Storage.Sql
                 throw new Exception("Unknown source of bgp");
         }
 
+        /// <summary>
+        /// Processes the BGP object.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="childSource">The child source.</param>
+        /// <exception cref="System.Exception">BgpOp must have object or ref object map</exception>
         private void ProcessBgpObject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource childSource)
         {
             if (bgpOp.R2RMLObjectMap != null)
@@ -455,6 +555,13 @@ namespace Slp.r2rml4net.Storage.Sql
             else throw new Exception("BgpOp must have object or ref object map");
         }
 
+        /// <summary>
+        /// Processes the BGP predicate.
+        /// </summary>
+        /// <param name="bgpOp">The BGP op.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="source">The source.</param>
         private void ProcessBgpPredicate(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)
         {
             var predicatePattern = bgpOp.PredicatePattern;
@@ -462,6 +569,13 @@ namespace Slp.r2rml4net.Storage.Sql
             ProcessBgpPattern(bgpOp, context, select, source, predicatePattern, bgpOp.R2RMLPredicateMap);
         }
 
+        /// <summary>
+        /// Processes the BGP subject.
+        /// </summary>
+        /// <param name="bgpOp">The BGP op.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="source">The source.</param>
         private void ProcessBgpSubject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source)
         {
             var subjectPattern = bgpOp.SubjectPattern;
@@ -469,6 +583,16 @@ namespace Slp.r2rml4net.Storage.Sql
             ProcessBgpPattern(bgpOp, context, select, source, subjectPattern, bgpOp.R2RMLSubjectMap);
         }
 
+        /// <summary>
+        /// Processes the BGP pattern.
+        /// </summary>
+        /// <param name="bgpOp">The BGP op.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
         private void ProcessBgpPattern(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, PatternItem pattern, ITermMap r2rmlMap)
         {
             if (pattern is VariablePattern)
@@ -492,6 +616,15 @@ namespace Slp.r2rml4net.Storage.Sql
             // http://dotnetrdf.org/API/dotNetRDF~VDS.RDF.Query.Patterns.PatternItem.html
         }
 
+        /// <summary>
+        /// Processes the BGP condition.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="node">The node.</param>
+        /// <param name="r2rmlMap">The R2RML map.</param>
         private void ProcessBgpCondition(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, INode node, ITermMap r2rmlMap)
         {
             var valueBinder = new ValueBinder(r2rmlMap, templateProcessor);
@@ -507,6 +640,15 @@ namespace Slp.r2rml4net.Storage.Sql
             select.AddCondition(condition);
         }
 
+        /// <summary>
+        /// Processes the BGP variable.
+        /// </summary>
+        /// <param name="bgpOp">The BGP operator.</param>
+        /// <param name="context">The query context.</param>
+        /// <param name="select">The select.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="variableName">Name of the variable.</param>
+        /// <param name="r2rmlMap">The R2RML map.</param>
         private void ProcessBgpVariable(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, string variableName, ITermMap r2rmlMap)
         {
             var valueBinder = new ValueBinder(variableName, r2rmlMap, templateProcessor);
@@ -532,6 +674,11 @@ namespace Slp.r2rml4net.Storage.Sql
             }
         }
 
+        /// <summary>
+        /// Transforms to select.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <param name="context">The query context.</param>
         private SqlSelectOp TransformToSelect(INotSqlOriginalDbSource sqlQuery, QueryContext context)
         {
             var select = new SqlSelectOp(sqlQuery);
@@ -544,6 +691,12 @@ namespace Slp.r2rml4net.Storage.Sql
             return select;
         }
 
+        /// <summary>
+        /// Processes the join.
+        /// </summary>
+        /// <param name="first">The first join.</param>
+        /// <param name="second">The second join.</param>
+        /// <param name="context">The query context.</param>
         private void ProcessJoin(SqlSelectOp first, INotSqlOriginalDbSource second, QueryContext context)
         {
             if (!(second is SqlSelectOp) || !((SqlSelectOp)second).IsMergeableTo(first))
@@ -552,6 +705,12 @@ namespace Slp.r2rml4net.Storage.Sql
             ProcessJoin(first, (SqlSelectOp)second, context);
         }
 
+        /// <summary>
+        /// Processes the join.
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <param name="context">The context.</param>
         private void ProcessJoin(SqlSelectOp first, SqlSelectOp second, QueryContext context)
         {
             List<ICondition> conditions = new List<ICondition>();

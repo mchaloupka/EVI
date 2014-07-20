@@ -19,25 +19,56 @@ using System.Diagnostics;
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/RDF/DefaultSQLValuesMappingStrategy.cs?at=default
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
+    /// <summary>
+    /// The basic value binder
+    /// </summary>
     public class ValueBinder : IBaseValueBinder
     {
+        /// <summary>
+        /// The R2RML map
+        /// </summary>
         private ITermMap r2rmlMap;
 
+        /// <summary>
+        /// The columns
+        /// </summary>
         private Dictionary<string, ISqlColumn> columns;
+
+        /// <summary>
+        /// The template processor
+        /// </summary>
         private TemplateProcessor templateProcessor;
+
+        /// <summary>
+        /// The template parts
+        /// </summary>
         private IEnumerable<ITemplatePart> templateParts;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ValueBinder"/> class from being publicly created.
+        /// </summary>
         private ValueBinder()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueBinder"/> class.
+        /// </summary>
+        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <param name="templateProcessor">The template processor.</param>
         public ValueBinder(ITermMap r2rmlMap, TemplateProcessor templateProcessor)
             : this(null, r2rmlMap, templateProcessor)
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueBinder"/> class.
+        /// </summary>
+        /// <param name="variableName">Name of the variable.</param>
+        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <param name="templateProcessor">The template processor.</param>
         public ValueBinder(string variableName, ITermMap r2rmlMap, TemplateProcessor templateProcessor)
         {
             this.loadNodeFunc = null;
@@ -68,14 +99,36 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Gets the name of the variable.
+        /// </summary>
+        /// <value>The name of the variable.</value>
         public string VariableName { get; private set; }
 
+        /// <summary>
+        /// Gets the R2RML map.
+        /// </summary>
+        /// <value>The R2RML map.</value>
         public ITermMap R2RMLMap { get { return r2rmlMap; } }
 
+        /// <summary>
+        /// Gets the template processor.
+        /// </summary>
+        /// <value>The template processor.</value>
         public TemplateProcessor TemplateProcessor { get { return templateProcessor; } }
 
+        /// <summary>
+        /// Gets the needed columns.
+        /// </summary>
+        /// <value>The needed columns.</value>
         public IEnumerable<string> NeededColumns { get { return columns.Keys.ToArray(); } }
 
+        /// <summary>
+        /// Sets the column.
+        /// </summary>
+        /// <param name="column">The column.</param>
+        /// <param name="sqlColumn">The SQL column.</param>
+        /// <exception cref="System.Exception">Cannot set column that is not requested for evaluation</exception>
         public void SetColumn(string column, ISqlColumn sqlColumn)
         {
             loadNodeFunc = null;
@@ -90,6 +143,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Gets the column.
+        /// </summary>
+        /// <param name="column">The column.</param>
+        /// <returns>ISqlColumn.</returns>
+        /// <exception cref="System.Exception">Cannot get column that is not requested for evaluation</exception>
         public ISqlColumn GetColumn(string column)
         {
             if (this.columns.ContainsKey(column))
@@ -102,6 +161,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Replaces the assigned column.
+        /// </summary>
+        /// <param name="oldColumn">The old column.</param>
+        /// <param name="newColumn">The new column.</param>
         public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
             loadNodeFunc = null;
@@ -114,8 +178,18 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// The load node function
+        /// </summary>
         private Func<INodeFactory, IQueryResultRow, QueryContext, INode> loadNodeFunc;
 
+        /// <summary>
+        /// Loads the node value.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="row">The db row.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The node.</returns>
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
             if (loadNodeFunc == null)
@@ -125,6 +199,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         }
 
         #region GenerateLoadNodeFunc
+        /// <summary>
+        /// Generates the load node function.
+        /// </summary>
+        /// <returns>Generated function.</returns>
+        /// <exception cref="System.Exception">Term map must be either constant, column or template valued</exception>
         private Func<INodeFactory, IQueryResultRow, QueryContext, INode> GenerateLoadNodeFunc()
         {
             Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> expr = null;
@@ -149,6 +228,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return expr.Compile();
         }
 
+        /// <summary>
+        /// Generates the load node function from template.
+        /// </summary>
         private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromTemplate()
         {
             ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
@@ -167,6 +249,13 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
         }
 
+        /// <summary>
+        /// Generates the replace column references function.
+        /// </summary>
+        /// <param name="nodeFactory">The node factory.</param>
+        /// <param name="row">The row.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, bool escape)
         {
             List<Expression> expressions = new List<Expression>();
@@ -197,6 +286,15 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return Expression.Block(typeof(string), new ParameterExpression[] { sbVar, replacedVar }, expressions);
         }
 
+        /// <summary>
+        /// Generates the replace column reference function.
+        /// </summary>
+        /// <param name="nodeFactory">The node factory.</param>
+        /// <param name="row">The row.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="part">The part.</param>
+        /// <param name="column">The column.</param>
+        /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ISqlColumn column, bool escape)
         {
             var dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
@@ -222,6 +320,14 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return Expression.Block(typeof(string), new ParameterExpression[] { dbColVar, valueVar, sValVar }, expressions);
         }
 
+        /// <summary>
+        /// Generates the load node function from constant.
+        /// </summary>
+        /// <exception cref="System.Exception">
+        /// Object map's value must be IRI or literal.
+        /// or
+        /// Constant must be uri valued or an object map
+        /// </exception>
         private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
             if (R2RMLMap is IUriValuedTermMap)
@@ -246,6 +352,13 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Generates the term for value function.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.Exception"></exception>
         private Expression GenerateTermForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
             var endLabel = Expression.Label(typeof(INode), "returnLabel");
@@ -286,6 +399,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return Expression.Block(typeof(INode), new ParameterExpression[] { nodeVar }, expressions);
         }
 
+        /// <summary>
+        /// Generates the blank node for value function.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="context">The query context.</param>
         private Expression GenerateBlankNodeForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
             if (R2RMLMap is ISubjectMap)
@@ -294,6 +413,17 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 return Expression.Call(context, "GetBlankNodeObjectForValue", new Type[0], factory, value);
         }
 
+        /// <summary>
+        /// Generates the term for literal function.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="context">The query context.</param>
+        /// <exception cref="System.Exception">
+        /// Term map cannot be of term type literal
+        /// or
+        /// Literal term map cannot have both language tag and datatype set
+        /// </exception>
         private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
             if (value == null)
@@ -317,6 +447,17 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]));
         }
 
+        /// <summary>
+        /// Generates the URI term for value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="factory">The factory.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="baseUri">The base URI.</param>
+        /// <exception cref="System.Exception">
+        /// Now the uri must be absolute
+        /// or
+        /// </exception>
         private static INode GenerateUriTermForValue(string value, INodeFactory factory, QueryContext context, Uri baseUri)
         {
             try
@@ -344,6 +485,15 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Constructs the absolute URI.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="relativePart">The relative part.</param>
+        /// <param name="baseUri">The base URI.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>Uri.</returns>
+        /// <exception cref="System.Exception">The relative IRI cannot contain any . or .. parts</exception>
         private static Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, Uri baseUri, QueryContext context)
         {
             if (relativePart.Split('/').Any(seg => seg == "." || seg == ".."))
@@ -352,6 +502,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return new Uri(baseUri + relativePart);
         }
 
+        /// <summary>
+        /// Asserts the no illegal characters.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <exception cref="System.Exception"></exception>
         private static void AssertNoIllegalCharacters(Uri value)
         {
             IEnumerable<char> disallowedChars = string.Empty;
@@ -376,6 +531,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
         }
 
+        /// <summary>
+        /// Generates the load node function from column.
+        /// </summary>
         private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromColumn()
         {
             ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
@@ -408,11 +566,19 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         } 
         #endregion
 
+        /// <summary>
+        /// Gets the assigned columns.
+        /// </summary>
+        /// <value>The assigned columns.</value>
         public IEnumerable<ISqlColumn> AssignedColumns
         {
             get { return columns.Select(x => x.Value); }
         }
 
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
             var newBinder = new ValueBinder();
@@ -430,6 +596,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             return newBinder;
         }
 
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
         [DebuggerStepThrough]
         public object Accept(IValueBinderVisitor visitor, object data)
         {
