@@ -6,8 +6,15 @@ using System.Web.Optimization;
 
 namespace Slp.r2rml4net.Server
 {
+    /// <summary>
+    /// Bundle configuration
+    /// </summary>
     public static class BundleConfig
     {
+        /// <summary>
+        /// Registers the bundles.
+        /// </summary>
+        /// <param name="bundles">The bundles.</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/Content/js/jquery").Include(

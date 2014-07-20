@@ -11,12 +11,25 @@ using TCode.r2rml4net.Mapping.Fluent;
 
 namespace Slp.r2rml4net.Server.R2RML
 {
+    /// <summary>
+    /// Wrapper for the <see cref="R2RMLStorage"/>
+    /// </summary>
     public class StorageWrapper
     {
+        /// <summary>
+        /// The storage
+        /// </summary>
         private static R2RMLStorage _storage = null;
 
+        /// <summary>
+        /// Gets the storage.
+        /// </summary>
+        /// <value>The storage.</value>
         public static R2RMLStorage Storage { get { return _storage; } }
 
+        /// <summary>
+        /// Application start.
+        /// </summary>
         public static void AppStart()
         {
             StartException = null;
@@ -43,12 +56,19 @@ namespace Slp.r2rml4net.Server.R2RML
             }
         }
 
+        /// <summary>
+        /// Application end.
+        /// </summary>
         public static void AppEnd()
         {
             if (_storage != null)
                 _storage.Dispose();
         }
 
+        /// <summary>
+        /// Gets the start exception.
+        /// </summary>
+        /// <value>The start exception.</value>
         public static Exception StartException { get; private set; }
     }
 }

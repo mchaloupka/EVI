@@ -12,8 +12,17 @@ using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Server.Controllers
 {
+    /// <summary>
+    /// Controller for methods called from JS
+    /// </summary>
     public class JsonController : Controller
     {
+        /// <summary>
+        /// Gets the query result.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns>ActionResult.</returns>
+        /// <exception cref="System.Exception">Unknown query result</exception>
         [HttpPost]
         [ValidateInput(false)]
         public ActionResult GetQueryResult(string query)
@@ -101,6 +110,10 @@ namespace Slp.r2rml4net.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the URL helper.
+        /// </summary>
+        /// <returns>UrlHelper.</returns>
         private UrlHelper GetUrlHelper()
         {
             return new UrlHelper(HttpContext.Request.RequestContext);
