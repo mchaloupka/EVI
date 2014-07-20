@@ -10,34 +10,72 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
+    /// <summary>
+    /// Removes unused columns
+    /// </summary>
     public class RemoveUnusedColumnsOptimization : ISqlAlgebraOptimizer, ISqlSourceVisitor
     {
+        /// <summary>
+        /// Visit data for the visitor
+        /// </summary>
         private class VisitorData
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="VisitorData"/> class.
+            /// </summary>
+            /// <param name="neededColumns">The needed columns.</param>
             public VisitorData(IEnumerable<ISqlColumn> neededColumns)
             {
                 this.NeededColumns = neededColumns.ToList();
             }
 
+            /// <summary>
+            /// Gets or sets the needed columns.
+            /// </summary>
+            /// <value>The needed columns.</value>
             public List<ISqlColumn> NeededColumns { get; private set; }
         }
 
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
             algebra.Accept(this, new VisitorData(new List<ISqlColumn>()));
             return algebra;
         }
 
+        /// <summary>
+        /// Visits the specified no row source.
+        /// </summary>
+        /// <param name="noRowSource">The no row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(NoRowSource noRowSource, object data)
         {
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified single empty row source.
+        /// </summary>
+        /// <param name="singleEmptyRowSource">The single empty row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL select operator.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             var cvd = (VisitorData)data;
@@ -89,6 +127,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL union operator.
+        /// </summary>
+        /// <param name="sqlUnionOp">The SQL union operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
             var cvd = (VisitorData)data;
@@ -115,6 +159,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return null;
         }
 
+        /// <summary>
+        /// Gets the referenced columns by columns.
+        /// </summary>
+        /// <param name="needed">The needed.</param>
+        /// <returns>List&lt;ISqlColumn&gt;.</returns>
         private static List<ISqlColumn> GetReferencedColumnsByColumns(IEnumerable<ISqlColumn> needed)
         {
             var neededOrig = new List<ISqlColumn>();
@@ -124,6 +173,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return neededOrig;
         }
 
+        /// <summary>
+        /// Gets the needed columns of value variables.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>IEnumerable&lt;ISqlColumn&gt;.</returns>
         private IEnumerable<ISqlColumn> GetNeededColumnsOfValueVariables(INotSqlOriginalDbSource source)
         {
             foreach (var binder in source.ValueBinders)
@@ -135,6 +189,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Gets the needed columns of orderings.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select op.</param>
+        /// <returns>IEnumerable&lt;ISqlColumn&gt;.</returns>
         private IEnumerable<ISqlColumn> GetNeededColumnsOfOrderings(SqlSelectOp sqlSelectOp)
         {
             foreach (var ordering in sqlSelectOp.Orderings)
@@ -146,6 +205,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Visits the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
         {
             var cvd = (VisitorData)data;
@@ -159,6 +224,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return null;
         }
 
+        /// <summary>
+        /// Visits the specified SQL table.
+        /// </summary>
+        /// <param name="sqlTable">The SQL table.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
             var cvd = (VisitorData)data;

@@ -10,23 +10,50 @@ using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
+    /// <summary>
+    /// Remove no row sources optimizer
+    /// </summary>
     public class RemoveNoRowSourcesOptimizer : ISqlAlgebraOptimizer, ISqlSourceVisitor
     {
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, Query.QueryContext context)
         {
             return (INotSqlOriginalDbSource)algebra.Accept(this, context);
         }
 
+        /// <summary>
+        /// Visits the specified no row source.
+        /// </summary>
+        /// <param name="noRowSource">The no row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(NoRowSource noRowSource, object data)
         {
             return noRowSource;
         }
 
+        /// <summary>
+        /// Visits the specified single empty row source.
+        /// </summary>
+        /// <param name="singleEmptyRowSource">The single empty row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
             return singleEmptyRowSource;
         }
 
+        /// <summary>
+        /// Visits the specified SQL select operator.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             if (sqlSelectOp.Conditions.OfType<AlwaysFalseCondition>().Any())
@@ -46,6 +73,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return sqlSelectOp;
         }
 
+        /// <summary>
+        /// Visits the specified SQL union operator.
+        /// </summary>
+        /// <param name="sqlUnionOp">The SQL union operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
             List<ISqlSource> toRemove = new List<ISqlSource>();
@@ -69,16 +102,33 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return sqlUnionOp;
         }
 
+        /// <summary>
+        /// Visits the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
         {
             return sqlStatement;
         }
 
+        /// <summary>
+        /// Visits the specified SQL table.
+        /// </summary>
+        /// <param name="sqlTable">The SQL table.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
             return sqlTable;
         }
 
+        /// <summary>
+        /// Creates the no row source.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select op.</param>
+        /// <returns>NoRowSource.</returns>
         private NoRowSource CreateNoRowSource(INotSqlOriginalDbSource sqlSelectOp)
         {
             var noRowSource = new NoRowSource();

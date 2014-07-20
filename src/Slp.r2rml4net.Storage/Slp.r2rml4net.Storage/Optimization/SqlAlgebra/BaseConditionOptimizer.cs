@@ -12,28 +12,61 @@ using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
+    /// <summary>
+    /// Base condition optimizer
+    /// </summary>
     public abstract class BaseConditionOptimizer : ISqlAlgebraOptimizer, ISqlAlgebraOptimizerOnTheFly, ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
     {
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
             return (INotSqlOriginalDbSource)algebra.Accept(this, new VisitData() { Context = context, SecondRun = false, IsOnTheFly = false });
         }
 
+        /// <summary>
+        /// Processes the algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
         public INotSqlOriginalDbSource ProcessAlgebraOnTheFly(INotSqlOriginalDbSource algebra, QueryContext context)
         {
             return (INotSqlOriginalDbSource)algebra.Accept(this, new VisitData() { Context = context, SecondRun = false, IsOnTheFly = true });
         }
 
+        /// <summary>
+        /// Visits the specified no row source.
+        /// </summary>
+        /// <param name="noRowSource">The no row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(NoRowSource noRowSource, object data)
         {
             return noRowSource;
         }
 
+        /// <summary>
+        /// Visits the specified single empty row source.
+        /// </summary>
+        /// <param name="singleEmptyRowSource">The single empty row source.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SingleEmptyRowSource singleEmptyRowSource, object data)
         {
             return singleEmptyRowSource;
         }
 
+        /// <summary>
+        /// Visits the specified SQL select operator.
+        /// </summary>
+        /// <param name="sqlSelectOp">The SQL select operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlSelectOp sqlSelectOp, object data)
         {
             var vd = (VisitData)data;
@@ -113,6 +146,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return sqlSelectOp;
         }
 
+        /// <summary>
+        /// Visits the specified SQL union operator.
+        /// </summary>
+        /// <param name="sqlUnionOp">The SQL union operator.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(SqlUnionOp sqlUnionOp, object data)
         {
             var vd = (VisitData)data;
@@ -128,16 +167,34 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return sqlUnionOp;
         }
 
+        /// <summary>
+        /// Visits the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
         {
             return sqlStatement;
         }
 
+        /// <summary>
+        /// Visits the specified SQL table.
+        /// </summary>
+        /// <param name="sqlTable">The SQL table.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
         {
             return sqlTable;
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(AlwaysFalseCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -148,6 +205,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessAlwaysFalseCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(AlwaysTrueCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -158,6 +221,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessAlwaysTrueCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(AndCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -168,6 +237,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessAndCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(EqualsCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -178,6 +253,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessEqualsCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(IsNullCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -188,6 +269,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessIsNullCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(NotCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -198,6 +285,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessNotCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Visits the specified condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(OrCondition condition, object data)
         {
             var visitData = (VisitData)data;
@@ -208,21 +301,41 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return _ProcessOrCondition(condition, visitData).Accept(this, visitData.ForSecondRun());
         }
 
+        /// <summary>
+        /// Processes always false condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, VisitData data)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes always true condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, VisitData data)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes is null condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessIsNullCondition(IsNullCondition condition, VisitData data)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes not condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessNotCondition(NotCondition condition, VisitData data)
         {
             var inner = (ICondition)condition.InnerCondition.Accept(this, data);
@@ -235,6 +348,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return new NotCondition(inner);
         }
 
+        /// <summary>
+        /// Processes or condition.
+        /// </summary>
+        /// <param name="orCondition">The or condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessOrCondition(OrCondition orCondition, VisitData data)
         {
             List<ICondition> conditions = new List<ICondition>();
@@ -266,6 +384,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Processes and condition.
+        /// </summary>
+        /// <param name="andCondition">The and condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessAndCondition(AndCondition andCondition, VisitData data)
         {
             List<ICondition> conditions = new List<ICondition>();
@@ -297,6 +420,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        ///Processes equals condition.
+        /// </summary>
+        /// <param name="equalsCondition">The equals condition.</param>
+        /// <param name="data">The data.</param>
         private ICondition _ProcessEqualsCondition(EqualsCondition equalsCondition, VisitData data)
         {
             var leftOperand = (IExpression)equalsCondition.LeftOperand.Accept(this, data);
@@ -308,16 +436,34 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return equalsCondition;
         }
 
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(ColumnExpr expression, object data)
         {
             return expression;
         }
 
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(ConstantExpr expression, object data)
         {
             return expression;
         }
 
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(ConcatenationExpr expression, object data)
         {
             foreach (var part in expression.Parts.ToArray())
@@ -331,34 +477,46 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             return expression;
         }
 
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="nullExpr">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(NullExpr nullExpr, object data)
         {
             return nullExpr;
         }
 
-        public object Visit(CoalesceExpr collateExpr, object data)
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="coalesceExpr">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
+        public object Visit(CoalesceExpr coalesceExpr, object data)
         {
-            foreach (var subExpr in collateExpr.Expressions.ToArray())
+            foreach (var subExpr in coalesceExpr.Expressions.ToArray())
             {
                 var newExpr = (IExpression)subExpr.Accept(this, data);
 
                 if (newExpr is NullExpr)
                 {
-                    collateExpr.RemoveExpression(subExpr);
+                    coalesceExpr.RemoveExpression(subExpr);
                 }
                 else if (newExpr != subExpr)
-                    collateExpr.ReplaceExpression(subExpr, newExpr);
+                    coalesceExpr.ReplaceExpression(subExpr, newExpr);
             }
 
-            if(collateExpr.Expressions.Any())
+            if(coalesceExpr.Expressions.Any())
             {
-                if(collateExpr.Expressions.Count() == 1)
+                if(coalesceExpr.Expressions.Count() == 1)
                 {
-                    return collateExpr.Expressions.First();
+                    return coalesceExpr.Expressions.First();
                 }
                 else
                 {
-                    return collateExpr;
+                    return coalesceExpr;
                 }
             }
             else
@@ -367,6 +525,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Visits the specified expression.
+        /// </summary>
+        /// <param name="caseExpr">The expression.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>Returned value.</returns>
         public object Visit(CaseExpr caseExpr, object data)
         {
             bool removeRest = false;
@@ -406,47 +570,103 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 return new NullExpr();
         }
 
+        /// <summary>
+        /// Processes the always false condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="visitData">The visit data.</param>
         protected virtual ICondition ProcessAlwaysFalseCondition(AlwaysFalseCondition condition, QueryContext visitData)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the always true condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessAlwaysTrueCondition(AlwaysTrueCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the and condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessAndCondition(AndCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the equals condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessEqualsCondition(EqualsCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the is null condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessIsNullCondition(IsNullCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the not condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessNotCondition(NotCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Processes the or condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="queryContext">The query context.</param>
         protected virtual ICondition ProcessOrCondition(OrCondition condition, QueryContext queryContext)
         {
             return condition;
         }
 
+        /// <summary>
+        /// Visit data for the visitor
+        /// </summary>
         private class VisitData
         {
+            /// <summary>
+            /// Gets or sets the context.
+            /// </summary>
+            /// <value>The context.</value>
             public QueryContext Context { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether it is second run.
+            /// </summary>
+            /// <value><c>true</c> if it is second run; otherwise, <c>false</c>.</value>
             public bool SecondRun { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether this instance is on the fly optimization.
+            /// </summary>
+            /// <value><c>true</c> if this instance is on the fly; otherwise, <c>false</c>.</value>
             public bool IsOnTheFly { get; set; }
 
+            /// <summary>
+            /// Data for the second run.
+            /// </summary>
+            /// <returns>VisitData.</returns>
             public VisitData ForSecondRun()
             {
                 return new VisitData()

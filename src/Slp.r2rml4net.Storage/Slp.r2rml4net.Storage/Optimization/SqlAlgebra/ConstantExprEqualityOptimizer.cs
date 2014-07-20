@@ -13,8 +13,16 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
+    /// <summary>
+    /// Comparison of constants
+    /// </summary>
     public class ConstantExprEqualityOptimizer : BaseConditionOptimizer
     {
+        /// <summary>
+        /// Processes the equals condition.
+        /// </summary>
+        /// <param name="equalsCondition">The equals condition.</param>
+        /// <param name="context">The context.</param>
         protected override ICondition ProcessEqualsCondition(EqualsCondition equalsCondition, QueryContext context)
         {
             var leftOp = equalsCondition.LeftOperand;
@@ -34,6 +42,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
         }
 
+        /// <summary>
+        /// Are expressions always equal?
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns><c>true</c> if they are always equal, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.Exception">Unknown expression type</exception>
         private bool ExpressionsAlwaysEqual(IExpression first, IExpression second)
         {
             if (first is ConcatenationExpr || second is ConcatenationExpr)
@@ -52,6 +67,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             throw new Exception("Unknown expression type");
         }
 
+        /// <summary>
+        /// Can be the expressions equal?
+        /// </summary>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
+        /// <returns><c>true</c> if they can be equal, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.Exception">Unknown expression type</exception>
         private bool ExpressionsCanBeEqual(IExpression first, IExpression second)
         {
             if (first is ConcatenationExpr || second is ConcatenationExpr)
@@ -70,6 +92,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             throw new Exception("Unknown expression type");
         }
 
+        /// <summary>
+        /// Are the constant expressions equal?
+        /// </summary>
+        /// <param name="constantExpr1">The constant expr1.</param>
+        /// <param name="constantExpr2">The constant expr2.</param>
+        /// <returns><c>true</c> if the constant expressions are equal, <c>false</c> otherwise.</returns>
         private bool ConstantExprAreEqual(ConstantExpr constantExpr1, ConstantExpr constantExpr2)
         {
             return constantExpr1.SqlString == constantExpr2.SqlString;
