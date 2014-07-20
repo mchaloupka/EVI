@@ -7,8 +7,16 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 {
+    /// <summary>
+    /// Extension that provide additional operator info
+    /// </summary>
     public static class OperatorInfoExtension
     {
+        /// <summary>
+        /// Determines whether the join operator can be merged with another one.
+        /// </summary>
+        /// <param name="joinOp">The join op.</param>
+        /// <returns><c>true</c> if the join operator can be merged with another one; otherwise, <c>false</c>.</returns>
         public static bool CanBeMergedTo(this SqlSelectOp joinOp)
         {
             if (joinOp.Offset.HasValue || joinOp.Limit.HasValue || joinOp.Orderings.Any() || joinOp.IsDistinct || joinOp.IsReduced)
@@ -17,6 +25,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 return true;
         }
 
+        /// <summary>
+        /// Determines whether the join operator can be merged with another one.
+        /// </summary>
+        /// <param name="second">The operator that will be merged to.</param>
+        /// <param name="first">The operator that should merge to the other one.</param>
+        /// <returns><c>true</c> if the join operator can be merged with another one.; otherwise, <c>false</c>.</returns>
         public static bool IsMergeableTo(this SqlSelectOp second, SqlSelectOp first)
         {
             if (!second.CanBeMergedTo())
@@ -37,30 +51,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             return true;
-
-            //List<ICondition> conditions = new List<ICondition>();
-
-            //foreach (var firstValBinder in first.ValueBinders)
-            //{
-            //    foreach (var secondValBinder in second.ValueBinders)
-            //    {
-            //        if (firstValBinder.VariableName == secondValBinder.VariableName)
-            //        {
-            //            conditions.Add(conditionBuilder.CreateJoinEqualsCondition(context, firstValBinder.GetOriginalValueBinder(context), secondValBinder.GetOriginalValueBinder(context)));
-            //        }
-            //    }
-            //}
-
-            //ICondition condition = conditionBuilder.CreateAlwaysTrueCondition(context);
-
-            //if (conditions.Count == 1)
-            //{
-            //    condition = conditions[0];
-            //}
-            //else if (conditions.Count > 1)
-            //{
-            //    condition = conditionBuilder.CreateAndCondition(context, conditions);
-            //}
         }
     }
 }

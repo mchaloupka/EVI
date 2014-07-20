@@ -31,6 +31,10 @@ namespace Slp.r2rml4net.Storage.Sql
     public interface IQueryResultRow
     {
 
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        /// <value>The columns.</value>
         IEnumerable<IQueryResultColumn> Columns { get; }
 
         /// <summary>

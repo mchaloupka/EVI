@@ -46,6 +46,10 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <value><c>true</c> if this instance has next row; otherwise, <c>false</c>.</value>
         public bool HasNextRow { get; private set; }
 
+        /// <summary>
+        /// Reads the current row and moves to next one.
+        /// </summary>
+        /// <returns>Readed row, <c>null</c> if there is no row</returns>
         public IQueryResultRow Read()
         {
             var current = this.enumerator.Current;

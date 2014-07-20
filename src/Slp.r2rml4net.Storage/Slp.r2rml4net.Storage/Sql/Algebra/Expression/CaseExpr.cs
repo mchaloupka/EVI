@@ -41,6 +41,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
             return cas;
         }
 
+        /// <summary>
+        /// Gets the statements.
+        /// </summary>
+        /// <value>The statements.</value>
         public IEnumerable<CaseStatementExpression> Statements { get { return statements; } }
 
         /// <summary>

@@ -8,32 +8,69 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 {
+    /// <summary>
+    /// Extension for getting all referenced columns
+    /// </summary>
     public static class GetAllReferencedColumnsExtension
     {
+        /// <summary>
+        /// The visitor
+        /// </summary>
         private static readonly GetAllReferencedColumnsVisitor visitor = new GetAllReferencedColumnsVisitor();
 
+        /// <summary>
+        /// Gets all referenced columns.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <returns>The referenced columns.</returns>
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this ICondition condition)
         {
             return (IEnumerable<ISqlColumn>)condition.Accept(visitor, null);
         }
 
+        /// <summary>
+        /// Gets all referenced columns.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The referenced columns.</returns>
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this IExpression expression)
         {
             return (IEnumerable<ISqlColumn>)expression.Accept(visitor, null);
         }
 
+        /// <summary>
+        /// The visitor that gets all referenced columns
+        /// </summary>
         private class GetAllReferencedColumnsVisitor : IConditionVisitor, IExpressionVisitor
         {
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(AlwaysFalseCondition condition, object data)
             {
                 yield break;
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(AlwaysTrueCondition condition, object data)
             {
                 yield break;
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(AndCondition condition, object data)
             {
                 foreach (var subCond in condition.Conditions)
@@ -47,6 +84,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(EqualsCondition condition, object data)
             {
                 var leftRes = (IEnumerable<ISqlColumn>)condition.LeftOperand.Accept(this, data);
@@ -63,16 +106,34 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(IsNullCondition condition, object data)
             {
                 yield return condition.Column;
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(NotCondition condition, object data)
             {
                 return (IEnumerable<ISqlColumn>)condition.InnerCondition.Accept(this, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(OrCondition condition, object data)
             {
                 foreach (var subCond in condition.Conditions)
@@ -86,16 +147,34 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ColumnExpr expression, object data)
             {
                 yield return expression.Column;
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ConstantExpr expression, object data)
             {
                 yield break;
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ConcatenationExpr expression, object data)
             {
                 foreach (var subExpr in expression.Parts)
@@ -109,6 +188,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="collateExpr">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(CoalesceExpr collateExpr, object data)
             {
                 foreach (var subExpr in collateExpr.Expressions)
@@ -122,6 +207,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="caseExpr">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(CaseExpr caseExpr, object data)
             {
                 foreach (var subExpr in caseExpr.Statements)
@@ -142,16 +233,34 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 }
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="nullExpr">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(NullExpr nullExpr, object data)
             {
                 yield break;
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(AlwaysFalseCondition condition, object data)
             {
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(AlwaysTrueCondition condition, object data)
             {
                 return Visit(condition, data);
@@ -162,51 +271,111 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(EqualsCondition condition, object data)
             {
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(IsNullCondition condition, object data)
             {
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(OrCondition condition, object data)
             {
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified condition.
+            /// </summary>
+            /// <param name="condition">The condition.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IConditionVisitor.Visit(NotCondition condition, object data)
             {
                 return Visit(condition, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ColumnExpr expression, object data)
             {
                 return Visit(expression, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ConstantExpr expression, object data)
             {
                 return Visit(expression, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The passed data.</param>
+            /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ConcatenationExpr expression, object data)
             {
                 return Visit(expression, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The data.</param>
+            /// <returns>System.Object.</returns>
             object IExpressionVisitor.Visit(NullExpr expression, object data)
             {
                 return Visit(expression, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The data.</param>
+            /// <returns>System.Object.</returns>
             object IExpressionVisitor.Visit(CoalesceExpr expression, object data)
             {
                 return Visit(expression, data);
             }
 
+            /// <summary>
+            /// Visits the specified expression.
+            /// </summary>
+            /// <param name="expression">The expression.</param>
+            /// <param name="data">The data.</param>
+            /// <returns>System.Object.</returns>
             object IExpressionVisitor.Visit(CaseExpr expression, object data)
             {
                 return Visit(expression, data);
