@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
@@ -26,18 +27,19 @@ namespace Slp.r2rml4net.Storage
         private ISqlDb db;
 
         /// <summary>
-        /// The mapping
+        /// The query processor
         /// </summary>
-        private MappingProcessor mapping;
+        private QueryProcessor queryProcessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="R2RMLStorage"/> class.
+        /// Initializes a new instance of the <see cref="R2RMLStorage" /> class.
         /// </summary>
-        /// <param name="mapping">The mapping.</param>
         /// <param name="db">The database.</param>
-        public R2RMLStorage(IR2RML mapping, ISqlDb db)
+        /// <param name="mapping">The mapping.</param>
+        /// <param name="factory">The factory.</param>
+        public R2RMLStorage(ISqlDb db, IR2RML mapping, IR2RMLStorageFactory factory)
         {
-            this.mapping = new MappingProcessor(mapping);
+            this.queryProcessor = factory.CreateQueryProcessor(db, mapping);
             this.db = db;
         }
 
@@ -49,8 +51,7 @@ namespace Slp.r2rml4net.Storage
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            var processor = new QueryProcessor(mapping, db);
-            processor.Query(rdfHandler, resultsHandler, sparqlQuery);
+            this.queryProcessor.Query(rdfHandler, resultsHandler, sparqlQuery);
         }
 
         /// <summary>

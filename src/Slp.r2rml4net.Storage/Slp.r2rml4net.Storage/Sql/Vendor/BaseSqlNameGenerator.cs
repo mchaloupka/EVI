@@ -17,6 +17,19 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class BaseSqlNameGenerator : ISqlSourceVisitor
     {
         /// <summary>
+        /// The default SQL database factory
+        /// </summary>
+        private Bootstrap.ISqlDbFactory sqlDbFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseSqlNameGenerator"/> class.
+        /// </summary>
+        /// <param name="sqlDbFactory">The default SQL database factory.</param>
+        public BaseSqlNameGenerator(Bootstrap.ISqlDbFactory sqlDbFactory)
+        {
+            this.sqlDbFactory = sqlDbFactory;
+        }
+        /// <summary>
         /// Generates the names.
         /// </summary>
         /// <param name="source">The source.</param>

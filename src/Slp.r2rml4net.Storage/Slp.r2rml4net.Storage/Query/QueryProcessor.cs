@@ -46,6 +46,11 @@ namespace Slp.r2rml4net.Storage.Query
         private ISparqlAlgebraOptimizer[] sparqlOptimizers;
 
         /// <summary>
+        /// The sparql optimizers on the fly
+        /// </summary>
+        private ISparqlAlgebraOptimizerOnTheFly[] sparqlOptimizersOnTheFly;
+
+        /// <summary>
         /// The SQL algebra builder
         /// </summary>
         private SqlAlgebraBuilder sqlAlgebraBuilder;
@@ -61,41 +66,30 @@ namespace Slp.r2rml4net.Storage.Query
         private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizersOnTheFly;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueryProcessor"/> class.
+        /// The factory used to generate classes
         /// </summary>
-        /// <param name="mapping">The mapping.</param>
+        private Bootstrap.IR2RMLStorageFactory factory;
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryProcessor" /> class.
+        /// </summary>
         /// <param name="db">The database.</param>
-        public QueryProcessor(MappingProcessor mapping, ISqlDb db)
+        /// <param name="mapping">The mapping.</param>
+        /// <param name="factory">The factory.</param>
+        public QueryProcessor(ISqlDb db, TCode.r2rml4net.IR2RML mapping, Bootstrap.IR2RMLStorageFactory factory)
         {
-            this.mapping = mapping;
             this.db = db;
-            this.sparqlAlgebraBuilder = new SparqlAlgebraBuilder();
-            this.sqlAlgebraBuilder = new SqlAlgebraBuilder();
+            this.factory = factory;
+            
+            this.mapping = factory.CreateMappingProcessor(mapping);
+            this.sparqlAlgebraBuilder = factory.CreateSparqlAlgebraBuilder();
+            this.sqlAlgebraBuilder = factory.CreateSqlAlgebraBuilder();
 
-            this.sparqlOptimizers = new ISparqlAlgebraOptimizer[]
-            {
-                new Optimization.SparqlAlgebra.R2RMLOptimizer(),
-                new Optimization.SparqlAlgebra.UnionOptimizer(),
-                new Optimization.SparqlAlgebra.JoinOptimizer(),
-                new Optimization.SparqlAlgebra.SelectIntoUnionOptimizer()
-            };
-
-            this.sqlOptimizers = new ISqlAlgebraOptimizer[]
-            {
-                new Optimization.SqlAlgebra.IsNullOptimizer(),
-                new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
-                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer(),
-                new Optimization.SqlAlgebra.RemoveNoRowSourcesOptimizer(),
-                new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization(),
-                new Optimization.SqlAlgebra.ReducedSelectOptimization()
-            };
-
-            this.sqlOptimizersOnTheFly = new ISqlAlgebraOptimizerOnTheFly[]
-            {
-                new Optimization.SqlAlgebra.IsNullOptimizer(),
-                new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
-                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer()
-            };
+            this.sparqlOptimizers = factory.CreateSparqlAlgebraOptimizers();
+            this.sparqlOptimizersOnTheFly = factory.CreateSparqlAlgebraOptimizersOnTheFly();
+            this.sqlOptimizers = factory.CreateSqlOptimizers();
+            this.sqlOptimizersOnTheFly = factory.CreateSqlAlgebraOptimizersOnTheFly();
         }
 
         /// <summary>
@@ -157,7 +151,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             // Convert to algebra
-            var context = new QueryContext(originalQuery, mapping, db, nodeFactory, this.sqlOptimizersOnTheFly);
+            var context = factory.CreateQueryContext(originalQuery, mapping, db, nodeFactory, this.sparqlOptimizersOnTheFly, this.sqlOptimizersOnTheFly);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);

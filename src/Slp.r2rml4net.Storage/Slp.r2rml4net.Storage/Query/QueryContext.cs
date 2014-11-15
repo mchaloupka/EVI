@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
@@ -34,27 +35,33 @@ namespace Slp.r2rml4net.Storage.Query
         private Dictionary<string, INode> blankNodesObjects;
 
         /// <summary>
-        /// The SQL optimizers
-        /// </summary>
-        private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers;
-
-        /// <summary>
         /// The used variables
         /// </summary>
         private HashSet<string> usedVariables;
 
         /// <summary>
+        /// The sparql algebra optimizers on the fly
+        /// </summary>
+        private ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly;
+
+        /// <summary>
+        /// The SQL algebra optimizers on the fly
+        /// </summary>
+        private ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext"/> class.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="mapping">The mapping processor.</param>
+        /// <param name="originalQuery">The original query.</param>
+        /// <param name="mapping">The mapping.</param>
         /// <param name="db">The database.</param>
         /// <param name="nodeFactory">The node factory.</param>
-        /// <param name="sqlOptimizers">The SQL optimizers.</param>
-        public QueryContext(SparqlQuery query, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISqlAlgebraOptimizerOnTheFly[] sqlOptimizers)
+        /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
+        /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizer on the fly.</param>
+        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly)
         {
-            this.OriginalQuery = query;
-            this.OriginalAlgebra = query.ToAlgebra();
+            this.OriginalQuery = originalQuery;
+            this.OriginalAlgebra = originalQuery.ToAlgebra();
             this.NodeFactory = nodeFactory;
             this.Db = db;
             this.Mapping = mapping;
@@ -62,7 +69,8 @@ namespace Slp.r2rml4net.Storage.Query
             this.blankNodesSubjects = new Dictionary<string, INode>();
             this.blankNodesObjects = new Dictionary<string, INode>();
             this.usedVariables = new HashSet<string>(this.OriginalAlgebra.Variables);
-            this.sqlOptimizers = sqlOptimizers;
+            this.sparqlAlgebraOptimizerOnTheFly = sparqlAlgebraOptimizerOnTheFly;
+            this.sqlAlgebraOptimizerOnTheFly = sqlAlgebraOptimizerOnTheFly;
         }
 
         /// <summary>
@@ -167,7 +175,24 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var currentAlgebra = algebra;
 
-            foreach (var optimizer in sqlOptimizers)
+            foreach (var optimizer in sqlAlgebraOptimizerOnTheFly)
+            {
+                currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
+            }
+
+            return currentAlgebra;
+        }
+
+        /// <summary>
+        /// Optimizes the algebra on the fly.
+        /// </summary>
+        /// <param name="algebra">The SPARQL query.</param>
+        /// <returns>The optimized SPARQL query.</returns>
+        public ISparqlQuery OptimizeOnTheFly(ISparqlQuery algebra)
+        {
+            var currentAlgebra = algebra;
+
+            foreach (var optimizer in sparqlAlgebraOptimizerOnTheFly)
             {
                 currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
             }

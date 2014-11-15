@@ -18,6 +18,19 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class BaseSqlQueryBuilder : ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
     {
         /// <summary>
+        /// The default SQL database factory
+        /// </summary>
+        private Bootstrap.ISqlDbFactory sqlDbFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseSqlQueryBuilder"/> class.
+        /// </summary>
+        /// <param name="sqlDbFactory">The SQL database factory.</param>
+        public BaseSqlQueryBuilder(Bootstrap.ISqlDbFactory sqlDbFactory)
+        {
+            this.sqlDbFactory = sqlDbFactory;
+        }
+        /// <summary>
         /// Generates the query.
         /// </summary>
         /// <param name="sqlSource">The SQL source.</param>

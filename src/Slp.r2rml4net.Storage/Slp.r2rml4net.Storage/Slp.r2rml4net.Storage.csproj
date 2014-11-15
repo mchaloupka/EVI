@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Slp.r2rml4net.Storage.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="DatabaseSchemaReader, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -62,6 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bootstrap\DefaultR2RMLStorageFactory.cs" />
+    <Compile Include="Bootstrap\DefaultSqlDbFactory.cs" />
+    <Compile Include="Bootstrap\ISqlDbFactory.cs" />
+    <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
     <Compile Include="Mapping\MappingProcessor.cs" />
     <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />

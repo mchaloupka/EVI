@@ -21,4 +21,18 @@ namespace Slp.r2rml4net.Storage.Optimization
         /// <returns>The processed algebra.</returns>
         ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context);
     }
+
+    /// <summary>
+    /// Interface for SPARQL algebra optimizer on the fly
+    /// </summary>
+    public interface ISparqlAlgebraOptimizerOnTheFly
+    {
+        /// <summary>
+        /// Processes the algebra on the fly.
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The processed algebra.</returns>
+        ISparqlQuery ProcessAlgebraOnTheFly(ISparqlQuery algebra, QueryContext context);
+    }
 }

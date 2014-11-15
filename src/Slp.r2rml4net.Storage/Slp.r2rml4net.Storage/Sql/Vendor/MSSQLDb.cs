@@ -21,7 +21,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// Initializes a new instance of the <see cref="MSSQLDb"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        public MSSQLDb(string connectionString)
+        /// <param name="defaultSqlDbFactory">The SQL database factory.</param>
+        public MSSQLDb(string connectionString, Bootstrap.ISqlDbFactory defaultSqlDbFactory)
+            : base(defaultSqlDbFactory)
         {
             this.connectionString = connectionString;
         }

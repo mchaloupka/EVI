@@ -31,10 +31,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlDb"/> class.
         /// </summary>
-        public BaseSqlDb()
+        public BaseSqlDb(Slp.r2rml4net.Storage.Bootstrap.ISqlDbFactory factory)
         {
-            this.queryBuilder = new BaseSqlQueryBuilder();
-            this.nameGenerator = new BaseSqlNameGenerator();
+            this.queryBuilder = factory.CreateSQLQueryBuilder();
+            this.nameGenerator = factory.CreateNameGenerator();
         }
 
         /// <summary>
