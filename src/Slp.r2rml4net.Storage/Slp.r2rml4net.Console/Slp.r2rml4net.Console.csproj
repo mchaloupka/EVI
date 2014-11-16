@@ -78,14 +78,24 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Slp.r2rml4net.Server\Slp.r2rml4net.Server.csproj">
-      <Project>{3af0cf1b-95e7-420d-9058-db08c0426ac8}</Project>
-      <Name>Slp.r2rml4net.Server</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage.csproj">
       <Project>{1d04a0ad-3e86-4f3c-9065-fc9211d6bf64}</Project>
       <Name>Slp.r2rml4net.Storage</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Mapping\ctia_r2rml.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Mapping\ctia_r2rml_opt.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Mapping\demography_r2rml.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Mapping\rdf_config.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
