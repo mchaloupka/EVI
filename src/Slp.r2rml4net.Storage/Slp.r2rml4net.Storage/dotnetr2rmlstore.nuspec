@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>dotnetr2rmlstore-latest</id>
-    <title>DotNetR2RMLStore - latest build</title>
-    <version>$version$</version>
+    <id>dotnetr2rmlstore</id>
+    <title>DotNetR2RMLStore</title>
+    <version>$version$-latest</version>
     <authors>Miloš Chaloupka</authors>
     <owners>Miloš Chaloupka</owners>
     <projectUrl>https://github.com/mchaloupka/DotNetR2RMLStore</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</description>
     <copyright>Copyright 2014 Miloš Chaloupka</copyright>
-    <tags>rdf r2rml semantic web</tags>
+    <tags>rdb2rdf rdf r2rml semantic web</tags>
 	<licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
 	<dependencies>
 		<dependency id="dotNetRDF" version="1.0.4.3225" />
