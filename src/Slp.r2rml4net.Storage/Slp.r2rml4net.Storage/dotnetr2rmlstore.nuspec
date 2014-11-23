@@ -3,7 +3,7 @@
   <metadata>
     <id>dotnetr2rmlstore</id>
     <title>DotNetR2RMLStore</title>
-    <version>$version$-latest</version>
+    <version>$version$</version>
     <authors>Miloš Chaloupka</authors>
     <owners>Miloš Chaloupka</owners>
     <projectUrl>https://github.com/mchaloupka/DotNetR2RMLStore</projectUrl>
