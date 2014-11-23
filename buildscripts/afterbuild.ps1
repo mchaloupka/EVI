@@ -6,7 +6,7 @@ function Update-NuspecVersion
   
   foreach ($o in $input) 
   {
-    Write-output "Updating nuspec file $o.FullName"
+    Write-output ('Updating nuspec file ' + $o.FullName)
     $TmpFile = $o.FullName + ".tmp"
 
      get-content $o.FullName | 
@@ -20,14 +20,16 @@ function Pack-Nuget
 {
   foreach ($o in $input) 
   {
-    Write-output "Packing $o.FullName"
+    Write-output ('Packing ' + $o.FullName)
     
 	nuget pack $o.FullName -Symbols
   }
 }
 
-if($nugetversion -ne '') 
+if($nugetversion)
 {
+	Add-AppveyorMessage -Message ('Nuget version ' + $nugetversion)
+
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? { $_.Name -like '*.nuspec' } | Update-NuspecVersion $nugetversion;
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? { $_.Name -like '*.nuspec' } | Pack-Nuget
 }
