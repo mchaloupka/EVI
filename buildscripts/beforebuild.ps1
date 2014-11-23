@@ -38,7 +38,7 @@ function Update-SourceVersion
 
   foreach ($o in $input) 
   {
-    Write-output $o.FullName
+    Write-output "Updating $o.FullName"
     $TmpFile = $o.FullName + ".tmp"
 
      get-content $o.FullName | 
