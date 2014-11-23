@@ -13,8 +13,8 @@
     <tags>rdb2rdf rdf r2rml semantic web</tags>
 	<licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
 	<dependencies>
-		<dependency id="dotNetRDF" version="1.0.4.3225" />
-		<dependency id="r2rml.net-unstable" version="0.3.3.20" />
+		<dependency id="dotNetRDF" version="1.0.7.3471" />
+		<dependency id="r2rml4net" version="0.4.0.0-pre01" />
 	</dependencies>
   </metadata>
   <files>

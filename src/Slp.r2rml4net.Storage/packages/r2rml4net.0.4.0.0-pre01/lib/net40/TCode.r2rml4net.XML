@@ -1,0 +1,3103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TCode.r2rml4net</name>
+    </assembly>
+    <members>
+        <member name="T:TCode.r2rml4net.Exceptions.InvalidSqlVersionException">
+            <summary>
+            Represents errors occuring when a <a href="http://www.w3.org/TR/r2rml/#logical-tables">logical table</a> 
+            has an invalid <a href="http://www.w3.org/TR/r2rml/#dfn-sql-version-identifier">SQL version identifier</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Exceptions.InvalidMapException">
+            <summary>
+            Represents a validation error in Triples Map structure
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Exceptions.InvalidMapException.#ctor(System.String,TCode.r2rml4net.Mapping.IMapBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Exceptions.InvalidMapException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="triplesMap">The triples map.</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Exceptions.InvalidMapException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Exceptions.InvalidMapException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Exceptions.InvalidSqlVersionException.#ctor(System.Uri)">
+            <summary>
+            Creates a new instance of <see cref="T:TCode.r2rml4net.Exceptions.InvalidSqlVersionException"/> with the invalid <paramref name="uri"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Extensions.GraphExtensions">
+            <summary>
+            Extension methods for accessing nodes' values
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetObjects(VDS.RDF.INode,System.String)">
+            <summary>
+            Gets the objects for given subject <paramref name="termMapNode"/> and <paramref name="predicate"/>.
+            </summary>
+            <param name="termMapNode">The subject node.</param>
+            <param name="predicate">The predicate QName.</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetSingleOrDefault(System.Collections.Generic.IEnumerable{VDS.RDF.INode},System.Func{System.Collections.Generic.IEnumerable{VDS.RDF.INode},System.Exception})">
+            <summary>
+            Gets the single node or null.
+            </summary>
+            <param name="nodes">The nodes.</param>
+            <param name="multipleObjectError">Exception to throw if there are multiple nodes.</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetLiteral(VDS.RDF.INode,System.Func{System.Exception})">
+            <summary>
+            Gets the literal value of a node.
+            </summary>
+            <param name="node">The node.</param>
+            <param name="getError">[Optional] Exception to throw if <paramref name="node"/> is not literal.</param>
+            <returns>literal value or null is <paramref name="node"/> is not literal</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetUri(VDS.RDF.INode,System.Func{System.Exception})">
+            <summary>
+            Gets the URI value of a node.
+            </summary>
+            <param name="node">The node.</param>
+            <param name="getError">[Optional] Exception to throw if <paramref name="node"/> is not literal.</param>
+            <returns>URI value or null is <paramref name="node"/> is not literal</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetDatatype(VDS.RDF.INode,System.Func{System.Exception})">
+            <summary>
+            Gets the datatype URI of a node.
+            </summary>
+            <param name="node">The node.</param>
+            <param name="getError">[Optional] Exception to throw if <paramref name="node"/> is not literal.</param>
+            <returns>literal datatype or null is <paramref name="node"/> is not literal</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.GraphExtensions.GetLanguageTag(VDS.RDF.INode,System.Func{System.Exception})">
+            <summary>
+            Gets the language value of a node.
+            </summary>
+            <param name="node">The node.</param>
+            <param name="getError">[Optional] Exception to throw if <paramref name="node"/> is not literal.</param>
+            <returns>literal language or null is <paramref name="node"/> is not literal</returns>
+        </member>
+        <member name="T:TCode.r2rml4net.Extensions.UriExtensions">
+            <summary>
+            Extension methods for the <see cref="T:System.Uri"/> class
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Extensions.UriExtensions.LeaveDotsAndSlashesEscaped(System.Uri)">
+            <summary>
+            A pretty dirty workaround to have slashes unescaped to avoid relative
+            <see cref="T:System.Uri"/> resolution and simmilar malfunctions
+            </summary>
+            <remarks>See http://stackoverflow.com/questions/2320533/system-net-uri-with-urlencoded-characters</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.IFreezable">
+            <summary>
+            Interface for the freezeable pattern
+            </summary>
+            <remarks>See http://blogs.msdn.com/b/ericlippert/archive/2007/11/13/immutability-in-c-part-one-kinds-of-immutability.aspx</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.IFreezable.Freeze">
+            <summary>
+            Makes a freezable object immutable
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Log.LogFacadeBase">
+            <summary>
+            Facade for all logging methods used throught the code
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogColumnNotFound(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an error of not found column in the SQL reuslts
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogTermGenerated(VDS.RDF.INode)">
+            <summary>
+            Logs an RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogNullTermGenerated(TCode.r2rml4net.Mapping.ITermMap)">
+            <summary>
+            Logs a null RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogNullValueForColumn(System.String)">
+            <summary>
+            Logs a null value retrieved for column
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogMissingSubject(TCode.r2rml4net.Mapping.ITriplesMap)">
+            <summary>
+            Logs an error of missing <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>'s <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SubjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogQueryExecutionError(TCode.r2rml4net.Mapping.IQueryMap,System.String)">
+            <summary>
+            Logs an error in executing an SQL query
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogInvalidTermMap(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogInvaldTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#triples-map">triples map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.LogFacadeBase.LogMultipleCompositeKeyReferences(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Logs multiple references to a compisote key in a table
+            </summary>
+            <param name="table">Table with multiple composite keys referenced</param>
+        </member>
+        <member name="T:TCode.r2rml4net.MappingHelper">
+            <summary>
+            Utility helper class for generating and working with mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingHelper.UrlEncode(System.String)">
+            <summary>
+            Encodes a unescaped URI string as defined by <a href="http://www.w3.org/TR/r2rml/#RFC3987">RFC3987</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingHelper.IsIUnreserved(System.Char)">
+            <summary>
+            Gets a velue indicating whether the <paramref name="character"/> is in the 
+            <a href="http://tools.ietf.org/html/rfc3987#section-2.2">iunreserved production</a> 
+            in <a href="http://www.w3.org/TR/r2rml/#RFC3987">RFC3987</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingHelper.EncloseColumnName(System.String)">
+            <summary>
+            Encloses and delimits a column name with braces for use in <a href="http://www.w3.org/TR/r2rml/#from-template">templates</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.MappingOptions">
+            <summary>
+            Represents a set of options for <a href="http://www.w3.org/TR/r2rml/#default-mappings">default mapping generation</a> 
+            and <a href="http://www.w3.org/TR/r2rml/#generated-rdf">triples generation</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.MappingOptions"/> with default options' values
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlIdentifierDelimiters(System.Char,System.Char)">
+            <summary>
+            Sets the SQL identifier delimiters
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlIdentifierDelimiters(System.Char)">
+            <summary>
+            Sets the SQL identifier delimiters
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithSqlVersionValidation(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.ValidateSqlVersion"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.UsingDelimitedIdentifiers(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.UseDelimitedIdentifiers"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithBlankNodeTemplateSeparator(System.String)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.IgnoringDataErrors(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.IgnoreDataErrors"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithAutomaticBlankNodeSubjects(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.AllowAutomaticBlankNodeSubjects"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.WithDuplicateRowsPreserved(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.PreserveDuplicateRows"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.IgnoringMappingErrors(System.Boolean)">
+            <summary>
+            Sets the <see cref="P:TCode.r2rml4net.MappingOptions.IgnoreMappingErrors"/> setting
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingOptions.Freeze">
+            <summary>
+            Makes this <see cref="T:TCode.r2rml4net.MappingOptions"/> object read-only
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.Default">
+            <summary>
+            Gets a singleton instance with default values of <see cref="T:TCode.r2rml4net.MappingOptions"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.Current">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.MappingOptions"/> from the current <see cref="T:TCode.r2rml4net.MappingScope"/> or the <see cref="P:TCode.r2rml4net.MappingOptions.Default"/> options
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator">
+            <summary>
+            Gets the string which will be used for building blank node <a href="http://www.w3.org/TR/r2rml/#from-template">templates</a>.
+            Default value is "_"
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.UseDelimitedIdentifiers">
+            <summary>
+            Gets a value indicating whether delimited SQL identifiers should be used in mapping graphs
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.SqlIdentifierRightDelimiter">
+            <summary>
+            Gets the right SQL identifier delimiter. Default value is '\"'
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.SqlIdentifierLeftDelimiter">
+            <summary>
+            Gets the left SQL identifier delimiter. Default value is '\"'
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.ValidateSqlVersion">
+            <summary>
+            Gets a value indicating whether <a href="http://www.w3.org/TR/r2rml/#dfn-sql-version-identifier">SQL version identifier</a> should be validated.
+            Default value is true
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.IgnoreMappingErrors">
+            <summary>
+            Gets a value indicating whether mapping errors should be ignored.
+            Default value is true
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.IgnoreDataErrors">
+            <summary>
+            Gets a value indicating whether data errors should be ignored.
+            Default value is true
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.PreserveDuplicateRows">
+            <summary>
+            Gets a value indicating whether duplicate rows in tables without primary key <a href="http://www.w3.org/TR/r2rml/#default-mappings">should be preserved</a>.
+            Default value is false
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.MappingOptions.AllowAutomaticBlankNodeSubjects">
+            <summary>
+            Gets a value indicating whether <a href="http://www.w3.org/TR/r2rml/#dfn-subject-map">subject maps</a> can be neither
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-template-valued-term-map">template-valued</a> nor 
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-constant-valued-term-map">constant-valued</a> nor 
+            a <a href="http://www.w3.org/TR/r2rml/#dfn-column-valued-term-map">column-valued</a>. In such case a distinct automatic blank node
+            will be created for each logical row.
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Exceptions.InvalidTemplateException">
+            <summary>
+            Represents errors occuring, when <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            has missing template
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Exceptions.InvalidTermException">
+            <summary>
+            Represents errors occuring during <a href="http://www.w3.org/TR/r2rml/#generated-rdf-term">RDF term generation</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Exceptions.InvalidTermException.#ctor(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.Exceptions.InvalidTermException"/> for a <paramref name="termMap"/>
+            with a given <paramref name="reason"/> why it occured
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Exceptions.InvalidTermException.TermMap">
+            <summary>
+            Gets the <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>, 
+            which cannot be used to <a href="http://www.w3.org/TR/r2rml/#generated-rdf-term">generate an RDF term</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Exceptions.InvalidTemplateException.#ctor(TCode.r2rml4net.Mapping.ITermMap)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Exceptions.InvalidTemplateException"/> class.
+            </summary>
+            <param name="termMap">The term map.</param>
+        </member>
+        <member name="T:TCode.r2rml4net.IVistitable`1">
+            <summary>
+            Part of the Visitor pattern, here used to visit database metadata elements
+            in order to create R2RML mappings
+            </summary>
+            <typeparam name="TVisitor">the Visitor type</typeparam>
+        </member>
+        <member name="M:TCode.r2rml4net.IVistitable`1.Accept(`0)">
+            <summary>
+            Invoke the Visit method and forward visiting to child elements (if any)
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Log.TextWriterLog">
+            <summary>
+            Simple implementation of the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>, which writes messages to a <see cref="T:System.IO.TextWriter"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes an instance <see cref="T:TCode.r2rml4net.Log.TextWriterLog"/>, which will write to the given <paramref name="writer"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogColumnNotFound(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an error of not found column in the SQL reuslts
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogTermGenerated(VDS.RDF.INode)">
+            <summary>
+            Logs an RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogNullTermGenerated(TCode.r2rml4net.Mapping.ITermMap)">
+            <summary>
+            Logs a null RDF term generated
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogNullValueForColumn(System.String)">
+            <summary>
+            Logs a null value retrieved for column
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogMissingSubject(TCode.r2rml4net.Mapping.ITriplesMap)">
+            <summary>
+            Logs an error of missing <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>'s <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SubjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogQueryExecutionError(TCode.r2rml4net.Mapping.IQueryMap,System.String)">
+            <summary>
+            Logs an error in executing an SQL query
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogInvalidTermMap(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogInvaldTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap,System.String)">
+            <summary>
+            Logs an invalid <a href="http://www.w3.org/TR/r2rml/#triples-map">triples map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Log.TextWriterLog.LogMultipleCompositeKeyReferences(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Logs multiple references to a compisote key in a table
+            </summary>
+            <param name="table">Table with multiple composite keys referenced</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.ColumnMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy"/>,  which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of columns to predicates
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy.CreatePredicateUri(System.Uri,TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Creates a predicate URI for a column
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ColumnMappingStrategy.CreatePredicateUri(System.Uri,TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Creates a predicate URI for a <paramref name="column"/>
+            </summary>
+            <example>For table 'Student', column 'Last name' and base URI 'http://example.com/' it returns URI 'http://example.com/Student#Last%20name'</example>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase">
+            <summary>
+            Base class for mapping strategy classes
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase.CreateBlankNodeTemplate(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a template for column names in the form of "TableName;{col1};{col2};{col3}", where the separator is taken
+            from <see cref="P:TCode.r2rml4net.MappingOptions.BlankNodeTemplateSeparator"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of direct mapping relational databases
+            to <a href="http://www.w3.org/TR/r2rml/#subject-map">subject maps</a>, 
+            <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate maps</a>
+            and <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object maps</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> for table without primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateSubjectMapForPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> for table with primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreatePredicateMapForForeignKey(TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate map</a> for foreign key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateObjectMapForCandidateKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> for candidate key reference
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy.CreateObjectMapForPrimaryKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> for primary key reference
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> as a template valued blank node with template 
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)"/>
+            and class returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateSubjectMapForPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#subject-map">subject map</a> as a termplate valued URI noed with template 
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)"/>
+            and class returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreatePredicateMapForForeignKey(TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up a <a href="http://www.w3.org/TR/r2rml/#dfn-predicate-map">predicate map</a> as constant valued with URI returned by
+            <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateObjectMapForCandidateKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> as template valued blank node with template
+            returned by <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.CreateObjectMapForPrimaryKeyReference(TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Sets up an <a href="http://www.w3.org/TR/r2rml/#dfn-object-map">object map</a> as template valued node with template returned by
+            <see cref="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.PrimaryKeyMappingStrategy">
+            <summary>
+            Gets or sets the trategy for mapping primary keys
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.DirectMappingStrategy.ForeignKeyMappingStrategy">
+            <summary>
+            Gets or sets the strategy for mapping foreign keys
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.DirectR2RMLMapping">
+            <summary>
+            Provides default mapping by wrapping the <see cref="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.IR2RML">
+            <summary>
+            Represents a R2RML mapping
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.TriplesMaps">
+            <summary>
+            Gets triple maps contained by this <see cref="T:TCode.r2rml4net.IR2RML"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.SqlQueryBuilder">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which is used during generating triples
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RML.SqlVersionValidator">
+            <summary>
+            Gets or sets the SQL version validator implementation
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.DirectR2RMLMapping.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata)">
+            <summary>
+            Creates a default mapping with no base URI
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.DirectR2RMLMapping.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.DirectR2RMLMapping"/> class.
+            </summary>
+            <param name="provider">The provider.</param>
+            <param name="baseMappingUri">The base mapping URI.</param>
+        </member>
+        <member name="P:TCode.r2rml4net.DirectR2RMLMapping.SqlVersionValidator">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.DirectR2RMLMapping.SqlQueryBuilder">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.DirectR2RMLMapping.TriplesMaps">
+            <inheritdoc/>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of mapping foreign keys to RDF predicates and obejcts
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a predicate URI for a foreign key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a URI template for referenced obj
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Create a blank node identifier template for referenced obj
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateReferencePredicateUri(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates a predicate URI for foreign Key according to <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+            <example>For referenced table "Student", foreign key columns "Last Name" and "SSN" and base URI "http://www.exmample.com/" it creates a 
+            URI "http://www.exmample.com/Student#ref-{\"Last Name\"};{\"SSN\"}"</example>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateReferenceObjectTemplate(System.Uri,TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates an object template for a foreign key reference
+            </summary>
+            <remarks>The template contains both referenced and referencing columns. Different columns are used
+            if the referenced table has or hasn't got a primary key producing different templates</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.CreateObjectTemplateForCandidateKeyReference(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Creates a blank node object identifier template for foreign key, which references a candidate key.
+            See <see cref="M:TCode.r2rml4net.Mapping.Direct.MappingStrategyBase.CreateBlankNodeTemplate(System.String,System.Collections.Generic.IEnumerable{System.String})"/> for details on implementation
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.ForeignKeyMappingStrategy.PrimaryKeyMappingStrategy">
+            <summary>
+            Gets or sets mapping strategy for primary keys
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy">
+            <summary>
+            Interface for classes implementating the algorithm of mapping primary keys to RDF subjects
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)">
+            <summary>
+            Create an absolute URI subject for a table
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier template for a table without primary key
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a URI template for table with primary key
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.NewBlankNodeForDuplicateRows">
+            <summary>
+            This class may be removed in future versions
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.NewBlankNodeForDuplicateRows.CreateSubjectMapForNoPrimaryKey(TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration,System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <inheritdoc/>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy"/>, which creates mapping graph
+            consistent with the official <a href="www.w3.org/TR/rdb-direct-mapping/">Direct Mapping specfication</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectClassUri(System.Uri,System.String)">
+            <summary>
+            Creates a URI for subject class by joining <paramref name="baseUri"/> and <paramref name="tableName"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectTemplateForNoPrimaryKey(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier subject template by concatenating the referenced table name with the referenced columns
+            </summary>
+            <example>For table "Student" and referenced columns "Last Name" and "SSN" it creates a template "Student;{\"Last Name\"};{\"SSN\"}"</example>
+            <remarks>If the referenced table has multiple unique keys the template will be created for the longest one. <br/>
+            If the referenced table has no unique key, all columns are used</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.CreateSubjectTemplateForPrimaryKey(System.Uri,TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Creates a blank node identifier subject template for referenced table with primary key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.PrimaryKeyMappingStrategy.Log">
+            <summary>
+            Gets or sets the default mapping log
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator">
+            <summary>
+            Builds a R2RML graph from a relational database's schema
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor">
+            <summary>
+            Interface for the Visitor pattern, which visits tables and columns to extract 
+            relational database structure
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableCollection)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableCollection"/> and it's tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> and it's columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.ColumnMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.IDatabaseMetadataVisitor.Visit(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Visist a <see cref="T:TCode.r2rml4net.RDB.ForeignKeyMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.#ctor(TCode.r2rml4net.RDB.IDatabaseMetadata,TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration)">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator"/> which will read RDB metadata using <see cref="T:TCode.r2rml4net.RDB.IDatabaseMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.GenerateMappings">
+            <summary>
+            Generates default R2RML mappings based on database metadata
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.TableCollection)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableCollection"/> and it's tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> and it's columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Visits a <see cref="T:TCode.r2rml4net.RDB.ColumnMetadata"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.Visit(TCode.r2rml4net.RDB.ForeignKeyMetadata)">
+            <summary>
+            Visist a <see cref="T:TCode.r2rml4net.RDB.ForeignKeyMetadata"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.MappingBaseUri">
+            <summary>
+            Gets or sets the R2RML graph's base URI
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.MappingStrategy">
+            <summary>
+            Gets or sets an implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IDirectMappingStrategy"/>, 
+            which defines how to map relational database to RDF subject, predicate and object maps
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.ColumnMappingStrategy">
+            <summary>
+            Gets or sets an impementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IColumnMappingStrategy"/>,
+            which defines how to map columns to RDF predicates
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.PrimaryKeyMappingStrategy">
+            <summary>
+            Gets or sets  the implementation of <see cref="T:TCode.r2rml4net.Mapping.Direct.IPrimaryKeyMappingStrategy"/>, 
+            which defines how to map primary keys to RDF subjects
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Direct.R2RMLMappingGenerator.SqlBuilder">
+            <summary>
+            Gets or sets the implementation of <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, 
+            which builds queries used to retrieve data from relationalt database for genertaing triples
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration">
+            <summary>
+            Base for DotNetRDF-backed fluent R2RML configuration
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IMapBase">
+            <summary>
+            A base interface for all maps which are represented by a node in RDF
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IMapBase.Node">
+            <summary>
+            Gets the node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IMapBase.BaseUri">
+            <summary>
+            Gets the base mapping URI. It will be used to resolve relative values when generating terms
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(VDS.RDF.IGraph)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration"/> class.
+            </summary>
+            <param name="graph">existing graph with mappings</param>
+            <remarks>Used by <see cref="T:TCode.r2rml4net.FluentR2RML"/></remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration"/> class.
+            </summary>
+            <param name="baseUri">R2RML graph's base URI</param>
+            <remarks>Used by <see cref="T:TCode.r2rml4net.FluentR2RML"/></remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration"/> class.
+            </summary>
+            <remarks>Used by <see cref="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration"/></remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.#ctor(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration,VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Constructor used by implementations other than <see cref="T:TCode.r2rml4net.FluentR2RML"/> and <see cref="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.RecursiveInitializeSubMapsFromCurrentGraph">
+            <summary>
+            Reads all maps contained in the current configuration and creates configuration objects
+            </summary>
+            <remarks>Used in loading configuration from an exinsting graph</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.InitializeSubMapsFromCurrentGraph">
+            <summary>
+            Implemented in child classes should create submaps and for each of the run the 
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.RecursiveInitializeSubMapsFromCurrentGraph"/> method
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.EnsureNoShortcutSubmaps">
+            <summary>
+            Overriden in child classes should change shortcut properties to maps
+            </summary>
+            <example>{ [] rr:graph ex:instance } should become { [] rr:graphMap [ rr:constant ex:instance ] }</example>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.CreateSubMaps``1(System.String,System.Func{VDS.RDF.IGraph,VDS.RDF.INode,``0},System.Collections.Generic.IList{``0})">
+            <summary>
+            Creates the sub maps.
+            </summary>
+            <typeparam name="TConfiguration">The type of the configuration.</typeparam>
+            <param name="property">The property.</param>
+            <param name="createSubConfiguration">The create sub configuration.</param>
+            <param name="subMaps">The sub maps.</param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node">
+            <summary>
+            Gets the RDF node representing this map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.BaseUri">
+            <summary>
+            Gets the base mapping URI. It will be used to resolve relative values when generating terms
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.R2RMLMappings">
+            <summary>
+            Gets the DotNetRDF graph containing the R2RML mappings
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.TriplesMap">
+            <summary>
+            Gets the parent <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/> containing this map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.UsesNode">
+            <summary>
+            Gets a value indicating whether configuration class is represented by an RDF node
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.FluentR2RML">
+            <summary>
+            Entrypoint to fluent configuration of R2RML, backed by DotNetRDF
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration">
+            <summary>
+            Entrypoint to all of R2RML fluent configuration interfaces
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.CreateTriplesMapFromTable(System.String)">
+            <summary>
+            Creates a <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>, which will use a concrete table or view as datasource 
+            as described on http://www.w3.org/TR/r2rml/#physical-tables
+            </summary>
+            <param name="tablename">Unquoted table name (any quotes and parentheses will be trimmed)</param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.CreateTriplesMapFromR2RMLView(System.String)">
+            <summary>
+            Creates a <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>, which will use a SQL query as datasource
+            as described on http://www.w3.org/TR/r2rml/#r2rml-views
+            </summary>
+            <param name="sqlQuery">a valid SQL query</param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration.BaseUri">
+            <summary>
+            Gets base mapping URI. It will be used to resolve relative values when generating terms
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.#ctor(System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.FluentR2RML"/> class.
+            </summary>
+            <param name="baseUri">base URI for mapping nodes</param>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.#ctor">
+            <summary>
+            Creates a new instance of R2RMLConfiguration with empty R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.CreateTriplesMapFromTable(System.String)">
+            <summary>
+            Creates a Triples Map with physical table datasource and adds it to the R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.CreateTriplesMapFromR2RMLView(System.String)">
+            <summary>
+            Creates a Triples Map with R2RML view datasource and adds it to the R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.FluentR2RML.InitializeSubMapsFromCurrentGraph">
+            <summary>
+            Creates triples maps configuration objects for the current mapping file
+            </summary>
+            <remarks>Used in loading configuration from an exinsting graph</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.GraphReadOnly">
+            <summary>
+            Gets a copy of the mapping graph
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.SqlQueryBuilder">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.SqlVersionValidator">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.TriplesMaps">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.FluentR2RML.UsesNode">
+            <summary>
+            Always returns false
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration">
+            <summary>
+            Base fluent configuration of term maps (subject maps, predicate maps, graph maps or object maps) 
+            backed by a DotNetRDF graph (see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration"/>)
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration">
+            <summary>
+            Interface for creating configuration of term maps as described on http://www.w3.org/TR/r2rml/#term-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ITermMap">
+            <summary>
+            Represents a term map
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-term-map</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.Template">
+            <summary>
+            Gets template or null if absent
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.TermTypeURI">
+            <summary>
+            Gets the term type set with configuration
+            or a default value
+            </summary>
+            <remarks>Default value is described on http://www.w3.org/TR/r2rml/#dfn-term-type</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.ColumnName">
+            <summary>
+            Gets column or null if not set
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.InverseExpression">
+            <summary>
+            Gets the inverse expression associated with this <see cref="T:TCode.r2rml4net.Mapping.ITermMap"/> or null if not set
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#inverse</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.IsConstantValued">
+            <summary>
+            Gets a value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> 
+            is <a href="http://www.w3.org/TR/r2rml/#constant">constant valued</a>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.IsColumnValued">
+            <summary>
+            Gets a value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> 
+            is <a href="http://www.w3.org/TR/r2rml/#from-column">column valued</a>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.IsTemplateValued">
+            <summary>
+            Gets a value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> 
+            is <a href="http://www.w3.org/TR/r2rml/#from-template">template valued</a>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermMap.TermType">
+            <summary>
+            Gets <a href="http://www.w3.org/TR/r2rml/#term-map">term map's</a> 
+            <a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsConstantValued(System.Uri)">
+            <summary>
+            Sets the term map as constant-valued
+            </summary>
+            <param name="uri">Constant value URI</param>
+            <remarks>
+            Asserted using the rr:constant property described on http://www.w3.org/TR/r2rml/#constant
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsTemplateValued(System.String)">
+            <summary>
+            Sets the term map as template-values
+            </summary>
+            <param name="template">A valid template</param>
+            <remarks>
+            For details on templates read more on http://www.w3.org/TR/r2rml/#from-template
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.SetInverseExpression(System.String)">
+            <summary>
+            Sets the term map's inverse expression template
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#inverse</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.TermType">
+            <summary>
+            Gets the type of the term.
+            </summary>
+            <remarks>Please see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration"/> members for info on valid values for different term maps</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration">
+            <summary>
+            Interface for setting term map's term type. More info on http://www.w3.org/TR/r2rml/#dfn-term-type
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsBlankNode">
+            <summary>
+            Sets Term Map's term type to blank node. Throws an exception if term map is a graph map or a predicate map
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsIRI">
+            <summary>
+            Sets Term Map's term type to uri node. Throws an exception if term map is a graph map or a predicate map
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITermTypeConfiguration.IsLiteral">
+            <summary>
+            Sets Term Map's term type to literal node.
+            </summary>
+            <remarks>Throws an exception if term map is not an object map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ITermType">
+            <summary>
+            Interface for class representing the <a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsURI">
+            <summary>
+            Gets a value indicating whether the term map's term type is rr:IRI
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsBlankNode">
+            <summary>
+            Gets a value indicating whether the term map's term type is rr:BlankNode
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITermType.IsLiteral">
+            <summary>
+            Gets a value indicating whether the term map's term type is rr:Literal
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.#ctor(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration,TCode.r2rml4net.Mapping.IMapBase,VDS.RDF.IGraph,VDS.RDF.INode)">
+            <summary>
+            Creates a new instance of <see cref="T:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsColumnValued(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion.IsColumnValued(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsConstantValued(System.Uri)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsTemplateValued(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.IsTemplateValued(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.SetInverseExpression(System.String)">
+            <summary>
+            Sets the inverse expression. <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITermMapConfiguration.SetInverseExpression(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsBlankNode">
+            <inheritdoc/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsIRI">
+            <inheritdoc/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsLiteral">
+            <inheritdoc/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateMapPropertyNode">
+            <summary>
+            Returns a term map property
+            </summary>
+            <returns>one of the following: rr:subjectMap, rr:objectMap, rr:propertyMap or rr:graphMap</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateShortcutPropertyNode">
+            <summary>
+            Returns a constant term shortcut property
+            </summary>
+            <returns>one of the following: rr:subject, rr:object, rr:property or rr:graph</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.AssertTermTypeNotSet">
+            <summary>
+            Checks wheather term type is already set
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.EnsureRelationWithParentMap">
+            <summary>
+            Ensures that <see cref="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ParentMapNode"/> and this <see cref="P:TCode.r2rml4net.Mapping.Fluent.BaseConfiguration.Node"/> are 
+            connected with the appropriate property
+            </summary>
+            <remarks>The two nodes will be connected by return value of <see cref="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateMapPropertyNode"/> method</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.CreateParentMapRelation">
+            <summary>
+            Creates relation with parent map (using rr:subjectMap, rr:objectMap, rr:propertyMap or rr:graphMap)
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ColumnName">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.Template">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TermType">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TermTypeURI">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.InverseExpression">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.IsURI">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TCode#r2rml4net#Mapping#ITermType#IsBlankNode">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.TCode#r2rml4net#Mapping#ITermType#IsLiteral">
+            <inheritdoc />
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ConstantValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ParentMapNode">
+            <summary>
+            Gets the parent node for the current term map
+            </summary>
+            <remarks>
+            Depending on the type the parent can be a triples map (for property-object maps, subject maps), 
+            property-object map (for object maps, property maps and graph maps)
+            or subject map (for graph maps)
+            </remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TermMapConfiguration.ExplicitTermType">
+            <summary>
+            Gets explicitly set term type
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion">
+            <summary>
+            Configuration of term maps, which cannot be of term type rr:Literal. See http://www.w3.org/TR/r2rml/#termtype
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.INonLiteralTermMapConfigutarion.IsColumnValued(System.String)">
+            <summary>
+            Sets term map to as column-valued
+            </summary>
+            <param name="columnName">column name</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IGraphMapConfiguration">
+            <summary>
+            Interface for creating configuration of graph maps as described on http://www.w3.org/TR/r2rml/#dfn-graph-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IGraphMap">
+            <summary>
+            Represents a graph map 
+            </summary>
+            <remarks>See more at http://www.w3.org/TR/r2rml/#dfn-graph-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IUriValuedTermMap">
+            <summary>
+            Represents a <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>, which can be URI valued
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IUriValuedTermMap.URI">
+            <summary>
+            Gets the URI
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IGraphMapParent">
+            <summary>
+            Marker interface to allow only <see cref="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration"/> and <see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/>
+            as parent for <see cref="T:TCode.r2rml4net.Mapping.Fluent.GraphMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IGraphMapParent.CreateGraphMap">
+            <summary>
+            Creates an attached <see cref="T:TCode.r2rml4net.Mapping.IGraphMap"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration">
+            <summary>
+            Configuration for term maps which can be of term-type rr:Literal. See http://www.w3.org/TR/r2rml/#termtype
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ILiteralTermMap">
+            <summary>
+            A literal term map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ILiteralTermMap.DataTypeURI">
+            <summary>
+            Gets the datatype URI of the RDF term generated from this term map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ILiteralTermMap.Language">
+            <summary>
+            Gets the language tag of the RDF term generated from this term map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ILiteralTermMap.Literal">
+            <summary>
+            Gets the literal value of the RDF term generated from this term map
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasDataType(System.Uri)">
+            <summary>
+            Sets the datatype of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasDataType(System.String)">
+            <summary>
+            Sets the datatype of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasLanguage(System.String)">
+            <summary>
+            Sets the language tag of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ILiteralTermMapConfiguration.HasLanguage(System.Globalization.CultureInfo)">
+            <summary>
+            Sets the language tag of the term map
+            </summary>
+            <remarks>language tag and datatype cannot be set simultaneously</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration">
+            <summary>
+            Configuration of object maps
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IObjectMap">
+            <summary>
+            Represents an object map
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-object-map</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IObjectMap.URI">
+            <summary>
+            Gets constant object URI or null if absent
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration.IsConstantValued(System.String)">
+            <summary>
+            Sets the object map as constant-valued
+            </summary>
+            <param name="literal">Constant value literal</param>
+            <remarks>
+            Asserted using the rr:constant property as described on http://www.w3.org/TR/r2rml/#constant
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IObjectMapConfiguration.IsColumnValued(System.String)">
+            <summary>
+            Sets the object map as column-valued
+            </summary>
+            <param name="columnName">Column name</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration">
+            <summary>
+            Configuration for predicate-object maps described on http://www.w3.org/TR/r2rml/#predicate-object-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IPredicateObjectMap">
+            <summary>
+            Represents a predicate-object map
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-predicate-object-map</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.ObjectMaps">
+            <summary>
+            Gets object maps associated with this <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.RefObjectMaps">
+            <summary>
+            Gets ref object maps associated with this <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.PredicateMaps">
+            <summary>
+            Gets predicate maps associated with this <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.GraphMaps">
+            <summary>
+            Gets graph maps associated with this <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreateObjectMap">
+            <summary>
+            Creates a new object map
+            </summary>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many object maps</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreatePredicateMap">
+            <summary>
+            Creates a new predicate map
+            </summary>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many predicate maps</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration.CreateRefObjectMap(TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration)">
+            <summary>
+            Creates a new ref object map
+            </summary>
+            <remarks><see cref="T:TCode.r2rml4net.Mapping.Fluent.IPredicateObjectMapConfiguration"/> can have many ref object maps</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.IRefObjectMapConfiguration">
+            <summary>
+            Configuration for ref object maps described on http://www.w3.org/TR/r2rml/#dfn-referencing-object-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IRefObjectMap">
+            <summary>
+            Represents a RefObjectMap
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-referencing-object-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IQueryMap">
+            <summary>
+            Represents a map, which provides a SQL query
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IQueryMap.EffectiveSqlQuery">
+            <summary>
+            Gets the effective sql query of a <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/> or a <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.JoinConditions">
+            <summary>
+            Gets optional join conditions associated with this <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.ChildEffectiveSqlQuery">
+            <summary>
+            Gets effective sql query of the child triples map
+            </summary>
+            <remarks>http://www.w3.org/TR/r2rml/#foreign-key</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.ParentEffectiveSqlQuery">
+            <summary>
+            Gets effective sql query of the parent triples map
+            </summary>
+            <remarks>http://www.w3.org/TR/r2rml/#foreign-key</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.SubjectMap">
+            <summary>
+            Gets the referenced triples map's subject
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.PredicateObjectMap">
+            <summary>
+            Gets the parent predicate object map
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.IRefObjectMap.ParentTriplesMap">
+            <summary>
+            Gets the parent triples map.
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.IRefObjectMapConfiguration.AddJoinCondition(System.String,System.String)">
+            <summary>
+            Adds a join condition, which will be used to join logical tables
+            </summary>
+            <param name="childColumn">column name that exists in the logical table of the triples map that contains the referencing object map</param>
+            <param name="parentColumn">column name that exists in the logical table of the referencing object map's parent triples map</param>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration">
+            <summary>
+            Interface for creating configuration of subject maps as described on http://www.w3.org/TR/r2rml/#subject-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ISubjectMap">
+            <summary>
+            Represents a subject map
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-subject-map</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ISubjectMap.GraphMaps">
+            <summary>
+            Gets the graph maps associated with this <see cref="T:TCode.r2rml4net.Mapping.ISubjectMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ISubjectMap.Classes">
+            <summary>
+            Gets all classes added to this <see cref="T:TCode.r2rml4net.Mapping.ISubjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration.AddClass(System.Uri)">
+            <summary>
+            Adds a class definition to subject map. A subject map can have many classes which will be used to construct
+            triples for each RDF term as described on http://www.w3.org/TR/r2rml/#typing
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration">
+            <summary>
+            Configuration of the Triples Map graph as described on http://www.w3.org/TR/r2rml/#triples-map
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.ITriplesMap">
+            <summary>
+            Represents a triples map
+            </summary>
+            <remarks>See more at http://www.w3.org/TR/r2rml/#dfn-triples-map</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.PredicateObjectMaps">
+            <summary>
+            Gets predicate-object maps associated with this <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.SubjectMap">
+            <summary>
+            Gets the subject map associated with this <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.TableName">
+            <summary>
+            Gets the name of the table view which is source for triples
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#physical-tables</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlQuery">
+            <summary>
+            Gets the query, which will be used as source for triples
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#r2rml-views</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlVersions">
+            <summary>
+            Gets the URIs of SQL versions set for the logical table
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.CreatePropertyObjectMap">
+            <summary>
+            Adds a property-object map, which is used together with subject map to create complete triples\r\n
+            from logical rows as described on http://www.w3.org/TR/r2rml/#predicate-object-map
+            <remarks>Triples map can contain many property-object maps</remarks>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.R2RMLConfiguration">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.Mapping.Fluent.IR2RMLConfiguration"/> containing this <see cref="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.Uri">
+            <summary>
+            Gets the <see cref="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.Uri"/> of the triples map represented by this instance
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.SubjectMap">
+            <summary>
+            Gets the subject map.
+            </summary>
+            <remarks>
+            Triples map must contain exactly one subject map
+            </remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration">
+            <summary>
+            Configuration of Triples Map, which source is a R2RML View as described on http://www.w3.org/TR/r2rml/#r2rml-views
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration.SetSqlVersion(System.Uri)">
+            <summary>
+            Sets the sql query to be conformat with a specific SQL language specification
+            </summary>
+            <param name="uri">Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapFromR2RMLViewConfiguration.SetSqlVersion(System.String)">
+            <summary>
+            Sets the sql query to be conformant with a specific SQL language specification
+            </summary>
+            <param name="uri">String representation of the sql version URI. Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ObjectMapConfiguration.TermTypeURI">
+            <summary>
+            Overriden, because object maps can be of term type rr:Literal
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.ObjectMapConfiguration.IsLiteralTermType">
+            <summary>
+            Gets a value indicating whether the term is of term type literal.
+            </summary>
+            <exception cref="T:TCode.r2rml4net.Exceptions.InvalidMapException">Object map cannot have both a rr:language and rr:datatype properties set</exception>
+            <remarks>
+            See http://www.w3.org/TR/r2rml/#termtype
+            </remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.IPredicateMap">
+            <summary>
+            Represents a predicate map
+            </summary>
+            <remarks>See more on http://www.w3.org/TR/r2rml/#dfn-predicate-map</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader">
+            <summary>
+            Class for loading existing R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader.Load(System.String)">
+            <summary>
+            Loads R2RML mappings from a string
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.R2RMLLoader.Load(System.IO.Stream)">
+            <summary>
+            Loads R2RML mappings from a stream
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration">
+            <summary>
+            Fluent configuration of subject map backed by a DotNetRDF graph (see <see cref="T:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration"/>)
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.CreateGraphMap">
+            <inheritdoc/>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.AddClass(System.Uri)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ISubjectMapConfiguration.AddClass(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.CreateMapPropertyNode">
+            <summary>
+            Returns rr:subjectMap
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.Classes">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.URI">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.SubjectMapConfiguration.GraphMaps">
+            <inheritdoc/>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration">
+            <summary>
+            Implementation of fluent configuration interface for <a href="http://www.w3.org/TR/r2rml/#triples-map">Triples Maps</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.CreatePropertyObjectMap">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.ITriplesMapConfiguration.CreatePropertyObjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.Uri)">
+            <summary>
+            Asserts this Triples Map's SQL query as a query of type defined by <paramref name="uri"/> parmeter
+            </summary>
+            <param name="uri">Usually on of the URIs listed on http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs </param>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.String)">
+            <summary>
+            <see cref="M:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SetSqlVersion(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlQuery">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.Uri">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TCode#r2rml4net#Mapping#Fluent#ITriplesMapConfiguration#SubjectMap">
+            <inheritdoc/>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.EffectiveSqlQuery">
+            <summary>
+            Gets the effective sql query based on <see cref="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.TableName"/> or <see cref="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlQuery"/>
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-effective-sql-query, http://www.w3.org/TR/r2rml/#physical-tables and http://www.w3.org/TR/r2rml/#r2rml-views</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.Fluent.TriplesMapConfiguration.SqlVersions">
+            <inheritdoc/>
+        </member>
+        <member name="T:TCode.r2rml4net.Mapping.JoinCondition">
+            <summary>
+            An optional join condition between triple maps
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-join-condition</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.Mapping.JoinCondition.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.Mapping.JoinCondition"/> struct.
+            </summary>
+            <param name="childColumn">See http://www.w3.org/TR/r2rml/#dfn-child-column</param>
+            <param name="parentColumn">See http://www.w3.org/TR/r2rml/#dfn-parent-column</param>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.JoinCondition.ChildColumn">
+            <summary>
+            Gets the child column, which will be used to create joins between logical tables
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-joint-sql-query</remarks>
+        </member>
+        <member name="P:TCode.r2rml4net.Mapping.JoinCondition.ParentColumn">
+            <summary>
+            Gets the parent column, which will be used to create joins between logical tables
+            </summary>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#dfn-joint-sql-query</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ColumnCollection">
+            <summary>
+            Represents a collection of columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnCollection.GetEnumerator">
+            <summary>
+            Implementation of <see cref="T:System.Collections.Generic.IEnumerable`1"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Implementation of <see cref="T:System.Collections.Generic.IEnumerable`1"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnCollection.Add(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Implemented to allow collection initialization
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnCollection.ColumnsCount">
+            <summary>
+            Gets the table's columns count
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnCollection.Item(System.String)">
+            <summary>
+            Gets the column with the specified name
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper">
+            <summary>
+            A wrapper for <see cref="T:System.Data.IDataRecord"/>, which ensures thate passed column name is undelimited
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.#ctor(System.Data.IDataRecord)">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper"/>&gt;
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetName(System.Int32)">
+            <summary>
+            Gets the name for the field to find.
+            </summary>
+            <returns>
+            The name of the field or the empty string (""), if there is no value to return.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetDataTypeName(System.Int32)">
+            <summary>
+            Gets the data type information for the specified field.
+            </summary>
+            <returns>
+            The data type information for the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetFieldType(System.Int32)">
+            <summary>
+            Gets the <see cref="T:System.Type"/> information corresponding to the type of <see cref="T:System.Object"/> 
+            that would be returned from <see cref="M:System.Data.IDataRecord.GetValue(System.Int32)"/>.
+            </summary>
+            <returns>
+            The <see cref="T:System.Type"/> information corresponding to the type of <see cref="T:System.Object"/> 
+            that would be returned from <see cref="M:System.Data.IDataRecord.GetValue(System.Int32)"/>.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetValues(System.Object[])">
+            <summary>
+            Populates an array of objects with the column values of the current record.
+            </summary>
+            <returns>
+            The number of instances of <see cref="T:System.Object"/> in the array.
+            </returns>
+            <param name="values">An array of <see cref="T:System.Object"/> to copy the attribute fields into. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetValue(System.Int32)">
+            <summary>
+            Return the value of the specified field.
+            </summary>
+            <returns>
+            The <see cref="T:System.Object"/> which will contain the field value upon return.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetOrdinal(System.String)">
+            <summary>
+            Return the index of the named field.
+            </summary>
+            <returns>
+            The index of the named field.
+            </returns>
+            <param name="name">The name of the field to find. </param>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetBoolean(System.Int32)">
+            <summary>
+            Gets the value of the specified column as a Boolean.
+            </summary>
+            <returns>
+            The value of the column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetByte(System.Int32)">
+            <summary>
+            Gets the 8-bit unsigned integer value of the specified column.
+            </summary>
+            <returns>
+            The 8-bit unsigned integer value of the specified column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetBytes(System.Int32,System.Int64,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of bytes from the specified column offset into the buffer as an array, starting at the given buffer offset.
+            </summary>
+            <returns>
+            The actual number of bytes read.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <param name="fieldOffset">The index within the field from which to start the read operation. </param>
+            <param name="buffer">The buffer into which to read the stream of bytes. </param>
+            <param name="bufferoffset">The index for <paramref name="buffer"/> to start the read operation. </param>
+            <param name="length">The number of bytes to read. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetChar(System.Int32)">
+            <summary>
+            Gets the character value of the specified column.
+            </summary>
+            <returns>
+            The character value of the specified column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetChars(System.Int32,System.Int64,System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of characters from the specified column offset into the buffer as an array, starting at the given buffer offset.
+            </summary>
+            <returns>
+            The actual number of characters read.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <param name="fieldoffset">The index within the row from which to start the read operation. </param>
+            <param name="buffer">The buffer into which to read the stream of bytes. </param>
+            <param name="bufferoffset">The index for <paramref name="buffer"/> to start the read operation. </param>
+            <param name="length">The number of bytes to read. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetGuid(System.Int32)">
+            <summary>
+            Returns the GUID value of the specified field.
+            </summary>
+            <returns>
+            The GUID value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetInt16(System.Int32)">
+            <summary>
+            Gets the 16-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 16-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetInt32(System.Int32)">
+            <summary>
+            Gets the 32-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 32-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetInt64(System.Int32)">
+            <summary>
+            Gets the 64-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 64-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetFloat(System.Int32)">
+            <summary>
+            Gets the single-precision floating point number of the specified field.
+            </summary>
+            <returns>
+            The single-precision floating point number of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetDouble(System.Int32)">
+            <summary>
+            Gets the double-precision floating point number of the specified field.
+            </summary>
+            <returns>
+            The double-precision floating point number of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetString(System.Int32)">
+            <summary>
+            Gets the string value of the specified field.
+            </summary>
+            <returns>
+            The string value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetDecimal(System.Int32)">
+            <summary>
+            Gets the fixed-position numeric value of the specified field.
+            </summary>
+            <returns>
+            The fixed-position numeric value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetDateTime(System.Int32)">
+            <summary>
+            Gets the date and time data value of the specified field.
+            </summary>
+            <returns>
+            The date and time data value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.GetData(System.Int32)">
+            <summary>
+            Returns an <see cref="T:System.Data.IDataReader"/> for the specified column ordinal.
+            </summary>
+            <returns>
+            An <see cref="T:System.Data.IDataReader"/>.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.IsDBNull(System.Int32)">
+            <summary>
+            Return whether the specified field is set to null.
+            </summary>
+            <returns>
+            true if the specified field is set to null; otherwise, false.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.FieldCount">
+            <summary>
+            Gets the number of columns in the current row.
+            </summary>
+            <returns>
+            When not positioned in a valid recordset, 0; otherwise, the number of columns in the current record. The default is -1.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.Item(System.Int32)">
+            <summary>
+            Gets the column located at the specified index.
+            </summary>
+            <returns>
+            The column located at the specified index as an <see cref="T:System.Object"/>.
+            </returns>
+            <param name="i">The zero-based index of the column to get. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.UndelimitedColumnsDataRecordWrapper.Item(System.String)">
+            <summary>
+            Gets the column with the specified name.
+            </summary>
+            <returns>
+            The column with the specified name as an <see cref="T:System.Object"/>.
+            </returns>
+            <param name="name">The name of the column to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ColumnMetadata">
+            <summary>
+            Represents a column from a relational database
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnMetadata.Accept(TCode.r2rml4net.RDB.IDatabaseMetadataVisitor)">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.IVistitable`1"/>. Only visits this
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnMetadata.Name">
+            <summary>
+            Gets the column name
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnMetadata.Type">
+            <summary>
+            Gets the .NET column <see cref="P:TCode.r2rml4net.RDB.ColumnMetadata.Type"/> as mapped in ADO.NET
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnMetadata.NativeType">
+            <summary>
+            Gets the native column type as declared in the source RDBMS
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnMetadata.Table">
+            <summary>
+            Gets the <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/>, which contains this column
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnMetadata.IsPrimaryKey">
+            <summary>
+            Gets a value indicating whether this column is (part of) the primary key
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.MSSQLServerColumTypeMapper">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper"/> which maps Microsoft SQL Server datatypes
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper">
+            <summary>
+            Maps database column types to a member of <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/> enumeration
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper.GetColumnTypeFromColumn(DatabaseSchemaReader.DataSchema.DataType)">
+            <summary>
+            Gets a literal type supported by R2RML equivalent to column's type
+            </summary>
+            <param name="dataType">Column <see cref="T:DatabaseSchemaReader.DataSchema.DataType"/></param>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.MSSQLServerColumTypeMapper.GetColumnTypeFromColumn(DatabaseSchemaReader.DataSchema.DataType)">
+            <summary>
+            Gets a member of <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/> enumeration for a given MS SQL Server <see cref="T:DatabaseSchemaReader.DataSchema.DataType"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.RDB.IDatabaseMetadata"/> using <a href="http://dbschemareader.codeplex.com/">Database Schema Reader project</a>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.IDatabaseMetadata">
+            <summary>
+            Interface for reading and accessing structure of a relational database such as MSSQL, MySQL, Oracle etc.
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.IDatabaseMetadata.Tables">
+            <summary>
+            Gets the collecion of tables contained by the current database
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter.#ctor(DatabaseSchemaReader.IDatabaseReader,TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter"/> class.
+            </summary>
+            <param name="reader">A <see cref="T:DatabaseSchemaReader.DatabaseReader"/> initialized for reading a desired database type</param>
+            <param name="columnTypeMapper">Implementation of <see cref="T:TCode.r2rml4net.RDB.DatabaseSchemaReader.IColumnTypeMapper"/> 
+            responsible for transforming column type read by <see cref="T:DatabaseSchemaReader.DatabaseReader"/> to <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/></param>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.DatabaseSchemaReader.DatabaseSchemaAdapter.Tables">
+            <summary>
+            Gets all tables from the database schema
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ISqlQueryBuilder">
+            <summary>
+            Contract for classes building effective sql queries for <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/> and <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ISqlQueryBuilder.GetEffectiveQueryForTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap)">
+            <summary>
+            Gets effective sql query based on <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.TableName"/> or <see cref="P:TCode.r2rml4net.Mapping.ITriplesMap.SqlQuery"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ISqlQueryBuilder.GetEffectiveQueryForRefObjectMap(TCode.r2rml4net.Mapping.IRefObjectMap)">
+            <summary>
+            Gets effective sql query based on parent/child <see cref="P:TCode.r2rml4net.Mapping.IQueryMap.EffectiveSqlQuery"/> maps and <see cref="P:TCode.r2rml4net.Mapping.IRefObjectMap.JoinConditions"/> (if any)
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ISqlQueryBuilder.GetR2RMLViewForJoinedTables(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Gets the SQL query for tables joined by candidate key where the parent table has a primary key
+            </summary>
+            <param name="table">child table</param>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.R2RMLType">
+            <summary>
+            Enumeration of types valid for mapping to RDF
+            </summary>
+            <remarks>Refer to each enum member for corresponding Core SQL 2008 types. 
+            Note that for each non-standard RDBMS implementation there may be other types or they may have different meaning</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Undefined">
+            <summary>
+            An undefined SQL type. Values will be interpreted as string literals
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.String">
+            <summary>
+            Any string type 
+            </summary>
+            <remarks>In Core SQL 2008: CHARACTER, CHARACTER VARYING, CHARACTER LARGE OBJECT, 
+            NATIONAL CHARACTER, NATIONAL CHARACTER VARYING, NATIONAL CHARACTER LARGE OBJECT</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Binary">
+            <summary>
+            A binary type
+            </summary>
+            <remarks>In Core SQL 2008: BINARY, BINARY VARYING, BINARY LARGE OBJECT</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.FloatingPoint">
+            <summary>
+            A floating point type
+            </summary>
+            <remarks>In Core SQL 2008: FLOAT, REAL, DOUBLE PRECISION</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Integer">
+            <summary>
+            An integer type
+            </summary>
+            <remarks>In Core SQL 2008: SMALLINT, INTEGER, BIGINT</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Boolean">
+            <summary>
+            A boolean type
+            </summary>
+            <remarks>In Core SQL 2008: BOOLEAN</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Date">
+            <summary>
+            A date type
+            </summary>
+            <remarks>In Core SQL 2008: DATE</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Time">
+            <summary>
+            A time type
+            </summary>
+            <remarks>In Core SQL 2008: TIME</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.DateTime">
+            <summary>
+            A datetime type
+            </summary>
+            <remarks>In Core SQL 2008: DATETIME</remarks>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.R2RMLType.Decimal">
+            <summary>
+            A decimal type
+            </summary>
+            <remarks>In Core SQL 2008: NUMERIC, DECIMAL</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ForeignKeyMetadata">
+            <summary>
+            Represents a foreign key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.TableName">
+            <summary>
+            Gets the table containing this foreign key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.ForeignKeyColumns">
+            <summary>
+            Gets the foreign key column
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.ReferencedTable">
+            <summary>
+            Gets the referenced table
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.ReferencedColumns">
+            <summary>
+            Gets the referenced columns
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.IsCandidateKeyReference">
+            <summary>
+            Gets a value indicating whether the referenced columns do not form a primary key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ForeignKeyMetadata.ReferencedTableHasPrimaryKey">
+            <summary>
+            Gets a value indicating whether the referenced table has primary key
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.TableCollection">
+            <summary>
+            Implementation od <see cref="T:System.Collections.Generic.List`1"/> and <see cref="T:TCode.r2rml4net.IVistitable`1"/> representing a group of tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.TableCollection.Accept(TCode.r2rml4net.RDB.IDatabaseMetadataVisitor)">
+            <summary>
+            Visits self and all contained tables
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.TableCollection.GetEnumerator">
+            <summary>
+            Gets enumerator for <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableCollection.Count">
+            <summary>
+            Gets the table count
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableCollection.Item(System.String)">
+            <summary>
+            Gets the table with the specified name
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.TableMetadata">
+            <summary>
+            Represents a table from a relational database
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.TableMetadata.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.RDB.TableMetadata"/> class.
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.TableMetadata.Accept(TCode.r2rml4net.RDB.IDatabaseMetadataVisitor)">
+            <summary>
+            Visits self and contained columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.TableMetadata.Add(TCode.r2rml4net.RDB.ColumnMetadata)">
+            <summary>
+            Adds a column to table
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableMetadata.UniqueKeys">
+            <summary>
+            Gets the collection of table's unique keys
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableMetadata.Name">
+            <summary>
+            Gets the table name
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableMetadata.PrimaryKey">
+            <summary>
+            Gets the primary key column (or columns in case of composite key)
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.TableMetadata.ForeignKeys">
+            <summary>
+            Gets all the foreign keys
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.UniqueKeyCollection">
+            <summary>
+            Represents a collection of unique keys
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UniqueKeyCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>1</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UniqueKeyCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.UniqueKeyCollection.Add(TCode.r2rml4net.RDB.UniqueKeyMetadata)">
+            <summary>
+            Adds a unique key to the collection
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.UniqueKeyMetadata">
+            <summary>
+            Class representing a unique key
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.UniqueKeyMetadata.IsReferenced">
+            <summary>
+            Gets a value indicating whether the unique key is referenced by a foreign key
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.W3CSqlQueryBuilder">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.RDB.ISqlQueryBuilder"/>, which returns effective sql query as described on R2RML specifications page
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:TCode.r2rml4net.RDB.W3CSqlQueryBuilder"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.GetEffectiveQueryForTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap)">
+            <summary>
+            Gets effective sql query based on table name or sql view
+            </summary>
+            <returns>SQL query string</returns>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-effective-sql-query, 
+            http://www.w3.org/TR/r2rml/#physical-tables and http://www.w3.org/TR/r2rml/#r2rml-views</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.GetEffectiveQueryForRefObjectMap(TCode.r2rml4net.Mapping.IRefObjectMap)">
+            <summary>
+            Gets effective sql query based on parent/child triples maps and join conditions (if any)
+            </summary>
+            <returns>SQL query string</returns>
+            <remarks>See http://www.w3.org/TR/r2rml/#foreign-key</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.GetR2RMLViewForJoinedTables(TCode.r2rml4net.RDB.TableMetadata)">
+            <summary>
+            Gets the SQL query for tables joined by candidate key where the parent table has a primary key
+            </summary>
+            <param name="table">child table</param>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.W3CSqlQueryBuilder.SqlVersionValidator">
+            <summary>
+            Gets or sets the SQL version validator.
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.BlankNodeReplaceHandler.HandleTripleInternal(VDS.RDF.Triple)">
+            <summary>
+            Must be overridden by derived handlers to take appropriate Triple handling action
+            </summary>
+            <param name="t">Triple</param>
+        </member>
+        <member name="P:TCode.r2rml4net.RDF.BlankNodeReplaceHandler.AcceptsAll">
+            <summary>
+            Gets whether the Handler will accept all Triples i.e. it will never abort handling early
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDF.TripleExtensions">
+            <summary>
+            Extension methods for <see cref="T:VDS.RDF.Triple"/> class
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.TripleExtensions.CloneTriple(VDS.RDF.Triple,VDS.RDF.INode,VDS.RDF.INode,VDS.RDF.INode,VDS.RDF.IGraph,System.Uri)">
+            <summary>
+            Clone a triple and optionally replace <see cref="P:VDS.RDF.Triple.Subject"/>, <see cref="P:VDS.RDF.Triple.Predicate"/>, 
+            <see cref="P:VDS.RDF.Triple.Object"/> or <see cref="P:VDS.RDF.Triple.Graph"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDF.XsdDatatypes">
+            <summary>
+            Types used by R2RML mappings as described on http://www.w3.org/TR/r2rml/#natural-mapping
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Integer">
+            <summary>
+            Gets full URI string for xsd:integer
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Boolean">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#boolean
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Decimal">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#decimal
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Double">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#double
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Date">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#date
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Time">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#time
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.DateTime">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#dateTime
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDF.XsdDatatypes.Binary">
+            <summary>
+            http://www.w3.org/2001/XMLSchema#hexBinary
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.XsdDatatypes.GetDataType(TCode.r2rml4net.RDB.R2RMLType)">
+            <summary>
+            Get a xsd type URI for the given <see cref="T:TCode.r2rml4net.RDB.R2RMLType"/>
+            </summary>
+            <returns>a URI or null for string/undefined type</returns>
+            <remarks>Read more on http://www.w3.org/TR/r2rml/#natural-mapping</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord">
+            <summary>
+            A wrapper for <see cref="T:System.Data.IDataRecord"/>, which makes it possible to access it as if it contained
+            only first N columns or all but first N columns
+            </summary>
+            <remarks>This is implemented as part of the algorithm described in 
+            <a href="http://www.w3.org/TR/r2rml/#generated-triples">11.1 section of R2RML specification</a></remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.#ctor(System.Data.IDataRecord,System.Int32,TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.ColumnLimitType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord"/> class.
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetName(System.Int32)">
+            <summary>
+            Gets the name for the field to find.
+            </summary>
+            <returns>
+            The name of the field or the empty string (""), if there is no value to return.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetDataTypeName(System.Int32)">
+            <summary>
+            Gets the data type information for the specified field.
+            </summary>
+            <returns>
+            The data type information for the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetFieldType(System.Int32)">
+            <summary>
+            Gets the <see cref="T:System.Type"/> information corresponding to the type of <see cref="T:System.Object"/> 
+            that would be returned from <see cref="M:System.Data.IDataRecord.GetValue(System.Int32)"/>.
+            </summary>
+            <returns>
+            The <see cref="T:System.Type"/> information corresponding to the type of <see cref="T:System.Object"/> 
+            that would be returned from <see cref="M:System.Data.IDataRecord.GetValue(System.Int32)"/>.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetValue(System.Int32)">
+            <summary>
+            Return the value of the specified field.
+            </summary>
+            <returns>
+            The <see cref="T:System.Object"/> which will contain the field value upon return.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetValues(System.Object[])">
+            <summary>
+            Populates an array of objects with the column values of the current record.
+            </summary>
+            <returns>
+            The number of instances of <see cref="T:System.Object"/> in the array.
+            </returns>
+            <param name="values">An array of <see cref="T:System.Object"/> to copy the attribute fields into. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetOrdinal(System.String)">
+            <summary>
+            Return the index of the named field.
+            </summary>
+            <returns>
+            The index of the named field.
+            </returns>
+            <param name="name">The name of the field to find. </param><filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetBoolean(System.Int32)">
+            <summary>
+            Gets the value of the specified column as a Boolean.
+            </summary>
+            <returns>
+            The value of the column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetByte(System.Int32)">
+            <summary>
+            Gets the 8-bit unsigned integer value of the specified column.
+            </summary>
+            <returns>
+            The 8-bit unsigned integer value of the specified column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param
+            ><exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetBytes(System.Int32,System.Int64,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of bytes from the specified column offset into the buffer as an array, starting at the given buffer offset.
+            </summary>
+            <returns>
+            The actual number of bytes read.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <param name="fieldOffset">The index within the field from which to start the read operation. </param>
+            <param name="buffer">The buffer into which to read the stream of bytes. </param>
+            <param name="bufferoffset">The index for <paramref name="buffer"/> to start the read operation. </param>
+            <param name="length">The number of bytes to read. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetChar(System.Int32)">
+            <summary>
+            Gets the character value of the specified column.
+            </summary>
+            <returns>
+            The character value of the specified column.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetChars(System.Int32,System.Int64,System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of characters from the specified column offset into the buffer as an array, starting at the given buffer offset.
+            </summary>
+            <returns>
+            The actual number of characters read.
+            </returns>
+            <param name="i">The zero-based column ordinal. </param>
+            <param name="fieldoffset">The index within the row from which to start the read operation. </param>
+            <param name="buffer">The buffer into which to read the stream of bytes. </param>
+            <param name="bufferoffset">The index for <paramref name="buffer"/> to start the read operation. </param>
+            <param name="length">The number of bytes to read. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetGuid(System.Int32)">
+            <summary>
+            Returns the GUID value of the specified field.
+            </summary>
+            <returns>
+            The GUID value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetInt16(System.Int32)">
+            <summary>
+            Gets the 16-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 16-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetInt32(System.Int32)">
+            <summary>
+            Gets the 32-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 32-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetInt64(System.Int32)">
+            <summary>
+            Gets the 64-bit signed integer value of the specified field.
+            </summary>
+            <returns>
+            The 64-bit signed integer value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetFloat(System.Int32)">
+            <summary>
+            Gets the single-precision floating point number of the specified field.
+            </summary>
+            <returns>
+            The single-precision floating point number of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetDouble(System.Int32)">
+            <summary>
+            Gets the double-precision floating point number of the specified field.
+            </summary>
+            <returns>
+            The double-precision floating point number of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetString(System.Int32)">
+            <summary>
+            Gets the string value of the specified field.
+            </summary>
+            <returns>
+            The string value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetDecimal(System.Int32)">
+            <summary>
+            Gets the fixed-position numeric value of the specified field.
+            </summary>
+            <returns>
+            The fixed-position numeric value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetDateTime(System.Int32)">
+            <summary>
+            Gets the date and time data value of the specified field.
+            </summary>
+            <returns>
+            The date and time data value of the specified field.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the 
+            range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.GetData(System.Int32)">
+            <summary>
+            Returns an <see cref="T:System.Data.IDataReader"/> for the specified column ordinal.
+            </summary>
+            <returns>
+            An <see cref="T:System.Data.IDataReader"/>.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.IsDBNull(System.Int32)">
+            <summary>
+            Return whether the specified field is set to null.
+            </summary>
+            <returns>
+            true if the specified field is set to null; otherwise, false.
+            </returns>
+            <param name="i">The index of the field to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.FieldCount">
+            <summary>
+            Gets the number of columns in the current row.
+            </summary>
+            <returns>
+            When not positioned in a valid recordset, 0; otherwise, the number of columns in the current record. The default is -1.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.System#Data#IDataRecord#Item(System.Int32)">
+            <summary>
+            Gets the column located at the specified index.
+            </summary>
+            <returns>
+            The column located at the specified index as an <see cref="T:System.Object"/>.
+            </returns>
+            <param name="i">The zero-based index of the column to get. </param>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through 
+            <see cref="P:System.Data.IDataRecord.FieldCount"/>. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.System#Data#IDataRecord#Item(System.String)">
+            <summary>
+            Gets the column with the specified name.
+            </summary>
+            <returns>
+            The column with the specified name as an <see cref="T:System.Object"/>.
+            </returns>
+            <param name="name">The name of the column to find. </param>
+            <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found. </exception>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.ColumnLimitType">
+            <summary>
+            Type of constraining the <see cref="T:System.Data.IDataRecord"/>
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.ColumnLimitType.FirstNColumns">
+            <summary>
+            Filter <see cref="T:System.Data.IDataRecord"/> to only return first N columns
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.RDB.ColumnConstrainedDataRecord.ColumnLimitType.AllButFirstNColumns">
+            <summary>
+            Filter <see cref="T:System.Data.IDataRecord"/> to return all but first N columns
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.BlankNodeSubjectReplaceHandler.HandleTripleInternal(VDS.RDF.Triple)">
+            <summary>
+            Must be overridden by derived handlers to take appropriate Triple handling action
+            </summary>
+            <param name="t">Triple</param>
+        </member>
+        <member name="P:TCode.r2rml4net.RDF.BlankNodeSubjectReplaceHandler.AcceptsAll">
+            <summary>
+            Gets whether the Handler will accept all Triples i.e. it will never abort handling early
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.MappingScope">
+            <summary>
+            A thread-static scope, which allow changing mapping options for a given time
+            </summary>
+            <remarks>
+            See http://msdn.microsoft.com/en-us/magazine/cc300805.aspx
+            </remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingScope.#ctor(TCode.r2rml4net.MappingOptions)">
+            <summary>
+            Creates a new instance of <see cref="T:TCode.r2rml4net.MappingScope"/> with a given set of options
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.MappingScope.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.ISQLValuesMappingStrategy">
+            <summary>
+            Strategy for mapping SQL column values to RDF datatypes
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.ISQLValuesMappingStrategy.GetLexicalForm(System.Int32,System.Data.IDataRecord,System.Uri@)">
+            <summary>
+            Gets the column value's lexical form and it's RDF datatype URI
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.IPredicateObjectMapProcessor">
+            <summary>
+            Interface for classes which process <see cref="T:TCode.r2rml4net.Mapping.IPredicateObjectMap"/> in order to generate RDF triples
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.IPredicateObjectMapProcessor.ProcessPredicateObjectMap(VDS.RDF.INode,TCode.r2rml4net.Mapping.IPredicateObjectMap,System.Collections.Generic.IEnumerable{VDS.RDF.IUriNode},System.Data.IDataRecord,VDS.RDF.IRdfHandler)">
+            <summary>
+            Processes the <paramref name="predicateObjectMap"/> and asserts triples for the cartesian of terms generated for
+            <paramref name="subject"/>, <see cref="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.PredicateMaps"/>, <see cref="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.ObjectMaps"/>
+            and a union of <see cref="P:TCode.r2rml4net.Mapping.IPredicateObjectMap.GraphMaps"/> and <paramref name="subjectGraphs"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator">
+            <summary>
+            Interface for generating RDF terms (<see cref="T:VDS.RDF.INode"/>s) for term maps
+            </summary>
+            <remarks>see http://www.w3.org/TR/r2rml/#dfn-generated-rdf-term</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator.GenerateTerm``1(TCode.r2rml4net.Mapping.ITermMap,System.Data.IDataRecord)">
+            <summary>
+            Generates RDF term for the given <see cref="T:TCode.r2rml4net.Mapping.ITermMap"/> by applying to the <paramref name="logicalRow"/>
+            </summary>
+            <remarks>see http://www.w3.org/TR/r2rml/#dfn-generated-rdf-term</remarks>
+            <returns>an RDF term (<see cref="T:VDS.RDF.INode"/>)</returns>
+            <typeparam name="TNodeType">the type of node</typeparam>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.IR2RMLProcessor">
+            <summary>
+            Interface for generating triples from R2RML mappings
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.IRdfHandler)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and processes them with the given <see cref="T:VDS.RDF.IRdfHandler"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and returns the generated dataset
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.IR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.ITripleStore)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and adds the generated triples to the given <see cref="T:VDS.RDF.ITripleStore"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RMLProcessor.Success">
+            <summary>
+            Gets a value indicating whether generating triples had no errors
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.IR2RMLProcessor.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.IRefObjectMapProcessor">
+            <summary>
+            Interface for classes which process <see cref="T:TCode.r2rml4net.Mapping.IRefObjectMap"/>s in order to generate RDF triples
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.IRefObjectMapProcessor.ProcessRefObjectMap(TCode.r2rml4net.Mapping.IRefObjectMap,TCode.r2rml4net.Mapping.ISubjectMap,System.Data.IDbConnection,System.Int32,VDS.RDF.IRdfHandler)">
+            <summary>
+            Retrieves source data using the given <paramref name="dbConnection"/> and processes <paramref name="refObjectMap"/>
+            to transform that data to RDF triples
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor">
+            <summary>
+            Interface for classes which process <see cref="T:TCode.r2rml4net.Mapping.ITriplesMap"/>s in order to generate RDF triples
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor.ProcessTriplesMap(TCode.r2rml4net.Mapping.ITriplesMap,System.Data.IDbConnection,VDS.RDF.IRdfHandler)">
+            <summary>
+            Retrieves source data using the given <paramref name="connection"/> and processes <paramref name="triplesMap"/>
+            to transform that data to RDF triples
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.MapProcessorBase">
+            <summary>
+            Convenience base class for classes processing R2RML maps
+            </summary>
+        </member>
+        <member name="F:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.RrDefaultgraph">
+            <summary>
+            The rr:defaultGraph URI string
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.#ctor(TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator)">
+            <summary>
+            Creates an instance
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.AddTriplesToDataSet(VDS.RDF.INode,System.Collections.Generic.IEnumerable{VDS.RDF.IUriNode},System.Collections.Generic.IEnumerable{VDS.RDF.INode},System.Collections.Generic.IEnumerable{VDS.RDF.IUriNode},VDS.RDF.IRdfHandler)">
+            <summary>
+            Adds zero or more triples to the output dataset
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#dfn-add-triples</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.FetchLogicalRows(System.Data.IDbConnection,TCode.r2rml4net.Mapping.IQueryMap,System.Data.IDataReader@)">
+            <summary>
+            Reads a row of data from a relational database
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.AssertNoDuplicateColumnNames(System.Data.IDataRecord)">
+            <summary>
+            Ensure the data reader contains unique column names
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.AddTriplesToDataSet(VDS.RDF.INode,VDS.RDF.IUriNode,VDS.RDF.INode,System.Collections.Generic.IEnumerable{VDS.RDF.IUriNode},VDS.RDF.IRdfHandler)">
+            <summary>
+            Handle triple by inserting it to all <paramref name="graphs"/> using the <paramref name="rdfHandler"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.Log">
+            <summary>
+            Gets or sets the generation log
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.MapProcessorBase.TermGenerator">
+            <summary>
+            Gets the term generator.
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator">
+            <summary>
+            Default implementation of the <a href="http://www.w3.org/TR/r2rml/#dfn-generated-rdf-term">RDF term generation process</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.GenerateTerm``1(TCode.r2rml4net.Mapping.ITermMap,System.Data.IDataRecord)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.CreateNodeFromTemplate(TCode.r2rml4net.Mapping.ITermMap,System.Data.IDataRecord)">
+            <summary>
+            Create an RDF term for a <a href="http://www.w3.org/TR/r2rml/#from-template">template-valued</a> <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.CreateNodeFromConstant(TCode.r2rml4net.Mapping.ITermMap)">
+            <summary>
+            Create an RDF term for a <a href="http://www.w3.org/TR/r2rml/#constant">constant-valued</a> <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.CreateNodeFromColumn(TCode.r2rml4net.Mapping.ITermMap,System.Data.IDataRecord)">
+            <summary>
+            Create an RDF term for a <a href="http://www.w3.org/TR/r2rml/#from-column">column-valued</a> <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.ConstructAbsoluteUri(TCode.r2rml4net.Mapping.ITermMap,System.String)">
+            <summary>
+            Throws <see cref="T:TCode.r2rml4net.Exceptions.InvalidTermException"/> is uri contains any . or .. segments
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.SqlValuesMappingStrategy">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.TriplesGeneration.ISQLValuesMappingStrategy"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator.NodeFactory">
+            <summary>
+            Gets or sets the <see cref="T:VDS.RDF.INodeFactory"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.TriplesGeneration.ISQLValuesMappingStrategy"/>, which conforms to the
+            <a href="http://www.w3.org/TR/r2rml/#datatype-conversions">Datatype Conversions section of R2RML specification</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy"/> class.
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy.GetLexicalForm(System.Int32,System.Data.IDataRecord,System.Uri@)">
+            <summary>
+            Gets the column value's lexical form and it's RDF datatype URI
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy.GetMappedValue(System.Int32,System.Data.IDataRecord,System.Uri)">
+            <summary>
+            Gets a lexical form for column value and the given <paramref name="dataType"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.RDF.DefaultSQLValuesMappingStrategy.GetXsdUriForType(System.Type,System.String)">
+            <summary>
+            Gets XSD datatype URI for the given .NET <see cref="T:System.Type"/> and <paramref name="sqlTypeName"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.TriplesGeneration.W3CRefObjectMapProcessor">
+            <summary>
+            Default implementation of <see cref="T:TCode.r2rml4net.TriplesGeneration.IRefObjectMapProcessor"/> generating triples for joined triples maps
+            </summary>
+            <remarks>see http://www.w3.org/TR/r2rml/#generated-triples</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.W3CR2RMLProcessor">
+            <summary>
+            Base implementation of the triple generation algorithm suggested by R2RML specification. 
+            It should generate triples for all rows in all triples maps from the input R2RML mappings
+            </summary>
+            <remarks>See http://www.w3.org/TR/r2rml/#generated-rdf</remarks>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection)">
+            <summary>
+            Initializes an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which generates triples using the default <see cref="T:TCode.r2rml4net.TriplesGeneration.RDFTermGenerator"/>
+            and uses default RDF term generation and map processing algorithms
+            </summary>
+            <param name="connection">connection to datasource</param>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator)">
+            <summary>
+            Initializes an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which generates triples using the supplied <see cref="T:TCode.r2rml4net.TriplesGeneration.IRDFTermGenerator"/>
+            and uses default map processing algorithm
+            </summary>
+            <param name="connection">connection to datasource</param>
+            <param name="rdfTermGenerator">generator of <see cref="T:VDS.RDF.INode"/>s for subject maps, predicate maps, object maps and graph maps</param>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.#ctor(System.Data.IDbConnection,TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor)">
+            <summary>
+            Initializes an instance of <see cref="T:TCode.r2rml4net.W3CR2RMLProcessor"/> which processes triples maps with the supplied implementatioon of <see cref="T:TCode.r2rml4net.TriplesGeneration.ITriplesMapProcessor"/>
+            </summary>
+            <param name="connection">connection to datasource</param>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.IRdfHandler)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and processes them with the given <see cref="T:VDS.RDF.IRdfHandler"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and returns the generated dataset
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.GenerateTriples(TCode.r2rml4net.IR2RML,VDS.RDF.ITripleStore)">
+            <summary>
+            Generates triples from <paramref name="mappings"/> mappings and adds the generated triples to the given <see cref="T:VDS.RDF.ITripleStore"/>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.W3CR2RMLProcessor.Dispose">
+            <summary>
+            Disposes of the connection
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.W3CR2RMLProcessor.Success">
+            <summary>
+            Gets a value indicating whether generating triples had no errors
+            </summary>
+        </member>
+        <member name="P:TCode.r2rml4net.W3CR2RMLProcessor.Log">
+            <summary>
+            Gets or sets the <see cref="T:TCode.r2rml4net.Log.LogFacadeBase"/>
+            </summary>
+        </member>
+        <member name="T:TCode.r2rml4net.Validation.Bcp47RegexLanguageTagValidator">
+            <summary>
+            An implementation of <see cref="T:TCode.r2rml4net.Validation.ILanguageTagValidator"/>, which uses a regular expression
+            to check if the language tag is valid accoring to <a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+            </summary>
+            <remarks>see <a href="http://schneegans.de/lv/">http://schneegans.de/lv/</a> for more info</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Validation.SimpleLanguageTagValidator">
+            <summary>
+            A simple implementation, which looks the language tag up
+            in a graph extracted from <a href="http://www.lexvo.org/">Lexvo.org</a>
+            </summary>
+            <remarks>the graph is an embedded turtle file located in TCode.r2rml4net.DataSets.languages.ttl</remarks>
+        </member>
+        <member name="T:TCode.r2rml4net.Validation.ILanguageTagValidator">
+            <summary>
+            Interface for validating language tags
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Validation.ILanguageTagValidator.LanguageTagIsValid(System.String)">
+            <summary>
+            Check wheather the <paramref name="languageTag"/> is valid
+            </summary>
+            <returns>true if language tag is valid</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Validation.SimpleLanguageTagValidator.LanguageTagIsValid(System.String)">
+            <summary>
+            Check wheather the <paramref name="languageTag"/> is valid
+            </summary>
+            <returns>true if language tag is valid</returns>
+        </member>
+        <member name="M:TCode.r2rml4net.Validation.Bcp47RegexLanguageTagValidator.LanguageTagIsValid(System.String)">
+            <summary>
+            Check wheather the <paramref name="languageTag"/> is valid
+            </summary>
+            <returns>true if language tag is valid</returns>
+        </member>
+        <member name="T:TCode.r2rml4net.Validation.ISqlVersionValidator">
+            <summary>
+            Interface for validating the <a href="http://www.w3.org/TR/r2rml/#dfn-sql-version-identifier">sql version identifier</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Validation.ISqlVersionValidator.SqlVersionIsValid(System.Uri)">
+            <summary>
+            Check wheather the <paramref name="sqlVersion"/> is valid
+            </summary>
+            <returns>true if sql version is valid</returns>
+        </member>
+        <member name="T:TCode.r2rml4net.Validation.Wc3SqlVersionValidator">
+            <summary>
+            Implementation of <see cref="T:TCode.r2rml4net.Validation.ISqlVersionValidator"/>, which check
+            whether the identifier is on the
+            <a href="http://www.w3.org/2001/sw/wiki/RDB2RDF/SQL_Version_IRIs">non-normative list of identifiers for other SQL versions</a>
+            </summary>
+        </member>
+        <member name="M:TCode.r2rml4net.Validation.Wc3SqlVersionValidator.SqlVersionIsValid(System.Uri)">
+            <summary>
+            Check wheather the <paramref name="sqlVersion"/> is valid
+            </summary>
+            <returns>true if sql version is valid</returns>
+        </member>
+    </members>
+</doc>
