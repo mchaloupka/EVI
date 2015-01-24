@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
 
@@ -11,20 +12,13 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class MssqlDb : BaseSqlDb
     {
         /// <summary>
-        /// The connection string
-        /// </summary>
-        private readonly string _connectionString;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="MssqlDb"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="defaultSqlDbFactory">The SQL database factory.</param>
         public MssqlDb(string connectionString, ISqlDbFactory defaultSqlDbFactory)
-            : base(defaultSqlDbFactory)
-        {
-            _connectionString = connectionString;
-        }
+            : base(defaultSqlDbFactory, connectionString, SqlType.SqlServer)
+        { }
 
         /// <summary>
         /// Executes the query.
@@ -34,7 +28,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <returns>The query result reader.</returns>
         public override IQueryResultReader ExecuteQuery(string query, QueryContext context)
         {
-            SqlConnection sqlConnection = new SqlConnection(_connectionString);
+            SqlConnection sqlConnection = new SqlConnection(ConnectionString);
             SqlCommand command = new SqlCommand
             {
                 CommandText = query,

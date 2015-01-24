@@ -1,4 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Query;
+﻿using System.Security.Cryptography.X509Certificates;
+using DatabaseSchemaReader.DataSchema;
+using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 
 namespace Slp.r2rml4net.Storage.Sql
@@ -31,5 +33,15 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <param name="other">The other column.</param>
         /// <returns><c>true</c> if the specified columns can be unioned; otherwise, <c>false</c>.</returns>
         bool CanBeUnioned(ISqlColumn column, ISqlColumn other);
+
+        /// <summary>
+        /// Gets the connection string.
+        /// </summary>
+        string ConnectionString { get; }
+
+        /// <summary>
+        /// Gets the type of the SQL connection.
+        /// </summary>
+        SqlType SqlType { get; }
     }
 }

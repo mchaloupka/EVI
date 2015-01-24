@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
@@ -13,6 +14,16 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public abstract class BaseSqlDb : ISqlDb
     {
         /// <summary>
+        /// The connection string
+        /// </summary>
+        public string ConnectionString { get; private set; }
+
+        /// <summary>
+        /// The SQL connection type
+        /// </summary>
+        public SqlType SqlType { get; private set; }
+
+        /// <summary>
         /// The query builder
         /// </summary>
         private readonly BaseSqlQueryBuilder _queryBuilder;
@@ -25,8 +36,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlDb"/> class.
         /// </summary>
-        protected BaseSqlDb(ISqlDbFactory factory)
+        protected BaseSqlDb(ISqlDbFactory factory, string connectionString, SqlType sqlType)
         {
+            ConnectionString = connectionString;
+            SqlType = sqlType;
             _queryBuilder = factory.CreateSqlQueryBuilder();
             _nameGenerator = factory.CreateNameGenerator();
         }
