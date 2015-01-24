@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
@@ -68,6 +69,11 @@ namespace Slp.r2rml4net.Storage.Query
         /// </summary>
         private readonly IR2RmlStorageFactory _factory;
 
+        /// <summary>
+        /// The database schema provider
+        /// </summary>
+        private readonly DbSchemaProvider _schemaProvider;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryProcessor" /> class.
@@ -79,6 +85,7 @@ namespace Slp.r2rml4net.Storage.Query
         {
             _db = db;
             _factory = factory;
+            _schemaProvider = new DbSchemaProvider(db);
             
             _mapping = factory.CreateMappingProcessor(mapping);
             _sparqlAlgebraBuilder = factory.CreateSparqlAlgebraBuilder();
@@ -149,7 +156,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             // Convert to algebra
-            var context = _factory.CreateQueryContext(originalQuery, _mapping, _db, nodeFactory, _sparqlOptimizersOnTheFly, _sqlOptimizersOnTheFly);
+            var context = _factory.CreateQueryContext(originalQuery, _mapping, _db, _schemaProvider, nodeFactory, _sparqlOptimizersOnTheFly, _sqlOptimizersOnTheFly);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);

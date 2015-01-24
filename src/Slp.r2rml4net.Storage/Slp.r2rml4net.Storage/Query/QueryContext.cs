@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -47,21 +48,23 @@ namespace Slp.r2rml4net.Storage.Query
         private readonly ISqlAlgebraOptimizerOnTheFly[] _sqlAlgebraOptimizerOnTheFly;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueryContext"/> class.
+        /// Initializes a new instance of the <see cref="QueryContext" /> class.
         /// </summary>
         /// <param name="originalQuery">The original query.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="db">The database.</param>
+        /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
         /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizer on the fly.</param>
-        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly)
+        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, DbSchemaProvider schemaProvider, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly)
         {
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();
             NodeFactory = nodeFactory;
             Db = db;
             Mapping = mapping;
+            SchemaProvider = schemaProvider;
             _usedSqlSourceNames = new HashSet<string>();
             _blankNodesSubjects = new Dictionary<string, INode>();
             _blankNodesObjects = new Dictionary<string, INode>();
@@ -69,6 +72,12 @@ namespace Slp.r2rml4net.Storage.Query
             _sparqlAlgebraOptimizerOnTheFly = sparqlAlgebraOptimizerOnTheFly;
             _sqlAlgebraOptimizerOnTheFly = sqlAlgebraOptimizerOnTheFly;
         }
+
+        /// <summary>
+        /// Gets the schema provider.
+        /// </summary>
+        /// <value>The schema provider.</value>
+        public DbSchemaProvider SchemaProvider { get; private set; }
 
         /// <summary>
         /// Gets the original query.
