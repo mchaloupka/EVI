@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
@@ -16,14 +13,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <summary>
         /// The joined queries.
         /// </summary>
-        private List<ISparqlQuery> joined;
+        private readonly List<ISparqlQuery> _joined;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JoinOp"/> class.
         /// </summary>
         public JoinOp()
         {
-            joined = new List<ISparqlQuery>();
+            _joined = new List<ISparqlQuery>();
         }
 
         /// <summary>
@@ -36,12 +33,12 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
             {
                 foreach (var inner in ((JoinOp)sparqlQuery).GetInnerQueries())
                 {
-                    joined.Add(inner);
+                    _joined.Add(inner);
                 }
             }
             else
             {
-                joined.Add(sparqlQuery);
+                _joined.Add(sparqlQuery);
             }
         }
 
@@ -51,7 +48,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>The inner queries.</returns>
         public IEnumerable<ISparqlQuery> GetInnerQueries()
         {
-            return joined.AsEnumerable();
+            return _joined.AsEnumerable();
         }
 
         /// <summary>
@@ -61,17 +58,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="newQuery">The new query.</param>
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            var i = joined.IndexOf(originalQuery);
+            var i = _joined.IndexOf(originalQuery);
 
             if (i > -1)
             {
                 if (newQuery is OneEmptySolutionOp)
                 {
-                    joined.RemoveAt(i);
+                    _joined.RemoveAt(i);
                 }
                 else
                 {
-                    joined[i] = newQuery;
+                    _joined[i] = newQuery;
                 }
             }
         }
@@ -82,7 +79,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return string.Format("JOIN({0})", string.Join(",", joined));
+            return string.Format("JOIN({0})", string.Join(",", _joined));
         }
 
         /// <summary>
@@ -91,17 +88,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>The finalized query.</returns>
         public ISparqlQuery FinalizeAfterTransform()
         {
-            if (joined.OfType<NoSolutionOp>().Any())
+            if (_joined.OfType<NoSolutionOp>().Any())
             {
                 return new NoSolutionOp();
             }
-            else if (joined.Count == 0)
+            else if (_joined.Count == 0)
             {
                 return new OneEmptySolutionOp();
             }
-            else if (joined.Count == 1)
+            else if (_joined.Count == 1)
             {
-                return joined[0];
+                return _joined[0];
             }
             else
             {

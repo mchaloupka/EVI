@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 
@@ -13,7 +9,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
     /// </summary>
     public static class StaticExpressionEvaluationExtension
     {
-        private static readonly StaticExpressionEvaluationVisitor visitor = new StaticExpressionEvaluationVisitor();
+        private static readonly StaticExpressionEvaluationVisitor Visitor = new StaticExpressionEvaluationVisitor();
 
         /// <summary>
         /// Evaluates the expression.
@@ -23,7 +19,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
         /// <returns>The evaluated value.</returns>
         public static object StaticEvaluation(this IExpression expression, IQueryResultRow data)
         {
-            return expression.Accept(visitor, data);
+            return expression.Accept(Visitor, data);
         }
 
         /// <summary>
@@ -34,7 +30,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
         /// <returns>The evaluated value.</returns>
         public static bool StaticEvaluation(this ICondition condition, IQueryResultRow data)
         {
-            return (bool)condition.Accept(visitor, data);
+            return (bool)condition.Accept(Visitor, data);
         }
 
         /// <summary>
@@ -194,11 +190,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             /// <returns>Returned value.</returns>
             public object Visit(CoalesceExpr collateExpr, object data)
             {
-                object res = null;
-
                 foreach (var expr in collateExpr.Expressions)
                 {
-                    res = expr.Accept(this, data);
+                    var res = expr.Accept(this, data);
 
                     if (res != null)
                         return res;

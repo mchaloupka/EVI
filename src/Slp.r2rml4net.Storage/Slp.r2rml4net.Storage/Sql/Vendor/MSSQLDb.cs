@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Sql.Vendor
 {
     /// <summary>
     /// MS SQL database vendor
     /// </summary>
-    public class MSSQLDb : BaseSqlDb
+    public class MssqlDb : BaseSqlDb
     {
         /// <summary>
         /// The connection string
         /// </summary>
-        private string connectionString;
+        private readonly string _connectionString;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MSSQLDb"/> class.
+        /// Initializes a new instance of the <see cref="MssqlDb"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="defaultSqlDbFactory">The SQL database factory.</param>
-        public MSSQLDb(string connectionString, Bootstrap.ISqlDbFactory defaultSqlDbFactory)
+        public MssqlDb(string connectionString, ISqlDbFactory defaultSqlDbFactory)
             : base(defaultSqlDbFactory)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         /// <summary>
@@ -34,18 +32,20 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="query">The query.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The query result reader.</returns>
-        public override IQueryResultReader ExecuteQuery(string query, Query.QueryContext context)
+        public override IQueryResultReader ExecuteQuery(string query, QueryContext context)
         {
-            SqlConnection sqlConnection = new SqlConnection(this.connectionString);
-            SqlCommand command = new SqlCommand();
-            command.CommandText = query;
-            command.CommandType = System.Data.CommandType.Text;
-            command.Connection = sqlConnection;
+            SqlConnection sqlConnection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand
+            {
+                CommandText = query,
+                CommandType = CommandType.Text,
+                Connection = sqlConnection
+            };
 
             sqlConnection.Open();
 
             var reader = command.ExecuteReader();
-            return new DataReaderWrapper(reader, () => sqlConnection.State == System.Data.ConnectionState.Open, () => sqlConnection.Close());
+            return new DataReaderWrapper(reader, () => sqlConnection.State == ConnectionState.Open, () => sqlConnection.Close());
         }
     }
 }

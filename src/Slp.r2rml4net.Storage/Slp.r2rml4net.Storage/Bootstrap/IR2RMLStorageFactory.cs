@@ -1,58 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Slp.r2rml4net.Storage.Mapping;
+using Slp.r2rml4net.Storage.Optimization;
+using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sql;
+using TCode.r2rml4net;
+using VDS.RDF;
+using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Storage.Bootstrap
 {
     /// <summary>
     /// Factory for R2RML storage
     /// </summary>
-    public interface IR2RMLStorageFactory
+    public interface IR2RmlStorageFactory
     {
         /// <summary>
         /// Creates the query processor.
         /// </summary>
         /// <param name="db">The database.</param>
         /// <param name="mapping">The R2RML mapping.</param>
-        Query.QueryProcessor CreateQueryProcessor(Sql.ISqlDb db, TCode.r2rml4net.IR2RML mapping);
+        QueryProcessor CreateQueryProcessor(ISqlDb db, IR2RML mapping);
 
         /// <summary>
         /// Creates the mapping processor.
         /// </summary>
         /// <param name="mapping">The R2MRML mapping.</param>
-        Mapping.MappingProcessor CreateMappingProcessor(TCode.r2rml4net.IR2RML mapping);
+        MappingProcessor CreateMappingProcessor(IR2RML mapping);
 
         /// <summary>
         /// Creates the sparql algebra builder.
         /// </summary>
-        Sparql.SparqlAlgebraBuilder CreateSparqlAlgebraBuilder();
+        SparqlAlgebraBuilder CreateSparqlAlgebraBuilder();
 
         /// <summary>
         /// Creates the SQL algebra builder.
         /// </summary>
-        Sql.SqlAlgebraBuilder CreateSqlAlgebraBuilder();
+        SqlAlgebraBuilder CreateSqlAlgebraBuilder();
 
         /// <summary>
         /// Creates the sparql algebra optimizers.
         /// </summary>
-        Optimization.ISparqlAlgebraOptimizer[] CreateSparqlAlgebraOptimizers();
+        ISparqlAlgebraOptimizer[] CreateSparqlAlgebraOptimizers();
 
         /// <summary>
         /// Creates the sparql algebra optimizers on the fly.
         /// </summary>
-        Optimization.ISparqlAlgebraOptimizerOnTheFly[] CreateSparqlAlgebraOptimizersOnTheFly();
+        ISparqlAlgebraOptimizerOnTheFly[] CreateSparqlAlgebraOptimizersOnTheFly();
 
         /// <summary>
         /// Creates the SQL optimizers.
         /// </summary>
-        Optimization.ISqlAlgebraOptimizer[] CreateSqlOptimizers();
+        ISqlAlgebraOptimizer[] CreateSqlOptimizers();
 
         /// <summary>
         /// Creates the SQL algebra optimizers on the fly.
         /// </summary>
-        Optimization.ISqlAlgebraOptimizerOnTheFly[] CreateSqlAlgebraOptimizersOnTheFly();
+        ISqlAlgebraOptimizerOnTheFly[] CreateSqlAlgebraOptimizersOnTheFly();
 
         /// <summary>
         /// Creates the query context.
@@ -63,6 +66,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
         /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizers on the fly.</param>
-        Slp.r2rml4net.Storage.Query.QueryContext CreateQueryContext(VDS.RDF.Query.SparqlQuery originalQuery, Mapping.MappingProcessor mapping, Sql.ISqlDb db, VDS.RDF.INodeFactory nodeFactory, Optimization.ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, Optimization.ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly);
+        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly);
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Sql.Algebra;
+using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
@@ -18,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="variableName">Name of the variable.</param>
         public BlankValueBinder(string variableName)
         {
-            this.VariableName = variableName;
+            VariableName = variableName;
         }
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="row">The db row.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The node.</returns>
-        public VDS.RDF.INode LoadNode(VDS.RDF.INodeFactory factory, IQueryResultRow row, Query.QueryContext context)
+        public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
             return null;
         }
@@ -43,7 +42,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// Gets the assigned columns.
         /// </summary>
         /// <value>The assigned columns.</value>
-        public IEnumerable<Algebra.ISqlColumn> AssignedColumns
+        public IEnumerable<ISqlColumn> AssignedColumns
         {
             get { yield break; }
         }
@@ -53,7 +52,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// </summary>
         /// <param name="oldColumn">The old column.</param>
         /// <param name="newColumn">The new column.</param>
-        public void ReplaceAssignedColumn(Algebra.ISqlColumn oldColumn, Algebra.ISqlColumn newColumn)
+        public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
             
         }
@@ -64,7 +63,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new BlankValueBinder(this.VariableName);
+            return new BlankValueBinder(VariableName);
         }
 
         /// <summary>

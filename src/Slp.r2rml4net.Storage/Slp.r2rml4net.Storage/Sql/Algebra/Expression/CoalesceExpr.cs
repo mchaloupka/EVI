@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -15,14 +11,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// The expressions
         /// </summary>
-        private List<IExpression> expressions;
+        private readonly List<IExpression> _expressions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CoalesceExpr"/> class.
         /// </summary>
         public CoalesceExpr()
         {
-            this.expressions = new List<IExpression>();
+            _expressions = new List<IExpression>();
         }
 
         /// <summary>
@@ -31,14 +27,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="expression">The expression.</param>
         public void AddExpression(IExpression expression)
         {
-            this.expressions.Add(expression);
+            _expressions.Add(expression);
         }
 
         /// <summary>
         /// Gets the expressions.
         /// </summary>
         /// <value>The expressions.</value>
-        public IEnumerable<IExpression> Expressions { get { return expressions; } }
+        public IEnumerable<IExpression> Expressions { get { return _expressions; } }
 
         /// <summary>
         /// Creates a new object that is a copy of the current instance.
@@ -47,9 +43,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         public object Clone()
         {
             var col = new CoalesceExpr();
-            foreach (var expr in expressions)
+            foreach (var expr in _expressions)
             {
-                col.expressions.Add((IExpression)expr.Clone());
+                col._expressions.Add((IExpression)expr.Clone());
             }
             return col;
         }
@@ -73,10 +69,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="newExpr">The new expression.</param>
         public void ReplaceExpression(IExpression oldExpr, IExpression newExpr)
         {
-            var index = expressions.IndexOf(oldExpr);
+            var index = _expressions.IndexOf(oldExpr);
 
             if (index > -1)
-                expressions[index] = newExpr;
+                _expressions[index] = newExpr;
         }
 
         /// <summary>
@@ -85,10 +81,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="subExpr">The sub expression.</param>
         public void RemoveExpression(IExpression subExpr)
         {
-            var index = expressions.IndexOf(subExpr);
+            var index = _expressions.IndexOf(subExpr);
 
             if (index > -1)
-                expressions.RemoveAt(index);
+                _expressions.RemoveAt(index);
         }
     }
 }

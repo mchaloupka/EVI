@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
@@ -18,7 +14,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="innerQuery">The inner query.</param>
         public DistinctOp(ISparqlQuery innerQuery)
         {
-            this.InnerQuery = innerQuery;
+            InnerQuery = innerQuery;
         }
 
         /// <summary>

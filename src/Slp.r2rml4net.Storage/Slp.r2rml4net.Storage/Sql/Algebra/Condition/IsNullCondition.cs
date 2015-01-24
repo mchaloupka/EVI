@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
@@ -24,7 +19,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <param name="sqlColumn">The SQL column.</param>
         public IsNullCondition(ISqlColumn sqlColumn)
         {
-            this.Column = sqlColumn;
+            Column = sqlColumn;
         }
 
         /// <summary>
@@ -45,7 +40,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new IsNullCondition(this.Column);
+            return new IsNullCondition(Column);
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
@@ -15,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <summary>
         /// The orderings
         /// </summary>
-        private List<OrderByComparator> orderings;
+        private readonly List<OrderByComparator> _orderings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderByOp"/> class.
@@ -23,8 +19,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="innerQuery">The inner query.</param>
         public OrderByOp(ISparqlQuery innerQuery)
         {
-            this.InnerQuery = innerQuery;
-            this.orderings = new List<OrderByComparator>();
+            InnerQuery = innerQuery;
+            _orderings = new List<OrderByComparator>();
         }
 
         /// <summary>
@@ -84,14 +80,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="descending">if set to <c>true</c> [descending].</param>
         public void AddOrdering(ISparqlQueryExpression sparqlQueryExpression, bool descending)
         {
-            this.orderings.Add(new OrderByComparator(sparqlQueryExpression, descending));
+            _orderings.Add(new OrderByComparator(sparqlQueryExpression, descending));
         }
 
         /// <summary>
         /// Gets the orderings.
         /// </summary>
         /// <value>The orderings.</value>
-        public IEnumerable<OrderByComparator> Orderings { get { return orderings; } }
+        public IEnumerable<OrderByComparator> Orderings { get { return _orderings; } }
     }
 
     /// <summary>
@@ -118,8 +114,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="descending">if set to <c>true</c> [descending].</param>
         public OrderByComparator(ISparqlQueryExpression expression, bool descending)
         {
-            this.Expression = expression;
-            this.Descending = descending;
+            Expression = expression;
+            Descending = descending;
         }
 
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
@@ -14,7 +10,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// The original columns
         /// </summary>
-        private List<ISqlColumn> originalColumns;
+        private readonly List<ISqlColumn> _originalColumns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlUnionColumn"/> class.
@@ -22,8 +18,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="source">The source.</param>
         public SqlUnionColumn(ISqlSource source)
         {
-            this.Source = source;
-            this.originalColumns = new List<ISqlColumn>();
+            Source = source;
+            _originalColumns = new List<ISqlColumn>();
         }
 
         /// <summary>
@@ -32,14 +28,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="column">The column.</param>
         public void AddColumn(ISqlColumn column)
         {
-            this.originalColumns.Add(column);
+            _originalColumns.Add(column);
         }
 
         /// <summary>
         /// Gets the original columns.
         /// </summary>
         /// <value>The original columns.</value>
-        public IEnumerable<ISqlColumn> OriginalColumns { get { return this.originalColumns; } }
+        public IEnumerable<ISqlColumn> OriginalColumns { get { return _originalColumns; } }
 
         /// <summary>
         /// Gets or sets the name.
@@ -59,7 +55,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="ccol">The column.</param>
         public void RemoveColumn(ISqlColumn ccol)
         {
-            this.originalColumns.Remove(ccol);
+            _originalColumns.Remove(ccol);
         }
     }
 }

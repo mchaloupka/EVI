@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
@@ -18,31 +15,31 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// Gets the original source (FROM).
         /// </summary>
         /// <value>The original source.</value>
-        public ISqlSource OriginalSource { get { return originalSource; } }
+        public ISqlSource OriginalSource { get { return _originalSource; } }
 
         /// <summary>
         /// Gets the join sources (INNER JOIN).
         /// </summary>
         /// <value>The join sources.</value>
-        public IEnumerable<ConditionedSource> JoinSources { get { return joinSources; } }
+        public IEnumerable<ConditionedSource> JoinSources { get { return _joinSources; } }
 
         /// <summary>
         /// Gets the left outer join sources (LEFT OUTER JOIN).
         /// </summary>
         /// <value>The left outer join sources.</value>
-        public IEnumerable<ConditionedSource> LeftOuterJoinSources { get { return leftOuterJoinSources; } }
+        public IEnumerable<ConditionedSource> LeftOuterJoinSources { get { return _leftOuterJoinSources; } }
 
         /// <summary>
         /// Gets the conditions.
         /// </summary>
         /// <value>The conditions.</value>
-        public IEnumerable<ICondition> Conditions { get { return conditions; } }
+        public IEnumerable<ICondition> Conditions { get { return _conditions; } }
 
         /// <summary>
         /// Gets the orderings.
         /// </summary>
         /// <value>The orderings.</value>
-        public IEnumerable<SqlOrderByComparator> Orderings { get { return orderings; } }
+        public IEnumerable<SqlOrderByComparator> Orderings { get { return _orderings; } }
 
         /// <summary>
         /// Gets or sets the offset.
@@ -59,32 +56,32 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// The columns
         /// </summary>
-        private List<ISqlColumn> columns;
+        private readonly List<ISqlColumn> _columns;
 
         /// <summary>
         /// The join sources
         /// </summary>
-        private List<ConditionedSource> joinSources;
+        private readonly List<ConditionedSource> _joinSources;
 
         /// <summary>
         /// The left outer join sources
         /// </summary>
-        private List<ConditionedSource> leftOuterJoinSources;
+        private readonly List<ConditionedSource> _leftOuterJoinSources;
 
         /// <summary>
         /// The conditions
         /// </summary>
-        private List<ICondition> conditions;
+        private readonly List<ICondition> _conditions;
 
         /// <summary>
         /// The orderings
         /// </summary>
-        private List<SqlOrderByComparator> orderings;
+        private readonly List<SqlOrderByComparator> _orderings;
 
         /// <summary>
         /// The original source
         /// </summary>
-        private ISqlSource originalSource;
+        private readonly ISqlSource _originalSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlSelectOp"/> class.
@@ -92,13 +89,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="originalSource">The original source.</param>
         public SqlSelectOp(ISqlSource originalSource)
         {
-            this.originalSource = originalSource;
-            this.columns = new List<ISqlColumn>();
-            this.joinSources = new List<ConditionedSource>();
-            this.leftOuterJoinSources = new List<ConditionedSource>();
-            this.conditions = new List<ICondition>();
-            this.valueBinders = new List<IBaseValueBinder>();
-            this.orderings = new List<SqlOrderByComparator>();
+            _originalSource = originalSource;
+            _columns = new List<ISqlColumn>();
+            _joinSources = new List<ConditionedSource>();
+            _leftOuterJoinSources = new List<ConditionedSource>();
+            _conditions = new List<ICondition>();
+            _valueBinders = new List<IBaseValueBinder>();
+            _orderings = new List<SqlOrderByComparator>();
         }
 
         /// <summary>
@@ -108,12 +105,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <returns>The column.</returns>
         public ISqlColumn GetSelectColumn(ISqlColumn sourceColumn)
         {
-            var col = this.columns.OfType<SqlSelectColumn>().Where(x => x.OriginalColumn == sourceColumn).FirstOrDefault();
+            var col = _columns.OfType<SqlSelectColumn>()
+                .FirstOrDefault(x => x.OriginalColumn == sourceColumn);
 
             if (col == null)
             {
                 col = new SqlSelectColumn(sourceColumn, this);
-                this.columns.Add(col);
+                _columns.Add(col);
             }
 
             return col;
@@ -127,7 +125,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public ISqlColumn GetExpressionColumn(IExpression expression)
         {
             var col = new SqlExpressionColumn(expression, this);
-            this.columns.Add(col);
+            _columns.Add(col);
             return col;
         }
 
@@ -137,7 +135,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="condition">The condition.</param>
         public void AddCondition(ICondition condition)
         {
-            this.conditions.Add(condition);
+            _conditions.Add(condition);
         }
 
         /// <summary>
@@ -146,8 +144,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="col">The col.</param>
         public void RemoveColumn(ISqlColumn col)
         {
-            if (this.columns.Contains(col))
-                this.columns.Remove(col);
+            if (_columns.Contains(col))
+                _columns.Remove(col);
         }
 
         /// <summary>
@@ -157,10 +155,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="processedCondition">The processed condition.</param>
         public void ReplaceCondition(ICondition cond, ICondition processedCondition)
         {
-            var index = conditions.IndexOf(cond);
+            var index = _conditions.IndexOf(cond);
 
             if (index > -1)
-                conditions[index] = processedCondition;
+                _conditions[index] = processedCondition;
         }
 
         /// <summary>
@@ -169,10 +167,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="cond">The cond.</param>
         public void RemoveCondition(ICondition cond)
         {
-            var index = conditions.IndexOf(cond);
+            var index = _conditions.IndexOf(cond);
 
             if (index > -1)
-                conditions.RemoveAt(index);
+                _conditions.RemoveAt(index);
         }
 
         /// <summary>
@@ -180,7 +178,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// </summary>
         public void ClearConditions()
         {
-            this.conditions.Clear();
+            _conditions.Clear();
         }
 
         /// <summary>
@@ -196,13 +194,13 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <value>The columns.</value>
         public IEnumerable<ISqlColumn> Columns
         {
-            get { return this.columns; }
+            get { return _columns; }
         }
 
         /// <summary>
         /// The value binders
         /// </summary>
-        private List<IBaseValueBinder> valueBinders;
+        private readonly List<IBaseValueBinder> _valueBinders;
 
         /// <summary>
         /// Adds the value binder.
@@ -210,7 +208,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void AddValueBinder(IBaseValueBinder valueBinder)
         {
-            this.valueBinders.Add(valueBinder);
+            _valueBinders.Add(valueBinder);
         }
 
         /// <summary>
@@ -219,7 +217,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <value>The value binders.</value>
         public IEnumerable<IBaseValueBinder> ValueBinders
         {
-            get { return valueBinders; }
+            get { return _valueBinders; }
         }
 
         /// <summary>
@@ -228,9 +226,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="sqlSource">The SQL source.</param>
         /// <param name="condition">The condition.</param>
         /// <param name="context">The context.</param>
-        public void AddJoinedSource(ISqlSource sqlSource, ICondition condition, Query.QueryContext context)
+        public void AddJoinedSource(ISqlSource sqlSource, ICondition condition, QueryContext context)
         {
-            this.joinSources.Add(new ConditionedSource(condition, sqlSource));
+            _joinSources.Add(new ConditionedSource(condition, sqlSource));
         }
 
         /// <summary>
@@ -239,9 +237,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="sqlSource">The SQL source.</param>
         /// <param name="condition">The condition.</param>
         /// <param name="context">The context.</param>
-        public void AddLeftOuterJoinedSource(ISqlSource sqlSource, ICondition condition, Query.QueryContext context)
+        public void AddLeftOuterJoinedSource(ISqlSource sqlSource, ICondition condition, QueryContext context)
         {
-            this.leftOuterJoinSources.Add(new ConditionedSource(condition, sqlSource));
+            _leftOuterJoinSources.Add(new ConditionedSource(condition, sqlSource));
         }
 
         /// <summary>
@@ -251,10 +249,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="newBinder">The new binder.</param>
         public void ReplaceValueBinder(IBaseValueBinder oldBinder, IBaseValueBinder newBinder)
         {
-            var index = this.valueBinders.IndexOf(oldBinder);
+            var index = _valueBinders.IndexOf(oldBinder);
 
             if (index > -1)
-                this.valueBinders[index] = newBinder;
+                _valueBinders[index] = newBinder;
         }
 
         /// <summary>
@@ -263,10 +261,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void RemoveValueBinder(IBaseValueBinder valueBinder)
         {
-            var index = this.valueBinders.IndexOf(valueBinder);
+            var index = _valueBinders.IndexOf(valueBinder);
 
             if (index > -1)
-                this.valueBinders.RemoveAt(index);
+                _valueBinders.RemoveAt(index);
         }
 
         /// <summary>
@@ -288,7 +286,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="descending">if set to <c>true</c> [descending].</param>
         public void InsertOrdering(IExpression expression, bool descending)
         {
-            this.orderings.Insert(0, new SqlOrderByComparator(expression, descending));
+            _orderings.Insert(0, new SqlOrderByComparator(expression, descending));
         }
 
         /// <summary>

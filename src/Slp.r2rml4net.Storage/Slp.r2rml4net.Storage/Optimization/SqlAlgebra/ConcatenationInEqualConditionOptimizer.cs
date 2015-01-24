@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
@@ -37,28 +36,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             else
             {
                 return equalsCondition;
-            }
-        }
-
-        /// <summary>
-        /// Expands the equals operator.
-        /// </summary>
-        /// <param name="leftOperand">The left operand.</param>
-        /// <param name="rightOperand">The right operand.</param>
-        /// <param name="context">The context.</param>
-        private ICondition ExpandEquals(IExpression leftOperand, IExpression rightOperand, QueryContext context)
-        {
-            if (leftOperand is ConcatenationExpr)
-            {
-                return ExpandEquals(leftOperand, (ConcatenationExpr)leftOperand, context);
-            }
-            else if (rightOperand is ConcatenationExpr)
-            {
-                return ExpandEquals(leftOperand, (ConcatenationExpr)rightOperand, context);
-            }
-            else
-            {
-                return null;
             }
         }
 
@@ -143,13 +120,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         {
             var isAnyNotColumnAndNotConstant = operand.Parts
                 .Where(x => !(x is ConstantExpr))
-                .Where(x => !(x is ColumnExpr))
-                .Any();
+                .Any(x => !(x is ColumnExpr));
 
             var isAnyNotStringConstants = operand.Parts
                 .OfType<ConstantExpr>()
-                .Where(x => !(x.Value is string))
-                .Any();
+                .Any(x => !(x.Value is string));
 
             return !isAnyNotStringConstants && !isAnyNotColumnAndNotConstant;
         }
@@ -255,7 +230,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <returns>ICondition.</returns>
         private ICondition SuffixComparison(ref string leftSuffix, ref string rightSuffix, QueryContext context)
         {
-            var index = 0;
+            int index;
             var ok = true;
 
             for (index = 0; index < leftSuffix.Length && index < rightSuffix.Length; index++)
@@ -284,7 +259,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <returns>ICondition.</returns>
         private ICondition PrefixComparison(ref string leftPrefix, ref string rightPrefix, QueryContext context)
         {
-            var index = 0;
+            int index;
             var ok = true;
 
             for (index = 0; index < leftPrefix.Length && index < rightPrefix.Length; index++)

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Slp.r2rml4net.Storage.Sql;
+using Slp.r2rml4net.Storage.Sql.Vendor;
 
 namespace Slp.r2rml4net.Storage.Bootstrap
 {
@@ -15,16 +12,16 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// Creates the SQL database.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        Sql.ISqlDb CreateSQLDb(string connectionString);
+        ISqlDb CreateSqlDb(string connectionString);
 
         /// <summary>
         /// Creates the SQL query builder.
         /// </summary>
-        Sql.Vendor.BaseSqlQueryBuilder CreateSQLQueryBuilder();
+        BaseSqlQueryBuilder CreateSqlQueryBuilder();
 
         /// <summary>
         /// Creates the name generator.
         /// </summary>
-        Sql.Vendor.BaseSqlNameGenerator CreateNameGenerator();
+        BaseSqlNameGenerator CreateNameGenerator();
     }
 }

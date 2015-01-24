@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
-using TCode.r2rml4net.Mapping;
-using TCode.r2rml4net.Extensions;
-using VDS.RDF;
 using TCode.r2rml4net;
-using System.Linq.Expressions;
-using System.Diagnostics;
+using TCode.r2rml4net.Extensions;
+using TCode.r2rml4net.Mapping;
+using VDS.RDF;
 
 // https://bitbucket.org/r2rml4net/core/src/46143a763b43630b1c645e29ec6e4193fc8ada22/src/TCode.r2rml4net/TriplesGeneration/RDFTermGenerator.cs?at=default
 
@@ -27,22 +25,22 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <summary>
         /// The R2RML map
         /// </summary>
-        private ITermMap r2rmlMap;
+        private ITermMap _r2RmlMap;
 
         /// <summary>
         /// The columns
         /// </summary>
-        private Dictionary<string, ISqlColumn> columns;
+        private Dictionary<string, ISqlColumn> _columns;
 
         /// <summary>
         /// The template processor
         /// </summary>
-        private TemplateProcessor templateProcessor;
+        private TemplateProcessor _templateProcessor;
 
         /// <summary>
         /// The template parts
         /// </summary>
-        private IEnumerable<ITemplatePart> templateParts;
+        private IEnumerable<ITemplatePart> _templateParts;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ValueBinder"/> class from being publicly created.
@@ -55,10 +53,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueBinder"/> class.
         /// </summary>
-        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <param name="r2RmlMap">The R2RML map.</param>
         /// <param name="templateProcessor">The template processor.</param>
-        public ValueBinder(ITermMap r2rmlMap, TemplateProcessor templateProcessor)
-            : this(null, r2rmlMap, templateProcessor)
+        public ValueBinder(ITermMap r2RmlMap, TemplateProcessor templateProcessor)
+            : this(null, r2RmlMap, templateProcessor)
         {
 
         }
@@ -67,34 +65,34 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// Initializes a new instance of the <see cref="ValueBinder"/> class.
         /// </summary>
         /// <param name="variableName">Name of the variable.</param>
-        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <param name="r2RmlMap">The R2RML map.</param>
         /// <param name="templateProcessor">The template processor.</param>
-        public ValueBinder(string variableName, ITermMap r2rmlMap, TemplateProcessor templateProcessor)
+        public ValueBinder(string variableName, ITermMap r2RmlMap, TemplateProcessor templateProcessor)
         {
-            this.loadNodeFunc = null;
-            this.r2rmlMap = r2rmlMap;
-            this.columns = new Dictionary<string, ISqlColumn>();
-            this.VariableName = variableName;
-            this.templateProcessor = templateProcessor;
+            _loadNodeFunc = null;
+            _r2RmlMap = r2RmlMap;
+            _columns = new Dictionary<string, ISqlColumn>();
+            VariableName = variableName;
+            _templateProcessor = templateProcessor;
 
-            if (r2rmlMap.IsConstantValued)
+            if (r2RmlMap.IsConstantValued)
             {
-                // No columns needed
+                // No _columns needed
             }
-            else if (r2rmlMap.IsColumnValued)
+            else if (r2RmlMap.IsColumnValued)
             {
-                this.columns.Add(r2rmlMap.ColumnName, null);
+                _columns.Add(r2RmlMap.ColumnName, null);
             }
-            else if (r2rmlMap.IsTemplateValued)
+            else if (r2RmlMap.IsTemplateValued)
             {
-                var template = r2rmlMap.Template;
+                var template = r2RmlMap.Template;
 
-                var columns = templateProcessor.GetColumnsFromTemplate(template);
-                this.templateParts = templateProcessor.ParseTemplate(template).ToArray();
+                var columnsFromTemplate = templateProcessor.GetColumnsFromTemplate(template);
+                _templateParts = templateProcessor.ParseTemplate(template).ToArray();
 
-                foreach (var col in columns)
+                foreach (var col in columnsFromTemplate)
                 {
-                    this.columns.Add(col, null);
+                    _columns.Add(col, null);
                 }
             }
         }
@@ -109,19 +107,19 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// Gets the R2RML map.
         /// </summary>
         /// <value>The R2RML map.</value>
-        public ITermMap R2RMLMap { get { return r2rmlMap; } }
+        public ITermMap R2RmlMap { get { return _r2RmlMap; } }
 
         /// <summary>
         /// Gets the template processor.
         /// </summary>
         /// <value>The template processor.</value>
-        public TemplateProcessor TemplateProcessor { get { return templateProcessor; } }
+        public TemplateProcessor TemplateProcessor { get { return _templateProcessor; } }
 
         /// <summary>
-        /// Gets the needed columns.
+        /// Gets the needed _columns.
         /// </summary>
-        /// <value>The needed columns.</value>
-        public IEnumerable<string> NeededColumns { get { return columns.Keys.ToArray(); } }
+        /// <value>The needed _columns.</value>
+        public IEnumerable<string> NeededColumns { get { return _columns.Keys.ToArray(); } }
 
         /// <summary>
         /// Sets the column.
@@ -131,11 +129,11 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <exception cref="System.Exception">Cannot set column that is not requested for evaluation</exception>
         public void SetColumn(string column, ISqlColumn sqlColumn)
         {
-            loadNodeFunc = null;
+            _loadNodeFunc = null;
 
-            if (this.columns.ContainsKey(column))
+            if (_columns.ContainsKey(column))
             {
-                this.columns[column] = sqlColumn;
+                _columns[column] = sqlColumn;
             }
             else
             {
@@ -151,9 +149,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <exception cref="System.Exception">Cannot get column that is not requested for evaluation</exception>
         public ISqlColumn GetColumn(string column)
         {
-            if (this.columns.ContainsKey(column))
+            if (_columns.ContainsKey(column))
             {
-                return this.columns[column];
+                return _columns[column];
             }
             else
             {
@@ -168,9 +166,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="newColumn">The new column.</param>
         public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
-            loadNodeFunc = null;
+            _loadNodeFunc = null;
 
-            var keys = this.columns.Where(x => x.Value == oldColumn).Select(x => x.Key).ToArray();
+            var keys = _columns.Where(x => x.Value == oldColumn).Select(x => x.Key).ToArray();
 
             foreach (var key in keys)
             {
@@ -181,7 +179,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <summary>
         /// The load node function
         /// </summary>
-        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> loadNodeFunc;
+        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> _loadNodeFunc;
 
         /// <summary>
         /// Loads the node value.
@@ -192,10 +190,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>The node.</returns>
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
-            if (loadNodeFunc == null)
-                loadNodeFunc = GenerateLoadNodeFunc();
+            if (_loadNodeFunc == null)
+                _loadNodeFunc = GenerateLoadNodeFunc();
 
-            return loadNodeFunc(factory, row, context);
+            return _loadNodeFunc(factory, row, context);
         }
 
         #region GenerateLoadNodeFunc
@@ -206,17 +204,17 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <exception cref="System.Exception">Term map must be either constant, column or template valued</exception>
         private Func<INodeFactory, IQueryResultRow, QueryContext, INode> GenerateLoadNodeFunc()
         {
-            Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> expr = null;
+            Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> expr;
 
-            if (R2RMLMap.IsConstantValued)
+            if (R2RmlMap.IsConstantValued)
             {
                 expr = GenerateLoadNodeFuncFromConstant();
             }
-            else if (R2RMLMap.IsColumnValued)
+            else if (R2RmlMap.IsColumnValued)
             {
                 expr = GenerateLoadNodeFuncFromColumn();
             }
-            else if (R2RMLMap.IsTemplateValued)
+            else if (R2RmlMap.IsTemplateValued)
             {
                 expr = GenerateLoadNodeFuncFromTemplate();
             }
@@ -239,13 +237,17 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
             ParameterExpression valVar = Expression.Parameter(typeof(string), "val");
 
-            List<Expression> expressions = new List<Expression>();
-            expressions.Add(Expression.Assign(valVar, GenerateReplaceColumnReferencesFunc(nodeFactory, row, context, R2RMLMap.TermType.IsURI)));
-            expressions.Add(Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof(string))),
-                Expression.Constant(null, typeof(INode)),
-                GenerateTermForValueFunc(nodeFactory, valVar, context))); // Change to generate term for value
+            List<Expression> expressions = new List<Expression>
+            {
+                Expression.Assign(valVar,
+                    GenerateReplaceColumnReferencesFunc(nodeFactory, row, context, R2RmlMap.TermType.IsURI)),
+                Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof (string))),
+                    Expression.Constant(null, typeof (INode)),
+                    GenerateTermForValueFunc(nodeFactory, valVar, context))
+            };
+            // Change to generate term for value
 
-            var block = Expression.Block(typeof(INode), new ParameterExpression[] { valVar }, expressions);
+            var block = Expression.Block(typeof(INode), new[] { valVar }, expressions);
             return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
         }
 
@@ -264,10 +266,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
             var endLabel = Expression.Label(typeof(string), "returnLabel");
 
-            var appendMethod = typeof(StringBuilder).GetMethod("Append", new Type[] { typeof(string) });
+            var appendMethod = typeof(StringBuilder).GetMethod("Append", new[] { typeof(string) });
             expressions.Add(Expression.Assign(sbVar, Expression.New(typeof(StringBuilder))));
 
-            foreach (var part in templateParts)
+            foreach (var part in _templateParts)
             {
                 if (part.IsText)
                 {
@@ -283,7 +285,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
 
             expressions.Add(Expression.Label(endLabel, Expression.Call(sbVar, "ToString", new Type[0])));
 
-            return Expression.Block(typeof(string), new ParameterExpression[] { sbVar, replacedVar }, expressions);
+            return Expression.Block(typeof(string), new[] { sbVar, replacedVar }, expressions);
         }
 
         /// <summary>
@@ -302,22 +304,22 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             var sValVar = Expression.Parameter(typeof(string), "sVal");
             var endLabel = Expression.Label(typeof(string), "returnLabel");
 
-            List<Expression> expressions = new List<Expression>();
-            expressions.Add(Expression.Assign(dbColVar, Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name))));
-            expressions.Add(Expression.Assign(valueVar, Expression.Property(dbColVar, "Value")));
-            expressions.Add(Expression.IfThen(Expression.Equal(valueVar, Expression.Constant(null, typeof(object))), Expression.Return(endLabel, Expression.Constant(null, typeof(string)))));
-            expressions.Add(Expression.Assign(sValVar, Expression.Call(valueVar, "ToString", new Type[0])));
-
-            if (escape)
+            List<Expression> expressions = new List<Expression>
             {
-                expressions.Add(Expression.Label(endLabel, Expression.Call(typeof(MappingHelper), "UrlEncode", new Type[0], sValVar)));
-            }
-            else
-            {
-                expressions.Add(Expression.Label(endLabel, sValVar));
-            }
+                Expression.Assign(dbColVar,
+                    Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name))),
+                Expression.Assign(valueVar, Expression.Property(dbColVar, "Value")),
+                Expression.IfThen(Expression.Equal(valueVar, Expression.Constant(null, typeof (object))),
+                    Expression.Return(endLabel, Expression.Constant(null, typeof (string)))),
+                Expression.Assign(sValVar, Expression.Call(valueVar, "ToString", new Type[0])),
+                escape
+                    ? Expression.Label(endLabel,
+                        Expression.Call(typeof (MappingHelper), "UrlEncode", new Type[0], sValVar))
+                    : Expression.Label(endLabel, sValVar)
+            };
 
-            return Expression.Block(typeof(string), new ParameterExpression[] { dbColVar, valueVar, sValVar }, expressions);
+
+            return Expression.Block(typeof(string), new[] { dbColVar, valueVar, sValVar }, expressions);
         }
 
         /// <summary>
@@ -330,14 +332,14 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// </exception>
         private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
-            if (R2RMLMap is IUriValuedTermMap)
+            if (R2RmlMap is IUriValuedTermMap)
             {
-                var uri = ((IUriValuedTermMap)R2RMLMap).URI;
+                var uri = ((IUriValuedTermMap)R2RmlMap).URI;
                 return (fact, row, context) => fact.CreateUriNode(uri);
             }
-            else if (R2RMLMap is IObjectMap)
+            else if (R2RmlMap is IObjectMap)
             {
-                var objectMap = (IObjectMap)R2RMLMap;
+                var objectMap = (IObjectMap)R2RmlMap;
 
                 if (objectMap.URI != null)
                     return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
@@ -370,7 +372,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             expressions.Add(Expression.IfThen(Expression.Equal(value, Expression.Constant(null, typeof(object))),
                 Expression.Return(endLabel, Expression.Constant(null, typeof(INode)))));
 
-            var termType = R2RMLMap.TermType;
+            var termType = R2RmlMap.TermType;
 
             if (termType.IsURI)
             {
@@ -379,7 +381,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                         Expression.Call(value, "ToString", new Type[0]),
                         factory,
                         context,
-                        Expression.Constant(R2RMLMap.BaseUri, typeof(Uri)))));
+                        Expression.Constant(R2RmlMap.BaseUri, typeof(Uri)))));
             }
             else if (termType.IsBlankNode)
             {
@@ -391,12 +393,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             }
             else
             {
-                throw new Exception(string.Format("Unhandled term type", value));
+                throw new Exception(string.Format("Unhandled term type"));
             }
 
             expressions.Add(Expression.Label(endLabel, nodeVar));
 
-            return Expression.Block(typeof(INode), new ParameterExpression[] { nodeVar }, expressions);
+            return Expression.Block(typeof(INode), new[] { nodeVar }, expressions);
         }
 
         /// <summary>
@@ -407,7 +409,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="context">The query context.</param>
         private Expression GenerateBlankNodeForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
-            if (R2RMLMap is ISubjectMap)
+            if (R2RmlMap is ISubjectMap)
                 return Expression.Call(context, "GetBlankNodeSubjectForValue", new Type[0], factory, value);
             else
                 return Expression.Call(context, "GetBlankNodeObjectForValue", new Type[0], factory, value);
@@ -429,10 +431,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             if (value == null)
                 return null;
 
-            if (!(R2RMLMap is ILiteralTermMap))
+            if (!(R2RmlMap is ILiteralTermMap))
                 throw new Exception("Term map cannot be of term type literal");
 
-            var literalTermMap = R2RMLMap as ILiteralTermMap;
+            var literalTermMap = (ILiteralTermMap) R2RmlMap;
             Uri datatypeUri = literalTermMap.DataTypeURI;
             string language = literalTermMap.Language;
 
@@ -540,39 +542,42 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             ParameterExpression row = Expression.Parameter(typeof(IQueryResultRow), "row");
             ParameterExpression context = Expression.Parameter(typeof(QueryContext), "context");
 
-            var column = this.NeededColumns.Select(x => GetColumn(x)).First();
+            var column = NeededColumns.Select(GetColumn).First();
             ParameterExpression dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
             ParameterExpression valVar = Expression.Parameter(typeof(object), "value");
 
-            List<Expression> expressions = new List<Expression>();
-            expressions.Add(Expression.Assign(dbColVar, Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name, typeof(string)))));
-            expressions.Add(Expression.Assign(valVar, Expression.Property(dbColVar, "Value")));
+            List<Expression> expressions = new List<Expression>
+            {
+                Expression.Assign(dbColVar,
+                    Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(column.Name, typeof (string)))),
+                Expression.Assign(valVar, Expression.Property(dbColVar, "Value"))
+            };
 
-            if (R2RMLMap.TermType.IsLiteral)
+            if (R2RmlMap.TermType.IsLiteral)
             {
                 expressions.Add(GenerateTermForLiteralFunc(nodeFactory, valVar, context));
             }
             else
             {
                 expressions.Add(Expression.Call(typeof(ValueBinder), "AssertNoIllegalCharacters", new Type[0],
-                    Expression.New(typeof(Uri).GetConstructor(new Type[] { typeof(string), typeof(UriKind) }),
+                    Expression.New(typeof(Uri).GetConstructor(new[] { typeof(string), typeof(UriKind) }),
                         Expression.Call(valVar, "ToString", new Type[0]),
                         Expression.Constant(UriKind.RelativeOrAbsolute, typeof(UriKind)))));
                 expressions.Add(GenerateTermForValueFunc(nodeFactory, valVar, context));
             }
 
-            var block = Expression.Block(typeof(INode), new ParameterExpression[] { dbColVar, valVar }, expressions);
+            var block = Expression.Block(typeof(INode), new[] { dbColVar, valVar }, expressions);
             return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
         } 
         #endregion
 
         /// <summary>
-        /// Gets the assigned columns.
+        /// Gets the assigned _columns.
         /// </summary>
-        /// <value>The assigned columns.</value>
+        /// <value>The assigned _columns.</value>
         public IEnumerable<ISqlColumn> AssignedColumns
         {
-            get { return columns.Select(x => x.Value); }
+            get { return _columns.Select(x => x.Value); }
         }
 
         /// <summary>
@@ -581,16 +586,18 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            var newBinder = new ValueBinder();
-            newBinder.VariableName = this.VariableName;
-            newBinder.r2rmlMap = this.r2rmlMap;
-            newBinder.templateProcessor = templateProcessor;
-            newBinder.templateParts = templateParts;
-            newBinder.columns = new Dictionary<string, ISqlColumn>();
-
-            foreach (var item in this.columns)
+            var newBinder = new ValueBinder
             {
-                newBinder.columns.Add(item.Key, item.Value);
+                VariableName = VariableName,
+                _r2RmlMap = _r2RmlMap,
+                _templateProcessor = _templateProcessor,
+                _templateParts = _templateParts,
+                _columns = new Dictionary<string, ISqlColumn>()
+            };
+
+            foreach (var item in _columns)
+            {
+                newBinder._columns.Add(item.Key, item.Value);
             }
 
             return newBinder;

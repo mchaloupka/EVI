@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
 using TCode.r2rml4net;
@@ -19,28 +15,22 @@ namespace Slp.r2rml4net.Storage
     /// <summary>
     /// The R2RML Storage
     /// </summary>
-    public class R2RMLStorage : IQueryableStorage
+    public class R2RmlStorage : IQueryableStorage
     {
-        /// <summary>
-        /// The database
-        /// </summary>
-        private ISqlDb db;
-
         /// <summary>
         /// The query processor
         /// </summary>
-        private QueryProcessor queryProcessor;
+        private readonly QueryProcessor _queryProcessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="R2RMLStorage" /> class.
+        /// Initializes a new instance of the <see cref="R2RmlStorage" /> class.
         /// </summary>
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public R2RMLStorage(ISqlDb db, IR2RML mapping, IR2RMLStorageFactory factory)
+        public R2RmlStorage(ISqlDb db, IR2RML mapping, IR2RmlStorageFactory factory)
         {
-            this.queryProcessor = factory.CreateQueryProcessor(db, mapping);
-            this.db = db;
+            _queryProcessor = factory.CreateQueryProcessor(db, mapping);
         }
 
         /// <summary>
@@ -51,7 +41,7 @@ namespace Slp.r2rml4net.Storage
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            this.queryProcessor.Query(rdfHandler, resultsHandler, sparqlQuery);
+            _queryProcessor.Query(rdfHandler, resultsHandler, sparqlQuery);
         }
 
         /// <summary>
@@ -63,7 +53,7 @@ namespace Slp.r2rml4net.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -109,7 +99,7 @@ namespace Slp.r2rml4net.Storage
         /// <remarks>Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.</remarks>
         public IEnumerable<Uri> ListGraphs()
         {
-            var result = this.Query("SELECT DISTINCT ?graph WHERE { GRAPH ?graph {}}");
+            var result = Query("SELECT DISTINCT ?graph WHERE { GRAPH ?graph {}}");
 
             if (result is SparqlResultSet)
             {
@@ -152,11 +142,11 @@ namespace Slp.r2rml4net.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(handler, (Uri)null);
+                LoadGraph(handler, (Uri)null);
             }
             else
             {
-                this.LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -172,11 +162,13 @@ namespace Slp.r2rml4net.Storage
             if (graphUri == null)
                 throw new ArgumentException("Graph uri cannot be null  or empty", "graphUri");
 
-            SparqlParameterizedString queryString = new SparqlParameterizedString();
-            queryString.CommandText = "CONSTRUCT { ?s ?p ?o } FROM @graph WHERE { ?s ?p ?o }";
+            SparqlParameterizedString queryString = new SparqlParameterizedString
+            {
+                CommandText = "CONSTRUCT { ?s ?p ?o } FROM @graph WHERE { ?s ?p ?o }"
+            };
             queryString.SetUri("graph", graphUri);
 
-            this.Query(handler, new ResultSetHandler(new SparqlResultSet()), queryString.ToString());
+            Query(handler, new ResultSetHandler(new SparqlResultSet()), queryString.ToString());
         }
 
         /// <summary>
@@ -194,11 +186,11 @@ namespace Slp.r2rml4net.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(g, (Uri)null);
+                LoadGraph(g, (Uri)null);
             }
             else
             {
-                this.LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -220,7 +212,7 @@ namespace Slp.r2rml4net.Storage
                 g.BaseUri = graphUri;
             }
 
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>

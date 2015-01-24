@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
-using Slp.r2rml4net.Storage.Sql.Binders;
-using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
 {

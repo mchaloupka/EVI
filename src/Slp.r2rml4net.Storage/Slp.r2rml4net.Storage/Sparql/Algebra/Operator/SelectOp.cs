@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
@@ -17,7 +14,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <summary>
         /// The variables
         /// </summary>
-        private List<SparqlVariable> variables;
+        private readonly List<SparqlVariable> _variables;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectOp"/> class.
@@ -25,8 +22,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="innerQuery">The inner query.</param>
         public SelectOp(ISparqlQuery innerQuery)
         {
-            this.InnerQuery = innerQuery;
-            this.variables = null;
+            InnerQuery = innerQuery;
+            _variables = null;
         }
 
         /// <summary>
@@ -34,23 +31,23 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// </summary>
         /// <param name="innerQuery">The inner query.</param>
         /// <param name="variables">The variables.</param>
-        public SelectOp(ISparqlQuery innerQuery, IEnumerable<VDS.RDF.Query.SparqlVariable> variables)
+        public SelectOp(ISparqlQuery innerQuery, IEnumerable<SparqlVariable> variables)
         {
-            this.InnerQuery = innerQuery;
-            this.variables = variables.ToList();
+            InnerQuery = innerQuery;
+            _variables = variables.ToList();
         }
 
         /// <summary>
         /// Gets a value indicating whether this instance is select all.
         /// </summary>
         /// <value><c>true</c> if this instance is select all; otherwise, <c>false</c>.</value>
-        public bool IsSelectAll { get { return variables == null; } }
+        public bool IsSelectAll { get { return _variables == null; } }
 
         /// <summary>
         /// Gets the variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<SparqlVariable> Variables { get { return variables; } }
+        public IEnumerable<SparqlVariable> Variables { get { return _variables; } }
 
         /// <summary>
         /// Gets the inner query.

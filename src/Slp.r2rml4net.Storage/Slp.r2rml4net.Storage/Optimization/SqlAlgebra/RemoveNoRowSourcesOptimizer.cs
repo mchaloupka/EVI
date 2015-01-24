@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
@@ -21,7 +20,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="algebra">The algebra.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The processed algebra.</returns>
-        public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, Query.QueryContext context)
+        public INotSqlOriginalDbSource ProcessAlgebra(INotSqlOriginalDbSource algebra, QueryContext context)
         {
             return (INotSqlOriginalDbSource)algebra.Accept(this, context);
         }
@@ -108,7 +107,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             return sqlStatement;
         }
@@ -119,7 +118,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             return sqlTable;
         }

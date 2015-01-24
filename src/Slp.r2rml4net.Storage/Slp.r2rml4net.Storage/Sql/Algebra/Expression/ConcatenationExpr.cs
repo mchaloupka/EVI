@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -15,7 +12,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// The parts
         /// </summary>
-        private List<IExpression> parts;
+        private readonly List<IExpression> _parts;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcatenationExpr"/> class.
@@ -23,14 +20,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="parts">The parts.</param>
         public ConcatenationExpr(IEnumerable<IExpression> parts)
         {
-            this.parts = parts.ToList();
+            _parts = parts.ToList();
         }
 
         /// <summary>
         /// Gets the parts.
         /// </summary>
         /// <value>The parts.</value>
-        public IEnumerable<IExpression> Parts { get { return parts; } }
+        public IEnumerable<IExpression> Parts { get { return _parts; } }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -50,7 +47,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            var newParts = this.parts.Select(x => (IExpression)x.Clone());
+            var newParts = _parts.Select(x => (IExpression)x.Clone());
 
             return new ConcatenationExpr(newParts);
         }
@@ -62,10 +59,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="newPart">The new part.</param>
         public void ReplacePart(IExpression part, IExpression newPart)
         {
-            int index = parts.IndexOf(part);
+            int index = _parts.IndexOf(part);
 
             if (index > -1)
-                parts[index] = newPart;
+                _parts[index] = newPart;
         }
     }
 }

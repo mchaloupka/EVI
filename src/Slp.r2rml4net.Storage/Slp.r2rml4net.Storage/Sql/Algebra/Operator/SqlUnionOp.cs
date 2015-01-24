@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
+using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
@@ -17,27 +14,27 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// The columns
         /// </summary>
-        private List<SqlUnionColumn> columns;
+        private readonly List<SqlUnionColumn> _columns;
 
         /// <summary>
         /// The sources
         /// </summary>
-        private List<SqlSelectOp> sources;
+        private readonly List<SqlSelectOp> _sources;
 
         /// <summary>
         /// The value binders
         /// </summary>
-        private List<IBaseValueBinder> valueBinders;
+        private readonly List<IBaseValueBinder> _valueBinders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlUnionOp"/> class.
         /// </summary>
         public SqlUnionOp()
         {
-            this.CaseColumn = new SqlUnionColumn(this);
-            this.columns = new List<SqlUnionColumn>();
-            this.sources = new List<SqlSelectOp>();
-            this.valueBinders = new List<IBaseValueBinder>();
+            CaseColumn = new SqlUnionColumn(this);
+            _columns = new List<SqlUnionColumn>();
+            _sources = new List<SqlSelectOp>();
+            _valueBinders = new List<IBaseValueBinder>();
         }
 
         /// <summary>
@@ -60,9 +57,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         {
             get
             {
-                yield return this.CaseColumn;
+                yield return CaseColumn;
 
-                foreach (var col in this.columns)
+                foreach (var col in _columns)
                     yield return col;
             }
         }
@@ -73,7 +70,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="select">The select.</param>
         public void AddSource(SqlSelectOp select)
         {
-            this.sources.Add(select);
+            _sources.Add(select);
         }
 
         /// <summary>
@@ -82,7 +79,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void AddValueBinder(IBaseValueBinder valueBinder)
         {
-            this.valueBinders.Add(valueBinder);
+            _valueBinders.Add(valueBinder);
         }
 
         /// <summary>
@@ -92,10 +89,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="newBinder">The new binder.</param>
         public void ReplaceValueBinder(IBaseValueBinder oldBinder, IBaseValueBinder newBinder)
         {
-            var index = this.valueBinders.IndexOf(oldBinder);
+            var index = _valueBinders.IndexOf(oldBinder);
 
             if (index > -1)
-                this.valueBinders[index] = newBinder;
+                _valueBinders[index] = newBinder;
         }
 
         /// <summary>
@@ -104,10 +101,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void RemoveValueBinder(IBaseValueBinder valueBinder)
         {
-            var index = this.valueBinders.IndexOf(valueBinder);
+            var index = _valueBinders.IndexOf(valueBinder);
 
             if (index > -1)
-                this.valueBinders.RemoveAt(index);
+                _valueBinders.RemoveAt(index);
         }
 
         /// <summary>
@@ -116,7 +113,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <value>The value binders.</value>
         public IEnumerable<IBaseValueBinder> ValueBinders
         {
-            get { return this.valueBinders; }
+            get { return _valueBinders; }
         }
 
         /// <summary>
@@ -126,7 +123,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         public SqlUnionColumn GetUnionedColumn()
         {
             var col = new SqlUnionColumn(this);
-            this.columns.Add(col);
+            _columns.Add(col);
             return col;
         }
 
@@ -134,7 +131,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// Gets the sources.
         /// </summary>
         /// <value>The sources.</value>
-        public IEnumerable<SqlSelectOp> Sources { get { return sources; } }
+        public IEnumerable<SqlSelectOp> Sources { get { return _sources; } }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -156,7 +153,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         {
             if(col is SqlUnionColumn)
             {
-                this.columns.Remove((SqlUnionColumn)col);
+                _columns.Remove((SqlUnionColumn)col);
             }
         }
 
@@ -168,11 +165,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         {
             if (source is SqlSelectOp)
             {
-                this.sources.Remove((SqlSelectOp)source);
+                _sources.Remove((SqlSelectOp)source);
 
-                List<SqlUnionColumn> colToDelete = new List<SqlUnionColumn>();
-
-                foreach (var col in this.columns)
+                foreach (var col in _columns)
                 {
                     var containedColumns = col.OriginalColumns.Where(x => x.Source == source).ToList();
 
@@ -182,7 +177,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
                     }
                 }
                 
-                foreach (var valBinder in this.valueBinders.Cast<CaseValueBinder>())
+                foreach (var valBinder in _valueBinders.Cast<CaseValueBinder>())
                 {
                     var sourceStatements = valBinder.Statements.Where(x => x.Condition.GetAllReferencedColumns().All(y => y.Source == source)).ToList();
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
+﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     /// <summary>
     /// Column containing an expression
@@ -18,8 +12,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="source">The source.</param>
         public SqlExpressionColumn(IExpression expression, ISqlSource source)
         {
-            this.Expression = expression;
-            this.Source = source;
+            Expression = expression;
+            Source = source;
         }
 
         /// <summary>

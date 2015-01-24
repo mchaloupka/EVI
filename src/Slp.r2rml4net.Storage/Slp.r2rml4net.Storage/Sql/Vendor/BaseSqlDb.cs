@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra;
-using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
-using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 
@@ -21,20 +15,20 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <summary>
         /// The query builder
         /// </summary>
-        private BaseSqlQueryBuilder queryBuilder;
+        private readonly BaseSqlQueryBuilder _queryBuilder;
 
         /// <summary>
         /// The name generator
         /// </summary>
-        private BaseSqlNameGenerator nameGenerator;
+        private readonly BaseSqlNameGenerator _nameGenerator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlDb"/> class.
         /// </summary>
-        public BaseSqlDb(Slp.r2rml4net.Storage.Bootstrap.ISqlDbFactory factory)
+        protected BaseSqlDb(ISqlDbFactory factory)
         {
-            this.queryBuilder = factory.CreateSQLQueryBuilder();
-            this.nameGenerator = factory.CreateNameGenerator();
+            _queryBuilder = factory.CreateSqlQueryBuilder();
+            _nameGenerator = factory.CreateNameGenerator();
         }
 
         /// <summary>
@@ -53,9 +47,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <returns>The SQL query</returns>
         public string GenerateQuery(INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
         {
-            this.nameGenerator.GenerateNames(sqlAlgebra, context);
+            _nameGenerator.GenerateNames(sqlAlgebra, context);
 
-            return this.queryBuilder.GenerateQuery(sqlAlgebra, context);
+            return _queryBuilder.GenerateQuery(sqlAlgebra, context);
         }
 
         /// <summary>

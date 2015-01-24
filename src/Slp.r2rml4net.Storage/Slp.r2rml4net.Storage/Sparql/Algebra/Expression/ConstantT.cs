@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS.RDF.Nodes;
+﻿using VDS.RDF.Nodes;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
 {
@@ -18,7 +13,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
         /// <param name="node">The node.</param>
         public ConstantT(IValuedNode node)
         {
-            this.Node = node;
+            Node = node;
         }
 
         /// <summary>

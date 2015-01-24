@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
@@ -50,7 +46,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        object Visit(Source.SqlStatement sqlStatement, object data);
+        object Visit(SqlStatement sqlStatement, object data);
 
         /// <summary>
         /// Visits the specified SQL table.
@@ -58,6 +54,6 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        object Visit(Source.SqlTable sqlTable, object data);
+        object Visit(SqlTable sqlTable, object data);
     }
 }

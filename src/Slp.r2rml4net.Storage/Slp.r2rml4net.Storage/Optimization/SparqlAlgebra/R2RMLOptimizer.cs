@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
-using Slp.r2rml4net.Storage.Utils;
-using Slp.r2rml4net.Storage.Mapping.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
     /// <summary>
     /// R2RML mapping optimization
     /// </summary>
-    public class R2RMLOptimizer : ISparqlAlgebraOptimizer
+    public class R2RmlOptimizer : ISparqlAlgebraOptimizer
     {
         /// <summary>
         /// Processes the algebra.
@@ -82,9 +79,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             if (pattern is NodeMatchPattern)
             {
                 var nmp = (NodeMatchPattern)pattern;
-                var r2rmlDef = (ITermMap)bgpOp.R2RMLPredicateMap;
+                var r2RmlDef = (ITermMap)bgpOp.R2RmlPredicateMap;
 
-                return CanMatch(nmp, r2rmlDef);
+                return CanMatch(nmp, r2RmlDef);
             }
 
             return true;
@@ -103,9 +100,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             if(pattern is NodeMatchPattern)
             {
                 var nmp = (NodeMatchPattern)pattern;
-                var r2rmlDef = (ITermMap)bgpOp.R2RMLSubjectMap;
+                var r2RmlDef = (ITermMap)bgpOp.R2RmlSubjectMap;
 
-                return CanMatch(nmp, r2rmlDef);
+                return CanMatch(nmp, r2RmlDef);
             }
 
             return true;
@@ -121,16 +118,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         private bool CanObjectMatch(BgpOp bgpOp, QueryContext context)
         {
             var pattern = bgpOp.ObjectPattern;
-            ITermMap r2rmlDef = null;
+            ITermMap r2RmlDef;
 
-            if(bgpOp.R2RMLObjectMap != null)
+            if(bgpOp.R2RmlObjectMap != null)
             {
-                r2rmlDef = bgpOp.R2RMLObjectMap;
+                r2RmlDef = bgpOp.R2RmlObjectMap;
             }
-            else if(bgpOp.R2RMLRefObjectMap != null)
+            else if(bgpOp.R2RmlRefObjectMap != null)
             {
-                var parentTriples = bgpOp.R2RMLRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
-                r2rmlDef = parentTriples.SubjectMap;
+                var parentTriples = bgpOp.R2RmlRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
+                r2RmlDef = parentTriples.SubjectMap;
             }
             else
             {
@@ -139,7 +136,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             
             if(pattern is NodeMatchPattern)
             {
-                return CanMatch((NodeMatchPattern)pattern, r2rmlDef);
+                return CanMatch((NodeMatchPattern)pattern, r2RmlDef);
             }
 
             return true;
@@ -149,18 +146,18 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// Determines whether the pattern can match the mapping.
         /// </summary>
         /// <param name="nmp">The pattern.</param>
-        /// <param name="r2rmlTerm">The R2RML mapping.</param>
+        /// <param name="r2RmlTerm">The R2RML mapping.</param>
         /// <returns><c>true</c> if the pattern can match the mapping; otherwise, <c>false</c>.</returns>
         /// <exception cref="System.Exception">IObjectMap must have URI or Literal assigned.</exception>
-        private bool CanMatch(NodeMatchPattern nmp, ITermMap r2rmlTerm)
+        private bool CanMatch(NodeMatchPattern nmp, ITermMap r2RmlTerm)
         {
             var node = nmp.Node;
             
-            if (r2rmlTerm.IsConstantValued)
+            if (r2RmlTerm.IsConstantValued)
             {
-                if (r2rmlTerm is IUriValuedTermMap)
+                if (r2RmlTerm is IUriValuedTermMap)
                 {
-                    var uriValued = (IUriValuedTermMap)r2rmlTerm;
+                    var uriValued = (IUriValuedTermMap)r2RmlTerm;
                     
                     if (node is UriNode)
                     {
@@ -173,9 +170,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                         return false;
                     }
                 }
-                else if (r2rmlTerm is IObjectMap)
+                else if (r2RmlTerm is IObjectMap)
                 {
-                    var objectMap = (IObjectMap)r2rmlTerm;
+                    var objectMap = (IObjectMap)r2RmlTerm;
 
                     if (objectMap.URI != null)
                     {

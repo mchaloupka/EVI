@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
@@ -18,19 +16,6 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class BaseSqlQueryBuilder : ISqlSourceVisitor, IConditionVisitor, IExpressionVisitor
     {
         /// <summary>
-        /// The default SQL database factory
-        /// </summary>
-        private Bootstrap.ISqlDbFactory sqlDbFactory;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseSqlQueryBuilder"/> class.
-        /// </summary>
-        /// <param name="sqlDbFactory">The SQL database factory.</param>
-        public BaseSqlQueryBuilder(Bootstrap.ISqlDbFactory sqlDbFactory)
-        {
-            this.sqlDbFactory = sqlDbFactory;
-        }
-        /// <summary>
         /// Generates the query.
         /// </summary>
         /// <param name="sqlSource">The SQL source.</param>
@@ -40,7 +25,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var vContext = new VisitorContext(new StringBuilder(), context);
             sqlSource.Accept(this, vContext);
-            return vContext.SB.ToString();
+            return vContext.Sb.ToString();
         }
 
         /// <summary>
@@ -55,15 +40,15 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <param name="context">The context.</param>
             public VisitorContext(StringBuilder sb, QueryContext context)
             {
-                this.SB = sb;
-                this.Context = context;
+                Sb = sb;
+                Context = context;
             }
 
             /// <summary>
             /// Gets the string builder.
             /// </summary>
             /// <value>The string builder.</value>
-            public StringBuilder SB { get; private set; }
+            public StringBuilder Sb { get; private set; }
 
             /// <summary>
             /// Gets the context.
@@ -108,17 +93,17 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var context = (VisitorContext)data;
 
-            context.SB.Append("SELECT");
+            context.Sb.Append("SELECT");
 
             if(sqlSelectOp.IsDistinct)
             {
-                context.SB.Append(" DISTINCT");
+                context.Sb.Append(" DISTINCT");
             }
 
             if (sqlSelectOp.Limit.HasValue && !sqlSelectOp.Offset.HasValue)
             {
-                context.SB.Append(" TOP ");
-                context.SB.Append(sqlSelectOp.Limit.Value);
+                context.Sb.Append(" TOP ");
+                context.Sb.Append(sqlSelectOp.Limit.Value);
             }
 
             var cols = sqlSelectOp.Columns.OrderBy(x => x.Name).ToArray();
@@ -127,34 +112,34 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 for (int i = 0; i < cols.Length; i++)
                 {
                     if (i != 0)
-                        context.SB.Append(",");
-                    context.SB.Append(" ");
+                        context.Sb.Append(",");
+                    context.Sb.Append(" ");
 
                     GenerateSelectColumnQuery(cols[i], context);
                 }
             }
             else
             {
-                context.SB.Append(" NULL AS c");
+                context.Sb.Append(" NULL AS c");
             }
             
 
-            context.SB.Append(" FROM ");
+            context.Sb.Append(" FROM ");
             GenerateInnerQuery(sqlSelectOp.OriginalSource, context);
 
             foreach (var join in sqlSelectOp.JoinSources)
             {
-                context.SB.Append(" INNER JOIN ");
+                context.Sb.Append(" INNER JOIN ");
                 GenerateInnerQuery(join.Source, context);
-                context.SB.Append(" ON ");
+                context.Sb.Append(" ON ");
                 join.Condition.Accept(this, context);
             }
 
             foreach (var join in sqlSelectOp.LeftOuterJoinSources)
             {
-                context.SB.Append(" LEFT OUTER JOIN ");
+                context.Sb.Append(" LEFT OUTER JOIN ");
                 GenerateInnerQuery(join.Source, context);
-                context.SB.Append(" ON ");
+                context.Sb.Append(" ON ");
                 join.Condition.Accept(this, context);
             }
 
@@ -162,14 +147,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             for (int i = 0; i < conditions.Length; i++)
             {
-                if (i == 0)
-                {
-                    context.SB.Append(" WHERE ");
-                }
-                else
-                {
-                    context.SB.Append(" AND ");
-                }
+                context.Sb.Append(i == 0 ? " WHERE " : " AND ");
 
                 conditions[i].Accept(this, context);
             }
@@ -178,25 +156,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             for (int i = 0; i < orderings.Length; i++)
             {
-                if (i == 0)
-                {
-                    context.SB.Append(" ORDER BY ");
-                }
-                else
-                {
-                    context.SB.Append(", ");
-                }
+                context.Sb.Append(i == 0 ? " ORDER BY " : ", ");
 
                 orderings[i].Expression.Accept(this, context);
 
-                if (orderings[i].Descending)
-                {
-                    context.SB.Append(" DESC");
-                }
-                else
-                {
-                    context.SB.Append(" ASC");
-                }
+                context.Sb.Append(orderings[i].Descending ? " DESC" : " ASC");
             }
 
             if (sqlSelectOp.Offset.HasValue)
@@ -204,15 +168,15 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 if (orderings.Length == 0)
                     throw new Exception("To enable limit and offset, it is needed to use also order by clause");
 
-                context.SB.Append(" OFFSET ");
-                context.SB.Append(sqlSelectOp.Offset ?? 0);
-                context.SB.Append(" ROWS");
+                context.Sb.Append(" OFFSET ");
+                context.Sb.Append(sqlSelectOp.Offset ?? 0);
+                context.Sb.Append(" ROWS");
 
                 if (sqlSelectOp.Limit.HasValue)
                 {
-                    context.SB.Append(" FETCH NEXT ");
-                    context.SB.Append(sqlSelectOp.Limit.Value);
-                    context.SB.Append(" ROWS ONLY");
+                    context.Sb.Append(" FETCH NEXT ");
+                    context.Sb.Append(sqlSelectOp.Limit.Value);
+                    context.Sb.Append(" ROWS ONLY");
                 }
             }
 
@@ -235,9 +199,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 if (first)
                     first = false;
                 else if(sqlUnionOp.IsReduced)
-                    context.SB.Append(" UNION ");
+                    context.Sb.Append(" UNION ");
                 else
-                    context.SB.Append(" UNION ALL ");
+                    context.Sb.Append(" UNION ALL ");
 
                 select.Accept(this, context);
             }
@@ -251,10 +215,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append(sqlStatement.SqlQuery);
+            context.Sb.Append(sqlStatement.SqlQuery);
             return null;
         }
 
@@ -264,10 +228,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append(sqlTable.TableName);
+            context.Sb.Append(sqlTable.TableName);
             return null;
         }
 
@@ -280,9 +244,9 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             if (IsDelimiterNeeded(sqlSource))
             {
-                context.SB.Append("(");
+                context.Sb.Append("(");
                 sqlSource.Accept(this, context);
-                context.SB.Append(")");
+                context.Sb.Append(")");
             }
             else
             {
@@ -291,8 +255,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             if (!string.IsNullOrEmpty(sqlSource.Name))
             {
-                context.SB.Append(" AS ");
-                context.SB.Append(sqlSource.Name);
+                context.Sb.Append(" AS ");
+                context.Sb.Append(sqlSource.Name);
             }
         }
 
@@ -324,8 +288,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
             if (!string.IsNullOrEmpty(column.Name))
             {
-                context.SB.Append(" AS ");
-                context.SB.Append(column.Name);
+                context.Sb.Append(" AS ");
+                context.Sb.Append(column.Name);
             }
             else
             {
@@ -342,10 +306,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             if (!string.IsNullOrEmpty(col.Source.Name)) // root is not named
             {
-                context.SB.Append(col.Source.Name);
-                context.SB.Append(".");
+                context.Sb.Append(col.Source.Name);
+                context.Sb.Append(".");
             }
-            context.SB.Append(col.Name);
+            context.Sb.Append(col.Name);
         }
 
         /// <summary>
@@ -369,7 +333,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public object Visit(AlwaysFalseCondition condition, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append("1=0");
+            context.Sb.Append("1=0");
             return null;
         }
 
@@ -382,7 +346,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public object Visit(AlwaysTrueCondition condition, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append("1=1");
+            context.Sb.Append("1=1");
             return null;
         }
 
@@ -399,15 +363,15 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var rightExpr = condition.RightOperand;
 
             // TODO: Decide whether cast needed
-            context.SB.Append("CAST(");
+            context.Sb.Append("CAST(");
             leftExpr.Accept(this, context);
-            context.SB.Append(" AS nvarchar(MAX))");
+            context.Sb.Append(" AS nvarchar(MAX))");
 
-            context.SB.Append("=");
+            context.Sb.Append("=");
 
-            context.SB.Append("CAST(");
+            context.Sb.Append("CAST(");
             rightExpr.Accept(this, context);
-            context.SB.Append(" AS nvarchar(MAX))");
+            context.Sb.Append(" AS nvarchar(MAX))");
 
             return null;
         }
@@ -422,7 +386,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var context = (VisitorContext)data;
             GenerateColumnQuery(condition.Column, context);
-            context.SB.Append(" IS NULL");
+            context.Sb.Append(" IS NULL");
             return null;
         }
 
@@ -435,7 +399,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public object Visit(NotCondition condition, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append("NOT ");
+            context.Sb.Append("NOT ");
             condition.InnerCondition.Accept(this, context);
             return null;
         }
@@ -465,11 +429,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 for (int i = 0; i < conditions.Length; i++)
                 {
                     if (i > 0)
-                        context.SB.Append(" AND ");
+                        context.Sb.Append(" AND ");
 
-                    context.SB.Append("(");
+                    context.Sb.Append("(");
                     conditions[i].Accept(this, context);
-                    context.SB.Append(")");
+                    context.Sb.Append(")");
                 }
             }
 
@@ -501,11 +465,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                 for (int i = 0; i < conditions.Length; i++)
                 {
                     if (i > 0)
-                        context.SB.Append(" OR ");
+                        context.Sb.Append(" OR ");
 
-                    context.SB.Append("(");
+                    context.Sb.Append("(");
                     conditions[i].Accept(this, context);
-                    context.SB.Append(")");
+                    context.Sb.Append(")");
                 }
             }
 
@@ -536,7 +500,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public object Visit(ConstantExpr expression, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append(expression.SqlString);
+            context.Sb.Append(expression.SqlString);
             return null;
         }
 
@@ -550,21 +514,21 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var context = (VisitorContext)data;
 
-            context.SB.Append("CONCAT(");
+            context.Sb.Append("CONCAT(");
 
             var parts = expression.Parts.ToArray();
 
             for (int i = 0; i < parts.Length; i++)
             {
                 if (i > 0)
-                    context.SB.Append(", ");
+                    context.Sb.Append(", ");
 
-                context.SB.Append("CAST(");
+                context.Sb.Append("CAST(");
                 parts[i].Accept(this, context);
-                context.SB.Append(" AS nvarchar(MAX))");
+                context.Sb.Append(" AS nvarchar(MAX))");
             }
 
-            context.SB.Append(")");
+            context.Sb.Append(")");
 
             return null;
         }
@@ -578,7 +542,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public object Visit(NullExpr nullExpr, object data)
         {
             var context = (VisitorContext)data;
-            context.SB.Append("NULL");
+            context.Sb.Append("NULL");
             return null;
         }
 
@@ -592,19 +556,19 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var context = (VisitorContext)data;
 
-            context.SB.Append("COALESCE(");
+            context.Sb.Append("COALESCE(");
 
             var inners = collateExpr.Expressions.ToArray();
 
             for (int i = 0; i < inners.Length; i++)
             {
                 if (i > 0)
-                    context.SB.Append(", ");
+                    context.Sb.Append(", ");
 
                 inners[i].Accept(this, data);
             }
 
-            context.SB.Append(")");
+            context.Sb.Append(")");
 
             return null;
         }
@@ -619,17 +583,17 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         {
             var context = (VisitorContext)data;
 
-            context.SB.Append("CASE");
+            context.Sb.Append("CASE");
 
             foreach (var statement in caseExpr.Statements)
             {
-                context.SB.Append(" WHEN ");
+                context.Sb.Append(" WHEN ");
                 statement.Condition.Accept(this, data);
-                context.SB.Append(" THEN ");
+                context.Sb.Append(" THEN ");
                 statement.Expression.Accept(this, data);
             }
 
-            context.SB.Append(" END");
+            context.Sb.Append(" END");
 
             return null;
         }

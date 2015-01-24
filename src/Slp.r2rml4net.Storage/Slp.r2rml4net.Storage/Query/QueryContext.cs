@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -22,32 +19,32 @@ namespace Slp.r2rml4net.Storage.Query
         /// <summary>
         /// The used SQL source names set.
         /// </summary>
-        private HashSet<string> usedSqlSourceNames;
+        private readonly HashSet<string> _usedSqlSourceNames;
 
         /// <summary>
         /// The blank nodes subjects.
         /// </summary>
-        private Dictionary<string, INode> blankNodesSubjects;
+        private readonly Dictionary<string, INode> _blankNodesSubjects;
 
         /// <summary>
         /// The blank nodes objects.
         /// </summary>
-        private Dictionary<string, INode> blankNodesObjects;
+        private readonly Dictionary<string, INode> _blankNodesObjects;
 
         /// <summary>
         /// The used variables
         /// </summary>
-        private HashSet<string> usedVariables;
+        private readonly HashSet<string> _usedVariables;
 
         /// <summary>
         /// The sparql algebra optimizers on the fly
         /// </summary>
-        private ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly;
+        private readonly ISparqlAlgebraOptimizerOnTheFly[] _sparqlAlgebraOptimizerOnTheFly;
 
         /// <summary>
         /// The SQL algebra optimizers on the fly
         /// </summary>
-        private ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly;
+        private readonly ISqlAlgebraOptimizerOnTheFly[] _sqlAlgebraOptimizerOnTheFly;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext"/> class.
@@ -60,17 +57,17 @@ namespace Slp.r2rml4net.Storage.Query
         /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizer on the fly.</param>
         public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly)
         {
-            this.OriginalQuery = originalQuery;
-            this.OriginalAlgebra = originalQuery.ToAlgebra();
-            this.NodeFactory = nodeFactory;
-            this.Db = db;
-            this.Mapping = mapping;
-            this.usedSqlSourceNames = new HashSet<string>();
-            this.blankNodesSubjects = new Dictionary<string, INode>();
-            this.blankNodesObjects = new Dictionary<string, INode>();
-            this.usedVariables = new HashSet<string>(this.OriginalAlgebra.Variables);
-            this.sparqlAlgebraOptimizerOnTheFly = sparqlAlgebraOptimizerOnTheFly;
-            this.sqlAlgebraOptimizerOnTheFly = sqlAlgebraOptimizerOnTheFly;
+            OriginalQuery = originalQuery;
+            OriginalAlgebra = originalQuery.ToAlgebra();
+            NodeFactory = nodeFactory;
+            Db = db;
+            Mapping = mapping;
+            _usedSqlSourceNames = new HashSet<string>();
+            _blankNodesSubjects = new Dictionary<string, INode>();
+            _blankNodesObjects = new Dictionary<string, INode>();
+            _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
+            _sparqlAlgebraOptimizerOnTheFly = sparqlAlgebraOptimizerOnTheFly;
+            _sqlAlgebraOptimizerOnTheFly = sqlAlgebraOptimizerOnTheFly;
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <returns><c>true</c> if the specified name is already used SQL source name; otherwise, <c>false</c>.</returns>
         public bool IsAlreadyUsedSqlSourceName(string name)
         {
-            return usedSqlSourceNames.Contains(name);
+            return _usedSqlSourceNames.Contains(name);
         }
 
         /// <summary>
@@ -120,13 +117,13 @@ namespace Slp.r2rml4net.Storage.Query
         /// <exception cref="System.ArgumentException">This sql source name already used;name</exception>
         public void RegisterUsedSqlSourceName(string name)
         {
-            if (usedSqlSourceNames.Contains(name))
+            if (_usedSqlSourceNames.Contains(name))
             {
                 throw new ArgumentException("This sql source name already used", "name");
             }
             else
             {
-                usedSqlSourceNames.Add(name);
+                _usedSqlSourceNames.Add(name);
             }
         }
 
@@ -140,12 +137,12 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var sVal = value.ToString();
 
-            if (!blankNodesSubjects.ContainsKey(sVal))
+            if (!_blankNodesSubjects.ContainsKey(sVal))
             {
-                blankNodesSubjects.Add(sVal, factory.CreateBlankNode());
+                _blankNodesSubjects.Add(sVal, factory.CreateBlankNode());
             }
 
-            return blankNodesSubjects[sVal];
+            return _blankNodesSubjects[sVal];
         }
 
         /// <summary>
@@ -158,12 +155,12 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var sVal = value.ToString();
 
-            if (!blankNodesObjects.ContainsKey(sVal))
+            if (!_blankNodesObjects.ContainsKey(sVal))
             {
-                blankNodesObjects.Add(sVal, factory.CreateBlankNode());
+                _blankNodesObjects.Add(sVal, factory.CreateBlankNode());
             }
 
-            return blankNodesObjects[sVal];
+            return _blankNodesObjects[sVal];
         }
 
         /// <summary>
@@ -175,7 +172,7 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var currentAlgebra = algebra;
 
-            foreach (var optimizer in sqlAlgebraOptimizerOnTheFly)
+            foreach (var optimizer in _sqlAlgebraOptimizerOnTheFly)
             {
                 currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
             }
@@ -192,7 +189,7 @@ namespace Slp.r2rml4net.Storage.Query
         {
             var currentAlgebra = algebra;
 
-            foreach (var optimizer in sparqlAlgebraOptimizerOnTheFly)
+            foreach (var optimizer in _sparqlAlgebraOptimizerOnTheFly)
             {
                 currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
             }
@@ -207,14 +204,14 @@ namespace Slp.r2rml4net.Storage.Query
         public string CreateSparqlVariable()
         {
             int counter = 1;
-            string varName = null;
+            string varName;
 
             do
             {
                 varName = string.Format("_:context-autos{0}", counter++);
-            } while (this.usedVariables.Contains(varName));
+            } while (_usedVariables.Contains(varName));
 
-            this.usedVariables.Add(varName);
+            _usedVariables.Add(varName);
             return varName;
         }
     }

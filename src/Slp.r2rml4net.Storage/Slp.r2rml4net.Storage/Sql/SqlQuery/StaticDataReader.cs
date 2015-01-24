@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.SqlQuery
 {
@@ -12,14 +9,9 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
     public class StaticDataReader : IQueryResultReader
     {
         /// <summary>
-        /// The rows
-        /// </summary>
-        private IEnumerable<StaticDataReaderRow> rows;
-
-        /// <summary>
         /// The enumerator
         /// </summary>
-        private IEnumerator<StaticDataReaderRow> enumerator;
+        private readonly IEnumerator<StaticDataReaderRow> _enumerator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StaticDataReader"/> class.
@@ -35,9 +27,8 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <param name="rows">The rows.</param>
         public StaticDataReader(IEnumerable<StaticDataReaderRow> rows)
         {
-            this.rows = rows;
-            this.enumerator = this.rows.GetEnumerator();
-            this.HasNextRow = this.enumerator.MoveNext();
+            _enumerator = rows.GetEnumerator();
+            HasNextRow = _enumerator.MoveNext();
         }
 
         /// <summary>
@@ -52,15 +43,15 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <returns>Readed row, <c>null</c> if there is no row</returns>
         public IQueryResultRow Read()
         {
-            var current = this.enumerator.Current;
-            this.HasNextRow = this.enumerator.MoveNext();
+            var current = _enumerator.Current;
+            HasNextRow = _enumerator.MoveNext();
             return current;
         }
 
         /// <summary>
         /// The disposed
         /// </summary>
-        bool disposed = false;
+        private bool _disposed;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -77,15 +68,15 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
                 return;
 
             if(disposing)
             {
-                this.enumerator.Dispose();
+                _enumerator.Dispose();
             }
 
-            disposed = true;
+            _disposed = true;
         }
 
         /// <summary>
@@ -116,18 +107,18 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <param name="columns">The columns.</param>
         public StaticDataReaderRow(IEnumerable<StaticDataReaderColumn> columns)
         {
-            this.columns = new Dictionary<string, StaticDataReaderColumn>();
+            _columns = new Dictionary<string, StaticDataReaderColumn>();
 
             foreach (var item in columns)
             {
-                this.columns.Add(item.Name, item);
+                _columns.Add(item.Name, item);
             }
         }
 
         /// <summary>
         /// The columns
         /// </summary>
-        private Dictionary<string, StaticDataReaderColumn> columns;
+        private readonly Dictionary<string, StaticDataReaderColumn> _columns;
 
         /// <summary>
         /// Gets the columns.
@@ -135,7 +126,7 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <value>The columns.</value>
         public IEnumerable<IQueryResultColumn> Columns
         {
-            get { return this.columns.Values; }
+            get { return _columns.Values; }
         }
 
         /// <summary>
@@ -145,8 +136,8 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <returns>IQueryResultColumn.</returns>
         public IQueryResultColumn GetColumn(string columnName)
         {
-            if (this.columns.ContainsKey(columnName))
-                return this.columns[columnName];
+            if (_columns.ContainsKey(columnName))
+                return _columns[columnName];
             else
                 return null;
         }
@@ -164,8 +155,8 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <param name="value">The value.</param>
         public StaticDataReaderColumn(string name, object value)
         {
-            this.Name = name;
-            this.Value = value;
+            Name = name;
+            Value = value;
         }
 
         /// <summary>
@@ -186,8 +177,8 @@ namespace Slp.r2rml4net.Storage.Sql.SqlQuery
         /// <returns><c>true</c> if the value is true, <c>false</c> otherwise.</returns>
         public bool GetBooleanValue()
         {
-            if (this.Value is bool)
-                return (bool)this.Value;
+            if (Value is bool)
+                return (bool)Value;
             else
                 return false;
         }

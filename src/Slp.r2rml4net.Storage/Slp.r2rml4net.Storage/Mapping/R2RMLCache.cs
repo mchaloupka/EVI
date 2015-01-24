@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TCode.r2rml4net.Mapping;
 
 namespace Slp.r2rml4net.Storage.Mapping
@@ -10,29 +7,21 @@ namespace Slp.r2rml4net.Storage.Mapping
     /// <summary>
     /// Cache for R2RML
     /// </summary>
-    public class R2RMLCache
+    public class R2RmlCache
     {
         /// <summary>
-        /// The mapping processor
+        /// Initializes a new instance of the <see cref="R2RmlCache"/> class.
         /// </summary>
-        private MappingProcessor mappingProcessor;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="R2RMLCache"/> class.
-        /// </summary>
-        /// <param name="mappingProcessor">The mapping processor.</param>
-        public R2RMLCache(MappingProcessor mappingProcessor)
+        public R2RmlCache()
         {
-            this.mappingProcessor = mappingProcessor;
-
-            this.sqlStatementCache = new CacheDictionary<ITriplesMap,string>(x => x.SqlQuery);
-            this.sqlTableCache = new CacheDictionary<ITriplesMap, string>(x => x.TableName);
+            _sqlStatementCache = new CacheDictionary<ITriplesMap,string>(x => x.SqlQuery);
+            _sqlTableCache = new CacheDictionary<ITriplesMap, string>(x => x.TableName);
         }
 
         /// <summary>
         /// The SQL statement cache
         /// </summary>
-        private CacheDictionary<ITriplesMap, string> sqlStatementCache;
+        private readonly CacheDictionary<ITriplesMap, string> _sqlStatementCache;
 
         /// <summary>
         /// Gets the SQL statement.
@@ -41,13 +30,13 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// <returns>SQL statement</returns>
         public string GetSqlStatement(ITriplesMap triplesMap)
         {
-            return this.sqlStatementCache.GetValueFor(triplesMap);
+            return _sqlStatementCache.GetValueFor(triplesMap);
         }
 
         /// <summary>
         /// The SQL table cache
         /// </summary>
-        private CacheDictionary<ITriplesMap, string> sqlTableCache;
+        private readonly CacheDictionary<ITriplesMap, string> _sqlTableCache;
 
         /// <summary>
         /// Gets the SQL table.
@@ -56,34 +45,34 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// <returns>SQL table name</returns>
         public string GetSqlTable(ITriplesMap triplesMap)
         {
-            return this.sqlTableCache.GetValueFor(triplesMap);
+            return _sqlTableCache.GetValueFor(triplesMap);
         }
 
         /// <summary>
         /// Cache dictionary
         /// </summary>
-        /// <typeparam name="K">Key type</typeparam>
+        /// <typeparam name="TK">Key type</typeparam>
         /// <typeparam name="T">Value type</typeparam>
-        private class CacheDictionary<K, T>
+        private class CacheDictionary<TK, T>
         {
             /// <summary>
             /// The get value function
             /// </summary>
-            private Func<K, T> getFunc;
+            private readonly Func<TK, T> _getFunc;
 
             /// <summary>
             /// The cache
             /// </summary>
-            private Dictionary<K, T> cache;
+            private readonly Dictionary<TK, T> _cache;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="CacheDictionary{K, T}"/> class.
             /// </summary>
             /// <param name="getFunc">The get value from key function.</param>
-            public CacheDictionary(Func<K, T> getFunc)
+            public CacheDictionary(Func<TK, T> getFunc)
             {
-                this.getFunc = getFunc;
-                this.cache = new Dictionary<K, T>();
+                _getFunc = getFunc;
+                _cache = new Dictionary<TK, T>();
             }
 
             /// <summary>
@@ -91,14 +80,14 @@ namespace Slp.r2rml4net.Storage.Mapping
             /// </summary>
             /// <param name="key">The key.</param>
             /// <returns>The value.</returns>
-            public T GetValueFor(K key)
+            public T GetValueFor(TK key)
             {
-                if (!this.cache.ContainsKey(key))
+                if (!_cache.ContainsKey(key))
                 {
-                    this.cache.Add(key, this.getFunc(key));
+                    _cache.Add(key, _getFunc(key));
                 }
 
-                return this.cache[key];
+                return _cache[key];
             }
         }
     }

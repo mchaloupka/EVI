@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
 {
@@ -16,14 +13,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <summary>
         /// The unioned queries.
         /// </summary>
-        private List<ISparqlQuery> unioned;
+        private readonly List<ISparqlQuery> _unioned;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnionOp"/> class.
         /// </summary>
         public UnionOp()
         {
-            unioned = new List<ISparqlQuery>();
+            _unioned = new List<ISparqlQuery>();
         }
 
         /// <summary>
@@ -36,12 +33,12 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
             {
                 foreach (var inner in ((UnionOp)sparqlQuery).GetInnerQueries())
                 {
-                    unioned.Add(inner);
+                    _unioned.Add(inner);
                 }
             }
             else
             {
-                unioned.Add(sparqlQuery);
+                _unioned.Add(sparqlQuery);
             }
         }
 
@@ -51,7 +48,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>The inner queries.</returns>
         public IEnumerable<ISparqlQuery> GetInnerQueries()
         {
-            return unioned.AsEnumerable();
+            return _unioned.AsEnumerable();
         }
 
 
@@ -62,17 +59,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="newQuery">The new query.</param>
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            var i = unioned.IndexOf(originalQuery);
+            var i = _unioned.IndexOf(originalQuery);
 
             if (i > -1)
             {
                 if(newQuery is NoSolutionOp)
                 {
-                    unioned.RemoveAt(i);
+                    _unioned.RemoveAt(i);
                 }
                 else
                 {
-                    unioned[i] = newQuery;
+                    _unioned[i] = newQuery;
                 }
             }
         }
@@ -83,7 +80,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return string.Format("UNION({0})", string.Join(",", unioned));
+            return string.Format("UNION({0})", string.Join(",", _unioned));
         }
 
 
@@ -93,13 +90,13 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>The finalized query.</returns>
         public ISparqlQuery FinalizeAfterTransform()
         {
-            if (unioned.Count == 0)
+            if (_unioned.Count == 0)
             {
                 return new NoSolutionOp();
             }
-            else if (unioned.Count == 1)
+            else if (_unioned.Count == 1)
             {
-                return unioned[0];
+                return _unioned[0];
             }
             else
             {

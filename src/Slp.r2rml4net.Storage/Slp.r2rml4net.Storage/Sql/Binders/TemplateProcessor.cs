@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Binders
 {
@@ -67,7 +65,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             /// <param name="column">The column.</param>
             public ColumnTemplatePart(string column)
             {
-                this.Column = column;
+                Column = column;
             }
 
             /// <summary>
@@ -116,7 +114,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
             /// <param name="text">The text.</param>
             public TextTemplatePart(string text)
             {
-                this.Text = text;
+                Text = text;
             }
 
             /// <summary>

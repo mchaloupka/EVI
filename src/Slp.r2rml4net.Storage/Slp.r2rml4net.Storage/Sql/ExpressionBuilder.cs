@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
@@ -143,7 +141,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// </exception>
         public IExpression CreateExpression(QueryContext context, ValueBinder valueBinder)
         {
-            var map = valueBinder.R2RMLMap;
+            var map = valueBinder.R2RmlMap;
 
             if (map.IsConstantValued)
             {
@@ -163,7 +161,7 @@ namespace Slp.r2rml4net.Storage.Sql
 
                         if (objectMap.Literal.Contains("^^"))
                         {
-                            var split = objectMap.Literal.Split(new string[] { "^^" }, 2, StringSplitOptions.None);
+                            var split = objectMap.Literal.Split(new[] { "^^" }, 2, StringSplitOptions.None);
                             var node = context.NodeFactory.CreateLiteralNode(split[0], UriFactory.Create(split[1]));
                             return CreateExpression(context, node);
                         }

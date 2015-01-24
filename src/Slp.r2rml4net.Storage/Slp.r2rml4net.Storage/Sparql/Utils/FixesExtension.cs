@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace Slp.r2rml4net.Storage.Sparql.Utils
 {
@@ -18,9 +14,9 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// </summary>
         /// <param name="term">The term.</param>
         /// <returns>The node.</returns>
-        public static IValuedNode Node(this VDS.RDF.Query.Expressions.Primary.ConstantTerm term)
+        public static IValuedNode Node(this ConstantTerm term)
         {
-            var property = typeof(VDS.RDF.Query.Expressions.Primary.ConstantTerm).GetProperty("Node", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
+            var property = typeof(ConstantTerm).GetProperty("Node", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
             return (IValuedNode)property.GetValue(term);
         }
     }

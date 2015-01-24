@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TCode.r2rml4net;
 
 namespace Slp.r2rml4net.Storage.Sql.Vendor
@@ -17,22 +15,22 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <summary>
         /// The data reader
         /// </summary>
-        private SqlDataReader dataReader;
+        private SqlDataReader _dataReader;
 
         /// <summary>
         /// The needs dispose action
         /// </summary>
-        private Func<bool> needsDisposeAction;
+        private readonly Func<bool> _needsDisposeAction;
 
         /// <summary>
         /// The dispose action
         /// </summary>
-        private Action disposeAction;
+        private readonly Action _disposeAction;
 
         /// <summary>
         /// The current row
         /// </summary>
-        private IQueryResultRow currentRow;
+        private IQueryResultRow _currentRow;
 
         /// <summary>
         /// Gets the column name unquoted.
@@ -62,10 +60,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="disposeAction">The dispose action.</param>
         public DataReaderWrapper(SqlDataReader dataReader, Func<bool> needsDisposeAction, Action disposeAction)
         {
-            this.dataReader = dataReader;
-            this.needsDisposeAction = needsDisposeAction;
-            this.disposeAction = disposeAction;
-            this.currentRow = null;
+            _dataReader = dataReader;
+            _needsDisposeAction = needsDisposeAction;
+            _disposeAction = disposeAction;
+            _currentRow = null;
 
             Init();
         }
@@ -75,7 +73,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// </summary>
         private void Init()
         {
-            if(this.dataReader.HasRows)
+            if(_dataReader.HasRows)
             {
                 FetchRow();
             }
@@ -86,14 +84,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// </summary>
         private void FetchRow()
         {
-            if (dataReader.Read())
-            {
-                this.currentRow = DataReaderRow.Create(dataReader);
-            }
-            else
-            {
-                this.currentRow = null;
-            }
+            _currentRow = _dataReader.Read() ? DataReaderRow.Create(_dataReader) : null;
         }
 
         /// <summary>
@@ -101,22 +92,22 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// </summary>
         public void Dispose()
         {
-            if(dataReader != null)
+            if(_dataReader != null)
             {
-                dataReader.Close();
-                dataReader.Dispose();
-                dataReader = null;
+                _dataReader.Close();
+                _dataReader.Dispose();
+                _dataReader = null;
             }
 
-            if (needsDisposeAction())
-                disposeAction();
+            if (_needsDisposeAction())
+                _disposeAction();
         }
 
         /// <summary>
         /// Gets a value indicating whether this instance has next row.
         /// </summary>
         /// <value><c>true</c> if this instance has next row; otherwise, <c>false</c>.</value>
-        public bool HasNextRow { get { return currentRow != null; } }
+        public bool HasNextRow { get { return _currentRow != null; } }
 
         /// <summary>
         /// Reads the current row and moves to next one.
@@ -124,7 +115,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <returns>Readed row, <c>null</c> if there is no row</returns>
         public IQueryResultRow Read()
         {
-            var row = this.currentRow;
+            var row = _currentRow;
             FetchRow();
             return row;
         }
@@ -137,7 +128,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <summary>
             /// The columns
             /// </summary>
-            private Dictionary<string, IQueryResultColumn> columns;
+            private readonly Dictionary<string, IQueryResultColumn> _columns;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="DataReaderRow"/> class.
@@ -145,11 +136,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <param name="columns">The columns.</param>
             private DataReaderRow(List<IQueryResultColumn> columns)
             {
-                this.columns = new Dictionary<string, IQueryResultColumn>();
+                _columns = new Dictionary<string, IQueryResultColumn>();
 
                 foreach (var col in columns)
                 {
-                    this.columns.Add(col.Name, col);
+                    _columns.Add(col.Name, col);
                 }
             }
 
@@ -159,7 +150,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <value>The columns.</value>
             public IEnumerable<IQueryResultColumn> Columns
             {
-                get { return columns.Select(x => x.Value); }
+                get { return _columns.Select(x => x.Value); }
             }
 
             /// <summary>
@@ -241,8 +232,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             {
                 var cName = EnsureColumnNameUndelimited(columnName);
 
-                if (columns.ContainsKey(cName))
-                    return columns[cName];
+                if (_columns.ContainsKey(cName))
+                    return _columns[cName];
                 else
                     throw new Exception("Asked for column that is not present");
             }
@@ -256,12 +247,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <summary>
             /// The name
             /// </summary>
-            private string name;
+            private readonly string _name;
 
             /// <summary>
             /// The value
             /// </summary>
-            private object value;
+            private readonly object _value;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="DataReaderColumn"/> class.
@@ -270,25 +261,25 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <param name="value">The value.</param>
             public DataReaderColumn(string name, object value)
             {
-                this.name = name;
+                _name = name;
 
-                if (value is System.DBNull)
-                    this.value = null;
+                if (value is DBNull)
+                    _value = null;
                 else
-                    this.value = value;
+                    _value = value;
             }
 
             /// <summary>
             /// Gets the name.
             /// </summary>
             /// <value>The name.</value>
-            public string Name { get { return name; } }
+            public string Name { get { return _name; } }
 
             /// <summary>
             /// Gets the value.
             /// </summary>
             /// <value>The value.</value>
-            public object Value { get { return value; } }
+            public object Value { get { return _value; } }
 
             /// <summary>
             /// Gets the boolean value.
@@ -297,13 +288,13 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <exception cref="System.Exception">Cannot convert value to boolean</exception>
             public bool GetBooleanValue()
             {
-                if (value is bool)
+                if (_value is bool)
                 {
-                    return (bool)value;
+                    return (bool)_value;
                 }
-                else if(value is int)
+                else if(_value is int)
                 {
-                    return ((int)value) == 1;
+                    return ((int)_value) == 1;
                 }
                 else
                 {

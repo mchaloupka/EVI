@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
+﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     /// <summary>
     /// Conditioned source.
@@ -30,8 +24,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="source">The source.</param>
         public ConditionedSource(ICondition condition, ISqlSource source)
         {
-            this.Condition = condition;
-            this.Source = source;
+            Condition = condition;
+            Source = source;
         }
 
         /// <summary>
@@ -40,7 +34,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="newCondition">The new condition.</param>
         public void ReplaceCondition(ICondition newCondition)
         {
-            this.Condition = newCondition;
+            Condition = newCondition;
         }
     }
 }

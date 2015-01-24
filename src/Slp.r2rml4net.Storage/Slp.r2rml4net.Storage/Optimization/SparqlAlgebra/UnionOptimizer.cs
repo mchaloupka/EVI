@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
@@ -18,14 +15,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <summary>
         /// The join optimizer
         /// </summary>
-        private JoinOptimizer joinOptimizer;
+        private readonly JoinOptimizer _joinOptimizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnionOptimizer"/> class.
         /// </summary>
         public UnionOptimizer()
         {
-            this.joinOptimizer = new JoinOptimizer();
+            _joinOptimizer = new JoinOptimizer();
         }
 
         /// <summary>
@@ -132,9 +129,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 {
                     var bgp = (BgpOp)query;
 
-                    this.joinOptimizer.GetBgpInfo(bgp, leftCartesian.Variables, context);
+                    _joinOptimizer.GetBgpInfo(bgp, leftCartesian.Variables, context);
 
-                    if(!this.joinOptimizer.ProcessBgp(bgp, leftCartesian.Variables, context))
+                    if(!_joinOptimizer.ProcessBgp(bgp, leftCartesian.Variables, context))
                     {
                         leftOk = false;
                         break;
@@ -180,7 +177,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
                     if (bgp != null)
                     {
-                        if (!this.joinOptimizer.ProcessBgp(bgp, cartesian.Variables, context))
+                        if (!_joinOptimizer.ProcessBgp(bgp, cartesian.Variables, context))
                             continue;
                     }
 
@@ -188,7 +185,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
                     if(bgp != null)
                     {
-                        this.joinOptimizer.GetBgpInfo(bgp, cart.Variables, context);
+                        _joinOptimizer.GetBgpInfo(bgp, cart.Variables, context);
                     }
 
                     cart.Queries.Add(query);
@@ -209,8 +206,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             /// </summary>
             public CartesianResult()
             {
-                this.Variables = new Dictionary<string, List<ITermMap>>();
-                this.Queries = new List<ISparqlQuery>();
+                Variables = new Dictionary<string, List<ITermMap>>();
+                Queries = new List<ISparqlQuery>();
             }
 
             /// <summary>
@@ -221,16 +218,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             {
                 var cr = new CartesianResult();
 
-                foreach (var q in this.Queries)
+                foreach (var q in Queries)
                 {
                     cr.Queries.Add(q);
                 }
 
-                foreach (var variable in this.Variables.Keys)
+                foreach (var variable in Variables.Keys)
                 {
                     cr.Variables[variable] = new List<ITermMap>();
 
-                    foreach (var termMap in this.Variables[variable])
+                    foreach (var termMap in Variables[variable])
                     {
                         cr.Variables[variable].Add(termMap);
                     }
@@ -491,7 +488,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             /// <summary>
             /// The visited operators
             /// </summary>
-            private HashSet<ISparqlQuery> visited;
+            private readonly HashSet<ISparqlQuery> _visited;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="VisitData"/> class.
@@ -499,8 +496,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             /// <param name="context">The query context.</param>
             public VisitData(QueryContext context)
             {
-                this.Context = context;
-                this.visited = new HashSet<ISparqlQuery>();
+                Context = context;
+                _visited = new HashSet<ISparqlQuery>();
             }
 
             /// <summary>
@@ -516,7 +513,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             /// <returns><c>true</c> if the specified query is visited; otherwise, <c>false</c>.</returns>
             public bool IsVisited(ISparqlQuery query)
             {
-                return visited.Contains(query);
+                return _visited.Contains(query);
             }
 
             /// <summary>
@@ -525,7 +522,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             /// <param name="query">The query context.</param>
             public void Visit(ISparqlQuery query)
             {
-                visited.Add(query);
+                _visited.Add(query);
             }
         }
     }

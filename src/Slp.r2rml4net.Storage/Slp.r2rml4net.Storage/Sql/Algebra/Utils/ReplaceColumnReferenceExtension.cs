@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
+﻿using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
@@ -45,12 +40,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             /// <summary>
             /// The old column
             /// </summary>
-            private ISqlColumn oldColumn;
+            private readonly ISqlColumn _oldColumn;
 
             /// <summary>
             /// The new column
             /// </summary>
-            private ISqlColumn newColumn;
+            private readonly ISqlColumn _newColumn;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="ReplaceColumnReferenceVisitor"/> class.
@@ -59,8 +54,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             /// <param name="newColumn">The new column.</param>
             public ReplaceColumnReferenceVisitor(ISqlColumn oldColumn, ISqlColumn newColumn)
             {
-                this.oldColumn = oldColumn;
-                this.newColumn = newColumn;
+                _oldColumn = oldColumn;
+                _newColumn = newColumn;
             }
 
             /// <summary>
@@ -122,8 +117,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             /// <returns>Returned value.</returns>
             public object Visit(IsNullCondition condition, object data)
             {
-                if (condition.Column == this.oldColumn)
-                    condition.Column = this.newColumn;
+                if (condition.Column == _oldColumn)
+                    condition.Column = _newColumn;
 
                 return null;
             }
@@ -164,8 +159,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             /// <returns>Returned value.</returns>
             public object Visit(ColumnExpr expression, object data)
             {
-                if (expression.Column == oldColumn)
-                    expression.Column = newColumn;
+                if (expression.Column == _oldColumn)
+                    expression.Column = _newColumn;
 
                 return null;
             }

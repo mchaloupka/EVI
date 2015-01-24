@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
@@ -18,14 +16,14 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <summary>
         /// The binders
         /// </summary>
-        private List<IBaseValueBinder> binders;
+        private readonly List<IBaseValueBinder> _binders;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="CoalesceValueBinder"/> class from being created.
         /// </summary>
         private CoalesceValueBinder()
         {
-            this.binders = new List<IBaseValueBinder>();
+            _binders = new List<IBaseValueBinder>();
         }
 
         /// <summary>
@@ -34,12 +32,12 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="originalValueBinder">The original value binder.</param>
         public CoalesceValueBinder(IBaseValueBinder originalValueBinder)
         {
-            this.binders = new List<IBaseValueBinder>();
+            _binders = new List<IBaseValueBinder>();
 
             if (originalValueBinder is CoalesceValueBinder)
-                this.binders.AddRange(((CoalesceValueBinder)originalValueBinder).binders);
+                _binders.AddRange(((CoalesceValueBinder)originalValueBinder)._binders);
             else
-                this.binders.Add(originalValueBinder);
+                _binders.Add(originalValueBinder);
         }
 
         /// <summary>
@@ -53,9 +51,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
                 throw new Exception("Cannot collate value binders for different variables");
 
             if (valueBinder is CoalesceValueBinder)
-                this.binders.AddRange(((CoalesceValueBinder)valueBinder).binders);
+                _binders.AddRange(((CoalesceValueBinder)valueBinder)._binders);
             else
-                this.binders.Add(valueBinder);
+                _binders.Add(valueBinder);
         }
 
         /// <summary>
@@ -67,7 +65,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>The node.</returns>
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
-            foreach (var binder in this.binders)
+            foreach (var binder in _binders)
             {
                 var node = binder.LoadNode(factory, row, context);
 
@@ -86,7 +84,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <value>The name of the variable.</value>
         public string VariableName
         {
-            get { return this.binders[0].VariableName; }
+            get { return _binders[0].VariableName; }
         }
 
         /// <summary>
@@ -95,14 +93,14 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <value>The assigned columns.</value>
         public IEnumerable<ISqlColumn> AssignedColumns
         {
-            get { return this.binders.SelectMany(x => x.AssignedColumns).Distinct(); }
+            get { return _binders.SelectMany(x => x.AssignedColumns).Distinct(); }
         }
 
         /// <summary>
         /// Gets the inner binders.
         /// </summary>
         /// <value>The inner binders.</value>
-        public IEnumerable<IBaseValueBinder> InnerBinders { get { return binders; } }
+        public IEnumerable<IBaseValueBinder> InnerBinders { get { return _binders; } }
 
 
         /// <summary>
@@ -112,7 +110,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="newColumn">The new column.</param>
         public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
-            foreach (var binder in binders)
+            foreach (var binder in _binders)
             {
                 binder.ReplaceAssignedColumn(oldColumn, newColumn);
             }
@@ -126,9 +124,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         {
             var newBinder = new CoalesceValueBinder();
 
-            foreach (var binder in this.InnerBinders)
+            foreach (var binder in InnerBinders)
             {
-                newBinder.binders.Add((IBaseValueBinder)binder.Clone());
+                newBinder._binders.Add((IBaseValueBinder)binder.Clone());
             }
 
             return newBinder;
@@ -153,10 +151,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="newBinder">The new binder.</param>
         public void ReplaceValueBinder(IBaseValueBinder binder, IBaseValueBinder newBinder)
         {
-            var index = this.binders.IndexOf(binder);
+            var index = _binders.IndexOf(binder);
 
             if (index > -1)
-                this.binders[index] = newBinder;
+                _binders[index] = newBinder;
         }
 
         /// <summary>
@@ -165,10 +163,10 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="binder">The binder.</param>
         public void RemoveValueBinder(IBaseValueBinder binder)
         {
-            var index = this.binders.IndexOf(binder);
+            var index = _binders.IndexOf(binder);
 
             if (index > -1)
-                this.binders.RemoveAt(index);
+                _binders.RemoveAt(index);
         }
     }
 }

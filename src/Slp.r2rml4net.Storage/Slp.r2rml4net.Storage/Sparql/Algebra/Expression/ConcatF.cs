@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
 {
@@ -14,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
         /// <summary>
         /// The parts
         /// </summary>
-        private List<ISparqlQueryExpression> parts;
+        private readonly List<ISparqlQueryExpression> _parts;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcatF"/> class.
@@ -22,13 +19,13 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
         /// <param name="parts">The parts.</param>
         public ConcatF(IEnumerable<ISparqlQueryExpression> parts)
         {
-            this.parts = parts.ToList();
+            _parts = parts.ToList();
         }
 
         /// <summary>
         /// Gets the parts.
         /// </summary>
         /// <value>The parts.</value>
-        public IEnumerable<ISparqlQueryExpression> Parts { get { return this.parts; } }
+        public IEnumerable<ISparqlQueryExpression> Parts { get { return _parts; } }
     }
 }

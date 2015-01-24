@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
@@ -23,8 +19,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="expression">The expression.</param>
         public ExpressionValueBinder(string variableName, IExpression expression)
         {
-            this.VariableName = variableName;
-            this.Expression = expression;
+            VariableName = variableName;
+            Expression = expression;
         }
 
         /// <summary>
@@ -37,7 +33,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
             // NOTE: I should work with types
-            var value = this.Expression.StaticEvaluation(row);
+            var value = Expression.StaticEvaluation(row);
 
             if (value != null)
                 return factory.CreateLiteralNode(value.ToString());
@@ -61,9 +57,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// Gets the assigned columns.
         /// </summary>
         /// <value>The assigned columns.</value>
-        public IEnumerable<Algebra.ISqlColumn> AssignedColumns
+        public IEnumerable<ISqlColumn> AssignedColumns
         {
-            get { return this.Expression.GetAllReferencedColumns(); }
+            get { return Expression.GetAllReferencedColumns(); }
         }
 
         /// <summary>
@@ -71,9 +67,9 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// </summary>
         /// <param name="oldColumn">The old column.</param>
         /// <param name="newColumn">The new column.</param>
-        public void ReplaceAssignedColumn(Algebra.ISqlColumn oldColumn, Algebra.ISqlColumn newColumn)
+        public void ReplaceAssignedColumn(ISqlColumn oldColumn, ISqlColumn newColumn)
         {
-            this.Expression.ReplaceColumnReference(oldColumn, newColumn);
+            Expression.ReplaceColumnReference(oldColumn, newColumn);
         }
 
         /// <summary>
@@ -82,7 +78,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new ExpressionValueBinder(this.VariableName, (IExpression)this.Expression.Clone());
+            return new ExpressionValueBinder(VariableName, (IExpression)Expression.Clone());
         }
 
         /// <summary>

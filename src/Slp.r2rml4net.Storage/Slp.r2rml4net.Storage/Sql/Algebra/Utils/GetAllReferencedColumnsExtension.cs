@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 
@@ -16,7 +12,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
         /// <summary>
         /// The visitor
         /// </summary>
-        private static readonly GetAllReferencedColumnsVisitor visitor = new GetAllReferencedColumnsVisitor();
+        private static readonly GetAllReferencedColumnsVisitor Visitor = new GetAllReferencedColumnsVisitor();
 
         /// <summary>
         /// Gets all referenced columns.
@@ -25,7 +21,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
         /// <returns>The referenced columns.</returns>
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this ICondition condition)
         {
-            return (IEnumerable<ISqlColumn>)condition.Accept(visitor, null);
+            return (IEnumerable<ISqlColumn>)condition.Accept(Visitor, null);
         }
 
         /// <summary>
@@ -35,7 +31,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
         /// <returns>The referenced columns.</returns>
         public static IEnumerable<ISqlColumn> GetAllReferencedColumns(this IExpression expression)
         {
-            return (IEnumerable<ISqlColumn>)expression.Accept(visitor, null);
+            return (IEnumerable<ISqlColumn>)expression.Accept(Visitor, null);
         }
 
         /// <summary>

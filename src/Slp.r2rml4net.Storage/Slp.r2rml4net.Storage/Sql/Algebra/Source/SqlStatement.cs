@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 {
@@ -24,14 +22,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// <param name="query">The query.</param>
         public SqlStatement(string query)
         {
-            this.SqlQuery = query;
-            this.columns = new List<SqlTableColumn>();
+            SqlQuery = query;
+            _columns = new List<SqlTableColumn>();
         }
 
         /// <summary>
         /// The columns
         /// </summary>
-        private List<SqlTableColumn> columns;
+        private readonly List<SqlTableColumn> _columns;
 
         /// <summary>
         /// Gets the column.
@@ -40,12 +38,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// <returns>ISqlColumn.</returns>
         public ISqlColumn GetColumn(string columnName)
         {
-            var col = columns.Where(x => x.Name == columnName).FirstOrDefault();
+            var col = _columns.FirstOrDefault(x => x.Name == columnName);
 
             if (col == null)
             {
                 col = new SqlTableColumn(columnName, this);
-                columns.Add(col);
+                _columns.Add(col);
             }
 
             return col;
@@ -64,7 +62,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// <value>The columns.</value>
         public IEnumerable<ISqlColumn> Columns
         {
-            get { return columns.AsEnumerable(); }
+            get { return _columns.AsEnumerable(); }
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// <param name="data">The data.</param>
         /// <returns>The returned value from visitor.</returns>
         [DebuggerStepThrough]
-        public object Accept(Operator.ISqlSourceVisitor visitor, object data)
+        public object Accept(ISqlSourceVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
         }
@@ -87,7 +85,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         {
             if (col is SqlTableColumn)
             {
-                this.columns.Remove((SqlTableColumn)col);
+                _columns.Remove((SqlTableColumn)col);
             }
         }
     }

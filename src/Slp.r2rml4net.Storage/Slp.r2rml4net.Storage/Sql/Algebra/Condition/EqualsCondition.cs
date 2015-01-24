@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
@@ -19,8 +14,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <param name="rightOperand">The right operand.</param>
         public EqualsCondition(IExpression leftOperand, IExpression rightOperand)
         {
-            this.LeftOperand = leftOperand;
-            this.RightOperand = rightOperand;
+            LeftOperand = leftOperand;
+            RightOperand = rightOperand;
         }
 
         /// <summary>
@@ -53,7 +48,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new EqualsCondition((IExpression)this.LeftOperand.Clone(), (IExpression)this.RightOperand.Clone());
+            return new EqualsCondition((IExpression)LeftOperand.Clone(), (IExpression)RightOperand.Clone());
         }
     }
 }

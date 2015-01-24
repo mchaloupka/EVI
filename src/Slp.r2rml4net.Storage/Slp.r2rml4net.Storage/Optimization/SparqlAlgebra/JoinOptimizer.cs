@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
-using TCode.r2rml4net.Mapping;
-using Slp.r2rml4net.Storage.Utils;
-using VDS.RDF.Query.Patterns;
 using Slp.r2rml4net.Storage.Sql.Binders;
-using Slp.r2rml4net.Storage.Mapping.Utils;
+using Slp.r2rml4net.Storage.Utils;
 using TCode.r2rml4net;
+using TCode.r2rml4net.Mapping;
+using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {
@@ -25,13 +23,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// </summary>
         public JoinOptimizer()
         {
-            this.canMatchCache = new Dictionary<ITermMap, Dictionary<ITermMap, bool>>();
+            _canMatchCache = new Dictionary<ITermMap, Dictionary<ITermMap, bool>>();
         }
 
         /// <summary>
         /// The template processor
         /// </summary>
-        private TemplateProcessor templateProcessor = new TemplateProcessor();
+        private readonly TemplateProcessor _templateProcessor = new TemplateProcessor();
 
         /// <summary>
         /// Processes the algebra.
@@ -99,25 +97,25 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         public void GetBgpInfo(BgpOp bgp, Dictionary<string, List<ITermMap>> variables, QueryContext context)
         {
             if (bgp.SubjectPattern is VariablePattern)
-                GetPatternInfo(((VariablePattern)bgp.SubjectPattern).VariableName, bgp.R2RMLSubjectMap, variables, context);
+                GetPatternInfo(((VariablePattern)bgp.SubjectPattern).VariableName, bgp.R2RmlSubjectMap, variables, context);
             else if (bgp.SubjectPattern is BlankNodePattern)
-                GetPatternInfo(((BlankNodePattern)bgp.SubjectPattern).ID, bgp.R2RMLSubjectMap, variables, context);
+                GetPatternInfo(((BlankNodePattern)bgp.SubjectPattern).ID, bgp.R2RmlSubjectMap, variables, context);
 
             if (bgp.PredicatePattern is VariablePattern)
-                GetPatternInfo(((VariablePattern)bgp.PredicatePattern).VariableName, bgp.R2RMLPredicateMap, variables, context);
+                GetPatternInfo(((VariablePattern)bgp.PredicatePattern).VariableName, bgp.R2RmlPredicateMap, variables, context);
             else if (bgp.PredicatePattern is BlankNodePattern)
-                GetPatternInfo(((BlankNodePattern)bgp.PredicatePattern).ID, bgp.R2RMLPredicateMap, variables, context);
+                GetPatternInfo(((BlankNodePattern)bgp.PredicatePattern).ID, bgp.R2RmlPredicateMap, variables, context);
 
-            if (bgp.R2RMLObjectMap != null)
+            if (bgp.R2RmlObjectMap != null)
             {
                 if (bgp.ObjectPattern is VariablePattern)
-                    GetPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, bgp.R2RMLObjectMap, variables, context);
+                    GetPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, bgp.R2RmlObjectMap, variables, context);
                 else if (bgp.ObjectPattern is BlankNodePattern)
-                    GetPatternInfo(((BlankNodePattern)bgp.ObjectPattern).ID, bgp.R2RMLObjectMap, variables, context);
+                    GetPatternInfo(((BlankNodePattern)bgp.ObjectPattern).ID, bgp.R2RmlObjectMap, variables, context);
             }
-            else if (bgp.R2RMLRefObjectMap != null)
+            else if (bgp.R2RmlRefObjectMap != null)
             {
-                var parentMap = bgp.R2RMLRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
+                var parentMap = bgp.R2RmlRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
 
                 if (bgp.ObjectPattern is VariablePattern)
                     GetPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, parentMap.SubjectMap, variables, context);
@@ -157,25 +155,25 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
             bool ok = true;
 
             if (bgp.SubjectPattern is VariablePattern)
-                ok = ok && ProcessPatternInfo(((VariablePattern)bgp.SubjectPattern).VariableName, bgp.R2RMLSubjectMap, variables, context);
+                ok = ProcessPatternInfo(((VariablePattern)bgp.SubjectPattern).VariableName, bgp.R2RmlSubjectMap, variables, context);
             else if (bgp.SubjectPattern is BlankNodePattern)
-                ok = ok && ProcessPatternInfo(((BlankNodePattern)bgp.SubjectPattern).ID, bgp.R2RMLSubjectMap, variables, context);
+                ok = ProcessPatternInfo(((BlankNodePattern)bgp.SubjectPattern).ID, bgp.R2RmlSubjectMap, variables, context);
 
             if (bgp.PredicatePattern is VariablePattern)
-                ok = ok && ProcessPatternInfo(((VariablePattern)bgp.PredicatePattern).VariableName, bgp.R2RMLPredicateMap, variables, context);
+                ok = ok && ProcessPatternInfo(((VariablePattern)bgp.PredicatePattern).VariableName, bgp.R2RmlPredicateMap, variables, context);
             else if (bgp.PredicatePattern is BlankNodePattern)
-                ok = ok && ProcessPatternInfo(((BlankNodePattern)bgp.PredicatePattern).ID, bgp.R2RMLPredicateMap, variables, context);
+                ok = ok && ProcessPatternInfo(((BlankNodePattern)bgp.PredicatePattern).ID, bgp.R2RmlPredicateMap, variables, context);
 
-            if (bgp.R2RMLObjectMap != null)
+            if (bgp.R2RmlObjectMap != null)
             {
                 if (bgp.ObjectPattern is VariablePattern)
-                    ok = ok && ProcessPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, bgp.R2RMLObjectMap, variables, context);
+                    ok = ok && ProcessPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, bgp.R2RmlObjectMap, variables, context);
                 else if (bgp.ObjectPattern is BlankNodePattern)
-                    ok = ok && ProcessPatternInfo(((BlankNodePattern)bgp.ObjectPattern).ID, bgp.R2RMLObjectMap, variables, context);
+                    ok = ok && ProcessPatternInfo(((BlankNodePattern)bgp.ObjectPattern).ID, bgp.R2RmlObjectMap, variables, context);
             }
-            else if (bgp.R2RMLRefObjectMap != null)
+            else if (bgp.R2RmlRefObjectMap != null)
             {
-                var parentMap = bgp.R2RMLRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
+                var parentMap = bgp.R2RmlRefObjectMap.GetParentTriplesMap(context.Mapping.Mapping);
 
                 if (bgp.ObjectPattern is VariablePattern)
                     ok = ok && ProcessPatternInfo(((VariablePattern)bgp.ObjectPattern).VariableName, parentMap.SubjectMap, variables, context);
@@ -213,7 +211,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <summary>
         /// The cache for can match
         /// </summary>
-        private Dictionary<ITermMap, Dictionary<ITermMap, bool>> canMatchCache;
+        private readonly Dictionary<ITermMap, Dictionary<ITermMap, bool>> _canMatchCache;
 
         /// <summary>
         /// Gets the cached can match.
@@ -223,17 +221,17 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
         private bool? GetCachedCanMatch(ITermMap first, ITermMap second)
         {
-            if(canMatchCache.ContainsKey(first))
+            if(_canMatchCache.ContainsKey(first))
             {
-                var c = canMatchCache[first];
+                var c = _canMatchCache[first];
 
                 if (c.ContainsKey(second))
                     return c[second];
             }
             
-            if(canMatchCache.ContainsKey(second))
+            if(_canMatchCache.ContainsKey(second))
             {
-                var c = canMatchCache[second];
+                var c = _canMatchCache[second];
 
                 if (c.ContainsKey(first))
                 {
@@ -254,13 +252,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <param name="value">The value to set.</param>
         private void SetCanMatchCache(ITermMap first, ITermMap second, bool value)
         {
-            if (!canMatchCache.ContainsKey(first))
-                canMatchCache.Add(first, new Dictionary<ITermMap, bool>());
+            if (!_canMatchCache.ContainsKey(first))
+                _canMatchCache.Add(first, new Dictionary<ITermMap, bool>());
 
-            if (!canMatchCache[first].ContainsKey(second))
-                canMatchCache[first].Add(second, value);
+            if (!_canMatchCache[first].ContainsKey(second))
+                _canMatchCache[first].Add(second, value);
             else
-                canMatchCache[first][second] = value;
+                _canMatchCache[first][second] = value;
         }
 
         /// <summary>
@@ -276,7 +274,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
             if (!res.HasValue)
             {
-                var result = CanMatchFunction<bool>(first,
+                var result = CanMatchFunction(first,
                     constantUriFunc: x => CanMatch(x, second, context),
                     constantLiteralFunc: x => CanMatch(x, second, context),
                     columnFunc: x => CanColumnMatch(x, second, context),
@@ -300,7 +298,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanTemplateMatch(ITermMap first, ITermMap second, QueryContext context)
         {
-            return CanMatchFunction<bool>(second,
+            return CanMatchFunction(second,
                 constantUriFunc: x => CanMatchTemplate(x, first, context),
                 constantLiteralFunc: x => CanMatchTemplate(x, first, context),
                 columnFunc: x => CanTemplateMatchColumn(first, x, context),
@@ -316,7 +314,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanColumnMatch(ITermMap first, ITermMap second, QueryContext context)
         {
-            return CanMatchFunction<bool>(second,
+            return CanMatchFunction(second,
                 constantUriFunc: x => CanMatchColumn(x, first, context),
                 constantLiteralFunc: x => CanMatchColumn(x, first, context),
                 columnFunc: x => CanColumnsMatch(first, x, context),
@@ -332,7 +330,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanMatch(string literal, ITermMap second, QueryContext context)
         {
-            return CanMatchFunction<bool>(second,
+            return CanMatchFunction(second,
                 constantUriFunc: x => CanMatch(literal, x, context),
                 constantLiteralFunc: x => CanMatch(literal, x, context),
                 columnFunc: x => CanMatchColumn(literal, x, context),
@@ -349,7 +347,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
         private bool CanMatch(Uri uri, ITermMap second, QueryContext context)
         {
-            return CanMatchFunction<bool>(second,
+            return CanMatchFunction(second,
                 constantUriFunc: x => CanMatch(uri, x, context),
                 constantLiteralFunc: x => CanMatch(x, uri, context),
                 columnFunc: x => CanMatchColumn(uri, x, context),
@@ -461,10 +459,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
         private bool CanColumnsMatch(ITermMap firstColumnTermMap, ITermMap secondColumnTermMap, QueryContext context)
         {
-            bool ok = true;
-
-            if ((firstColumnTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstColumnTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral))
-                ok = false;
+            bool ok = !(firstColumnTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstColumnTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral);
 
             // NOTE: Maybe type checking
 
@@ -565,7 +560,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if the template can match the value, <c>false</c> otherwise.</returns>
         private bool TemplateMatchCheck(string template, string value, bool isIri)
         {
-            var templateParts = this.templateProcessor.ParseTemplate(template).ToArray();
+            var templateParts = _templateProcessor.ParseTemplate(template).ToArray();
             var secondParts = new ITemplatePart[] { new TemplateProcessor.TextTemplatePart(value) };
 
             return TemplateMatchCheck(string.Empty, string.Empty, 0, templateParts.Length, templateParts, string.Empty, string.Empty, 0, secondParts.Length, secondParts, isIri);
@@ -580,8 +575,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <returns><c>true</c> if the templates can match, <c>false</c> otherwise.</returns>
         private bool TemplatesMatchCheck(string firstTemplate, string secondTemplate, bool isIri)
         {
-            var firstTemplateParts = this.templateProcessor.ParseTemplate(firstTemplate).ToArray();
-            var secondTemplateParts = this.templateProcessor.ParseTemplate(secondTemplate).ToArray();
+            var firstTemplateParts = _templateProcessor.ParseTemplate(firstTemplate).ToArray();
+            var secondTemplateParts = _templateProcessor.ParseTemplate(secondTemplate).ToArray();
 
             return TemplateMatchCheck(string.Empty, string.Empty, 0, firstTemplateParts.Length, firstTemplateParts, string.Empty, string.Empty, 0, secondTemplateParts.Length, secondTemplateParts, isIri);
         }
@@ -655,7 +650,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 
             SkipToFirstNotIUnreserverdCharacter(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
             SkipToFirstNotIUnreserverdCharacter(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
-            return;
         }
 
         /// <summary>
@@ -676,15 +670,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 index++;
             }
 
-            if (index == firstSuffix.Length)
-                firstSuffix = string.Empty;
-            else
-                firstSuffix = firstSuffix.Substring(0, firstSuffix.Length - index);
+            firstSuffix = index == firstSuffix.Length ? string.Empty : firstSuffix.Substring(0, firstSuffix.Length - index);
 
-            if (index == secondSuffix.Length)
-                secondSuffix = string.Empty;
-            else
-                secondSuffix = secondSuffix.Substring(0, secondSuffix.Length - index);
+            secondSuffix = index == secondSuffix.Length ? string.Empty : secondSuffix.Substring(0, secondSuffix.Length - index);
 
             return true;
         }
@@ -707,15 +695,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 index++;
             }
 
-            if (index == firstPrefix.Length)
-                firstPrefix = string.Empty;
-            else
-                firstPrefix = firstPrefix.Substring(index);
+            firstPrefix = index == firstPrefix.Length ? string.Empty : firstPrefix.Substring(index);
 
-            if (index == secondPrefix.Length)
-                secondPrefix = string.Empty;
-            else
-                secondPrefix = secondPrefix.Substring(index);
+            secondPrefix = index == secondPrefix.Length ? string.Empty : secondPrefix.Substring(index);
 
             return true;
         }
@@ -784,7 +766,6 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
                 prefix = suffix;
                 suffix = string.Empty;
                 SkipToFirstNotIUnreserverdCharacter(ref prefix, ref suffix, ref index, ref endIndex, parts);
-                return;
             }
         }
     }

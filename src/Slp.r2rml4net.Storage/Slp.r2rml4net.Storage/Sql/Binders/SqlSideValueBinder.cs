@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using VDS.RDF;
@@ -28,8 +24,8 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <param name="originalBinder">The original binder.</param>
         public SqlSideValueBinder(ISqlColumn column, IBaseValueBinder originalBinder)
         {
-            this.OriginalBinder = originalBinder;
-            this.Column = column;
+            OriginalBinder = originalBinder;
+            Column = column;
         }
 
         /// <summary>
@@ -41,7 +37,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <returns>The node.</returns>
         public INode LoadNode(INodeFactory factory, IQueryResultRow row, QueryContext context)
         {
-            var value = row.GetColumn(this.Column.Name).Value;
+            var value = row.GetColumn(Column.Name).Value;
 
             if (value == null)
                 return null;
@@ -61,7 +57,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders
         /// <value>The assigned columns.</value>
         public IEnumerable<ISqlColumn> AssignedColumns
         {
-            get { yield return this.Column; }
+            get { yield return Column; }
         }
 
         /// <summary>

@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.SqlQuery;
+using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
@@ -28,47 +26,47 @@ namespace Slp.r2rml4net.Storage.Query
         /// <summary>
         /// The mapping processor
         /// </summary>
-        private MappingProcessor mapping;
+        private readonly MappingProcessor _mapping;
 
         /// <summary>
         /// The database
         /// </summary>
-        private ISqlDb db;
+        private readonly ISqlDb _db;
 
         /// <summary>
         /// The sparql algebra builder
         /// </summary>
-        private SparqlAlgebraBuilder sparqlAlgebraBuilder;
+        private readonly SparqlAlgebraBuilder _sparqlAlgebraBuilder;
 
         /// <summary>
         /// The sparql optimizers
         /// </summary>
-        private ISparqlAlgebraOptimizer[] sparqlOptimizers;
+        private readonly ISparqlAlgebraOptimizer[] _sparqlOptimizers;
 
         /// <summary>
         /// The sparql optimizers on the fly
         /// </summary>
-        private ISparqlAlgebraOptimizerOnTheFly[] sparqlOptimizersOnTheFly;
+        private readonly ISparqlAlgebraOptimizerOnTheFly[] _sparqlOptimizersOnTheFly;
 
         /// <summary>
         /// The SQL algebra builder
         /// </summary>
-        private SqlAlgebraBuilder sqlAlgebraBuilder;
+        private readonly SqlAlgebraBuilder _sqlAlgebraBuilder;
 
         /// <summary>
         /// The SQL optimizers
         /// </summary>
-        private ISqlAlgebraOptimizer[] sqlOptimizers;
+        private readonly ISqlAlgebraOptimizer[] _sqlOptimizers;
 
         /// <summary>
         /// The SQL optimizers on the fly
         /// </summary>
-        private ISqlAlgebraOptimizerOnTheFly[] sqlOptimizersOnTheFly;
+        private readonly ISqlAlgebraOptimizerOnTheFly[] _sqlOptimizersOnTheFly;
 
         /// <summary>
         /// The factory used to generate classes
         /// </summary>
-        private Bootstrap.IR2RMLStorageFactory factory;
+        private readonly IR2RmlStorageFactory _factory;
 
 
         /// <summary>
@@ -77,19 +75,19 @@ namespace Slp.r2rml4net.Storage.Query
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public QueryProcessor(ISqlDb db, TCode.r2rml4net.IR2RML mapping, Bootstrap.IR2RMLStorageFactory factory)
+        public QueryProcessor(ISqlDb db, IR2RML mapping, IR2RmlStorageFactory factory)
         {
-            this.db = db;
-            this.factory = factory;
+            _db = db;
+            _factory = factory;
             
-            this.mapping = factory.CreateMappingProcessor(mapping);
-            this.sparqlAlgebraBuilder = factory.CreateSparqlAlgebraBuilder();
-            this.sqlAlgebraBuilder = factory.CreateSqlAlgebraBuilder();
+            _mapping = factory.CreateMappingProcessor(mapping);
+            _sparqlAlgebraBuilder = factory.CreateSparqlAlgebraBuilder();
+            _sqlAlgebraBuilder = factory.CreateSqlAlgebraBuilder();
 
-            this.sparqlOptimizers = factory.CreateSparqlAlgebraOptimizers();
-            this.sparqlOptimizersOnTheFly = factory.CreateSparqlAlgebraOptimizersOnTheFly();
-            this.sqlOptimizers = factory.CreateSqlOptimizers();
-            this.sqlOptimizersOnTheFly = factory.CreateSqlAlgebraOptimizersOnTheFly();
+            _sparqlOptimizers = factory.CreateSparqlAlgebraOptimizers();
+            _sparqlOptimizersOnTheFly = factory.CreateSparqlAlgebraOptimizersOnTheFly();
+            _sqlOptimizers = factory.CreateSqlOptimizers();
+            _sqlOptimizersOnTheFly = factory.CreateSqlAlgebraOptimizersOnTheFly();
         }
 
         /// <summary>
@@ -113,7 +111,7 @@ namespace Slp.r2rml4net.Storage.Query
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             var originalQuery = parser.ParseFromString(sparqlQuery);
 
-            INodeFactory nodeFactory = null;
+            INodeFactory nodeFactory;
             switch (originalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
@@ -151,7 +149,7 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             // Convert to algebra
-            var context = factory.CreateQueryContext(originalQuery, mapping, db, nodeFactory, this.sparqlOptimizersOnTheFly, this.sqlOptimizersOnTheFly);
+            var context = _factory.CreateQueryContext(originalQuery, _mapping, _db, nodeFactory, _sparqlOptimizersOnTheFly, _sqlOptimizersOnTheFly);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
@@ -173,10 +171,10 @@ namespace Slp.r2rml4net.Storage.Query
             else
             {
                 // Query
-                var query = db.GenerateQuery(sqlAlgebra, context);
+                var query = _db.GenerateQuery(sqlAlgebra, context);
 
                 // Execute query
-                using (var result = db.ExecuteQuery(query, context))
+                using (var result = _db.ExecuteQuery(query, context))
                 {
                     ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
                 }
@@ -207,7 +205,7 @@ namespace Slp.r2rml4net.Storage.Query
         {
             switch (originalQuery.QueryType)
             {
-                case VDS.RDF.Query.SparqlQueryType.Ask:
+                case SparqlQueryType.Ask:
                     resultsHandler.StartResults();
                     try
                     {
@@ -243,7 +241,7 @@ namespace Slp.r2rml4net.Storage.Query
 
 
                     break;
-                case VDS.RDF.Query.SparqlQueryType.Construct:
+                case SparqlQueryType.Construct:
                     rdfHandler.StartRdf();
 
                     try
@@ -266,8 +264,8 @@ namespace Slp.r2rml4net.Storage.Query
                     }
 
                     break;
-                case VDS.RDF.Query.SparqlQueryType.Describe:
-                case VDS.RDF.Query.SparqlQueryType.DescribeAll:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
                     if (sqlAlgebra.ValueBinders.Count() != 3)
                         throw new Exception("Expected 3 value binders in construct or describe query");
 
@@ -301,12 +299,12 @@ namespace Slp.r2rml4net.Storage.Query
                     }
 
                     break;
-                case VDS.RDF.Query.SparqlQueryType.Select:
-                case VDS.RDF.Query.SparqlQueryType.SelectAll:
-                case VDS.RDF.Query.SparqlQueryType.SelectAllDistinct:
-                case VDS.RDF.Query.SparqlQueryType.SelectAllReduced:
-                case VDS.RDF.Query.SparqlQueryType.SelectDistinct:
-                case VDS.RDF.Query.SparqlQueryType.SelectReduced:
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
                     resultsHandler.StartResults();
 
                     try
@@ -320,7 +318,7 @@ namespace Slp.r2rml4net.Storage.Query
                         {
                             var row = result.Read();
 
-                            var s = new VDS.RDF.Query.Algebra.Set();
+                            var s = new Set();
 
                             foreach (var binder in sqlAlgebra.ValueBinders)
                             {
@@ -342,7 +340,7 @@ namespace Slp.r2rml4net.Storage.Query
                     }
 
                     break;
-                case VDS.RDF.Query.SparqlQueryType.Unknown:
+                case SparqlQueryType.Unknown:
                     throw new Exception("Unable to process the results of an Unknown query type");
                 default:
                     break;
@@ -360,7 +358,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <exception cref="System.NotImplementedException"></exception>
         private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, INotSqlOriginalDbSource sqlAlgebra, QueryContext context)
         {
-            var s = new VDS.RDF.Query.Algebra.Set();
+            var s = new Set();
 
             foreach (var binder in sqlAlgebra.ValueBinders)
             {
@@ -393,26 +391,26 @@ namespace Slp.r2rml4net.Storage.Query
         /// <returns>The SQL algebra.</returns>
         private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)
         {
-            var algebra = sparqlAlgebraBuilder.Process(context);
+            var algebra = _sparqlAlgebraBuilder.Process(context);
 
             // TODO: Transform graph and from statements
 
             // TODO: Make algebra valid, take filters up as possible
 
             // Transform using R2RML
-            algebra = mapping.ProcessAlgebra(algebra, context);
+            algebra = _mapping.ProcessAlgebra(algebra, context);
 
             // Optimize sparql algebra
-            foreach (var optimizer in sparqlOptimizers)
+            foreach (var optimizer in _sparqlOptimizers)
             {
                 algebra = optimizer.ProcessAlgebra(algebra, context);
             }
 
             // Transform to SQL algebra
-            var sqlAlgebra = sqlAlgebraBuilder.Process(algebra, context);
+            var sqlAlgebra = _sqlAlgebraBuilder.Process(algebra, context);
 
             // Optimize sql algebra
-            foreach (var optimizer in sqlOptimizers)
+            foreach (var optimizer in _sqlOptimizers)
             {
                 sqlAlgebra = optimizer.ProcessAlgebra(sqlAlgebra, context);
             }

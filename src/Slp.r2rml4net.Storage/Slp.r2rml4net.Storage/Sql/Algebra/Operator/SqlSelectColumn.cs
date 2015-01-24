@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
+﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     /// <summary>
     /// SELECT column
@@ -18,9 +12,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="source">The source.</param>
         public SqlSelectColumn(ISqlColumn originalColumn, ISqlSource source)
         {
-            this.OriginalColumn = originalColumn;
-            this.Source = source;
-            this.Name = null;
+            OriginalColumn = originalColumn;
+            Source = source;
+            Name = null;
         }
 
         /// <summary>

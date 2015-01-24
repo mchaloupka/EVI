@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
@@ -16,19 +14,6 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     /// </summary>
     public class BaseSqlNameGenerator : ISqlSourceVisitor
     {
-        /// <summary>
-        /// The default SQL database factory
-        /// </summary>
-        private Bootstrap.ISqlDbFactory sqlDbFactory;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseSqlNameGenerator"/> class.
-        /// </summary>
-        /// <param name="sqlDbFactory">The default SQL database factory.</param>
-        public BaseSqlNameGenerator(Bootstrap.ISqlDbFactory sqlDbFactory)
-        {
-            this.sqlDbFactory = sqlDbFactory;
-        }
         /// <summary>
         /// Generates the names.
         /// </summary>
@@ -141,7 +126,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             foreach (var col in sqlStatement.Columns.OfType<IOriginalSqlColumn>())
             {
@@ -157,7 +142,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             foreach (var col in sqlTable.Columns.OfType<IOriginalSqlColumn>())
             {
@@ -215,7 +200,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// <exception cref="System.NotImplementedException"></exception>
         private void GenerateSourceName(ISqlSource source, QueryContext context)
         {
-            string prefix = string.Empty;
+            string prefix;
 
             if (source is SqlSelectOp)
                 prefix = "sel";

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -15,14 +11,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// The statements
         /// </summary>
-        private List<CaseStatementExpression> statements;
+        private readonly List<CaseStatementExpression> _statements;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CaseExpr"/> class.
         /// </summary>
         public CaseExpr()
         {
-            statements = new List<CaseStatementExpression>();
+            _statements = new List<CaseStatementExpression>();
         }
 
         /// <summary>
@@ -33,9 +29,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             var cas = new CaseExpr();
 
-            foreach (var item in statements)
+            foreach (var item in _statements)
             {
-                cas.statements.Add(new CaseStatementExpression((ICondition)item.Condition.Clone(), (IExpression)item.Expression.Clone()));
+                cas._statements.Add(new CaseStatementExpression((ICondition)item.Condition.Clone(), (IExpression)item.Expression.Clone()));
             }
 
             return cas;
@@ -45,7 +41,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// Gets the statements.
         /// </summary>
         /// <value>The statements.</value>
-        public IEnumerable<CaseStatementExpression> Statements { get { return statements; } }
+        public IEnumerable<CaseStatementExpression> Statements { get { return _statements; } }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -66,7 +62,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="expression">The expression.</param>
         public void AddStatement(ICondition condition, IExpression expression)
         {
-            this.statements.Add(new CaseStatementExpression(condition, expression));
+            _statements.Add(new CaseStatementExpression(condition, expression));
         }
 
         /// <summary>
@@ -75,10 +71,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="statement">The statement.</param>
         public void RemoveStatement(CaseStatementExpression statement)
         {
-            var index = this.statements.IndexOf(statement);
+            var index = _statements.IndexOf(statement);
 
             if (index > -1)
-                this.statements.RemoveAt(index);
+                _statements.RemoveAt(index);
         }
     }
 
@@ -106,8 +102,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="expression">The expression.</param>
         public CaseStatementExpression(ICondition condition, IExpression expression)
         {
-            this.Condition = condition;
-            this.Expression = expression;
+            Condition = condition;
+            Expression = expression;
         }
 
     }

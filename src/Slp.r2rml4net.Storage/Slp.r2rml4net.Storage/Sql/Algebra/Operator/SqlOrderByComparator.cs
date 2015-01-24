@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
+﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     /// <summary>
     /// ORDER BY comparator
@@ -30,8 +24,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="descending">if set to <c>true</c> [descending].</param>
         public SqlOrderByComparator(IExpression expression, bool descending)
         {
-            this.Expression = expression;
-            this.Descending = descending;
+            Expression = expression;
+            Descending = descending;
         }
 
     }

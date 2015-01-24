@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
@@ -20,7 +16,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         /// <param name="algebra">The algebra.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The processed algebra.</returns>
-        public ISparqlQuery ProcessAlgebra(Sparql.Algebra.ISparqlQuery algebra, Query.QueryContext context)
+        public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
             if (algebra is SelectOp)
             {
@@ -102,7 +98,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
         {
             if (selectOp.IsSelectAll)
                 return true;
-            else if (selectOp.Variables.Where(x => x.IsAggregate).Any())
+            else if (selectOp.Variables.Any(x => x.IsAggregate))
                 return false;
             else
                 return true;

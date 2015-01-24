@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
@@ -13,7 +12,6 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Binders;
 using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 using TCode.r2rml4net.Mapping;
-using Slp.r2rml4net.Storage.Mapping.Utils;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 
@@ -27,26 +25,26 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <summary>
         /// The condition builder
         /// </summary>
-        private ConditionBuilder conditionBuilder;
+        private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
         /// The template processor
         /// </summary>
-        private TemplateProcessor templateProcessor;
+        private readonly TemplateProcessor _templateProcessor;
 
         /// <summary>
         /// The expression builder
         /// </summary>
-        private ExpressionBuilder expressionBuilder;
+        private readonly ExpressionBuilder _expressionBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlAlgebraBuilder"/> class.
         /// </summary>
         public SqlAlgebraBuilder()
         {
-            this.expressionBuilder = new ExpressionBuilder();
-            this.conditionBuilder = new ConditionBuilder(this.expressionBuilder);
-            this.templateProcessor = new TemplateProcessor();
+            _expressionBuilder = new ExpressionBuilder();
+            _conditionBuilder = new ConditionBuilder(_expressionBuilder);
+            _templateProcessor = new TemplateProcessor();
         }
 
         /// <summary>
@@ -68,7 +66,7 @@ namespace Slp.r2rml4net.Storage.Sql
         public object Visit(BgpOp bgpOp, object data)
         {
             var context = (QueryContext)data;
-            var source = ProcessBgpSource(bgpOp.R2RMLTripleDef, context);
+            var source = ProcessBgpSource(bgpOp.R2RmlTripleDef, context);
             var select = new SqlSelectOp(source);
 
             ProcessBgpSubject(bgpOp, context, select, source);
@@ -98,7 +96,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 var selects = joinedProcessed.Where(x => x is SqlSelectOp);
                 var notSelects = joinedProcessed.Where(x => !(x is SqlSelectOp));
 
-                SqlSelectOp current = null;
+                SqlSelectOp current;
 
                 if (!selects.Any())
                 {
@@ -181,10 +179,10 @@ namespace Slp.r2rml4net.Storage.Sql
                 var select = selects[index];
                 sqlUnion.AddSource(select);
 
-                var condExpr = expressionBuilder.CreateExpression(context, index);
+                var condExpr = _expressionBuilder.CreateExpression(context, index);
                 var column = select.GetExpressionColumn(condExpr);
                 sqlUnion.CaseColumn.AddColumn(column);
-                var cond = conditionBuilder.CreateEqualsCondition(context, sqlUnion.CaseColumn, condExpr);
+                var cond = _conditionBuilder.CreateEqualsCondition(context, sqlUnion.CaseColumn, condExpr);
 
                 foreach (var valBinder in select.ValueBinders)
                 {
@@ -231,14 +229,12 @@ namespace Slp.r2rml4net.Storage.Sql
 
                 if (sources.Contains(neededColumn.Source))
                     continue;
-                else
-                {
-                    if (column.OriginalColumns.Any(x => !context.Db.CanBeUnioned(x, neededColumn)))
-                        continue;
 
-                    newCol = column;
-                    break;
-                }
+                if (column.OriginalColumns.Any(x => !context.Db.CanBeUnioned(x, neededColumn)))
+                    continue;
+
+                newCol = column;
+                break;
             }
 
             if (newCol == null)
@@ -271,10 +267,7 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)sliceOp.InnerQuery.Accept(this, context);
 
-            var select = inner as SqlSelectOp;
-
-            if (select == null)
-                select = TransformToSelect(inner, context);
+            var select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
             if (select.Limit.HasValue && sliceOp.Limit.HasValue)
             {
@@ -308,14 +301,11 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)orderByOp.InnerQuery.Accept(this, context);
 
-            var select = inner as SqlSelectOp;
-
-            if (select == null)
-                select = TransformToSelect(inner, context);
+            var select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
             foreach (var ordering in orderByOp.Orderings.Reverse())
             {
-                var expression = expressionBuilder.CreateOrderByExpression(ordering.Expression, select, context);
+                var expression = _expressionBuilder.CreateOrderByExpression(ordering.Expression, select, context);
                 select.InsertOrdering(expression, ordering.Descending);
             }
 
@@ -333,10 +323,7 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)distinctOp.InnerQuery.Accept(this, context);
 
-            var select = inner as SqlSelectOp;
-
-            if (select == null)
-                select = TransformToSelect(inner, context);
+            var select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
             select.IsDistinct = true;
 
@@ -345,7 +332,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 if (binder is ValueBinder || binder is SqlSideValueBinder)
                     continue;
 
-                var expression = expressionBuilder.CreateExpressionForSqlSideValueBinder(binder, context);
+                var expression = _expressionBuilder.CreateExpressionForSqlSideValueBinder(binder, context);
 
                 var newBinder = new SqlSideValueBinder(select.GetExpressionColumn(expression), binder);
                 select.ReplaceValueBinder(binder, newBinder);
@@ -373,10 +360,7 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)reducedOp.InnerQuery.Accept(this, context);
 
-            var select = inner as SqlSelectOp;
-
-            if (select == null)
-                select = TransformToSelect(inner, context);
+            var select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
             select.IsDistinct = true;
 
@@ -394,12 +378,9 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)bindOp.InnerQuery.Accept(this, context);
 
-            var select = inner as SqlSelectOp;
+            var select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
-            if (select == null)
-                select = TransformToSelect(inner, context);
-
-            var expression = expressionBuilder.ConvertExpression(bindOp.Expression, select.ValueBinders.ToList(), context);
+            var expression = _expressionBuilder.ConvertExpression(bindOp.Expression, select.ValueBinders.ToList(), context);
             var valBinder = new ExpressionValueBinder(bindOp.VariableName, expression);
 
             select.AddValueBinder(valBinder);
@@ -419,12 +400,7 @@ namespace Slp.r2rml4net.Storage.Sql
             var context = (QueryContext)data;
             var inner = (INotSqlOriginalDbSource)selectOp.InnerQuery.Accept(this, context);
 
-            SqlSelectOp select = inner as SqlSelectOp;
-
-            if (select == null)
-            {
-                select = TransformToSelect(inner, context);
-            }
+            SqlSelectOp select = inner as SqlSelectOp ?? TransformToSelect(inner, context);
 
             var valueBinders = new List<IBaseValueBinder>();
 
@@ -454,7 +430,8 @@ namespace Slp.r2rml4net.Storage.Sql
                     }
                     else
                     {
-                        var valBinder = select.ValueBinders.Where(x => x.VariableName == variable.Name).FirstOrDefault();
+                        var valBinder = select.ValueBinders
+                            .FirstOrDefault(x => x.VariableName == variable.Name);
 
                         if (valBinder != null)
                         {
@@ -511,15 +488,15 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <exception cref="System.Exception">BgpOp must have object or ref object map</exception>
         private void ProcessBgpObject(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource childSource)
         {
-            if (bgpOp.R2RMLObjectMap != null)
+            if (bgpOp.R2RmlObjectMap != null)
             {
                 var objectPattern = bgpOp.ObjectPattern;
 
-                ProcessBgpPattern(bgpOp, context, select, childSource, objectPattern, bgpOp.R2RMLObjectMap);
+                ProcessBgpPattern(bgpOp, context, select, childSource, objectPattern, bgpOp.R2RmlObjectMap);
             }
-            else if (bgpOp.R2RMLRefObjectMap != null)
+            else if (bgpOp.R2RmlRefObjectMap != null)
             {
-                var refObjectPatern = bgpOp.R2RMLRefObjectMap;
+                var refObjectPatern = bgpOp.R2RmlRefObjectMap;
 
                 var parentTriplesMap = refObjectPatern.GetParentTriplesMap(context.Mapping.Mapping);
                 var parentSource = ProcessBgpSource(parentTriplesMap, context);
@@ -531,13 +508,13 @@ namespace Slp.r2rml4net.Storage.Sql
                     var childCol = childSource.GetColumn(joinCond.ChildColumn);
                     var parentCol = parentSource.GetColumn(joinCond.ParentColumn);
 
-                    conditions.Add(conditionBuilder.CreateEqualsCondition(context, childCol, parentCol));
+                    conditions.Add(_conditionBuilder.CreateEqualsCondition(context, childCol, parentCol));
                 }
 
-                ICondition joinCondition = null;
+                ICondition joinCondition;
                 if (conditions.Count == 0)
                 {
-                    joinCondition = conditionBuilder.CreateAlwaysTrueCondition(context);
+                    joinCondition = _conditionBuilder.CreateAlwaysTrueCondition(context);
                 }
                 else if (conditions.Count == 1)
                 {
@@ -545,7 +522,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
                 else
                 {
-                    joinCondition = conditionBuilder.CreateAndCondition(context, conditions);
+                    joinCondition = _conditionBuilder.CreateAndCondition(context, conditions);
                 }
 
                 select.AddJoinedSource(parentSource, joinCondition, context);
@@ -566,7 +543,7 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             var predicatePattern = bgpOp.PredicatePattern;
 
-            ProcessBgpPattern(bgpOp, context, select, source, predicatePattern, bgpOp.R2RMLPredicateMap);
+            ProcessBgpPattern(bgpOp, context, select, source, predicatePattern, bgpOp.R2RmlPredicateMap);
         }
 
         /// <summary>
@@ -580,7 +557,7 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             var subjectPattern = bgpOp.SubjectPattern;
 
-            ProcessBgpPattern(bgpOp, context, select, source, subjectPattern, bgpOp.R2RMLSubjectMap);
+            ProcessBgpPattern(bgpOp, context, select, source, subjectPattern, bgpOp.R2RmlSubjectMap);
         }
 
         /// <summary>
@@ -591,23 +568,23 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <param name="select">The select.</param>
         /// <param name="source">The source.</param>
         /// <param name="pattern">The pattern.</param>
-        /// <param name="r2rmlMap">The R2RML map.</param>
+        /// <param name="r2RmlMap">The R2RML map.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        private void ProcessBgpPattern(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, PatternItem pattern, ITermMap r2rmlMap)
+        private void ProcessBgpPattern(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, PatternItem pattern, ITermMap r2RmlMap)
         {
             if (pattern is VariablePattern)
             {
-                ProcessBgpVariable(bgpOp, context, select, source, pattern.VariableName, r2rmlMap);
+                ProcessBgpVariable(bgpOp, context, select, source, pattern.VariableName, r2RmlMap);
             }
             else if (pattern is NodeMatchPattern)
             {
                 var node = ((NodeMatchPattern)pattern).Node;
 
-                ProcessBgpCondition(bgpOp, context, select, source, node, r2rmlMap);
+                ProcessBgpCondition(bgpOp, context, select, source, node, r2RmlMap);
             }
             else if (pattern is BlankNodePattern)
             {
-                ProcessBgpVariable(bgpOp, context, select, source, ((BlankNodePattern)pattern).ID, r2rmlMap);
+                ProcessBgpVariable(bgpOp, context, select, source, ((BlankNodePattern)pattern).ID, r2RmlMap);
             }
             else
                 throw new NotImplementedException();
@@ -624,10 +601,10 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <param name="select">The select.</param>
         /// <param name="source">The source.</param>
         /// <param name="node">The node.</param>
-        /// <param name="r2rmlMap">The R2RML map.</param>
-        private void ProcessBgpCondition(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, INode node, ITermMap r2rmlMap)
+        /// <param name="r2RmlMap">The R2RML map.</param>
+        private void ProcessBgpCondition(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, INode node, ITermMap r2RmlMap)
         {
-            var valueBinder = new ValueBinder(r2rmlMap, templateProcessor);
+            var valueBinder = new ValueBinder(r2RmlMap, _templateProcessor);
 
             foreach (var column in valueBinder.NeededColumns)
             {
@@ -635,7 +612,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 valueBinder.SetColumn(column, sqlColumn);
             }
 
-            var condition = conditionBuilder.CreateEqualsCondition(context, node, valueBinder);
+            var condition = _conditionBuilder.CreateEqualsCondition(context, node, valueBinder);
 
             select.AddCondition(condition);
         }
@@ -648,10 +625,10 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <param name="select">The select.</param>
         /// <param name="source">The source.</param>
         /// <param name="variableName">Name of the variable.</param>
-        /// <param name="r2rmlMap">The R2RML map.</param>
-        private void ProcessBgpVariable(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, string variableName, ITermMap r2rmlMap)
+        /// <param name="r2RmlMap">The R2RML map.</param>
+        private void ProcessBgpVariable(BgpOp bgpOp, QueryContext context, SqlSelectOp select, ISqlOriginalDbSource source, string variableName, ITermMap r2RmlMap)
         {
-            var valueBinder = new ValueBinder(variableName, r2rmlMap, templateProcessor);
+            var valueBinder = new ValueBinder(variableName, r2RmlMap, _templateProcessor);
 
             foreach (var column in valueBinder.NeededColumns)
             {
@@ -659,17 +636,18 @@ namespace Slp.r2rml4net.Storage.Sql
                 var sqlColumn = select.GetSelectColumn(sourceColumn);
                 valueBinder.SetColumn(column, sqlColumn);
 
-                var condition = conditionBuilder.CreateIsNotNullCondition(context, sourceColumn);
+                var condition = _conditionBuilder.CreateIsNotNullCondition(context, sourceColumn);
                 select.AddCondition(condition);
             }
 
-            var sameVarValueBinder = select.ValueBinders.Where(x => x.VariableName == variableName).FirstOrDefault();
+            var sameVarValueBinder = select.ValueBinders
+                .FirstOrDefault(x => x.VariableName == variableName);
 
             if(sameVarValueBinder == null)
                 select.AddValueBinder(valueBinder);
             else
             {
-                var condition = conditionBuilder.CreateEqualsCondition(context, sameVarValueBinder.GetOriginalValueBinder(context), valueBinder.GetOriginalValueBinder(context));
+                var condition = _conditionBuilder.CreateEqualsCondition(context, sameVarValueBinder.GetOriginalValueBinder(context), valueBinder.GetOriginalValueBinder(context));
                 select.AddCondition(condition);
             }
         }
@@ -721,12 +699,12 @@ namespace Slp.r2rml4net.Storage.Sql
                 {
                     if (firstValBinder.VariableName == secondValBinder.VariableName)
                     {
-                        conditions.Add(conditionBuilder.CreateJoinEqualsCondition(context, firstValBinder.GetOriginalValueBinder(context), secondValBinder.GetOriginalValueBinder(context)));
+                        conditions.Add(_conditionBuilder.CreateJoinEqualsCondition(context, firstValBinder.GetOriginalValueBinder(context), secondValBinder.GetOriginalValueBinder(context)));
                     }
                 }
             }
 
-            ICondition condition = conditionBuilder.CreateAlwaysTrueCondition(context);
+            ICondition condition = _conditionBuilder.CreateAlwaysTrueCondition(context);
 
             if (conditions.Count == 1)
             {
@@ -734,7 +712,7 @@ namespace Slp.r2rml4net.Storage.Sql
             }
             else if (conditions.Count > 1)
             {
-                condition = conditionBuilder.CreateAndCondition(context, conditions);
+                condition = _conditionBuilder.CreateAndCondition(context, conditions);
             }
 
             first.AddJoinedSource(second.OriginalSource, condition, context);
@@ -759,7 +737,8 @@ namespace Slp.r2rml4net.Storage.Sql
 
             foreach (var fBinder in firstValueBinders)
             {
-                var sBinder = secondValueBinders.Where(x => x.VariableName == fBinder.VariableName).FirstOrDefault();
+                var sBinder = secondValueBinders
+                    .FirstOrDefault(x => x.VariableName == fBinder.VariableName);
 
                 if (sBinder != null)
                 {
@@ -775,7 +754,8 @@ namespace Slp.r2rml4net.Storage.Sql
 
             foreach (var sBinder in secondValueBinders)
             {
-                var fBinder = firstValueBinders.Where(x => x.VariableName == sBinder.VariableName).FirstOrDefault();
+                var fBinder = firstValueBinders
+                    .FirstOrDefault(x => x.VariableName == sBinder.VariableName);
 
                 if (fBinder == null)
                 {

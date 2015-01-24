@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slp.r2rml4net.Storage.Utils
+﻿namespace Slp.r2rml4net.Storage.Utils
 {
     /// <summary>
     /// Visitable object for visitor pattern
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IVisitable<T> where T : IVisitor
+    public interface IVisitable<in T> where T : IVisitor
     {
         /// <summary>
         /// Accepts the specified visitor.

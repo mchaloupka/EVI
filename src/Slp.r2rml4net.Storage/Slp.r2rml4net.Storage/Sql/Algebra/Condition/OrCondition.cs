@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
 {
@@ -15,14 +11,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <summary>
         /// The conditions
         /// </summary>
-        private List<ICondition> conditions;
+        private readonly List<ICondition> _conditions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrCondition"/> class.
         /// </summary>
         public OrCondition()
         {
-            this.conditions = new List<ICondition>();
+            _conditions = new List<ICondition>();
         }
 
         /// <summary>
@@ -31,14 +27,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         /// <param name="condition">The condition.</param>
         public void AddToCondition(ICondition condition)
         {
-            conditions.Add(condition);
+            _conditions.Add(condition);
         }
 
         /// <summary>
         /// Gets the conditions.
         /// </summary>
         /// <value>The conditions.</value>
-        public IEnumerable<ICondition> Conditions { get { return conditions; } }
+        public IEnumerable<ICondition> Conditions { get { return _conditions; } }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -60,9 +56,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Condition
         {
             var orCondition = new OrCondition();
 
-            foreach (var cond in this.conditions)
+            foreach (var cond in _conditions)
             {
-                orCondition.conditions.Add((ICondition)cond.Clone());
+                orCondition._conditions.Add((ICondition)cond.Clone());
             }
 
             return orCondition;

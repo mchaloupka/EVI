@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
@@ -23,8 +21,8 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// <param name="mapping">The R2RML mapping.</param>
         public MappingProcessor(IR2RML mapping)
         {
-            this.Mapping = mapping;
-            this.Cache = new R2RMLCache(this);
+            Mapping = mapping;
+            Cache = new R2RmlCache();
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// Gets the R2RML cache.
         /// </summary>
         /// <value>The R2RML cache.</value>
-        public R2RMLCache Cache { get; private set; }
+        public R2RmlCache Cache { get; private set; }
 
         /// <summary>
         /// Processes the SPARQL algebra.
@@ -79,7 +77,7 @@ namespace Slp.r2rml4net.Storage.Mapping
         {
             var union = new UnionOp();
 
-            foreach (var tripleDef in this.Mapping.TriplesMaps)
+            foreach (var tripleDef in Mapping.TriplesMaps)
             {
                 var subjectMap = tripleDef.SubjectMap;
                 var graphMaps = subjectMap.GraphMaps;
@@ -124,21 +122,21 @@ namespace Slp.r2rml4net.Storage.Mapping
                 foreach (var graphMap in graphMaps)
                 {
                     var clone = bgpOp.Clone();
-                    clone.R2RMLTripleDef = tripleDef;
-                    clone.R2RMLSubjectMap = subjectMap;
-                    clone.R2RMLPredicateMap = new ClassPredicateMap(tripleDef.BaseUri);
-                    clone.R2RMLObjectMap = new ClassObjectMap(tripleDef.BaseUri, classUri);
-                    clone.R2RMLGraphMap = graphMap;
+                    clone.R2RmlTripleDef = tripleDef;
+                    clone.R2RmlSubjectMap = subjectMap;
+                    clone.R2RmlPredicateMap = new ClassPredicateMap(tripleDef.BaseUri);
+                    clone.R2RmlObjectMap = new ClassObjectMap(tripleDef.BaseUri, classUri);
+                    clone.R2RmlGraphMap = graphMap;
                     union.AddToUnion(clone);
                 }
             }
             else
             {
                 var clone = bgpOp.Clone();
-                clone.R2RMLTripleDef = tripleDef;
-                clone.R2RMLSubjectMap = subjectMap;
-                clone.R2RMLPredicateMap = new ClassPredicateMap(tripleDef.BaseUri);
-                clone.R2RMLObjectMap = new ClassObjectMap(tripleDef.BaseUri, classUri);
+                clone.R2RmlTripleDef = tripleDef;
+                clone.R2RmlSubjectMap = subjectMap;
+                clone.R2RmlPredicateMap = new ClassPredicateMap(tripleDef.BaseUri);
+                clone.R2RmlObjectMap = new ClassObjectMap(tripleDef.BaseUri, classUri);
                 union.AddToUnion(clone);
             }
         }
@@ -160,21 +158,21 @@ namespace Slp.r2rml4net.Storage.Mapping
                 foreach (var graphMap in graphMaps)
                 {
                     var clone = bgpOp.Clone();
-                    clone.R2RMLTripleDef = tripleDef;
-                    clone.R2RMLSubjectMap = subjectMap;
-                    clone.R2RMLRefObjectMap = refObjectMap;
-                    clone.R2RMLGraphMap = graphMap;
-                    clone.R2RMLPredicateMap = predicateMap;
+                    clone.R2RmlTripleDef = tripleDef;
+                    clone.R2RmlSubjectMap = subjectMap;
+                    clone.R2RmlRefObjectMap = refObjectMap;
+                    clone.R2RmlGraphMap = graphMap;
+                    clone.R2RmlPredicateMap = predicateMap;
                     union.AddToUnion(clone);
                 }
             }
             else
             {
                 var clone = bgpOp.Clone();
-                clone.R2RMLTripleDef = tripleDef;
-                clone.R2RMLSubjectMap = subjectMap;
-                clone.R2RMLRefObjectMap = refObjectMap;
-                clone.R2RMLPredicateMap = predicateMap;
+                clone.R2RmlTripleDef = tripleDef;
+                clone.R2RmlSubjectMap = subjectMap;
+                clone.R2RmlRefObjectMap = refObjectMap;
+                clone.R2RmlPredicateMap = predicateMap;
                 union.AddToUnion(clone);
             }
         }
@@ -196,21 +194,21 @@ namespace Slp.r2rml4net.Storage.Mapping
                 foreach (var graphMap in graphMaps)
                 {
                     var clone = bgpOp.Clone();
-                    clone.R2RMLTripleDef = tripleDef;
-                    clone.R2RMLSubjectMap = subjectMap;
-                    clone.R2RMLObjectMap = objectMap;
-                    clone.R2RMLGraphMap = graphMap;
-                    clone.R2RMLPredicateMap = predicateMap;
+                    clone.R2RmlTripleDef = tripleDef;
+                    clone.R2RmlSubjectMap = subjectMap;
+                    clone.R2RmlObjectMap = objectMap;
+                    clone.R2RmlGraphMap = graphMap;
+                    clone.R2RmlPredicateMap = predicateMap;
                     union.AddToUnion(clone);
                 }
             }
             else
             {
                 var clone = bgpOp.Clone();
-                clone.R2RMLTripleDef = tripleDef;
-                clone.R2RMLSubjectMap = subjectMap;
-                clone.R2RMLObjectMap = objectMap;
-                clone.R2RMLPredicateMap = predicateMap;
+                clone.R2RmlTripleDef = tripleDef;
+                clone.R2RmlSubjectMap = subjectMap;
+                clone.R2RmlObjectMap = objectMap;
+                clone.R2RmlPredicateMap = predicateMap;
                 union.AddToUnion(clone);
             }
         }
@@ -226,8 +224,8 @@ namespace Slp.r2rml4net.Storage.Mapping
             /// <param name="baseUri">The base URI.</param>
             public ClassPredicateMap(Uri baseUri)
             {
-                this.BaseUri = baseUri;
-                this.URI = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+                BaseUri = baseUri;
+                URI = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
             }
 
             /// <summary>
@@ -323,7 +321,7 @@ namespace Slp.r2rml4net.Storage.Mapping
             /// The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase" />
             /// </summary>
             /// <value>The node.</value>
-            public VDS.RDF.INode Node
+            public INode Node
             {
                 get { return null; }
             }
@@ -375,8 +373,8 @@ namespace Slp.r2rml4net.Storage.Mapping
             /// <param name="classUri">The class URI.</param>
             public ClassObjectMap(Uri baseUri, Uri classUri)
             {
-                this.BaseUri = baseUri;
-                this.URI = classUri;
+                BaseUri = baseUri;
+                URI = classUri;
             }
 
             /// <summary>

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
@@ -11,7 +9,6 @@ using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Binders;
-using Slp.r2rml4net.Storage.Sql.Binders.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
@@ -23,14 +20,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <summary>
         /// The condition builder
         /// </summary>
-        private ConditionBuilder conditionBuilder;
+        private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsNullOptimizer"/> class.
         /// </summary>
         public IsNullOptimizer()
         {
-            this.conditionBuilder = new ConditionBuilder(new ExpressionBuilder());
+            _conditionBuilder = new ConditionBuilder(new ExpressionBuilder());
         }
 
         /// <summary>
@@ -104,7 +101,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 }
             }
 
-            var gres = cvd.GINL.Process(sqlSelectOp);
+            var gres = cvd.Ginl.Process(sqlSelectOp);
 
             List<ICondition> conditions = new List<ICondition>();
             foreach (var cond in sqlSelectOp.Conditions)
@@ -178,7 +175,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 }
             }
 
-            var gres = cvd.GINL.Process(sqlUnionOp);
+            var gres = cvd.Ginl.Process(sqlUnionOp);
             var bres = gres.GetForParentSource(sqlUnionOp);
 
             foreach (var binder in sqlUnionOp.ValueBinders.ToArray())
@@ -198,7 +195,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             return null;
         }
@@ -209,7 +206,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             return null;
         }
@@ -245,7 +242,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(AndCondition condition, object data)
         {
             var cvd = (VisitData)data;
-            var lres = cvd.GINL.Process(condition);
+            var lres = cvd.Ginl.Process(condition);
             var mres = new GetIsNullList.GetIsNullListResult();
             mres.MergeWith(cvd.GlobalResult);
             mres.MergeWith(lres);
@@ -285,7 +282,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         public object Visit(OrCondition condition, object data)
         {
             var cvd = (VisitData)data;
-            var lres = cvd.GINL.Process(condition);
+            var lres = cvd.Ginl.Process(condition);
             var mres = new GetIsNullList.GetIsNullListResult();
             mres.MergeWith(cvd.GlobalResult);
             mres.MergeWith(lres);
@@ -388,7 +385,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             {
                 var lres = new GetIsNullList.GetIsNullListResult();
                 lres.MergeWith(cvd.GlobalResult);
-                lres.MergeWith(cvd.GINL.Process(caseStatement.Condition));
+                lres.MergeWith(cvd.Ginl.Process(caseStatement.Condition));
                 var ncvd = cvd.SetGlobalResult(lres);
 
                 var cond = (ICondition)caseStatement.Condition.Accept(this, ncvd);
@@ -468,7 +465,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 if (binder != newBinder)
                     coalesceValueBinder.ReplaceValueBinder(binder, newBinder);
 
-                var isNullCondition = conditionBuilder.CreateIsNullCondition(cvd.Context, binder);
+                var isNullCondition = _conditionBuilder.CreateIsNullCondition(cvd.Context, binder);
                 var modified = isNullCondition.Accept(this, cvd);
 
                 if (modified is AlwaysTrueCondition)
@@ -665,10 +662,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="recurse">if set to <c>true</c> it should do recurse.</param>
             public VisitData(GetIsNullList ginl, GetIsNullList.GetIsNullListResult gres, QueryContext context, bool recurse)
             {
-                this.GINL = ginl;
-                this.GlobalResult = gres;
-                this.Context = context;
-                this.Recurse = recurse;
+                Ginl = ginl;
+                GlobalResult = gres;
+                Context = context;
+                Recurse = recurse;
             }
 
             /// <summary>
@@ -678,14 +675,14 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <returns>VisitData.</returns>
             public VisitData SetGlobalResult(GetIsNullList.GetIsNullListResult gres)
             {
-                return new VisitData(this.GINL, gres, this.Context, this.Recurse);
+                return new VisitData(Ginl, gres, Context, Recurse);
             }
 
             /// <summary>
             /// Gets or sets the get is null list.
             /// </summary>
             /// <value>The get is null list.</value>
-            public GetIsNullList GINL { get; private set; }
+            public GetIsNullList Ginl { get; private set; }
 
             /// <summary>
             /// Gets or sets the global result.
@@ -714,12 +711,12 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <summary>
             /// The condition cache
             /// </summary>
-            private Dictionary<ICondition, GetIsNullListResult> conditionCache = new Dictionary<ICondition, GetIsNullListResult>();
+            private readonly Dictionary<ICondition, GetIsNullListResult> _conditionCache = new Dictionary<ICondition, GetIsNullListResult>();
 
             /// <summary>
             /// The SQL cache
             /// </summary>
-            private Dictionary<ISqlSource, GetIsNullListResult> sqlCache = new Dictionary<ISqlSource, GetIsNullListResult>();
+            private readonly Dictionary<ISqlSource, GetIsNullListResult> _sqlCache = new Dictionary<ISqlSource, GetIsNullListResult>();
 
             /// <summary>
             /// Processes the specified condition.
@@ -727,13 +724,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="condition">The condition.</param>
             public GetIsNullListResult Process(ICondition condition)
             {
-                if (!conditionCache.ContainsKey(condition))
+                if (!_conditionCache.ContainsKey(condition))
                 {
                     var res = (GetIsNullListResult)condition.Accept(this, null);
-                    conditionCache.Add(condition, res);
+                    _conditionCache.Add(condition, res);
                 }
 
-                return conditionCache[condition];
+                return _conditionCache[condition];
             }
 
             /// <summary>
@@ -742,13 +739,13 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="source">The source.</param>
             public GetIsNullListResult Process(ISqlSource source)
             {
-                if (!sqlCache.ContainsKey(source))
+                if (!_sqlCache.ContainsKey(source))
                 {
                     var res = (GetIsNullListResult)source.Accept(this, null);
-                    sqlCache.Add(source, res);
+                    _sqlCache.Add(source, res);
                 }
 
-                return sqlCache[source];
+                return _sqlCache[source];
             }
 
             /// <summary>
@@ -786,15 +783,15 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 foreach (var cond in sqlSelectOp.Conditions)
                 {
-                    gres.MergeWith(this.Process(cond));
+                    gres.MergeWith(Process(cond));
                 }
 
-                sres.MergeWith(this.Process(sqlSelectOp.OriginalSource).GetForParentSource(sqlSelectOp.OriginalSource));
+                sres.MergeWith(Process(sqlSelectOp.OriginalSource).GetForParentSource(sqlSelectOp.OriginalSource));
 
                 foreach (var join in sqlSelectOp.JoinSources)
                 {
-                    gres.MergeWith(this.Process(join.Condition));
-                    sres.MergeWith(this.Process(join.Source).GetForParentSource(join.Source));
+                    gres.MergeWith(Process(join.Condition));
+                    sres.MergeWith(Process(join.Source).GetForParentSource(join.Source));
                 }
 
                 sres.MergeWith(gres);
@@ -814,7 +811,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 foreach (var source in sqlUnionOp.Sources)
                 {
-                    gres.MergeWith(this.Process(source).GetForParentSource(source));
+                    gres.MergeWith(Process(source).GetForParentSource(source));
                 }
 
                 return gres;
@@ -826,7 +823,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="sqlStatement">The SQL statement.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>Returned value.</returns>
-            public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+            public object Visit(SqlStatement sqlStatement, object data)
             {
                 return new GetIsNullListResult();
             }
@@ -837,7 +834,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="sqlTable">The SQL table.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>Returned value.</returns>
-            public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+            public object Visit(SqlTable sqlTable, object data)
             {
                 // TODO: Get info from db schema
                 return new GetIsNullListResult();
@@ -853,19 +850,19 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// </summary>
                 public GetIsNullListResult()
                 {
-                    isNullColumns = new Dictionary<ISqlColumn, IsNullCondition>();
-                    isNotNullColumns = new Dictionary<ISqlColumn, IsNullCondition>();
+                    _isNullColumns = new Dictionary<ISqlColumn, IsNullCondition>();
+                    _isNotNullColumns = new Dictionary<ISqlColumn, IsNullCondition>();
                 }
 
                 /// <summary>
                 /// The is null columns
                 /// </summary>
-                private Dictionary<ISqlColumn, IsNullCondition> isNullColumns;
+                private readonly Dictionary<ISqlColumn, IsNullCondition> _isNullColumns;
 
                 /// <summary>
                 /// The is not null columns
                 /// </summary>
-                private Dictionary<ISqlColumn, IsNullCondition> isNotNullColumns;
+                private readonly Dictionary<ISqlColumn, IsNullCondition> _isNotNullColumns;
 
                 /// <summary>
                 /// Merges with.
@@ -873,8 +870,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="other">The other.</param>
                 public void MergeWith(GetIsNullListResult other)
                 {
-                    MergeWith(this.isNullColumns, other.isNullColumns);
-                    MergeWith(this.isNotNullColumns, other.isNotNullColumns);
+                    MergeWith(_isNullColumns, other._isNullColumns);
+                    MergeWith(_isNotNullColumns, other._isNotNullColumns);
                 }
 
                 /// <summary>
@@ -883,8 +880,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="other">The other.</param>
                 public void IntersectWith(GetIsNullListResult other)
                 {
-                    IntersectWith(this.isNullColumns, other.isNullColumns);
-                    IntersectWith(this.isNotNullColumns, other.isNotNullColumns);
+                    IntersectWith(_isNullColumns, other._isNullColumns);
+                    IntersectWith(_isNotNullColumns, other._isNotNullColumns);
                 }
 
                 /// <summary>
@@ -893,7 +890,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="condition">The condition.</param>
                 public void AddIsNullCondition(IsNullCondition condition)
                 {
-                    this.isNullColumns.Add(condition.Column, condition);
+                    _isNullColumns.Add(condition.Column, condition);
                 }
 
                 /// <summary>
@@ -902,10 +899,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="col">The col.</param>
                 private void AddIsNotNullColumn(ISqlColumn col)
                 {
-                    if (this.isNotNullColumns.ContainsKey(col))
-                        this.isNotNullColumns[col] = null;
+                    if (_isNotNullColumns.ContainsKey(col))
+                        _isNotNullColumns[col] = null;
                     else
-                        this.isNotNullColumns.Add(col, null);
+                        _isNotNullColumns.Add(col, null);
                 }
 
                 /// <summary>
@@ -914,10 +911,10 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="col">The col.</param>
                 private void AddIsNullColumn(ISqlColumn col)
                 {
-                    if (this.isNullColumns.ContainsKey(col))
-                        this.isNullColumns[col] = null;
+                    if (_isNullColumns.ContainsKey(col))
+                        _isNullColumns[col] = null;
                     else
-                        this.isNullColumns.Add(col, null);
+                        _isNullColumns.Add(col, null);
                 }
 
                 /// <summary>
@@ -954,8 +951,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 public GetIsNullListResult GetInverse()
                 {
                     var res = new GetIsNullListResult();
-                    MergeWith(res.isNotNullColumns, this.isNullColumns);
-                    MergeWith(res.isNullColumns, this.isNotNullColumns);
+                    MergeWith(res._isNotNullColumns, _isNullColumns);
+                    MergeWith(res._isNullColumns, _isNotNullColumns);
                     return res;
                 }
 
@@ -965,7 +962,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="sqlColumn">The SQL column.</param>
                 public bool IsInNotNullColumns(ISqlColumn sqlColumn)
                 {
-                    return this.isNotNullColumns.ContainsKey(sqlColumn);
+                    return _isNotNullColumns.ContainsKey(sqlColumn);
                 }
 
                 /// <summary>
@@ -974,7 +971,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="sqlColumn">The SQL column.</param>
                 public bool IsInNullColumns(ISqlColumn sqlColumn)
                 {
-                    return this.isNullColumns.ContainsKey(sqlColumn);
+                    return _isNullColumns.ContainsKey(sqlColumn);
                 }
 
                 /// <summary>
@@ -983,9 +980,9 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                 /// <param name="condition">The condition.</param>
                 public bool IsInNullColumns(IsNullCondition condition)
                 {
-                    if (this.isNullColumns.ContainsKey(condition.Column))
+                    if (_isNullColumns.ContainsKey(condition.Column))
                     {
-                        var cond = this.isNullColumns[condition.Column];
+                        var cond = _isNullColumns[condition.Column];
 
                         return cond == condition;
                     }
@@ -1022,11 +1019,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                                 if (unCol.OriginalColumns.Count() == unOp.Sources.Count()) // Can decide only when it contains columns from all sources
                                 {
-                                    if (unCol.OriginalColumns.All(x => this.IsInNullColumns(x)))
+                                    if (unCol.OriginalColumns.All(IsInNullColumns))
                                     {
                                         res.AddIsNullColumn(col);
                                     }
-                                    if (unCol.OriginalColumns.All(x => this.IsInNotNullColumns(x)))
+                                    if (unCol.OriginalColumns.All(IsInNotNullColumns))
                                     {
                                         res.AddIsNotNullColumn(col);
                                     }
@@ -1041,16 +1038,16 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
                         {
                             var selCol = (SqlSelectColumn)col;
 
-                            if (this.IsInNullColumns(selCol.OriginalColumn))
+                            if (IsInNullColumns(selCol.OriginalColumn))
                                 res.AddIsNullColumn(col);
-                            if (this.IsInNotNullColumns(selCol.OriginalColumn))
+                            if (IsInNotNullColumns(selCol.OriginalColumn))
                                 res.AddIsNotNullColumn(col);
                         }
                         else if (col is SqlTableColumn)
                         {
-                            if (this.IsInNullColumns(col))
+                            if (IsInNullColumns(col))
                                 res.AddIsNullColumn(col);
-                            if (this.IsInNotNullColumns(col))
+                            if (IsInNotNullColumns(col))
                                 res.AddIsNotNullColumn(col);
                         }
                         else

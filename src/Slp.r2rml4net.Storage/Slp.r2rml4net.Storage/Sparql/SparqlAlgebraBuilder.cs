@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
@@ -23,14 +21,6 @@ namespace Slp.r2rml4net.Storage.Sparql
     /// </summary>
     public class SparqlAlgebraBuilder
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SparqlAlgebraBuilder"/> class.
-        /// </summary>
-        public SparqlAlgebraBuilder()
-        {
-
-        }
-
         /// <summary>
         /// Processes the specified context.
         /// </summary>
@@ -488,20 +478,17 @@ namespace Slp.r2rml4net.Storage.Sparql
             {
                 return query;
             }
-            else
+            
+            var joinOp = current as JoinOp;
+
+            if (joinOp == null)
             {
-                var joinOp = current as JoinOp;
-
-                if (joinOp == null)
-                {
-                    joinOp = new JoinOp();
-                    joinOp.AddToJoin(current);
-                    current = joinOp;
-                }
-
-                joinOp.AddToJoin(query);
-                return joinOp;
+                joinOp = new JoinOp();
+                joinOp.AddToJoin(current);
             }
+
+            joinOp.AddToJoin(query);
+            return joinOp;
         }
 
         /// <summary>

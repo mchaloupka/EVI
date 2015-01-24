@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -19,8 +14,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <param name="isIriEscapedValue">if set to <c>true</c> [is iri escaped value].</param>
         public ColumnExpr(ISqlColumn column, bool isIriEscapedValue)
         {
-            this.Column = column;
-            this.IsIriEscapedValue = isIriEscapedValue;
+            Column = column;
+            IsIriEscapedValue = isIriEscapedValue;
         }
 
         /// <summary>
@@ -53,7 +48,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            return new ColumnExpr(this.Column, this.IsIriEscapedValue);
+            return new ColumnExpr(Column, IsIriEscapedValue);
         }
     }
 }

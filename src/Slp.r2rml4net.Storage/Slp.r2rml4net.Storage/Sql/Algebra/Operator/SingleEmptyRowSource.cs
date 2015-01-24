@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Sql.Binders;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
@@ -16,14 +12,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// The value binders
         /// </summary>
-        private List<IBaseValueBinder> valueBinders;
+        private readonly List<IBaseValueBinder> _valueBinders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleEmptyRowSource"/> class.
         /// </summary>
         public SingleEmptyRowSource()
         {
-            valueBinders = new List<IBaseValueBinder>();
+            _valueBinders = new List<IBaseValueBinder>();
         }
 
         /// <summary>
@@ -47,7 +43,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void AddValueBinder(IBaseValueBinder valueBinder)
         {
-            this.valueBinders.Add(valueBinder);
+            _valueBinders.Add(valueBinder);
         }
 
         /// <summary>
@@ -56,7 +52,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <value>The value binders.</value>
         public IEnumerable<IBaseValueBinder> ValueBinders
         {
-            get { return valueBinders; }
+            get { return _valueBinders; }
         }
 
         /// <summary>
@@ -66,10 +62,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="newBinder">The new binder.</param>
         public void ReplaceValueBinder(IBaseValueBinder oldBinder, IBaseValueBinder newBinder)
         {
-            var index = this.valueBinders.IndexOf(oldBinder);
+            var index = _valueBinders.IndexOf(oldBinder);
 
             if (index > -1)
-                this.valueBinders[index] = newBinder;
+                _valueBinders[index] = newBinder;
         }
 
         /// <summary>
@@ -78,10 +74,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="valueBinder">The value binder.</param>
         public void RemoveValueBinder(IBaseValueBinder valueBinder)
         {
-            var index = this.valueBinders.IndexOf(valueBinder);
+            var index = _valueBinders.IndexOf(valueBinder);
 
             if (index > -1)
-                this.valueBinders.RemoveAt(index);
+                _valueBinders.RemoveAt(index);
         }
 
         /// <summary>

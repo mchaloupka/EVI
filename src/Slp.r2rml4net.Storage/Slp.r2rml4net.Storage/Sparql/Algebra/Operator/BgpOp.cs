@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
@@ -17,17 +15,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <summary>
         /// The predicate pattern
         /// </summary>
-        private PatternItem predicatePattern;
+        private readonly PatternItem _predicatePattern;
 
         /// <summary>
         /// The object pattern
         /// </summary>
-        private PatternItem objectPattern;
+        private readonly PatternItem _objectPattern;
 
         /// <summary>
         /// The subject pattern
         /// </summary>
-        private PatternItem subjectPattern;
+        private readonly PatternItem _subjectPattern;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BgpOp"/> class.
@@ -37,9 +35,9 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="objectPattern">The object pattern.</param>
         public BgpOp(PatternItem subjectPattern, PatternItem predicatePattern, PatternItem objectPattern)
         {
-            this.objectPattern = objectPattern;
-            this.predicatePattern = predicatePattern;
-            this.subjectPattern = subjectPattern;
+            _objectPattern = objectPattern;
+            _predicatePattern = predicatePattern;
+            _subjectPattern = subjectPattern;
         }
 
         /// <summary>
@@ -68,56 +66,56 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>BgpOp.</returns>
         public BgpOp Clone()
         {
-            return new BgpOp(subjectPattern, predicatePattern, objectPattern);
+            return new BgpOp(_subjectPattern, _predicatePattern, _objectPattern);
         }
 
         /// <summary>
         /// Gets the predicate pattern.
         /// </summary>
         /// <value>The predicate pattern.</value>
-        public PatternItem PredicatePattern { get { return predicatePattern; } }
+        public PatternItem PredicatePattern { get { return _predicatePattern; } }
 
         /// <summary>
         /// Gets the object pattern.
         /// </summary>
         /// <value>The object pattern.</value>
-        public PatternItem ObjectPattern { get { return objectPattern; } }
+        public PatternItem ObjectPattern { get { return _objectPattern; } }
 
         /// <summary>
         /// Gets the subject pattern.
         /// </summary>
         /// <value>The subject pattern.</value>
-        public PatternItem SubjectPattern { get { return subjectPattern; } }
+        public PatternItem SubjectPattern { get { return _subjectPattern; } }
 
         /// <summary>
         /// Gets or sets the R2RML graph map.
         /// </summary>
         /// <value>The R2RML graph map.</value>
-        public TCode.r2rml4net.Mapping.IGraphMap R2RMLGraphMap { get; set; }
+        public IGraphMap R2RmlGraphMap { get; set; }
 
         /// <summary>
         /// Gets or sets the R2RML object map.
         /// </summary>
         /// <value>The R2RML object map.</value>
-        public TCode.r2rml4net.Mapping.IObjectMap R2RMLObjectMap { get; set; }
+        public IObjectMap R2RmlObjectMap { get; set; }
 
         /// <summary>
         /// Gets or sets the R2RML subject map.
         /// </summary>
         /// <value>The R2RML subject map.</value>
-        public TCode.r2rml4net.Mapping.ISubjectMap R2RMLSubjectMap { get; set; }
+        public ISubjectMap R2RmlSubjectMap { get; set; }
 
         /// <summary>
         /// Gets or sets the R2RML triple definition.
         /// </summary>
         /// <value>The R2RML triple definition.</value>
-        public TCode.r2rml4net.Mapping.ITriplesMap R2RMLTripleDef { get; set; }
+        public ITriplesMap R2RmlTripleDef { get; set; }
 
         /// <summary>
         /// Gets or sets the R2RML reference object map.
         /// </summary>
         /// <value>The R2RML reference object map.</value>
-        public TCode.r2rml4net.Mapping.IRefObjectMap R2RMLRefObjectMap { get; set; }
+        public IRefObjectMap R2RmlRefObjectMap { get; set; }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -132,7 +130,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// Gets or sets the R2RML predicate map.
         /// </summary>
         /// <value>The R2RML predicate map.</value>
-        public TCode.r2rml4net.Mapping.IPredicateMap R2RMLPredicateMap { get; set; }
+        public IPredicateMap R2RmlPredicateMap { get; set; }
 
 
         /// <summary>

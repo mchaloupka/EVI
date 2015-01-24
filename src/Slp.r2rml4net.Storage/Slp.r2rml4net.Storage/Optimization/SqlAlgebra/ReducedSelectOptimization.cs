@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
-using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Algebra.Source;
+using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 {
@@ -86,10 +83,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (isReduced)
             {
-                bool constantResult = true;
-
-                if (sqlSelectOp.Columns.OfType<SqlSelectColumn>().Any())
-                    constantResult = false;
+                var constantResult = !sqlSelectOp.Columns.OfType<SqlSelectColumn>().Any();
 
                 if (sqlSelectOp.Columns.OfType<SqlExpressionColumn>().SelectMany(x => x.Expression.GetAllReferencedColumns()).Any())
                     constantResult = false;
@@ -118,7 +112,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (sqlUnionOp.IsReduced)
             {
-                vData = vData.SetReduced(true);
+                vData.SetReduced(true);
             }
             else if (vData.IsParentReduced)
             {
@@ -139,7 +133,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             return null;
         }
@@ -150,7 +144,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             return null;
         }
@@ -179,8 +173,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="isParentReduced">if set to <c>true</c> [is parent reduced].</param>
             public VisitData(QueryContext context, bool isParentReduced)
             {
-                this.Context = context;
-                this.IsParentReduced = isParentReduced;
+                Context = context;
+                IsParentReduced = isParentReduced;
             }
 
             /// <summary>
@@ -201,7 +195,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <returns>VisitData.</returns>
             public VisitData SetReduced(bool isReduced)
             {
-                var vd = this.Clone();
+                var vd = Clone();
                 vd.IsParentReduced = isReduced;
                 return vd;
             }

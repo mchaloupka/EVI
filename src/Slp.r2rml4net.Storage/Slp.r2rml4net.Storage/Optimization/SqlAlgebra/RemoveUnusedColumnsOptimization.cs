@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sql.Algebra.Source;
 using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 
 namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
@@ -26,7 +24,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             /// <param name="neededColumns">The needed columns.</param>
             public VisitorData(IEnumerable<ISqlColumn> neededColumns)
             {
-                this.NeededColumns = neededColumns.ToList();
+                NeededColumns = neededColumns.ToList();
             }
 
             /// <summary>
@@ -211,7 +209,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlStatement sqlStatement, object data)
+        public object Visit(SqlStatement sqlStatement, object data)
         {
             var cvd = (VisitorData)data;
 
@@ -230,7 +228,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="sqlTable">The SQL table.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(Sql.Algebra.Source.SqlTable sqlTable, object data)
+        public object Visit(SqlTable sqlTable, object data)
         {
             var cvd = (VisitorData)data;
 

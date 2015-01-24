@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra;
 using Slp.r2rml4net.Storage.Sql.Algebra.Condition;
 using Slp.r2rml4net.Storage.Sql.Algebra.Expression;
@@ -21,7 +18,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <summary>
         /// The expression builder
         /// </summary>
-        private ExpressionBuilder expressionBuilder;
+        private readonly ExpressionBuilder _expressionBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConditionBuilder"/> class.
@@ -29,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <param name="expressionBuilder">The expression builder.</param>
         public ConditionBuilder(ExpressionBuilder expressionBuilder)
         {
-            this.expressionBuilder = expressionBuilder;
+            _expressionBuilder = expressionBuilder;
         }
 
         /// <summary>
@@ -44,8 +41,8 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             if (valueBinder is ValueBinder)
             {
-                var leftOperand = expressionBuilder.CreateExpression(context, (ValueBinder)valueBinder);
-                var rightOperand = expressionBuilder.CreateExpression(context, node);
+                var leftOperand = _expressionBuilder.CreateExpression(context, (ValueBinder)valueBinder);
+                var rightOperand = _expressionBuilder.CreateExpression(context, node);
 
                 return new EqualsCondition(leftOperand, rightOperand);
             }
@@ -89,15 +86,15 @@ namespace Slp.r2rml4net.Storage.Sql
                 var sqlSideValueBinder = (SqlSideValueBinder)valueBinder;
                 var column = sqlSideValueBinder.Column;
 
-                var leftOperand = expressionBuilder.CreateColumnExpression(context, column, false);
-                var rightOperand = expressionBuilder.CreateExpression(context, node);
+                var leftOperand = _expressionBuilder.CreateColumnExpression(context, column, false);
+                var rightOperand = _expressionBuilder.CreateExpression(context, node);
 
                 return new EqualsCondition(leftOperand, rightOperand);
             }
             else if (valueBinder is ExpressionValueBinder)
             {
                 var leftOperand = (IExpression)((ExpressionValueBinder)valueBinder).Expression.Clone();
-                var rightOperand = expressionBuilder.CreateExpression(context, node);
+                var rightOperand = _expressionBuilder.CreateExpression(context, node);
                 return new EqualsCondition(leftOperand, rightOperand);
             }
             else if(valueBinder is BlankValueBinder)
@@ -120,8 +117,8 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             if (firstValBinder is ValueBinder && secondValBinder is ValueBinder)
             {
-                var leftOperand = expressionBuilder.CreateExpression(context, (ValueBinder)firstValBinder);
-                var rightOperand = expressionBuilder.CreateExpression(context, (ValueBinder)secondValBinder);
+                var leftOperand = _expressionBuilder.CreateExpression(context, (ValueBinder)firstValBinder);
+                var rightOperand = _expressionBuilder.CreateExpression(context, (ValueBinder)secondValBinder);
                 return new EqualsCondition(leftOperand, rightOperand);
             }
             else if (firstValBinder is CoalesceValueBinder)
@@ -184,7 +181,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <returns>The created condition.</returns>
         public ICondition CreateEqualsCondition(QueryContext context, ISqlColumn column, IExpression expression)
         {
-            return new EqualsCondition(expressionBuilder.CreateColumnExpression(context, column, false), expression);
+            return new EqualsCondition(_expressionBuilder.CreateColumnExpression(context, column, false), expression);
         }
 
         /// <summary>
@@ -196,7 +193,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <returns>The created condition.</returns>
         public ICondition CreateEqualsCondition(QueryContext context, ISqlColumn firstCol, ISqlColumn secondCol)
         {
-            return new EqualsCondition(expressionBuilder.CreateColumnExpression(context, firstCol, false), expressionBuilder.CreateColumnExpression(context, secondCol, false));
+            return new EqualsCondition(_expressionBuilder.CreateColumnExpression(context, firstCol, false), _expressionBuilder.CreateColumnExpression(context, secondCol, false));
         }
 
         /// <summary>

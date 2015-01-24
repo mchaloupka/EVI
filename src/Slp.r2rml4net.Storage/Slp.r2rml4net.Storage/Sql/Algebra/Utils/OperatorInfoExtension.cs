@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
@@ -38,7 +34,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
 
             foreach (var secondValBinder in second.ValueBinders)
             {
-                var firstValBinder = first.ValueBinders.Where(x => x.VariableName == secondValBinder.VariableName).FirstOrDefault();
+                var firstValBinder = first.ValueBinders
+                    .FirstOrDefault(x => x.VariableName == secondValBinder.VariableName);
 
                 if (firstValBinder == null)
                     continue;
