@@ -124,7 +124,6 @@ namespace Slp.r2rml4net.Storage.Sql
             //XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
             //XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
             //XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
-            throw new NotImplementedException();
         }
 
         /// <summary>
