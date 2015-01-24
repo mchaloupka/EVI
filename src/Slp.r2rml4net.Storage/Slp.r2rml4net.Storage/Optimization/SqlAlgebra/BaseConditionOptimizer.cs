@@ -643,7 +643,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <summary>
         /// Visit data for the visitor
         /// </summary>
-        private class VisitData
+        internal class VisitData
         {
             /// <summary>
             /// Gets or sets the context.
