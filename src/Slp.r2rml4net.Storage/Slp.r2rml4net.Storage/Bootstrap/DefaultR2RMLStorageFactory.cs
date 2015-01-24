@@ -78,9 +78,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         {
             return new Slp.r2rml4net.Storage.Optimization.ISqlAlgebraOptimizer[]
             {
-                new Optimization.SqlAlgebra.IsNullOptimizer(),
-                new Optimization.SqlAlgebra.ConcatenationInEqualConditionOptimizer(),
-                new Optimization.SqlAlgebra.ConstantExprEqualityOptimizer(),
                 new Optimization.SqlAlgebra.RemoveNoRowSourcesOptimizer(),
                 new Optimization.SqlAlgebra.RemoveUnusedColumnsOptimization(),
                 new Optimization.SqlAlgebra.ReducedSelectOptimization()
