@@ -466,13 +466,16 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <exception cref="System.Exception">Unknown source of bgp</exception>
         private ISqlOriginalDbSource ProcessBgpSource(ITriplesMap triplesMap, QueryContext context)
         {
-            if (!string.IsNullOrEmpty(context.Mapping.Cache.GetSqlStatement(triplesMap)))
+            var statement = context.Mapping.Cache.GetSqlStatement(triplesMap);
+            var tableName = context.Mapping.Cache.GetSqlTable(triplesMap);
+
+            if (!string.IsNullOrEmpty(statement))
             {
-                return new SqlStatement(context.Mapping.Cache.GetSqlStatement(triplesMap));
+                return new SqlStatement(statement);
             }
-            else if (!string.IsNullOrEmpty(context.Mapping.Cache.GetSqlTable(triplesMap)))
+            else if (!string.IsNullOrEmpty(tableName))
             {
-                return new SqlTable(context.Mapping.Cache.GetSqlTable(triplesMap));
+                return new SqlTable(tableName, context.SchemaProvider.GetTableInfo(tableName));
             }
             else
                 throw new Exception("Unknown source of bgp");

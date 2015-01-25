@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
@@ -11,6 +13,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
     public class SqlTable : ISqlOriginalDbSource
     {
         /// <summary>
+        /// The database schema info of the table
+        /// </summary>
+        private readonly DatabaseTable _tableInfo;
+
+        /// <summary>
         /// Gets the name of the table.
         /// </summary>
         /// <value>The name of the table.</value>
@@ -20,8 +27,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// Initializes a new instance of the <see cref="SqlTable"/> class.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        public SqlTable(string tableName)
+        /// <param name="tableInfo">Database schema info of the table</param>
+        public SqlTable(string tableName, DatabaseTable tableInfo)
         {
+            _tableInfo = tableInfo;
             TableName = tableName;
             _columns = new List<SqlTableColumn>();
         }
@@ -40,13 +49,29 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         {
             var col = _columns.FirstOrDefault(x => x.Name == columnName);
 
-            if (col == null)
-            {
-                col = new SqlTableColumn(columnName, this);
-                _columns.Add(col);
-            }
+            if (col != null) 
+                return col;
+
+            col = new SqlTableColumn(columnName, this, GetSqlColumnType(columnName));
+            _columns.Add(col);
 
             return col;
+        }
+
+        /// <summary>
+        /// Gets the type of the SQL column.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>DataType.</returns>
+        /// <exception cref="System.Exception">Column not present in the database</exception>
+        private DataType GetSqlColumnType(string columnName)
+        {
+            var columnSchema = _tableInfo.Columns.FirstOrDefault(x => x.Name == columnName);
+
+            if(columnSchema == null)
+                throw new Exception("Column not present in the database");
+
+            return columnSchema.DataType;
         }
 
         /// <summary>

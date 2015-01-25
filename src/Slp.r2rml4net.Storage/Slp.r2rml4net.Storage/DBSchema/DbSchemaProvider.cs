@@ -57,7 +57,7 @@ namespace Slp.r2rml4net.Storage.DBSchema
         {
             if (_tableCache.ContainsKey(tableName))
                 return _tableCache[tableName];
-            
+
             throw new Exception("Table not found in database schema");
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
+﻿using DatabaseSchemaReader.DataSchema;
+
+namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 {
     /// <summary>
     /// SQL table column.
@@ -6,12 +8,19 @@
     public class SqlTableColumn : IOriginalSqlColumn
     {
         /// <summary>
+        /// The SQL column type
+        /// </summary>
+        public DataType SqlColumnType { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SqlTableColumn"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="source">The source.</param>
-        public SqlTableColumn(string name, ISqlSource source)
+        /// <param name="sqlColumnType">SQL column type</param>
+        public SqlTableColumn(string name, ISqlSource source, DataType sqlColumnType)
         {
+            SqlColumnType = sqlColumnType;
             OriginalName = name;
             Source = source;
         }

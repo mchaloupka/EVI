@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Slp.r2rml4net.Storage.Sql.Algebra.Operator;
@@ -24,6 +25,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         {
             SqlQuery = query;
             _columns = new List<SqlTableColumn>();
+
+            throw new NotImplementedException("SQL statements are not supported - not able to load schema");
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
 
             if (col == null)
             {
-                col = new SqlTableColumn(columnName, this);
+                col = new SqlTableColumn(columnName, this, null); // TODO: Types for statements
                 _columns.Add(col);
             }
 
