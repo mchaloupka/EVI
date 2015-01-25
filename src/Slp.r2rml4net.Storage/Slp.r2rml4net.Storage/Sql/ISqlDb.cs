@@ -43,5 +43,17 @@ namespace Slp.r2rml4net.Storage.Sql
         /// Gets the type of the SQL connection.
         /// </summary>
         SqlType SqlType { get; }
+
+        /// <summary>
+        /// Gets the unquoted table name.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        string GetTableNameUnquoted(string tableName);
+
+        /// <summary>
+        /// Gets the unquoted column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        string GetColumnNameUnquoted(string columnName);
     }
 }

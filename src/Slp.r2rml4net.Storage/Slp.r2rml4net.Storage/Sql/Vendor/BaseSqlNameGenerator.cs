@@ -15,6 +15,20 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class BaseSqlNameGenerator : ISqlSourceVisitor
     {
         /// <summary>
+        /// The database
+        /// </summary>
+        private readonly ISqlDb _db;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseSqlNameGenerator"/> class.
+        /// </summary>
+        /// <param name="db">The database.</param>
+        public BaseSqlNameGenerator(ISqlDb db)
+        {
+            _db = db;
+        }
+
+        /// <summary>
         /// Generates the names.
         /// </summary>
         /// <param name="source">The source.</param>
@@ -182,12 +196,12 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                     appendString = "]";
                 }
 
-                while (colNames.Contains(DataReaderWrapper.GetColumnNameUnquoted(curName)))
+                while (colNames.Contains(_db.GetColumnNameUnquoted(curName)))
                 {
                     curName = string.Format("{0}{1}{2}", orName, counter++, appendString);
                 }
 
-                colNames.Add(DataReaderWrapper.GetColumnNameUnquoted((curName)));
+                colNames.Add(_db.GetColumnNameUnquoted((curName)));
                 col.Name = curName;
             }
         }

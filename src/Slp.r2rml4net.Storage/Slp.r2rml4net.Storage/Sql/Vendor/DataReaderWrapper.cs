@@ -13,6 +13,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
     public class DataReaderWrapper : IQueryResultReader
     {
         /// <summary>
+        /// The database
+        /// </summary>
+        private readonly ISqlDb _db;
+
+        /// <summary>
         /// The data reader
         /// </summary>
         private SqlDataReader _dataReader;
@@ -33,33 +38,15 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         private IQueryResultRow _currentRow;
 
         /// <summary>
-        /// Gets the column name unquoted.
-        /// </summary>
-        /// <param name="columnName">The column name.</param>
-        /// <returns>Unquoted column name.</returns>
-        public static string GetColumnNameUnquoted(string columnName) 
-        {
-            return DataReaderRow.GetColumnNameUnquoted(columnName);
-        }
-
-        /// <summary>
-        /// Gets the table name unquoted.
-        /// </summary>
-        /// <param name="tableName">The table name.</param>
-        /// <returns>Unquoted table name.</returns>
-        public static string GetTableNameUnquoted(string tableName)
-        {
-            return DataReaderRow.GetColumnNameUnquoted(tableName);
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DataReaderWrapper"/> class.
         /// </summary>
+        /// <param name="db">The database</param>
         /// <param name="dataReader">The data reader.</param>
         /// <param name="needsDisposeAction">The needs dispose action.</param>
         /// <param name="disposeAction">The dispose action.</param>
-        public DataReaderWrapper(SqlDataReader dataReader, Func<bool> needsDisposeAction, Action disposeAction)
+        public DataReaderWrapper(ISqlDb db, SqlDataReader dataReader, Func<bool> needsDisposeAction, Action disposeAction)
         {
+            _db = db;
             _dataReader = dataReader;
             _needsDisposeAction = needsDisposeAction;
             _disposeAction = disposeAction;
@@ -84,7 +71,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// </summary>
         private void FetchRow()
         {
-            _currentRow = _dataReader.Read() ? DataReaderRow.Create(_dataReader) : null;
+            _currentRow = _dataReader.Read() ? DataReaderRow.Create(_db, _dataReader) : null;
         }
 
         /// <summary>
@@ -126,6 +113,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         private class DataReaderRow : IQueryResultRow
         {
             /// <summary>
+            /// The database
+            /// </summary>
+            private readonly ISqlDb _database;
+
+            /// <summary>
             /// The columns
             /// </summary>
             private readonly Dictionary<string, IQueryResultColumn> _columns;
@@ -133,9 +125,11 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <summary>
             /// Initializes a new instance of the <see cref="DataReaderRow"/> class.
             /// </summary>
+            /// <param name="database"></param>
             /// <param name="columns">The columns.</param>
-            private DataReaderRow(List<IQueryResultColumn> columns)
+            private DataReaderRow(ISqlDb database, List<IQueryResultColumn> columns)
             {
+                _database = database;
                 _columns = new Dictionary<string, IQueryResultColumn>();
 
                 foreach (var col in columns)
@@ -156,9 +150,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <summary>
             /// Creates the specified data reader.
             /// </summary>
+            /// <param name="database"></param>
             /// <param name="dataReader">The data reader.</param>
             /// <returns>IQueryResultRow.</returns>
-            public static IQueryResultRow Create(SqlDataReader dataReader)
+            public static IQueryResultRow Create(ISqlDb database, SqlDataReader dataReader)
             {
                 List<IQueryResultColumn> columns = new List<IQueryResultColumn>();
                 var fieldCount = dataReader.VisibleFieldCount;
@@ -168,58 +163,10 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                     var name = dataReader.GetName(i);
                     var value = dataReader.GetValue(i);
 
-                    columns.Add(new DataReaderColumn(EnsureColumnNameUndelimited(name), value));
+                    columns.Add(new DataReaderColumn(database.GetColumnNameUnquoted(name), value));
                 }
 
-                return new DataReaderRow(columns);
-            }
-
-            /// <summary>
-            /// The start delimiters
-            /// </summary>
-            private static readonly char[] StartDelimiters = new[] { '`', '\"', '[' };
-
-            /// <summary>
-            /// The end delimiters
-            /// </summary>
-            private static readonly char[] EndDelimiters = new[] { '`', '\"', ']' };
-
-            /// <summary>
-            /// The column name regex
-            /// </summary>
-            private static readonly Regex ColumnNameRegex = new Regex(@"^[\""`'\[](.+[^\""`'\]])[\""`'\]]$");
-
-            /// <summary>
-            /// Gets the column name unquoted.
-            /// </summary>
-            /// <param name="columnName">Name of the column.</param>
-            /// <returns>Unquoted column name.</returns>
-            public static string GetColumnNameUnquoted(string columnName)
-            {
-                return columnName.TrimStart(StartDelimiters).TrimEnd(EndDelimiters);
-            }
-
-            /// <summary>
-            /// Delimits the identifier.
-            /// </summary>
-            /// <param name="identifier">The identifier.</param>
-            /// <returns>Delimited identifier.</returns>
-            private static string DelimitIdentifier(string identifier)
-            {
-                if (MappingOptions.Current.UseDelimitedIdentifiers && !ColumnNameRegex.IsMatch(identifier))
-                    return string.Format("{0}{1}{2}", MappingOptions.Current.SqlIdentifierLeftDelimiter, identifier, MappingOptions.Current.SqlIdentifierRightDelimiter);
-
-                return identifier;
-            }
-
-            /// <summary>
-            /// Ensures the column name undelimited.
-            /// </summary>
-            /// <param name="name">The name.</param>
-            /// <returns>Undelimited column name.</returns>
-            private static string EnsureColumnNameUndelimited(string name)
-            {
-                return name.TrimStart(StartDelimiters).TrimEnd(EndDelimiters);
+                return new DataReaderRow(database, columns);
             }
 
             /// <summary>
@@ -230,7 +177,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             /// <exception cref="System.Exception">Asked for column that is not present</exception>
             public IQueryResultColumn GetColumn(string columnName)
             {
-                var cName = EnsureColumnNameUndelimited(columnName);
+                var cName = _database.GetColumnNameUnquoted(columnName);
 
                 if (_columns.ContainsKey(cName))
                     return _columns[cName];

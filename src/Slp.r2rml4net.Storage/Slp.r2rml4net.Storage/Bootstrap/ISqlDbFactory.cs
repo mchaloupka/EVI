@@ -22,6 +22,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <summary>
         /// Creates the name generator.
         /// </summary>
-        BaseSqlNameGenerator CreateNameGenerator();
+        /// <param name="db"></param>
+        BaseSqlNameGenerator CreateNameGenerator(ISqlDb db);
     }
 }

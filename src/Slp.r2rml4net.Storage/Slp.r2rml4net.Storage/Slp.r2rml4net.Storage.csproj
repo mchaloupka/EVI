@@ -167,7 +167,7 @@
     <Compile Include="Sql\Vendor\BaseSqlNameGenerator.cs" />
     <Compile Include="Sql\Vendor\BaseSqlQueryBuilder.cs" />
     <Compile Include="Sql\Vendor\DataReaderWrapper.cs" />
-    <Compile Include="Sql\Vendor\MSSQLDb.cs" />
+    <Compile Include="Sql\Vendor\MSSQL\MSSQLDb.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
     <Compile Include="Utils\UriExtensions.cs" />

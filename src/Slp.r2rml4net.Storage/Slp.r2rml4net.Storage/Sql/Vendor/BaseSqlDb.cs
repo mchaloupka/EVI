@@ -24,6 +24,20 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         public SqlType SqlType { get; private set; }
 
         /// <summary>
+        /// Gets the unquoted table name.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns>System.String.</returns>
+        public abstract string GetTableNameUnquoted(string tableName);
+
+        /// <summary>
+        /// Gets the unquoted column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>System.String.</returns>
+        public abstract string GetColumnNameUnquoted(string columnName);
+
+        /// <summary>
         /// The query builder
         /// </summary>
         private readonly BaseSqlQueryBuilder _queryBuilder;
@@ -41,7 +55,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             ConnectionString = connectionString;
             SqlType = sqlType;
             _queryBuilder = factory.CreateSqlQueryBuilder();
-            _nameGenerator = factory.CreateNameGenerator();
+            _nameGenerator = factory.CreateNameGenerator(this);
         }
 
         /// <summary>
@@ -100,7 +114,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
                     var columnTableName = ((SqlTable)column.Source).TableName;
                     var otherTableName = ((SqlTable)other.Source).TableName;
 
-                    return DataReaderWrapper.GetTableNameUnquoted(columnTableName) == DataReaderWrapper.GetTableNameUnquoted(otherTableName) && (DataReaderWrapper.GetColumnNameUnquoted(((SqlTableColumn)column).OriginalName) == DataReaderWrapper.GetColumnNameUnquoted(((SqlTableColumn)other).OriginalName));
+                    return GetTableNameUnquoted(columnTableName) == GetTableNameUnquoted(otherTableName) && (GetColumnNameUnquoted(((SqlTableColumn)column).OriginalName) == GetColumnNameUnquoted(((SqlTableColumn)other).OriginalName));
                 }
                 else
                 {

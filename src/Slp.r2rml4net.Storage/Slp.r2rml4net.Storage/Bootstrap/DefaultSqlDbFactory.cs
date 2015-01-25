@@ -1,5 +1,6 @@
 ﻿using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Vendor;
+using Slp.r2rml4net.Storage.Sql.Vendor.MSSQL;
 
 namespace Slp.r2rml4net.Storage.Bootstrap
 {
@@ -29,9 +30,10 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <summary>
         /// Creates the name generator.
         /// </summary>
-        public virtual BaseSqlNameGenerator CreateNameGenerator()
+        /// <param name="db">The database</param>
+        public virtual BaseSqlNameGenerator CreateNameGenerator(ISqlDb db)
         {
-            return new BaseSqlNameGenerator();
+            return new BaseSqlNameGenerator(db);
         }
     }
 }
