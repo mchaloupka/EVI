@@ -27,14 +27,18 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// Gets the unquoted table name.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        /// <returns>System.String.</returns>
         public abstract string GetTableNameUnquoted(string tableName);
+
+        /// <summary>
+        /// Gets the name of table in the schema.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public abstract string GetSchemaTableName(string tableName);
 
         /// <summary>
         /// Gets the unquoted column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
-        /// <returns>System.String.</returns>
         public abstract string GetColumnNameUnquoted(string columnName);
 
         /// <summary>

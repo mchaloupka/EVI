@@ -55,8 +55,10 @@ namespace Slp.r2rml4net.Storage.DBSchema
         /// <exception cref="System.Exception">Table not found in database schema</exception>
         public DatabaseTable GetTableInfo(string tableName)
         {
-            if (_tableCache.ContainsKey(tableName))
-                return _tableCache[tableName];
+            var schemaTableName = _db.GetSchemaTableName(tableName);
+
+            if (_tableCache.ContainsKey(schemaTableName))
+                return _tableCache[schemaTableName];
 
             throw new Exception("Table not found in database schema");
         }

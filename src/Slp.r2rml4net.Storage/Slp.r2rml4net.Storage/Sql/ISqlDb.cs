@@ -51,6 +51,12 @@ namespace Slp.r2rml4net.Storage.Sql
         string GetTableNameUnquoted(string tableName);
 
         /// <summary>
+        /// Gets the name of table in the schema.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        string GetSchemaTableName(string tableName);
+
+        /// <summary>
         /// Gets the unquoted column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>

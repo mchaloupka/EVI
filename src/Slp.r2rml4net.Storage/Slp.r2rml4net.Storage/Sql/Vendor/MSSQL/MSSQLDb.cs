@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Bootstrap;
@@ -24,12 +26,17 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor.MSSQL
         /// <summary>
         /// The start delimiters
         /// </summary>
-        private static readonly char[] StartDelimiters = new[] { '`', '\"', '[' };
+        private static readonly char[] StartQuoting = { '`', '\"', '[' };
 
         /// <summary>
         /// The end delimiters
         /// </summary>
-        private static readonly char[] EndDelimiters = new[] { '`', '\"', ']' };
+        private static readonly char[] EndQuoting = { '`', '\"', ']' };
+
+        /// <summary>
+        /// The middle delimiters
+        /// </summary>
+        private static readonly char[] MiddleDelimiters = { '.' };
 
         /// <summary>
         /// Gets the unquoted table name.
@@ -37,7 +44,36 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor.MSSQL
         /// <param name="tableName">Name of the table.</param>
         public override string GetTableNameUnquoted(string tableName)
         {
-            return GetColumnNameUnquoted(tableName);
+            StringBuilder sb = new StringBuilder();
+            StringBuilder curPart = new StringBuilder();
+
+            foreach (var c in tableName)
+            {
+                if (MiddleDelimiters.Contains(c))
+                {
+                    sb.Append(GetColumnNameUnquoted(curPart.ToString()));
+                    sb.Append(c);
+                    curPart.Clear();
+                }
+                else
+                {
+                    curPart.Append(c);
+                }
+            }
+
+            sb.Append(GetColumnNameUnquoted(curPart.ToString()));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Gets the name of table in the schema.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public override string GetSchemaTableName(string tableName)
+        {
+            var lastPart = tableName.Split(MiddleDelimiters).Last();
+            return GetTableNameUnquoted(lastPart);
         }
 
         /// <summary>
@@ -46,7 +82,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor.MSSQL
         /// <param name="columnName">Name of the column.</param>
         public override string GetColumnNameUnquoted(string columnName)
         {
-            return columnName.TrimStart(StartDelimiters).TrimEnd(EndDelimiters);
+            return columnName.TrimStart(StartQuoting).TrimEnd(EndQuoting);
         }
 
         /// <summary>
