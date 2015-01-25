@@ -475,7 +475,7 @@ namespace Slp.r2rml4net.Storage.Sql
             }
             else if (!string.IsNullOrEmpty(tableName))
             {
-                return new SqlTable(tableName, context.SchemaProvider.GetTableInfo(tableName));
+                return new SqlTable(tableName, context.SchemaProvider.GetTableInfo(tableName), context.Db);
             }
             else
                 throw new Exception("Unknown source of bgp");

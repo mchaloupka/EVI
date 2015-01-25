@@ -18,6 +18,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         private readonly DatabaseTable _tableInfo;
 
         /// <summary>
+        /// The database
+        /// </summary>
+        private readonly ISqlDb _database;
+
+        /// <summary>
         /// Gets the name of the table.
         /// </summary>
         /// <value>The name of the table.</value>
@@ -28,9 +33,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="tableInfo">Database schema info of the table</param>
-        public SqlTable(string tableName, DatabaseTable tableInfo)
+        /// <param name="database"></param>
+        public SqlTable(string tableName, DatabaseTable tableInfo, ISqlDb database)
         {
             _tableInfo = tableInfo;
+            _database = database;
             TableName = tableName;
             _columns = new List<SqlTableColumn>();
         }
@@ -66,7 +73,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Source
         /// <exception cref="System.Exception">Column not present in the database</exception>
         private DataType GetSqlColumnType(string columnName)
         {
-            var columnSchema = _tableInfo.Columns.FirstOrDefault(x => x.Name == columnName);
+            var unquotedName = _database.GetColumnNameUnquoted(columnName);
+            var columnSchema = _tableInfo.Columns.FirstOrDefault(x => x.Name == unquotedName);
 
             if(columnSchema == null)
                 throw new Exception("Column not present in the database");
