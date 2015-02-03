@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
@@ -16,10 +17,12 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// Initializes a new instance of the <see cref="SqlUnionColumn"/> class.
         /// </summary>
         /// <param name="source">The source.</param>
-        public SqlUnionColumn(ISqlSource source)
+        /// <param name="sqlDataType">The sql type of the column</param>
+        public SqlUnionColumn(ISqlSource source, DataType sqlDataType)
         {
             Source = source;
             _originalColumns = new List<ISqlColumn>();
+            SqlColumnType = sqlDataType;
         }
 
         /// <summary>
@@ -48,6 +51,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// </summary>
         /// <value>The source.</value>
         public ISqlSource Source { get; private set; }
+
+        /// <summary>
+        /// Gets the SQL type of the column.
+        /// </summary>
+        public DataType SqlColumnType { get; private set; }
 
         /// <summary>
         /// Removes the column.

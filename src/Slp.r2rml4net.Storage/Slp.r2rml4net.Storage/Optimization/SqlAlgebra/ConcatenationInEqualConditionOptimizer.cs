@@ -69,7 +69,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="context">The context.</param>
         private ICondition ExpandEquals(ConcatenationExpr leftOperand, ConstantExpr rightOperand, QueryContext context)
         {
-            var rightConcat = new ConcatenationExpr(new List<IExpression>() { rightOperand });
+            var rightConcat = new ConcatenationExpr(new List<IExpression>() { rightOperand }, context);
             return ExpandEquals(leftOperand, rightConcat, context);
         }
 
@@ -181,8 +181,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             yield return SuffixComparison(ref leftSuffix, ref rightSuffix, context);
 
             yield return new EqualsCondition(
-                CreateConcatenationEqual(leftStartIndex, leftEndIndex, leftPrefix, leftSuffix, leftParts),
-                CreateConcatenationEqual(rightStartIndex, rightEndIndex, rightPrefix, rightSuffix, rightParts)
+                CreateConcatenationEqual(leftStartIndex, leftEndIndex, leftPrefix, leftSuffix, leftParts, context),
+                CreateConcatenationEqual(rightStartIndex, rightEndIndex, rightPrefix, rightSuffix, rightParts, context)
             );
         }
 
@@ -194,7 +194,8 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <param name="prefix">The prefix.</param>
         /// <param name="suffix">The suffix.</param>
         /// <param name="parts">The parts.</param>
-        private IExpression CreateConcatenationEqual(int startIndex, int endIndex, string prefix, string suffix, IExpression[] parts)
+        /// <param name="context">The query context</param>
+        private IExpression CreateConcatenationEqual(int startIndex, int endIndex, string prefix, string suffix, IExpression[] parts, QueryContext context)
         {
             var expressions = new List<IExpression>();
 
@@ -215,10 +216,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (expressions.Count == 0)
                 return new ConstantExpr(string.Empty);
-            else if (expressions.Count == 1)
+            
+            if (expressions.Count == 1)
                 return expressions[0];
-            else
-                return new ConcatenationExpr(expressions);
+            
+            return new ConcatenationExpr(expressions, context);
         }
 
         /// <summary>

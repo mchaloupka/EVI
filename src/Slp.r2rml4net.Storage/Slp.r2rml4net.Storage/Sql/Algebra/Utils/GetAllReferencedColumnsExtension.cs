@@ -144,9 +144,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ColumnExpr expression, object data)
@@ -155,9 +155,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ConstantExpr expression, object data)
@@ -166,9 +166,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(ConcatenationExpr expression, object data)
@@ -185,9 +185,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="collateExpr">The expression.</param>
+            /// <param name="collateExpr">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(CoalesceExpr collateExpr, object data)
@@ -204,9 +204,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="caseExpr">The expression.</param>
+            /// <param name="caseExpr">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(CaseExpr caseExpr, object data)
@@ -230,9 +230,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="nullExpr">The expression.</param>
+            /// <param name="nullExpr">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The referenced columns.</returns>
             public IEnumerable<ISqlColumn> Visit(NullExpr nullExpr, object data)
@@ -312,9 +312,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ColumnExpr expression, object data)
@@ -323,9 +323,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ConstantExpr expression, object data)
@@ -334,9 +334,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The passed data.</param>
             /// <returns>Returned value.</returns>
             object IExpressionVisitor.Visit(ConcatenationExpr expression, object data)
@@ -345,9 +345,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The data.</param>
             /// <returns>System.Object.</returns>
             object IExpressionVisitor.Visit(NullExpr expression, object data)
@@ -356,20 +356,20 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Utils
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="coalesceExpr">The coalesceExpr.</param>
             /// <param name="data">The data.</param>
             /// <returns>System.Object.</returns>
-            object IExpressionVisitor.Visit(CoalesceExpr expression, object data)
+            object IExpressionVisitor.Visit(CoalesceExpr coalesceExpr, object data)
             {
-                return Visit(expression, data);
+                return Visit(coalesceExpr, data);
             }
 
             /// <summary>
-            /// Visits the specified expression.
+            /// Visits the specified coalesceExpr.
             /// </summary>
-            /// <param name="expression">The expression.</param>
+            /// <param name="expression">The coalesceExpr.</param>
             /// <param name="data">The data.</param>
             /// <returns>System.Object.</returns>
             object IExpressionVisitor.Visit(CaseExpr expression, object data)

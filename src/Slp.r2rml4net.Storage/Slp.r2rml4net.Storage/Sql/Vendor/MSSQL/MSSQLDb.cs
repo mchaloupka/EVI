@@ -39,6 +39,22 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor.MSSQL
         private static readonly char[] MiddleDelimiters = { '.' };
 
         /// <summary>
+        /// Gets the SQL type for concatenation.
+        /// </summary>
+        public override DataType SqlTypeForConcatenation
+        {
+            get { return new DataType("nvarchar(max)", "System.String"); }
+        }
+
+        /// <summary>
+        /// Gets the SQL type for decider.
+        /// </summary>
+        public override DataType SqlTypeForDecider
+        {
+            get { return new DataType("int", "System.Int32"); }
+        }
+
+        /// <summary>
         /// Gets the unquoted table name.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>

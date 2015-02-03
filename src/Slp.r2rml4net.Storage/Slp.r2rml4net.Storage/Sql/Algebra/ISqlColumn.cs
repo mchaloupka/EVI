@@ -1,4 +1,6 @@
-﻿namespace Slp.r2rml4net.Storage.Sql.Algebra
+﻿using DatabaseSchemaReader.DataSchema;
+
+namespace Slp.r2rml4net.Storage.Sql.Algebra
 {
     /// <summary>
     /// SQL Column
@@ -16,6 +18,11 @@
         /// </summary>
         /// <value>The source.</value>
         ISqlSource Source { get; }
+
+        /// <summary>
+        /// Gets the SQL type of the column.
+        /// </summary>
+        DataType SqlColumnType { get; }
     }
 
     /// <summary>

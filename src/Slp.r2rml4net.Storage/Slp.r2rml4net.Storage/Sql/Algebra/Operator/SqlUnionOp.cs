@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DatabaseSchemaReader.DataSchema;
+using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql.Algebra.Utils;
 using Slp.r2rml4net.Storage.Sql.Binders;
 
@@ -29,9 +31,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlUnionOp"/> class.
         /// </summary>
-        public SqlUnionOp()
+        /// <param name="context">Qury context</param>
+        public SqlUnionOp(QueryContext context)
         {
-            CaseColumn = new SqlUnionColumn(this);
+            CaseColumn = new SqlUnionColumn(this, context.Db.SqlTypeForDecider);
             _columns = new List<SqlUnionColumn>();
             _sources = new List<SqlSelectOp>();
             _valueBinders = new List<IBaseValueBinder>();
@@ -119,10 +122,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <summary>
         /// Gets the unioned column.
         /// </summary>
-        /// <returns>SqlUnionColumn.</returns>
-        public SqlUnionColumn GetUnionedColumn()
+        /// <param name="sqlDataType">SQL data type of the column</param>
+        public SqlUnionColumn GetUnionedColumn(DataType sqlDataType)
         {
-            var col = new SqlUnionColumn(this);
+            var col = new SqlUnionColumn(this, sqlDataType);
             _columns.Add(col);
             return col;
         }

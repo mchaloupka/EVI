@@ -107,7 +107,7 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
 
                     if (column == null)
                     {
-                        column = select.GetExpressionColumn(new NullExpr());
+                        column = select.GetExpressionColumn(new NullExpr(unColumn.SqlColumnType));
                         unColumn.AddColumn(column);
                     }
                 }

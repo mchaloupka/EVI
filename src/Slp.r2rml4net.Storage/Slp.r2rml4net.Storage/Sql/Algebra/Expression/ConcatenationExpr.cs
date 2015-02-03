@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DatabaseSchemaReader.DataSchema;
+using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -10,6 +12,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
     public class ConcatenationExpr : IExpression
     {
         /// <summary>
+        /// The query context
+        /// </summary>
+        private readonly QueryContext _context;
+
+        /// <summary>
         /// The parts
         /// </summary>
         private readonly List<IExpression> _parts;
@@ -18,8 +25,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// Initializes a new instance of the <see cref="ConcatenationExpr"/> class.
         /// </summary>
         /// <param name="parts">The parts.</param>
-        public ConcatenationExpr(IEnumerable<IExpression> parts)
+        /// <param name="context">The query context</param>
+        public ConcatenationExpr(IEnumerable<IExpression> parts, QueryContext context)
         {
+            _context = context;
             _parts = parts.ToList();
         }
 
@@ -49,7 +58,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             var newParts = _parts.Select(x => (IExpression)x.Clone());
 
-            return new ConcatenationExpr(newParts);
+            return new ConcatenationExpr(newParts, _context);
         }
 
         /// <summary>
@@ -63,6 +72,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 
             if (index > -1)
                 _parts[index] = newPart;
+        }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType
+        {
+            get { return _context.Db.SqlTypeForConcatenation; }
         }
     }
 }

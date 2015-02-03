@@ -524,7 +524,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             var cvd = (VisitData)data;
 
             if (cvd.GlobalResult.IsInNullColumns(expression.Column))
-                return new NullExpr();
+                return new NullExpr(expression.Column.SqlColumnType);
             else
                 return expression;
         }
@@ -554,7 +554,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
                 if(nItem is NullExpr)
                 {
-                    return new NullExpr();
+                    return new NullExpr(expression.SqlType);
                 }
                 if (item != nItem)
                     expression.ReplacePart(item, nItem);
@@ -577,36 +577,36 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
         /// <summary>
         /// Visits the specified expression.
         /// </summary>
-        /// <param name="collateExpr">The expression.</param>
+        /// <param name="coalesceExpr">The expression.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        public object Visit(CoalesceExpr collateExpr, object data)
+        public object Visit(CoalesceExpr coalesceExpr, object data)
         {
-            foreach (var expr in collateExpr.Expressions.ToArray())
+            foreach (var expr in coalesceExpr.Expressions.ToArray())
             {
                 var nExpr = (IExpression)expr.Accept(this, data);
 
                 if (nExpr is NullExpr)
                 {
-                    collateExpr.RemoveExpression(expr);
+                    coalesceExpr.RemoveExpression(expr);
                 }
                 if (expr != nExpr)
                 {
-                    collateExpr.ReplaceExpression(expr, nExpr);
+                    coalesceExpr.ReplaceExpression(expr, nExpr);
                 }
             }
 
-            if (!collateExpr.Expressions.Any())
+            if (!coalesceExpr.Expressions.Any())
             {
-                return new NullExpr();
+                return new NullExpr(coalesceExpr.SqlType);
             }
-            else if (collateExpr.Expressions.Count() == 1)
+            else if (coalesceExpr.Expressions.Count() == 1)
             {
-                return collateExpr.Expressions.First();
+                return coalesceExpr.Expressions.First();
             }
             else
             {
-                return collateExpr;
+                return coalesceExpr;
             }
         }
 
@@ -640,7 +640,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (!caseExpr.Statements.Any())
             {
-                return new NullExpr();
+                return new NullExpr(caseExpr.SqlType);
             }
             else
             {

@@ -42,10 +42,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// Visits the specified expression.
         /// </summary>
-        /// <param name="collateExpr">The expression.</param>
+        /// <param name="coalesceExpr">The expression.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>Returned value.</returns>
-        object Visit(CoalesceExpr collateExpr, object data);
+        object Visit(CoalesceExpr coalesceExpr, object data);
 
         /// <summary>
         /// Visits the specified expression.

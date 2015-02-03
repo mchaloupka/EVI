@@ -170,11 +170,11 @@ namespace Slp.r2rml4net.Storage.Sql
                 valueBinders.Add(varName, new CaseValueBinder(varName));
             }
 
-            var sqlUnion = new SqlUnionOp();
+            var sqlUnion = new SqlUnionOp(context);
 
             for (int index = 0; index < selects.Count; index++)
             {
-                Dictionary<ISqlColumn, SqlUnionColumn> unColumns = new Dictionary<ISqlColumn, SqlUnionColumn>();
+                var unColumns = new Dictionary<ISqlColumn, SqlUnionColumn>();
 
                 var select = selects[index];
                 sqlUnion.AddSource(select);
@@ -238,7 +238,7 @@ namespace Slp.r2rml4net.Storage.Sql
             }
 
             if (newCol == null)
-                newCol = sqlUnion.GetUnionedColumn();
+                newCol = sqlUnion.GetUnionedColumn(neededColumn.SqlColumnType);
 
             newCol.AddColumn(neededColumn);
 

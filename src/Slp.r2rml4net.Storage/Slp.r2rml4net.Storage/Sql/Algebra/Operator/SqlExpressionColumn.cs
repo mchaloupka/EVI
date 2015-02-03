@@ -1,4 +1,6 @@
-﻿namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
+﻿using DatabaseSchemaReader.DataSchema;
+
+namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
 {
     /// <summary>
     /// Column containing an expression
@@ -27,6 +29,15 @@
         /// </summary>
         /// <value>The source.</value>
         public ISqlSource Source { get; private set; }
+
+        /// <summary>
+        /// Gets the SQL type of the column.
+        /// </summary>
+        /// <value>The type of the SQL column.</value>
+        public DataType SqlColumnType
+        {
+            get { return Expression.SqlType; }
+        }
 
         /// <summary>
         /// Gets or sets the expression.

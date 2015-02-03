@@ -45,6 +45,18 @@ namespace Slp.r2rml4net.Storage.Sql
         SqlType SqlType { get; }
 
         /// <summary>
+        /// Gets the SQL type for concatenation.
+        /// </summary>
+        /// <value>The SQL type for concatenation.</value>
+        DataType SqlTypeForConcatenation { get; }
+
+        /// <summary>
+        /// Gets the SQL type for decider.
+        /// </summary>
+        /// <value>The SQL type for decider.</value>
+        DataType SqlTypeForDecider { get; }
+
+        /// <summary>
         /// Gets the unquoted table name.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>

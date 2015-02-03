@@ -119,7 +119,7 @@ namespace Slp.r2rml4net.Storage.Sql.Binders.Utils
             {
                 var unColumn = (SqlUnionColumn)oldColumn;
 
-                var newColumn = new SqlUnionColumn(null);
+                var newColumn = new SqlUnionColumn(null, unColumn.SqlColumnType);
 
                 foreach (var subCol in unColumn.OriginalColumns)
                 {

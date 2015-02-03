@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -16,9 +17,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// Initializes a new instance of the <see cref="CoalesceExpr"/> class.
         /// </summary>
-        public CoalesceExpr()
+        /// <param name="sqlDataType">The SQL data type</param>
+        public CoalesceExpr(DataType sqlDataType)
         {
             _expressions = new List<IExpression>();
+            SqlType = sqlDataType;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            var col = new CoalesceExpr();
+            var col = new CoalesceExpr(SqlType);
             foreach (var expr in _expressions)
             {
                 col._expressions.Add((IExpression)expr.Clone());
@@ -86,5 +89,10 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
             if (index > -1)
                 _expressions.RemoveAt(index);
         }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType { get; private set; }
     }
 }

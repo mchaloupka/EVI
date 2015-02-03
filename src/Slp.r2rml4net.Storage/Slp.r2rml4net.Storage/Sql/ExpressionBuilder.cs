@@ -216,7 +216,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 }
                 else
                 {
-                    return new ConcatenationExpr(parts);
+                    return new ConcatenationExpr(parts, context);
                 }
             }
             else
@@ -278,29 +278,43 @@ namespace Slp.r2rml4net.Storage.Sql
             }
             else if (binder is CoalesceValueBinder)
             {
-                var col = new CoalesceExpr();
+                CoalesceExpr col = null;
 
                 foreach (var innerBinder in ((CoalesceValueBinder)binder).InnerBinders)
                 {
-                    col.AddExpression(CreateExpression(context, innerBinder));
+                    var expression = CreateExpression(context, innerBinder);
+
+                    if (col == null)
+                    {
+                        col = new CoalesceExpr(expression.SqlType);
+                    }
+
+                    col.AddExpression(expression);
                 }
 
                 return col;
             }
             else if (binder is CaseValueBinder)
             {
-                var cas = new CaseExpr();
+                CaseExpr cas = null;
 
                 foreach (var statement in ((CaseValueBinder)binder).Statements)
                 {
-                    cas.AddStatement(statement.Condition, CreateExpression(context, statement.ValueBinder));
+                    var expression = CreateExpression(context, statement.ValueBinder);
+
+                    if (cas == null)
+                    {
+                        cas = new CaseExpr(expression.SqlType);
+                    }
+
+                    cas.AddStatement(statement.Condition, expression);
                 }
 
                 return cas;
             }
             else if(binder is BlankValueBinder)
             {
-                return new NullExpr();
+                return new NullExpr(null);
             }
             else if (binder is SqlSideValueBinder)
             {
@@ -353,7 +367,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 var concExpr = (ConcatF)sparqlQueryExpression;
                 var parts = concExpr.Parts.Select(x => ConvertExpression(x, valueBinders, context));
 
-                return new ConcatenationExpr(parts);
+                return new ConcatenationExpr(parts, context);
             }
             else if (sparqlQueryExpression is ConstantT)
             {

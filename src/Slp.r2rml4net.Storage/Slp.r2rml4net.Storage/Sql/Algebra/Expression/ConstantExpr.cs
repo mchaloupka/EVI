@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -31,6 +32,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             SqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
             Value = uri;
+            // TODO: Set SQL type
         }
 
         /// <summary>
@@ -41,6 +43,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             SqlString = string.Format("\'{0}\'", text);
             Value = text;
+            // TODO: Set SQL type
         }
 
         /// <summary>
@@ -51,6 +54,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             Value = number;
             SqlString = number.ToString();
+            // TODO: Set SQL type
         }
 
         /// <summary>
@@ -87,5 +91,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
             else
                 throw new NotImplementedException();
         }
+
+        public DataType SqlType { get; private set; }
     }
 }

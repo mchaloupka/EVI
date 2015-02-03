@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -49,6 +50,14 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         public object Clone()
         {
             return new ColumnExpr(Column, IsIriEscapedValue);
+        }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType
+        {
+            get { return Column.SqlColumnType; }
         }
     }
 }

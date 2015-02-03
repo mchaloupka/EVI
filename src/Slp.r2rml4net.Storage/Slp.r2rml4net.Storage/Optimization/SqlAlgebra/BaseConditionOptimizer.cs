@@ -519,7 +519,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             }
             else
             {
-                return new NullExpr();
+                return new NullExpr(coalesceExpr.SqlType);
             }
         }
 
@@ -565,7 +565,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
             if (caseExpr.Statements.Any())
                 return caseExpr;
             else
-                return new NullExpr();
+                return new NullExpr(caseExpr.SqlType);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -16,9 +17,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <summary>
         /// Initializes a new instance of the <see cref="CaseExpr"/> class.
         /// </summary>
-        public CaseExpr()
+        /// <param name="sqlDataType">The sql type</param>
+        public CaseExpr(DataType sqlDataType)
         {
             _statements = new List<CaseStatementExpression>();
+            SqlType = sqlDataType;
         }
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone()
         {
-            var cas = new CaseExpr();
+            var cas = new CaseExpr(SqlType);
 
             foreach (var item in _statements)
             {
@@ -76,6 +79,11 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
             if (index > -1)
                 _statements.RemoveAt(index);
         }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType { get; private set; }
     }
 
     /// <summary>
