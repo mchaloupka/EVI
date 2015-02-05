@@ -92,6 +92,9 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
                 throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
         public DataType SqlType { get; private set; }
     }
 }
