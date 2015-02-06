@@ -1,1 +1,8 @@
-SELECT DISTINCT ?c ?p WHERE { ?s a ?c; ?p ?o. }
+PREFIX schema:	<http://schema.org/>
+PREFIX gr:		<http://purl.org/goodrelations/v1#>
+
+SELECT * WHERE
+{
+	?ca a schema:CheckAction;
+	schema:result/schema:result/gr:hasCurrencyValue ?result.
+}
