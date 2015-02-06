@@ -362,16 +362,25 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             var leftExpr = condition.LeftOperand;
             var rightExpr = condition.RightOperand;
 
-            // TODO: Decide whether cast needed
-            context.Sb.Append("CAST(");
-            leftExpr.Accept(this, context);
-            context.Sb.Append(" AS nvarchar(MAX))");
+            if (leftExpr.SqlType.TypeName == rightExpr.SqlType.TypeName)
+            {
+                leftExpr.Accept(this, context);
+                context.Sb.Append("=");
+                rightExpr.Accept(this, context);
+            }
+            else
+            {
+                context.Sb.Append("CAST(");
+                leftExpr.Accept(this, context);
+                context.Sb.Append(" AS nvarchar(MAX))");
 
-            context.Sb.Append("=");
+                context.Sb.Append("=");
 
-            context.Sb.Append("CAST(");
-            rightExpr.Accept(this, context);
-            context.Sb.Append(" AS nvarchar(MAX))");
+                context.Sb.Append("CAST(");
+                rightExpr.Accept(this, context);
+                context.Sb.Append(" AS nvarchar(MAX))");
+            }
+            
 
             return null;
         }
@@ -521,11 +530,18 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
             for (int i = 0; i < parts.Length; i++)
             {
                 if (i > 0)
-                    context.Sb.Append(", ");
+                    context.Sb.Append(",");
 
-                context.Sb.Append("CAST(");
-                parts[i].Accept(this, context);
-                context.Sb.Append(" AS nvarchar(MAX))");
+                if (parts[i].SqlType.IsString)
+                {
+                    parts[i].Accept(this, context);
+                }
+                else
+                {
+                    context.Sb.Append("CAST(");
+                    parts[i].Accept(this, context);
+                    context.Sb.Append(" AS nvarchar(MAX))");
+                }
             }
 
             context.Sb.Append(")");

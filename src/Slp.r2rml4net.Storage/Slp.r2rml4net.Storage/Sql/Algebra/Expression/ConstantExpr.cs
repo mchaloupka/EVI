@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
+using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
 {
@@ -9,6 +10,8 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
     /// </summary>
     public class ConstantExpr : IExpression
     {
+        private QueryContext _context;
+
         // TODO: Value escaping
         // TODO: Connect with current db vendor
 
@@ -28,33 +31,39 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// Initializes a new instance of the <see cref="ConstantExpr"/> class.
         /// </summary>
         /// <param name="uri">The URI.</param>
-        public ConstantExpr(Uri uri)
+        /// <param name="context">Query context</param>
+        public ConstantExpr(Uri uri, QueryContext context)
         {
             SqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
             Value = uri;
-            // TODO: Set SQL type
+            _context = context;
+            SqlType = context.Db.SqlTypeForString;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantExpr"/> class.
         /// </summary>
         /// <param name="text">The text.</param>
-        public ConstantExpr(string text)
+        /// /// <param name="context">Query context</param>
+        public ConstantExpr(string text, QueryContext context)
         {
             SqlString = string.Format("\'{0}\'", text);
             Value = text;
-            // TODO: Set SQL type
+            _context = context;
+            SqlType = context.Db.SqlTypeForString;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantExpr"/> class.
         /// </summary>
         /// <param name="number">The number.</param>
-        public ConstantExpr(int number)
+        /// /// <param name="context">Query context</param>
+        public ConstantExpr(int number, QueryContext context)
         {
             Value = number;
             SqlString = number.ToString();
-            // TODO: Set SQL type
+            _context = context;
+            SqlType = context.Db.SqlTypeForInt;
         }
 
         /// <summary>
@@ -78,15 +87,15 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         {
             if (Value is Uri)
             {
-                return new ConstantExpr((Uri)Value);
+                return new ConstantExpr((Uri)Value, _context);
             }
             else if (Value is int)
             {
-                return new ConstantExpr((int)Value);
+                return new ConstantExpr((int)Value, _context);
             }
             else if (Value is string)
             {
-                return new ConstantExpr((string)Value);
+                return new ConstantExpr((string)Value, _context);
             }
             else
                 throw new NotImplementedException();

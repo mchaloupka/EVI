@@ -201,7 +201,7 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (!string.IsNullOrEmpty(prefix))
             {
-                expressions.Add(new ConstantExpr(prefix));
+                expressions.Add(new ConstantExpr(prefix, context));
             }
 
             for (int i = startIndex; i < endIndex; i++)
@@ -211,11 +211,11 @@ namespace Slp.r2rml4net.Storage.Optimization.SqlAlgebra
 
             if (!string.IsNullOrEmpty(suffix))
             {
-                expressions.Add(new ConstantExpr(suffix));
+                expressions.Add(new ConstantExpr(suffix, context));
             }
 
             if (expressions.Count == 0)
-                return new ConstantExpr(string.Empty);
+                return new ConstantExpr(string.Empty, context);
             
             if (expressions.Count == 1)
                 return expressions[0];

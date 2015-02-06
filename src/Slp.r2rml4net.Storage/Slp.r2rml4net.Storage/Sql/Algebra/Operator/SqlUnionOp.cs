@@ -34,7 +34,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Operator
         /// <param name="context">Qury context</param>
         public SqlUnionOp(QueryContext context)
         {
-            CaseColumn = new SqlUnionColumn(this, context.Db.SqlTypeForDecider);
+            CaseColumn = new SqlUnionColumn(this, context.Db.SqlTypeForInt);
             _columns = new List<SqlUnionColumn>();
             _sources = new List<SqlSelectOp>();
             _valueBinders = new List<IBaseValueBinder>();

@@ -68,7 +68,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <returns>The created expression.</returns>
         private IExpression CreateExpression(QueryContext context, UriNode node)
         {
-            return new ConstantExpr(node.Uri);
+            return new ConstantExpr(node.Uri, context);
         }
 
         /// <summary>
@@ -83,14 +83,14 @@ namespace Slp.r2rml4net.Storage.Sql
         {
             if(node.DataType == null)
             {
-                return new ConstantExpr(node.Value);
+                return new ConstantExpr(node.Value, context);
             }
 
             switch (node.DataType.AbsoluteUri)
             {
                 case XmlSpecsHelper.XmlSchemaDataTypeInt:
                 case XmlSpecsHelper.XmlSchemaDataTypeInteger:
-                    return new ConstantExpr(int.Parse(node.Value));
+                    return new ConstantExpr(int.Parse(node.Value), context);
                 default:
                     throw new NotImplementedException();
             }
@@ -147,14 +147,14 @@ namespace Slp.r2rml4net.Storage.Sql
             {
                 if (map is IUriValuedTermMap)
                 {
-                    return new ConstantExpr(((IUriValuedTermMap)map).URI);
+                    return new ConstantExpr(((IUriValuedTermMap)map).URI, context);
                 }
                 else if (map is IObjectMap)
                 {
                     var objectMap = (IObjectMap)map;
 
                     if (objectMap.URI != null)
-                        return new ConstantExpr(objectMap.URI);
+                        return new ConstantExpr(objectMap.URI, context);
                     else if (objectMap.Literal != null)
                     {
                         // TODO: Rework - better node creation
@@ -197,7 +197,7 @@ namespace Slp.r2rml4net.Storage.Sql
                     }
                     else if (templatePart.IsText)
                     {
-                        parts.Add(new ConstantExpr(templatePart.Text));
+                        parts.Add(new ConstantExpr(templatePart.Text, context));
                     }
                     else
                     {
@@ -208,7 +208,7 @@ namespace Slp.r2rml4net.Storage.Sql
                 if (parts.Count == 0)
                 {
                     // TODO: Handle empty template (or should I not?)
-                    return new ConstantExpr(string.Empty);
+                    return new ConstantExpr(string.Empty, context);
                 }
                 else if (parts.Count == 1)
                 {
@@ -245,7 +245,7 @@ namespace Slp.r2rml4net.Storage.Sql
         /// <returns>The created expression.</returns>
         public IExpression CreateExpression(QueryContext context, int number)
         {
-            return new ConstantExpr(number);
+            return new ConstantExpr(number, context);
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace Slp.r2rml4net.Storage.Sql
             if (node is StringNode)
             {
                 var sn = (StringNode)node;
-                return new ConstantExpr(sn.Value);
+                return new ConstantExpr(sn.Value, context);
             }
             else
                 throw new NotImplementedException();

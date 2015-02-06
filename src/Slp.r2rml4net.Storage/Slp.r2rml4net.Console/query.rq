@@ -1,1 +1,1 @@
-SELECT DISTINCT ?p WHERE { ?s ?p ?o }
+SELECT DISTINCT ?c ?p WHERE { ?s a ?c; ?p ?o. }

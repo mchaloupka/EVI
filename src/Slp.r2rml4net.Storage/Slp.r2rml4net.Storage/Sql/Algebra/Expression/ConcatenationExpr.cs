@@ -79,7 +79,7 @@ namespace Slp.r2rml4net.Storage.Sql.Algebra.Expression
         /// </summary>
         public DataType SqlType
         {
-            get { return _context.Db.SqlTypeForConcatenation; }
+            get { return _context.Db.SqlTypeForString; }
         }
     }
 }
