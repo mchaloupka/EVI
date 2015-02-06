@@ -14,9 +14,9 @@ if($env:APPVEYOR_REPO_TAG -eq 'True')
 	if($tag -match 'v([0-9]*)\.([0-9]*)\.([0-9]*)(-[a-z]+)?')
 	{
 		$version = $matches[1] + "." + $matches[2] + "." + $matches[3];
-		$version = $version + "." + $build;
-		
 		$nversion = $version;
+		
+		$version = $version + "." + $build;
 		$iversion = $version;
 		
 		if($matches.count -eq 5)
