@@ -9,14 +9,14 @@ if($env:APPVEYOR_REPO_TAG -eq 'True')
 	$tag = $env:APPVEYOR_REPO_TAG_NAME
 	$build = $env:APPVEYOR_BUILD_NUMBER
 	
-	Add-AppveyorMessage -Message "This is a tag build (tag: $tag, branch: $branch)"
+	Add-AppveyorMessage -Message "This is a tag build (tag: $tag, branch: $branch, build: $build)"
 	
 	if($tag -match 'v([0-9]*)\.([0-9]*)\.([0-9]*)(-[a-z]+)?')
 	{
 		$version = $matches[1] + "." + $matches[2] + "." + $matches[3];
-		$nversion = $version;
+		$version = $version + "." + $build;
 		
-		$version = $version + "." + $build
+		$nversion = $version;
 		$iversion = $version;
 		
 		if($matches.count -eq 5)
