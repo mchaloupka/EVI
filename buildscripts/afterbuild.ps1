@@ -32,6 +32,10 @@ if($nugetversion)
 
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? { $_.Name -like '*.nuspec' } | Update-NuspecVersion $nugetversion;
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? { $_.Name -like '*.nuspec' } | Pack-Nuget
+	
+	Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+	
+	Add-AppveyorMessage -Message 'Publish bin folder of the build where nuget was created'	
+	Push-AppveyorArtifact 'src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin' -FileName 'Slp.r2rml4net.Storage_bin'
 }
 
-Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
