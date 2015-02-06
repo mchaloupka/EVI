@@ -43,10 +43,12 @@ if($nugetversion)
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? { $_.Name -like '*.nuspec' } | Pack-Nuget
 	
 	Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+	
+	Add-AppveyorMessage -Message 'Publishing bin folder of the build'	
+	$zipFolderName = ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION + '.Slp.r2rml4net.Storage.zip');
+	ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION)
+	Push-AppveyorArtifact $zipFolderName
 }
 
-Add-AppveyorMessage -Message 'Publishing bin folder of the build'	
-$zipFolderName = ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION + '.Slp.r2rml4net.Storage.zip');
-ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION)
-Push-AppveyorArtifact $zipFolderName
+
 
