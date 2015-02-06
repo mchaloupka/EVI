@@ -32,7 +32,7 @@ function ZipFolder
 	Param ([string]$zipFolderName, [string]$sourceDir)
 	
 	$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal;
-	[System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipFolderName, $false);
+	[System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipFolderName, $compressionLevel, $false);
 }
 
 if($nugetversion)
