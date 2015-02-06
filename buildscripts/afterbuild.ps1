@@ -1,4 +1,5 @@
 $nugetversion = $env:DOTNETR2RMLSTORE_NUGETVERSION
+Add-Type -Assembly System.IO.Compression.FileSystem
 
 function Update-NuspecVersion
 {
@@ -26,6 +27,14 @@ function Pack-Nuget
   }
 }
 
+function ZipFolder
+{
+	Param ([string]$zipFolderName, [string]$sourceDir)
+	
+	$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal;
+	[System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipFolderName, $false);
+}
+
 if($nugetversion)
 {
 	Add-AppveyorMessage -Message ('Nuget version ' + $nugetversion)
@@ -37,5 +46,7 @@ if($nugetversion)
 }
 
 Add-AppveyorMessage -Message 'Publishing bin folder of the build'	
-Push-AppveyorArtifact ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION) -FileName 'Slp.r2rml4net.Storage_bin' -Type 'zip'
+$zipFolderName = ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION + '.Slp.r2rml4net.Storage.zip');
+ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION)
+Push-AppveyorArtifact $zipFolderName
 
