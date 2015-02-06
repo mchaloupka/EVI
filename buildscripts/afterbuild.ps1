@@ -37,5 +37,5 @@ if($nugetversion)
 }
 
 Add-AppveyorMessage -Message 'Publishing bin folder of the build'	
-Push-AppveyorArtifact ($env:APPVEYOR_BUILD_FOLDER + 'src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin') -FileName 'Slp.r2rml4net.Storage_bin' -Type 'zip'
+Push-AppveyorArtifact ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION) -FileName 'Slp.r2rml4net.Storage_bin' -Type 'zip'
 
