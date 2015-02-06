@@ -5,8 +5,11 @@ $iversion = $version
 
 if($env:APPVEYOR_REPO_TAG -eq 'True')
 {
-	$tag = $env:APPVEYOR_REPO_BRANCH
+	$branch = $env:APPVEYOR_REPO_BRANCH
+	$tag = $env:APPVEYOR_REPO_TAG_NAME
 	$build = $env:APPVEYOR_BUILD_NUMBER
+	
+	Add-AppveyorMessage -Message "This is a tag build (tag: $tag, branch: $branch)"
 	
 	if($tag -match 'v([0-9]*)\.([0-9]*)\.([0-9]*)(-[a-z]+)?')
 	{
@@ -23,6 +26,7 @@ if($env:APPVEYOR_REPO_TAG -eq 'True')
 		}
 		
 		Set-AppveyorBuildVariable -Name 'DOTNETR2RMLSTORE_NUGETVERSION' -Value $nversion
+		Add-AppveyorMessage -Message "Stored nuget version"
 	}
 }
 
