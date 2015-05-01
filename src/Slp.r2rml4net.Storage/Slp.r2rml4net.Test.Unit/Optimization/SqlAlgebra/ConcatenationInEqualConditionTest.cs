@@ -28,7 +28,77 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
         }
 
         [TestMethod]
-        public void ConcatenationToConstEscaped()
+        public void ConcatenationToConstEscaped_Prefix()
+        {
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ConstantExpr("http://s.com/"),
+                new ColumnExpr(dummyColumn1, true)
+            });
+
+            var right = new ConstantExpr("http://s.com/12");
+
+            var condition = new EqualsCondition(left, right);
+
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+
+            var expected = (new EqualsCondition(
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("12")
+                ));
+
+            AssertConditionsEqual(expected, result);
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void ConcatenationToConstEscaped_Suffix()
+        {
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("/s")
+            });
+
+            var right = new ConstantExpr("12/s");
+
+            var condition = new EqualsCondition(left, right);
+
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+
+            var expected = (new EqualsCondition(
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("12")
+                ));
+
+            AssertConditionsEqual(expected, result);
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void ConcatenationToConstEscaped_Both()
+        {
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ConstantExpr("http://s.com/"),
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("/s")
+            });
+
+            var right = new ConstantExpr("http://s.com/12/s");
+
+            var condition = new EqualsCondition(left, right);
+
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+
+            var expected = (new EqualsCondition(
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("12")
+                ));
+
+            AssertConditionsEqual(expected, result);
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void ConcatenationToConstEscaped_TwoColumns()
         {
             var left = new ConcatenationExpr(new IExpression[] {
                 new ConstantExpr("http://s.com/"),
@@ -41,12 +111,7 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
 
             var condition = new EqualsCondition(left, right);
 
-            var visitData = new BaseConditionOptimizer.VisitData();
-            visitData.IsOnTheFly = true;
-            visitData.SecondRun = false;
-            visitData.Context = null;
-
-            var result = (ICondition)this.optimizer.Visit(condition, visitData);
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
 
             var expected = new AndCondition();
             expected.AddToCondition(new EqualsCondition(
