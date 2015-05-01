@@ -72,6 +72,7 @@
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
+    <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Mapping\MappingProcessor.cs" />
     <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />

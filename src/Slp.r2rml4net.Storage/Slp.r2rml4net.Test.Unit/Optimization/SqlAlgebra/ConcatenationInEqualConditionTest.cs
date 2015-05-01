@@ -13,37 +13,35 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
     public class ConcatenationInEqualConditionTest : BaseConditionTest
     {
         private ConcatenationInEqualConditionOptimizer optimizer;
-        private ISqlColumn dummyColumn1;
-        private ISqlColumn dummyColumn2;
-
 
         [TestInitialize]
         public void TestInitialization()
         {
             this.optimizer = new ConcatenationInEqualConditionOptimizer();
-
-            var dummyTable = new SqlTable("dummy");
-            this.dummyColumn1 = dummyTable.GetColumn("col1");
-            this.dummyColumn2 = dummyTable.GetColumn("col2");
         }
 
         [TestMethod]
         public void ConcatenationToConstEscaped_Prefix()
         {
-            var left = new ConcatenationExpr(new IExpression[] {
-                new ConstantExpr("http://s.com/"),
-                new ColumnExpr(dummyColumn1, true)
-            });
+            var queryContext = GenerateQueryContext();
+            var dummyTable = GetDummyTable(queryContext);
+            var dummyColumn1 = dummyTable.GetColumn("col1");
+            var dummyColumn2 = dummyTable.GetColumn("col2");
 
-            var right = new ConstantExpr("http://s.com/12");
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ConstantExpr("http://s.com/", queryContext),
+                new ColumnExpr(dummyColumn1, true)
+            }, queryContext);
+
+            var right = new ConstantExpr("http://s.com/12", queryContext);
 
             var condition = new EqualsCondition(left, right);
 
-            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData(queryContext));
 
             var expected = (new EqualsCondition(
                 new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("12")
+                new ConstantExpr("12", queryContext)
                 ));
 
             AssertConditionsEqual(expected, result);
@@ -53,20 +51,25 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
         [TestMethod]
         public void ConcatenationToConstEscaped_Suffix()
         {
+            var queryContext = GenerateQueryContext();
+            var dummyTable = GetDummyTable(queryContext);
+            var dummyColumn1 = dummyTable.GetColumn("col1");
+            var dummyColumn2 = dummyTable.GetColumn("col2");
+
             var left = new ConcatenationExpr(new IExpression[] {
                 new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("/s")
-            });
+                new ConstantExpr("/s", queryContext)
+            }, queryContext);
 
-            var right = new ConstantExpr("12/s");
+            var right = new ConstantExpr("12/s", queryContext);
 
             var condition = new EqualsCondition(left, right);
 
-            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData(queryContext));
 
             var expected = (new EqualsCondition(
                 new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("12")
+                new ConstantExpr("12", queryContext)
                 ));
 
             AssertConditionsEqual(expected, result);
@@ -76,21 +79,26 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
         [TestMethod]
         public void ConcatenationToConstEscaped_Both()
         {
-            var left = new ConcatenationExpr(new IExpression[] {
-                new ConstantExpr("http://s.com/"),
-                new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("/s")
-            });
+            var queryContext = GenerateQueryContext();
+            var dummyTable = GetDummyTable(queryContext);
+            var dummyColumn1 = dummyTable.GetColumn("col1");
+            var dummyColumn2 = dummyTable.GetColumn("col2");
 
-            var right = new ConstantExpr("http://s.com/12/s");
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ConstantExpr("http://s.com/", queryContext),
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("/s", queryContext)
+            }, queryContext);
+
+            var right = new ConstantExpr("http://s.com/12/s", queryContext);
 
             var condition = new EqualsCondition(left, right);
 
-            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData(queryContext));
 
             var expected = (new EqualsCondition(
                 new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("12")
+                new ConstantExpr("12", queryContext)
                 ));
 
             AssertConditionsEqual(expected, result);
@@ -100,27 +108,32 @@ namespace Slp.r2rml4net.Test.Unit.Optimization.SqlAlgebra
         [TestMethod]
         public void ConcatenationToConstEscaped_TwoColumns()
         {
-            var left = new ConcatenationExpr(new IExpression[] {
-                new ConstantExpr("http://s.com/"),
-                new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("/"),
-                new ColumnExpr(dummyColumn1, true)
-            });
+            var queryContext = GenerateQueryContext();
+            var dummyTable = GetDummyTable(queryContext);
+            var dummyColumn1 = dummyTable.GetColumn("col1");
+            var dummyColumn2 = dummyTable.GetColumn("col2");
 
-            var right = new ConstantExpr("http://s.com/12/45");
+            var left = new ConcatenationExpr(new IExpression[] {
+                new ConstantExpr("http://s.com/", queryContext),
+                new ColumnExpr(dummyColumn1, true),
+                new ConstantExpr("/", queryContext),
+                new ColumnExpr(dummyColumn1, true)
+            }, queryContext);
+
+            var right = new ConstantExpr("http://s.com/12/45", queryContext);
 
             var condition = new EqualsCondition(left, right);
 
-            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData());
+            var result = (ICondition)this.optimizer.Visit(condition, GenerateInitialVisitData(queryContext));
 
             var expected = new AndCondition();
             expected.AddToCondition(new EqualsCondition(
                 new ColumnExpr(dummyColumn1, true),
-                new ConstantExpr("12")
+                new ConstantExpr("12", queryContext)
                 ));
             expected.AddToCondition(new EqualsCondition(
                 new ColumnExpr(dummyColumn2, true),
-                new ConstantExpr("45")
+                new ConstantExpr("45", queryContext)
                 ));
 
             AssertConditionsEqual(expected, result);
