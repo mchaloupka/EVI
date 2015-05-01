@@ -72,7 +72,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <summary>
         /// The database schema provider
         /// </summary>
-        private readonly DbSchemaProvider _schemaProvider;
+        private readonly IDbSchemaProvider _schemaProvider;
 
 
         /// <summary>

@@ -68,6 +68,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
         /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizers on the fly.</param>
-        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, DbSchemaProvider schemaProvider, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly);
+        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly);
     }
 }
