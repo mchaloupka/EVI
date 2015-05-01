@@ -2,6 +2,9 @@
 
 namespace Slp.r2rml4net.Storage.DBSchema
 {
+    /// <summary>
+    /// Interface for the provider for functions related to database schema.
+    /// </summary>
     public interface IDbSchemaProvider
     {
         /// <summary>
