@@ -107,9 +107,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor.MSSQL
         /// Executes the query.
         /// </summary>
         /// <param name="query">The query.</param>
-        /// <param name="context">The query context.</param>
         /// <returns>The query result reader.</returns>
-        public override IQueryResultReader ExecuteQuery(string query, QueryContext context)
+        public override IQueryResultReader ExecuteQuery(string query)
         {
             SqlConnection sqlConnection = new SqlConnection(ConnectionString);
             SqlCommand command = new SqlCommand

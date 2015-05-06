@@ -181,7 +181,7 @@ namespace Slp.r2rml4net.Storage.Query
                 var query = _db.GenerateQuery(sqlAlgebra, context);
 
                 // Execute query
-                using (var result = _db.ExecuteQuery(query, context))
+                using (var result = _db.ExecuteQuery(query))
                 {
                     ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
                 }
