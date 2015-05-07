@@ -1,6 +1,9 @@
-﻿function Update-Config 
+$sqlInstance = "(local)\SQL2014";
+$dbName = "R2RMLTestStore";
+
+function Update-Config 
 {
-	$mssqlConnectionString = "Data Source=(local)\SQL2014;Initial Catalog=master;User ID=sa;Password=Password12!";
+	$mssqlConnectionString = "Server=$sqlInstance; Database=$dbName; Trusted_connection=true";
 	
 	foreach($o in $input) 
 	{
@@ -18,6 +21,10 @@
 		$doc.Save($o.FullName);
 	}
 	
+	
 }
 
 $env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? {$_.Name -eq "app.config"} | Update-Config;
+
+Write-output ('Creating database ' + $dbName);
+sqlcmd -S "$sqlInstance" -Q "Use [master]; CREATE DATABASE [$dbName]";
