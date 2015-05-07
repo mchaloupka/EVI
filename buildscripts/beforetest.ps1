@@ -3,7 +3,7 @@ $dbName = "R2RMLTestStore";
 
 function Update-Config 
 {
-	$mssqlConnectionString = "Server=$sqlInstance; Database=$dbName; Trusted_connection=true";
+	$mssqlConnectionString = "Data Source=$sqlInstance;Initial Catalog=$dbName;Integrated Security=True";
 	
 	foreach($o in $input) 
 	{
