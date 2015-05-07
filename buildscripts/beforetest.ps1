@@ -11,6 +11,7 @@
 		
 		if($node) 
 		{
+			Write-output ('Updating MSSQL ConnectionString to: ' + $mssqlConnectionString);
 			$node.connectionString = $mssqlConnectionString;	
 		}
 		
