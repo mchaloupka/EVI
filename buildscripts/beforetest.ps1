@@ -1,6 +1,6 @@
 ﻿function Update-Config 
 {
-	$mssqlConnectionString = "Server=(local)\SQL2014;Database=master;User ID=sa;Password=Password12!";
+	$mssqlConnectionString = "Data Source=(local)\SQL2014;Initial Catalog=master;User ID=sa;Password=Password12!";
 	
 	foreach($o in $input) 
 	{
