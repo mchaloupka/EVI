@@ -29,7 +29,7 @@ function Update-Config
 	
 }
 
-$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? {$_.Name -eq "Slp.r2rml4net.Test.Unit.dll.config"} | Update-Config;
+$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? {$_.Name -eq "Slp.r2rml4net.Test.System.dll.config"} | Update-Config;
 
 Write-output ('Creating database ' + $dbName);
 sqlcmd -S "$sqlInstance" -Q "Use [master]; CREATE DATABASE [$dbName]";
