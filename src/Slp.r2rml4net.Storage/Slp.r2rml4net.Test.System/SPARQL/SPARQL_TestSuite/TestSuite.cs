@@ -21,11 +21,12 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
         {
             string testName = MethodBase.GetCurrentMethod().Name;
             string dataFile = @"Data\entailment\rdf01.ttl";
-            string queryFile = @"Data\entailment\rdf01.rq";
-            string resultFile = @"Data\entailment\rdf01.srx";
+            //string queryFile = @"Data\entailment\rdf01.rq";
+            //string resultFile = @"Data\entailment\rdf01.srx";
 
             var sqlDb = GetSqlDb();
             CreateTable(sqlDb, testName);
+            LoadDataFile(dataFile, sqlDb, testName);
         }
 
         protected abstract IR2RmlStorageFactory GetStorageFactory();
@@ -50,8 +51,20 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 
             ttlparser.Load(g, filePath);
 
-            // TODO: Add data to database
-            // TODO: Change result type to R2RML
+            foreach (var triple in g.Triples)
+            {
+                InsertTripleToDb(sqlDb, testName, triple);
+            }
+
+            // TODO: Change result type to R2RML and generate the mapping
+        }
+
+        private static void InsertTripleToDb(ISqlDb sqlDb, string tableName, Triple triple)
+        {
+            sqlDb.ExecuteQuery(string.Format(
+                "INSERT INTO {0} VALUES (\'{1}\', \'{2}\', \'{3}\')",
+                tableName, triple.Subject, triple.Predicate.ToString(), triple.Object.ToString()
+                ));
         }
 
         private static string GetPath(string dataFile)
