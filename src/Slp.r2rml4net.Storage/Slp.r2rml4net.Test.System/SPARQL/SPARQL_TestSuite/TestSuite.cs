@@ -11,22 +11,55 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sql;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using TCode.r2rml4net;
+using Slp.r2rml4net.Storage;
+using System.Xml;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 {
     public abstract class TestSuite
+        : BaseSPARQLTestSuite
     {
         [TestMethod]
         public void entailment_rdf01()
         {
-            string testName = MethodBase.GetCurrentMethod().Name;
-            string dataFile = @"Data\entailment\rdf01.ttl";
-            //string queryFile = @"Data\entailment\rdf01.rq";
-            //string resultFile = @"Data\entailment\rdf01.srx";
+            var testName = MethodBase.GetCurrentMethod().Name;
+            var dataFile = @"Data\entailment\rdf01.ttl";
+            var queryFile = @"Data\entailment\rdf01.rq";
+            var resultFile = @"Data\entailment\rdf01.srx";
 
             var sqlDb = GetSqlDb();
             CreateTable(sqlDb, testName);
-            LoadDataFile(dataFile, sqlDb, testName);
+            var mapping = LoadDataFile(dataFile, sqlDb, testName);
+
+            var storage = new R2RmlStorage(sqlDb, mapping, GetStorageFactory());
+            var query = GetQuery(queryFile);
+
+            var result = storage.Query(query);
+
+            var expected = GetExpected(resultFile);
+
+            AssertBagEqual(expected, result);
+        }
+
+        private XmlDocument GetExpected(string resultFile)
+        {
+            var doc = new XmlDocument();
+            doc.Load(GetPath(resultFile));
+            return doc;
+        }
+
+        private static string GetQuery(string queryFile)
+        {
+            var query = string.Empty;
+
+            using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
+            using (var sr = new StreamReader(fsr))
+            {
+                query = sr.ReadToEnd();
+            }
+
+            return query;
         }
 
         protected abstract IR2RmlStorageFactory GetStorageFactory();
@@ -42,7 +75,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
                     , testName));
         }
 
-        private static void LoadDataFile(string dataFile, ISqlDb sqlDb, string testName)
+        private static IR2RML LoadDataFile(string dataFile, ISqlDb sqlDb, string testName)
         {
             var filePath = GetPath(dataFile);
 
@@ -56,7 +89,13 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
                 InsertTripleToDb(sqlDb, testName, triple);
             }
 
-            // TODO: Change result type to R2RML and generate the mapping
+            var mapping = new FluentR2RML();
+            var triplesMap = mapping.CreateTriplesMapFromTable(testName);
+            triplesMap.SubjectMap.IsTemplateValued("{subject}");
+            var poMap = triplesMap.CreatePropertyObjectMap();
+            poMap.CreatePredicateMap().IsTemplateValued("{predicate}");
+            poMap.CreateObjectMap().IsColumnValued("object");
+            return mapping;
         }
 
         private static void InsertTripleToDb(ISqlDb sqlDb, string tableName, Triple triple)
