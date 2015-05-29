@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
@@ -13,7 +14,6 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using TCode.r2rml4net;
 using Slp.r2rml4net.Storage;
-using System.Xml;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 {
@@ -42,10 +42,9 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        private XmlDocument GetExpected(string resultFile)
+        private XDocument GetExpected(string resultFile)
         {
-            var doc = new XmlDocument();
-            doc.Load(GetPath(resultFile));
+            var doc = XDocument.Load(GetPath(resultFile));
             return doc;
         }
 
