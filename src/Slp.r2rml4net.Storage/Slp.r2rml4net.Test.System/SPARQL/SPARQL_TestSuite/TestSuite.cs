@@ -23,6 +23,8 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
     {
         private const string TestDataNs = "http://example.org/ns#";
 
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void simple_rdf01()
         {
@@ -31,18 +33,39 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             var queryFile = @"Data\Simple\rdf01.rq";
             var resultFile = @"Data\Simple\rdf01.srx";
 
+            TestContext.WriteLine("Start: {0}", DateTime.Now.ToLongTimeString());
+
             var sqlDb = GetSqlDb();
+
+            TestContext.WriteLine("Create table: {0}", DateTime.Now.ToLongTimeString());
+
             CreateTable(sqlDb, testName);
+
+            TestContext.WriteLine("Load data file: {0}", DateTime.Now.ToLongTimeString());
+
             var mapping = LoadDataFile(dataFile, sqlDb, testName);
 
+            TestContext.WriteLine("Create storage: {0}", DateTime.Now.ToLongTimeString());
+
             var storage = new R2RmlStorage(sqlDb, mapping, GetStorageFactory());
+
+            TestContext.WriteLine("Create query: {0}", DateTime.Now.ToLongTimeString());
+
             var query = GetQuery(queryFile);
+
+            TestContext.WriteLine("Execute query: {0}", DateTime.Now.ToLongTimeString());
 
             var result = storage.Query(query);
 
+            TestContext.WriteLine("Get expected result: {0}", DateTime.Now.ToLongTimeString());
+
             var expected = GetExpected(resultFile);
 
+            TestContext.WriteLine("Compare result: {0}", DateTime.Now.ToLongTimeString());
+
             AssertBagEqual(expected, result);
+
+            TestContext.WriteLine("End: {0}", DateTime.Now.ToLongTimeString());
         }
 
         private XDocument GetExpected(string resultFile)
