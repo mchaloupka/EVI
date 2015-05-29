@@ -14,19 +14,22 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using TCode.r2rml4net;
 using Slp.r2rml4net.Storage;
+using TCode.r2rml4net.Extensions;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 {
     public abstract class TestSuite
         : BaseSPARQLTestSuite
     {
+        private const string TestDataNs = "http://example.org/ns#";
+
         [TestMethod]
-        public void entailment_rdf01()
+        public void simple_rdf01()
         {
             var testName = MethodBase.GetCurrentMethod().Name;
-            var dataFile = @"Data\entailment\rdf01.ttl";
-            var queryFile = @"Data\entailment\rdf01.rq";
-            var resultFile = @"Data\entailment\rdf01.srx";
+            var dataFile = @"Data\Simple\rdf01.ttl";
+            var queryFile = @"Data\Simple\rdf01.rq";
+            var resultFile = @"Data\Simple\rdf01.srx";
 
             var sqlDb = GetSqlDb();
             CreateTable(sqlDb, testName);
@@ -70,7 +73,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             sqlDb.ExecuteQuery(string.Format("IF OBJECT_ID(\'{0}\', 'U') IS NOT NULL DROP TABLE {0}", testName));
             sqlDb.ExecuteQuery(
                 string.Format(
-                    "CREATE TABLE {0} (subject nvarchar(max) NULL, predicate nvarchar(max) NULL, object nvarchar(max) NULL)"
+                    "CREATE TABLE {0} (subject nvarchar(max) NULL, predicate nvarchar(max) NULL, uri_object nvarchar(max) NULL)"
                     , testName));
         }
 
@@ -90,19 +93,31 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 
             var mapping = new FluentR2RML();
             var triplesMap = mapping.CreateTriplesMapFromTable(testName);
-            triplesMap.SubjectMap.IsTemplateValued("{subject}");
+            triplesMap.SubjectMap.IsTemplateValued("http://example.org/ns#{subject}");
             var poMap = triplesMap.CreatePropertyObjectMap();
-            poMap.CreatePredicateMap().IsTemplateValued("{predicate}");
-            poMap.CreateObjectMap().IsColumnValued("object");
+            poMap.CreatePredicateMap().IsTemplateValued("http://example.org/ns#{predicate}");
+            poMap.CreateObjectMap().IsTemplateValued("http://example.org/ns#{uri_object}");
             return mapping;
         }
 
         private static void InsertTripleToDb(ISqlDb sqlDb, string tableName, Triple triple)
         {
-            sqlDb.ExecuteQuery(string.Format(
-                "INSERT INTO {0} VALUES (\'{1}\', \'{2}\', \'{3}\')",
-                tableName, triple.Subject, triple.Predicate.ToString(), triple.Object.ToString()
-                ));
+            var subjectData = triple.Subject.ToString().Replace(TestDataNs, "");
+            var predicateData = triple.Predicate.ToString().Replace(TestDataNs, "");
+
+            if (triple.Object is IUriNode)
+            {
+                var objectData = triple.Object.ToString().Replace(TestDataNs, "");
+
+                sqlDb.ExecuteQuery(string.Format(
+                    "INSERT INTO {0} VALUES (\'{1}\', \'{2}\', \'{3}\')",
+                    tableName, subjectData, predicateData, objectData
+                    ));
+            }
+            else
+            {
+                throw  new NotImplementedException();
+            }
         }
 
         private static string GetPath(string dataFile)

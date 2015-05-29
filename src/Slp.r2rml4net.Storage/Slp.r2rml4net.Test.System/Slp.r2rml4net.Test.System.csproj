@@ -51,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="TCode.r2rml4net">
@@ -87,1932 +88,1942 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-avg-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-avg-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-avg-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-avg-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-avg-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-avg-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-empty-group.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-avg-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-empty-group.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-avg-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-empty-group.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-empty-group.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-max-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-max-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-max-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-max-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-max-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-max-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-min-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-max-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-min-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-max-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-min-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-min-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-min-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-min-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sample-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-min-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sample-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-min-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sum-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sample-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sum-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sample-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sum-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sum-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-sum-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sum-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sum-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-sum-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg08b.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg08b.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg09.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg08b.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg08b.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg12.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\bindings08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\inline01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\inline01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\bindings08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\inline02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\inline01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\inline02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\inline01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\inline02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\inline02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\values08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\values08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\bind11.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\bind11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\d-ent-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\d-ent-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\lang.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\d-ent-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\lang.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\d-ent-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\lang.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\lang.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q1-rdfs.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q1-rdfs.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q4.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q4.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q5.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q4.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-Q5.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q4.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q5.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-Q5.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent4.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent4.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent5.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent4.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent5.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent4.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent6.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent5.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent6.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent5.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent7.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent6.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent7.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent6.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent8.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent7.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent8.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent7.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent9.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent8.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent9.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent8.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\plainLit.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent9.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\plainLit.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent9.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\plainLit.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\plainLit.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs09.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs09.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs09.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs11.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs12.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs12.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs13.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs13.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs12.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs13.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs13.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple4.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple4.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple5.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple4.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple5.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple4.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple6.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple5.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple6.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple5.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple7.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple6.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple7.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple6.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple8.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple7.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple8.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple7.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple8.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple8.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-09.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-09.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-09.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-11.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-12.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-12.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-13.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\sparqldl-13.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-12.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-13.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\sparqldl-13.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\abs01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\abs01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\bnode01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\abs01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\bnode01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\abs01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\bnode02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\bnode01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\bnode02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\bnode01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ceil01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\bnode02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ceil01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\bnode02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\coalesce01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ceil01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\coalesce01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ceil01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\concat01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\coalesce01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\concat01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\coalesce01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\concat02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\concat01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\concat02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\concat01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\contains01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\concat02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\contains01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\concat02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\day-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\contains01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\day-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\contains01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\encode01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\day-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\encode01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\day-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ends01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\encode01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ends01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\encode01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\floor01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ends01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\floor01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ends01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\hours-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\floor01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\hours-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\floor01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\if01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\hours-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\if01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\hours-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\if02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\if01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\if02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\if01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\in01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\if02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\in01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\if02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\in02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\in01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\in02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\in01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\iri01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\in02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\iri01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\in02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\isnumeric01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\iri01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\isnumeric01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\iri01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\lcase01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\isnumeric01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\lcase01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\isnumeric01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\length01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\lcase01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\length01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\lcase01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\md5-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\length01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\md5-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\length01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\md5-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\md5-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\md5-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\md5-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\minutes-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\md5-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\minutes-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\md5-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\month-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\minutes-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\month-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\minutes-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\notin01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\month-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\notin01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\month-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\notin02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\notin01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\notin02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\notin01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\now01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\notin02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\now01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\notin02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\plus-1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\now01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\plus-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\now01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\plus-2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\plus-1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\plus-2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\plus-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\rand01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\plus-2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\rand01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\plus-2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\rand01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\rand01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\replace03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\round01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\round01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\replace03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\seconds-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\round01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\seconds-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\round01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha1-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\seconds-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha1-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\seconds-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha1-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha1-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha1-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha1-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha256-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha1-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha256-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha1-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha256-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha256-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha256-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha256-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha512-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha256-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha512-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha256-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha512-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha512-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\sha512-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha512-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\starts01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha512-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\starts01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\sha512-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strafter01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\starts01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strafter01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\starts01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strafter01a.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strafter01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strafter02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strafter01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strafter02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strafter01a.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strbefore01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strafter02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strbefore01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strafter02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strbefore01a.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strbefore01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strbefore02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strbefore01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strbefore02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strbefore01a.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strbefore02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strbefore02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strdt03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strdt03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\strlang03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\struuid01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\struuid01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\strlang03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\substring01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\struuid01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\substring01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\struuid01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\substring02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\substring01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\substring02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\substring01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\timezone-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\substring02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\timezone-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\substring02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\tz-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\timezone-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\tz-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\timezone-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ucase01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\tz-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\ucase01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\tz-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\uuid01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ucase01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\uuid01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\ucase01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\year-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\uuid01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\year-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\uuid01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\year-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\year-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\exists-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\exists-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\exists-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\exists-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\exists-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\exists-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\full-minuend.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\exists-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\full-minuend.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\exists-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\part-minuend.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\full-minuend.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\part-minuend.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\full-minuend.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\set-equals-1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\part-minuend.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\set-equals-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\part-minuend.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\set-equals-1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\set-equals-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subset-03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subsetByExcl01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subsetByExcl01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subset-03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subsetByExcl02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subsetByExcl01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subsetByExcl02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subsetByExcl01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\temporalProximity01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subsetByExcl02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\temporalProximity01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subsetByExcl02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\temporalProximity01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\temporalProximity01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-4.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-5.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-5a.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-4.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-loop-6.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-5.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-tail-1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-5a.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\diamond-tail-2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-loop-6.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-2-1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-tail-1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-2-2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\diamond-tail-2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-2-3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-2-1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-3-1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-2-2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-3-2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-2-3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-3-3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-3-1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-3-4.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-3-2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-ng-01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-3-3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-ng-01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-3-4.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-ng-02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-ng-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-ng-01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p1.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-ng-02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p2.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p1.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p2.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p1.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p3.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p3.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p4.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p3.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p4.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p3.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p4.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p4.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp09.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp09.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp09.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp11.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp12.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp12.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp13.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp13.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp12.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp14.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp13.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp14.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp13.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp15.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp14.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp15.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp14.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp16.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp15.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp36.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp15.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp36.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp16.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp37.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp36.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp37.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp36.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq01.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp37.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq01.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp37.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq01.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq01.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq02.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq02.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq03.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq03.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq04.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq04.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq04.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq04.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq05.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq05.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq05.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq05.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq06.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq06.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq07.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq07.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq08.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq08.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq08.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq08.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq09.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq09.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq09.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq09.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq10.rdf">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq10.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq09.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq10.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq10.rdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq11.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq11.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq12.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq13.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq13.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq14.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq13.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq13.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq14.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-err-02.ttl">
+    <Content Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\readme.txt" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-groupconcat-1.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-numeric.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-groupconcat-1.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg-numeric2.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-numeric.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-numeric2.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\agg08.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\empty.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg08.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\aggregates\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\empty.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data04.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data05.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data04.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data06.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data05.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data07.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data06.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\data08.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data07.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bindings\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\data08.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bindings\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\bind\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere01result.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\bind\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere02result.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere01result.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere03result.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere02result.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\constructwhere04result.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere03result.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\constructwhere04result.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\construct\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\bind-data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\construct\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\d-ent-01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\bind-data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\d-ent-01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-06.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-07.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-06.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-08.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-07.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\data-11.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-08.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\lang.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\data-11.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\lang.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\owlds02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\paper-sparqldl-data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\owlds02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\parent.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\paper-sparqldl-data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\plainLit.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\parent.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\plainLit.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdf04.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdf04.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs04.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs05.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs04.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs06.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs05.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs07.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs06.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs08.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs07.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs09.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs08.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs10.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs09.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs11.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs10.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs12.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs11.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\rdfs13.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs12.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\entailment\simple.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\rdfs13.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\entailment\simple.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\exists02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\exists\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\exists02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="SPARQL\SPARQL_TestSuite\Data\functions.ttl" />
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data-builtin-3.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\exists\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data-coalesce.ttl">
+    <Content Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions.ttl" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data-builtin-3.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data-empty.nt">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data-coalesce.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data-empty.nt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data2.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data3.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data2.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\data4.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data3.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\hash-unicode.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\data4.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\functions\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\hash-unicode.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group-data-1.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\functions\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\group-data-2.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group-data-1.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\grouping\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\group-data-2.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="SPARQL\SPARQL_TestSuite\Data\manifest-all.ttl" />
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\full-minuend.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\grouping\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\manifest.ttl">
+    <Content Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\manifest-all.ttl" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\full-minuend.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\part-minuend.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\set-data.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\part-minuend.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\subsetByExcl.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\set-data.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\negation\temporalProximity01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\subsetByExcl.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\negation\temporalProximity01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp04.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp05.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp04.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp06.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp05.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\project-expression\projexp07.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp06.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\clique3.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\project-expression\projexp07.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\data-diamond-loop.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\clique3.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\data-diamond-tail.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\data-diamond-loop.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\data-diamond.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\data-diamond-tail.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\empty.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\data-diamond.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\empty.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\ng-01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\ng-02.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\ng-01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\ng-03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\ng-02.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p1.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\ng-03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\path-p3.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p1.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\path-p3.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp03.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp05.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp03.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp061.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp05.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp062.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp061.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp07.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp062.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp08.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp07.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp09.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp08.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp10.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp09.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp11.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp10.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp13.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp11.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp14.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp13.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp16.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp14.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\property-path\pp37.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp16.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\manifest.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\property-path\pp37.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq11.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\manifest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq12.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq11.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq12_out.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq12.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq13.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq12_out.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq14-out.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq13.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\subquery\sq14.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq14-out.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\subquery\sq14.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
