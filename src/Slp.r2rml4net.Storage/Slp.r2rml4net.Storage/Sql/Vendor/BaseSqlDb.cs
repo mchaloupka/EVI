@@ -76,9 +76,8 @@ namespace Slp.r2rml4net.Storage.Sql.Vendor
         /// Executes the query.
         /// </summary>
         /// <param name="query">The query.</param>
-        /// <param name="context">The query context.</param>
         /// <returns>The query result reader.</returns>
-        public abstract IQueryResultReader ExecuteQuery(string query, QueryContext context);
+        public abstract IQueryResultReader ExecuteQuery(string query);
 
         /// <summary>
         /// Generates the query.

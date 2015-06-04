@@ -22,9 +22,8 @@ namespace Slp.r2rml4net.Storage.Sql
         /// Executes the query.
         /// </summary>
         /// <param name="query">The query.</param>
-        /// <param name="context">The query context.</param>
         /// <returns>The query result reader.</returns>
-        IQueryResultReader ExecuteQuery(string query, QueryContext context);
+        IQueryResultReader ExecuteQuery(string query);
 
         /// <summary>
         /// Determines whether the specified columns can be unioned.
