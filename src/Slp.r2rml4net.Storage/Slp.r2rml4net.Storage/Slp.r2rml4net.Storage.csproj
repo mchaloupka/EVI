@@ -92,6 +92,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="Relational\Query\ICalculusSource.cs" />
+    <Compile Include="Relational\Query\Source\CalculusModel.cs" />
+    <Compile Include="Relational\Query\ICondition.cs" />
+    <Compile Include="Relational\Query\ICalculusVariable.cs" />
+    <Compile Include="Relational\Query\RelationalQuery.cs" />
+    <Compile Include="Relational\Query\IValueBinder.cs" />
     <Compile Include="Sparql\Algebra\Expression\ConcatF.cs" />
     <Compile Include="Sparql\Algebra\Expression\ConstantT.cs" />
     <Compile Include="Sparql\Algebra\Expression\VariableT.cs" />
@@ -178,7 +184,9 @@
     <None Include="dotnetr2rmlstore.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Relational\Query\Condition\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
