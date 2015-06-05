@@ -105,6 +105,7 @@
     <Compile Include="Relational\Query\Source\SqlTable.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQuery.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\SelectModifier.cs" />
     <Compile Include="Sparql\Algebra\Patterns\EmptyPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\FilterPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\GraphPattern.cs" />

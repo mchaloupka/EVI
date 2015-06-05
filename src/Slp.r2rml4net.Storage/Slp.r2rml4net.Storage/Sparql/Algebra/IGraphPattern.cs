@@ -10,6 +10,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
     /// Base interface for all patterns
     /// </summary>
     public interface IGraphPattern
+        : ISparqlQuery
     {
     }
 }
