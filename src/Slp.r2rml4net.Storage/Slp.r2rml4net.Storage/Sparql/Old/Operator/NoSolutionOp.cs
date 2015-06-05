@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
-    /// One empty solution operator.
+    /// No solution operator.
     /// </summary>
-    [DebuggerDisplay("Empty")]
-    public class OneEmptySolutionOp : ISparqlQueryPart
+    [DebuggerDisplay("None")]
+    public class NoSolutionOp : ISparqlQueryPart
     {
         /// <summary>
         /// Gets the inner queries.
@@ -24,10 +24,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// </summary>
         /// <param name="originalQuery">The original query.</param>
         /// <param name="newQuery">The new query.</param>
-        /// <exception cref="System.Exception">Should not be called, OneEmptySolutionOp has no subqueries</exception>
+        /// <exception cref="System.Exception">Should not be called, NoSolutionOp has no subqueries</exception>
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            throw new Exception("Should not be called, OneEmptySolutionOp has no subqueries");
+            throw new Exception("Should not be called, NoSolutionOp has no subqueries");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return "Empty";
+            return "None";
         }
 
         /// <summary>

@@ -1,25 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
-    /// Bind operator.
+    /// Slice operator.
     /// </summary>
-    public class BindOp : ISparqlQueryPart
+    public class SliceOp : ISparqlQueryModifier
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BindOp"/> class.
+        /// Initializes a new instance of the <see cref="SliceOp"/> class.
         /// </summary>
-        /// <param name="varName">Name of the variable.</param>
-        /// <param name="expression">The expression.</param>
         /// <param name="innerQuery">The inner query.</param>
-        public BindOp(string varName, ISparqlQueryExpression expression, ISparqlQuery innerQuery)
+        public SliceOp(ISparqlQuery innerQuery)
         {
-            VariableName = varName;
-            Expression = expression;
             InnerQuery = innerQuery;
         }
+
+        /// <summary>
+        /// Gets the inner query.
+        /// </summary>
+        /// <value>The inner query.</value>
+        public ISparqlQuery InnerQuery { get; private set; }
 
         /// <summary>
         /// Gets the inner queries.
@@ -37,7 +39,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="newQuery">The new query.</param>
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            if (InnerQuery == originalQuery)
+            if (originalQuery == InnerQuery)
                 InnerQuery = newQuery;
         }
 
@@ -47,7 +49,12 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <returns>The finalized query.</returns>
         public ISparqlQuery FinalizeAfterTransform()
         {
-            return this;
+            if (InnerQuery is NoSolutionOp)
+                return InnerQuery;
+            else if (!Offset.HasValue && !Limit.HasValue)
+                return InnerQuery;
+            else
+                return this;
         }
 
         /// <summary>
@@ -63,21 +70,15 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         }
 
         /// <summary>
-        /// Gets or sets the name of the variable.
+        /// Gets or sets the offset.
         /// </summary>
-        /// <value>The name of the variable.</value>
-        public string VariableName { get; set; }
+        /// <value>The offset.</value>
+        public int? Offset { get; set; }
 
         /// <summary>
-        /// Gets or sets the expression.
+        /// Gets or sets the limit.
         /// </summary>
-        /// <value>The expression.</value>
-        public ISparqlQueryExpression Expression { get; set; }
-
-        /// <summary>
-        /// Gets the inner query.
-        /// </summary>
-        /// <value>The inner query.</value>
-        public ISparqlQuery InnerQuery { get; private set; }
+        /// <value>The limit.</value>
+        public int? Limit { get; set; }
     }
 }

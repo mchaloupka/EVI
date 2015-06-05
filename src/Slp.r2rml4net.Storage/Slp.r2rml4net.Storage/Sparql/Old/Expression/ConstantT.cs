@@ -1,6 +1,6 @@
 ﻿using VDS.RDF.Nodes;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
+namespace Slp.r2rml4net.Storage.Sparql.Old.Expression
 {
     /// <summary>
     /// Constant expression.

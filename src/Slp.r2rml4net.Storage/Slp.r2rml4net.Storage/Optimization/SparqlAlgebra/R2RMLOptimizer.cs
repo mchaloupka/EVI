@@ -2,8 +2,8 @@
 using System.Linq;
 using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sparql.Old;
+using Slp.r2rml4net.Storage.Sparql.Old.Operator;
 using Slp.r2rml4net.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;

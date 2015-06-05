@@ -4,7 +4,7 @@ using System.Diagnostics;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
     /// BGP Operator

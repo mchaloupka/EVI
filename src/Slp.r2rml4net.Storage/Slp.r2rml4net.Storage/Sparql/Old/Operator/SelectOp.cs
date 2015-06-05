@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
     /// Select operator.

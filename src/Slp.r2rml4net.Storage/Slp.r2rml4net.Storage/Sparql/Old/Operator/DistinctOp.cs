@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
-    /// Reduced operator.
+    /// Distinct operator.
     /// </summary>
-    public class ReducedOp : ISparqlQueryModifier
+    public class DistinctOp : ISparqlQueryModifier
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DistinctOp"/> class.
+        /// </summary>
+        /// <param name="innerQuery">The inner query.</param>
+        public DistinctOp(ISparqlQuery innerQuery)
+        {
+            InnerQuery = innerQuery;
+        }
+
         /// <summary>
         /// Gets the inner query.
         /// </summary>
         /// <value>The inner query.</value>
         public ISparqlQuery InnerQuery { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReducedOp"/> class.
-        /// </summary>
-        /// <param name="innerQuery">The inner query.</param>
-        public ReducedOp(ISparqlQuery innerQuery)
-        {
-            InnerQuery = innerQuery;
-        }
 
         /// <summary>
         /// Gets the inner queries.
@@ -39,7 +39,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
         /// <param name="newQuery">The new query.</param>
         public void ReplaceInnerQuery(ISparqlQuery originalQuery, ISparqlQuery newQuery)
         {
-            if (InnerQuery == originalQuery)
+            if (originalQuery == InnerQuery)
                 InnerQuery = newQuery;
         }
 

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Slp.r2rml4net.Storage.Relational.Query
 {
+    /// <summary>
+    /// Value binder
+    /// </summary>
     public interface IValueBinder
     {
 

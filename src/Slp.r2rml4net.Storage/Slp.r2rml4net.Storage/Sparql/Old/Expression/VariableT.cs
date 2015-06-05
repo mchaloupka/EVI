@@ -1,4 +1,4 @@
-﻿namespace Slp.r2rml4net.Storage.Sparql.Algebra.Expression
+﻿namespace Slp.r2rml4net.Storage.Sparql.Old.Expression
 {
     /// <summary>
     /// Variable expression.

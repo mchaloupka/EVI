@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Expression;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sparql.Old.Expression;
+using Slp.r2rml4net.Storage.Sparql.Old.Operator;
 using Slp.r2rml4net.Storage.Sparql.Utils;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -14,7 +13,7 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Sparql
+namespace Slp.r2rml4net.Storage.Sparql.Old
 {
     /// <summary>
     /// SPARQL algebra builder.

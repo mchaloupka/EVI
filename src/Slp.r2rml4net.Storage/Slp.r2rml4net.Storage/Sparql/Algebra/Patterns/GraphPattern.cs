@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Query
+namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
 {
     /// <summary>
-    /// Variable representation
+    /// Graph pattern
     /// </summary>
-    public interface ICalculusVariable
+    public class GraphPattern
+        : IGraphPattern
     {
-
     }
 }

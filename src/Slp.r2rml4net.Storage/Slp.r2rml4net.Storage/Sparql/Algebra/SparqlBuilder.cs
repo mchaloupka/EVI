@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Query
+namespace Slp.r2rml4net.Storage.Sparql.Algebra
 {
     /// <summary>
-    /// Variable representation
+    /// Builder of SPARQL queries
     /// </summary>
-    public interface ICalculusVariable
+    public class SparqlBuilder
     {
-
     }
 }

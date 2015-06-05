@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sparql.Old.Operator;
 using Slp.r2rml4net.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Old
 {
     /// <summary>
     /// SPARQL query

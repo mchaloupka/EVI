@@ -1,5 +1,5 @@
 ﻿using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Old;
 
 namespace Slp.r2rml4net.Storage.Optimization
 {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Operator;
+using Slp.r2rml4net.Storage.Sparql.Old;
+using Slp.r2rml4net.Storage.Sparql.Old.Operator;
 
 namespace Slp.r2rml4net.Storage.Optimization.SparqlAlgebra
 {

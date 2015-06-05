@@ -1,6 +1,6 @@
 ﻿using Slp.r2rml4net.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Operator
+namespace Slp.r2rml4net.Storage.Sparql.Old.Operator
 {
     /// <summary>
     /// Visitor for sparql query
