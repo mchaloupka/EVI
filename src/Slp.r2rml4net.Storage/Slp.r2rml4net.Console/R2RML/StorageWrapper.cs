@@ -6,7 +6,6 @@ using System.Linq;
 using System.Web;
 using Slp.r2rml4net.Storage;
 using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Sql.Vendor;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping.Fluent;
 

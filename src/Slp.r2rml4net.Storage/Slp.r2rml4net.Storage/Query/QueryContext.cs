@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Optimization;
-using Slp.r2rml4net.Storage.Sparql.Old;
-using Slp.r2rml4net.Storage.Sql;
-using Slp.r2rml4net.Storage.Sql.Algebra;
+using Slp.r2rml4net.Storage.Relational.Database;
+using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -38,16 +37,6 @@ namespace Slp.r2rml4net.Storage.Query
         private readonly HashSet<string> _usedVariables;
 
         /// <summary>
-        /// The sparql algebra optimizers on the fly
-        /// </summary>
-        private readonly ISparqlAlgebraOptimizerOnTheFly[] _sparqlAlgebraOptimizerOnTheFly;
-
-        /// <summary>
-        /// The SQL algebra optimizers on the fly
-        /// </summary>
-        private readonly ISqlAlgebraOptimizerOnTheFly[] _sqlAlgebraOptimizerOnTheFly;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext" /> class.
         /// </summary>
         /// <param name="originalQuery">The original query.</param>
@@ -55,9 +44,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
-        /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
-        /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizer on the fly.</param>
-        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly)
+        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
         {
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();
@@ -69,8 +56,6 @@ namespace Slp.r2rml4net.Storage.Query
             _blankNodesSubjects = new Dictionary<string, INode>();
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
-            _sparqlAlgebraOptimizerOnTheFly = sparqlAlgebraOptimizerOnTheFly;
-            _sqlAlgebraOptimizerOnTheFly = sqlAlgebraOptimizerOnTheFly;
         }
 
         /// <summary>
@@ -107,7 +92,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public ISqlDb Db { get; private set; }
+        public ISqlDatabase Db { get; private set; }
 
         /// <summary>
         /// Determines whether the specified name is already used SQL source name.
@@ -177,14 +162,9 @@ namespace Slp.r2rml4net.Storage.Query
         /// </summary>
         /// <param name="algebra">The algebra.</param>
         /// <returns>The optimized algebra.</returns>
-        public INotSqlOriginalDbSource OptimizeOnTheFly(INotSqlOriginalDbSource algebra)
+        public RelationalQuery OptimizeOnTheFly(RelationalQuery algebra)
         {
             var currentAlgebra = algebra;
-
-            foreach (var optimizer in _sqlAlgebraOptimizerOnTheFly)
-            {
-                currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
-            }
 
             return currentAlgebra;
         }
@@ -197,11 +177,6 @@ namespace Slp.r2rml4net.Storage.Query
         public ISparqlQuery OptimizeOnTheFly(ISparqlQuery algebra)
         {
             var currentAlgebra = algebra;
-
-            foreach (var optimizer in _sparqlAlgebraOptimizerOnTheFly)
-            {
-                currentAlgebra = optimizer.ProcessAlgebraOnTheFly(currentAlgebra, this);
-            }
 
             return currentAlgebra;
         }

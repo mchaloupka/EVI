@@ -1,6 +1,5 @@
-﻿using Slp.r2rml4net.Storage.Sql;
-using Slp.r2rml4net.Storage.Sql.Vendor;
-using Slp.r2rml4net.Storage.Sql.Vendor.MSSQL;
+﻿using Slp.r2rml4net.Storage.Relational.Database;
+using Slp.r2rml4net.Storage.Relational.Database.Vendor.MsSql;
 
 namespace Slp.r2rml4net.Storage.Bootstrap
 {
@@ -13,27 +12,27 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// Creates the SQL database connection.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        public virtual ISqlDb CreateSqlDb(string connectionString)
+        public virtual ISqlDatabase CreateSqlDb(string connectionString)
         {
-            return new MssqlDb(connectionString, this);
+            return new MsSqlDb(this, connectionString);
         }
 
 
         /// <summary>
         /// Creates the SQL query builder.
         /// </summary>
-        public virtual BaseSqlQueryBuilder CreateSqlQueryBuilder()
+        public virtual ISqlQueryBuilder CreateSqlQueryBuilder()
         {
-            return new BaseSqlQueryBuilder();
+            return null;
         }
 
         /// <summary>
         /// Creates the name generator.
         /// </summary>
         /// <param name="db">The database</param>
-        public virtual BaseSqlNameGenerator CreateNameGenerator(ISqlDb db)
+        public virtual ISqlNameGenerator CreateNameGenerator(ISqlDatabase db)
         {
-            return new BaseSqlNameGenerator(db);
+            return null;
         }
     }
 }

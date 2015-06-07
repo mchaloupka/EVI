@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Sql;
+using Slp.r2rml4net.Storage.Relational.Database;
 
 namespace Slp.r2rml4net.Storage.DBSchema
 {
@@ -14,13 +14,13 @@ namespace Slp.r2rml4net.Storage.DBSchema
         /// <summary>
         /// The provided database
         /// </summary>
-        private readonly ISqlDb _db;
+        private readonly ISqlDatabase _db;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbSchemaProvider"/> class.
         /// </summary>
         /// <param name="db">The provided database.</param>
-        public DbSchemaProvider(ISqlDb db)
+        public DbSchemaProvider(ISqlDatabase db)
         {
             _db = db;
             _tableCache = new Dictionary<string, DatabaseTable>();

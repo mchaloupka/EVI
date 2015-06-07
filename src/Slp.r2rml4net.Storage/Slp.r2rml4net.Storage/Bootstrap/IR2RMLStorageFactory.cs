@@ -1,11 +1,9 @@
 ﻿using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Database;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Old;
-using Slp.r2rml4net.Storage.Sql;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -22,7 +20,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// </summary>
         /// <param name="db">The database.</param>
         /// <param name="mapping">The R2RML mapping.</param>
-        QueryProcessor CreateQueryProcessor(ISqlDb db, IR2RML mapping);
+        QueryProcessor CreateQueryProcessor(ISqlDatabase db, IR2RML mapping);
 
         /// <summary>
         /// Creates the mapping processor.
@@ -36,36 +34,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         SparqlBuilder CreateSparqlBuilder();
 
         /// <summary>
-        /// Creates the sparql algebra builder.
-        /// </summary>
-        SparqlAlgebraBuilder CreateSparqlAlgebraBuilder();
-
-        /// <summary>
-        /// Creates the SQL algebra builder.
-        /// </summary>
-        SqlAlgebraBuilder CreateSqlAlgebraBuilder();
-
-        /// <summary>
-        /// Creates the sparql algebra optimizers.
-        /// </summary>
-        ISparqlAlgebraOptimizer[] CreateSparqlAlgebraOptimizers();
-
-        /// <summary>
-        /// Creates the sparql algebra optimizers on the fly.
-        /// </summary>
-        ISparqlAlgebraOptimizerOnTheFly[] CreateSparqlAlgebraOptimizersOnTheFly();
-
-        /// <summary>
-        /// Creates the SQL optimizers.
-        /// </summary>
-        ISqlAlgebraOptimizer[] CreateSqlOptimizers();
-
-        /// <summary>
-        /// Creates the SQL algebra optimizers on the fly.
-        /// </summary>
-        ISqlAlgebraOptimizerOnTheFly[] CreateSqlAlgebraOptimizersOnTheFly();
-
-        /// <summary>
         /// Creates the query context.
         /// </summary>
         /// <param name="originalQuery">The original query.</param>
@@ -73,8 +41,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        /// <param name="sparqlAlgebraOptimizerOnTheFly">The sparql algebra optimizer on the fly.</param>
-        /// <param name="sqlAlgebraOptimizerOnTheFly">The SQL algebra optimizers on the fly.</param>
-        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDb db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ISparqlAlgebraOptimizerOnTheFly[] sparqlAlgebraOptimizerOnTheFly, ISqlAlgebraOptimizerOnTheFly[] sqlAlgebraOptimizerOnTheFly);
+        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory);
     }
 }

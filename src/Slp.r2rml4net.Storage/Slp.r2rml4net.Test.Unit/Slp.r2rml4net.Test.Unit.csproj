@@ -76,9 +76,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DbSchema\DbSchemaProviderMock.cs" />
-    <Compile Include="Optimization\SqlAlgebra\BaseConditionTest.cs" />
-    <Compile Include="Optimization\SqlAlgebra\ConcatenationInEqualConditionTest.cs" />
-    <Compile Include="Optimization\SqlAlgebra\Utils\SqlAlgebraEqualityChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +87,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Optimization\SqlAlgebra\Utils\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

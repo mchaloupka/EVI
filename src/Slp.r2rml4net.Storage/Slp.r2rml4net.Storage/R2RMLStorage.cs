@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sql;
+using Slp.r2rml4net.Storage.Relational.Database;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
@@ -28,7 +28,7 @@ namespace Slp.r2rml4net.Storage
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public R2RmlStorage(ISqlDb db, IR2RML mapping, IR2RmlStorageFactory factory)
+        public R2RmlStorage(ISqlDatabase db, IR2RML mapping, IR2RmlStorageFactory factory)
         {
             _queryProcessor = factory.CreateQueryProcessor(db, mapping);
         }

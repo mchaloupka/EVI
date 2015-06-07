@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sql;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using TCode.r2rml4net;
 using Slp.r2rml4net.Storage;
+using Slp.r2rml4net.Storage.Relational.Database;
 using TCode.r2rml4net.Extensions;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
@@ -89,9 +88,9 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 
         protected abstract IR2RmlStorageFactory GetStorageFactory();
 
-        protected abstract ISqlDb GetSqlDb();
+        protected abstract ISqlDatabase GetSqlDb();
 
-        private static void CreateTable(ISqlDb sqlDb, string testName)
+        private static void CreateTable(ISqlDatabase sqlDb, string testName)
         {
             sqlDb.ExecuteQuery(string.Format("IF OBJECT_ID(\'{0}\', 'U') IS NOT NULL DROP TABLE {0}", testName));
             sqlDb.ExecuteQuery(
@@ -100,7 +99,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
                     , testName));
         }
 
-        private static IR2RML LoadDataFile(string dataFile, ISqlDb sqlDb, string testName)
+        private static IR2RML LoadDataFile(string dataFile, ISqlDatabase sqlDb, string testName)
         {
             var filePath = GetPath(dataFile);
 
@@ -123,7 +122,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             return mapping;
         }
 
-        private static void InsertTripleToDb(ISqlDb sqlDb, string tableName, Triple triple)
+        private static void InsertTripleToDb(ISqlDatabase sqlDb, string tableName, Triple triple)
         {
             var subjectData = triple.Subject.ToString().Replace(TestDataNs, "");
             var predicateData = triple.Predicate.ToString().Replace(TestDataNs, "");

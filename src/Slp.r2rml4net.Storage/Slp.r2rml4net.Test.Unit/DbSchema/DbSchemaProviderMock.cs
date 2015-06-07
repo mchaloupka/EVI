@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.DBSchema;
-using Slp.r2rml4net.Storage.Sql;
 
 namespace Slp.r2rml4net.Test.Unit.DbSchema
 {
