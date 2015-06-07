@@ -5,6 +5,7 @@ using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Old;
 using Slp.r2rml4net.Storage.Sql;
 using Slp.r2rml4net.Storage.Sql.Algebra;
@@ -39,6 +40,11 @@ namespace Slp.r2rml4net.Storage.Query
         /// The sparql algebra builder
         /// </summary>
         private readonly SparqlAlgebraBuilder _sparqlAlgebraBuilder;
+
+        /// <summary>
+        /// The sparql algebra builder
+        /// </summary>
+        private readonly SparqlBuilder _sparqlBuilder;
 
         /// <summary>
         /// The sparql optimizers
@@ -90,6 +96,7 @@ namespace Slp.r2rml4net.Storage.Query
             
             _mapping = factory.CreateMappingProcessor(mapping);
             _sparqlAlgebraBuilder = factory.CreateSparqlAlgebraBuilder();
+            _sparqlBuilder = factory.CreateSparqlBuilder();
             _sqlAlgebraBuilder = factory.CreateSqlAlgebraBuilder();
 
             _sparqlOptimizers = factory.CreateSparqlAlgebraOptimizers();
@@ -399,6 +406,8 @@ namespace Slp.r2rml4net.Storage.Query
         /// <returns>The SQL algebra.</returns>
         private INotSqlOriginalDbSource GenerateSqlAlgebra(QueryContext context)
         {
+            var newAlgebra = _sparqlBuilder.Process(context);
+
             var algebra = _sparqlAlgebraBuilder.Process(context);
 
             // TODO: Transform graph and from statements

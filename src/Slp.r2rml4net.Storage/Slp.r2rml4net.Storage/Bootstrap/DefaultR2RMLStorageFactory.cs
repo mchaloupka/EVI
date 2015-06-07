@@ -5,6 +5,7 @@ using Slp.r2rml4net.Storage.Optimization.SparqlAlgebra;
 using Slp.r2rml4net.Storage.Optimization.SqlAlgebra;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Old;
 using Slp.r2rml4net.Storage.Sql;
 using TCode.r2rml4net;
@@ -35,6 +36,14 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public virtual MappingProcessor CreateMappingProcessor(IR2RML mapping)
         {
             return new MappingProcessor(mapping);
+        }
+
+        /// <summary>
+        /// Creates the sparql algebra builder.
+        /// </summary>
+        public SparqlBuilder CreateSparqlBuilder()
+        {
+            return new SparqlBuilder();
         }
 
         /// <summary>
