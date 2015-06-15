@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query.Source;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
+using System.Diagnostics;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
 {
@@ -57,5 +58,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// </summary>
         /// <value>The variables.</value>
         public IEnumerable<string> Variables { get; private set; }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IPatternVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
+﻿using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
 using Slp.r2rml4net.Storage.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace Slp.r2rml4net.Storage.Sparql.Algebra
 {
     /// <summary>
-    /// Base interface for all patterns
+    /// Base interface for SPARQL result modifiers
     /// </summary>
-    public interface IGraphPattern
-        : ISparqlQuery, IVisitable<IPatternVisitor>
+    public interface IModifier
+        : ISparqlQuery, IVisitable<IModifierVisitor>
     {
     }
 }

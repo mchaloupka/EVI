@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers
     /// Select modifier
     /// </summary>
     public class SelectModifier
-        : ISparqlQuery
+        : IModifier
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectModifier"/> class.
@@ -35,5 +36,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers
         /// </summary>
         /// <value>The inner query.</value>
         public ISparqlQuery InnerQuery { get; private set; }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IModifierVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }
