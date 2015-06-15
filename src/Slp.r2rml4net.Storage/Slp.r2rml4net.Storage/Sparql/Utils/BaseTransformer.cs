@@ -155,6 +155,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
                 filterPattern = new FilterPattern(newInner);
             }
 
+            if(filterPattern.InnerPattern is NotMatchingPattern)
+            {
+                return new NotMatchingPattern(filterPattern.Variables);
+            }
+
             return Process(filterPattern, (T)data);
         }
 
@@ -171,6 +176,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
             if (newInner != graphPattern.InnerPattern)
             {
                 graphPattern = new GraphPattern(newInner);
+            }
+
+            if(graphPattern.InnerPattern is NotMatchingPattern)
+            {
+                return new NotMatchingPattern(graphPattern.Variables);
             }
 
             return Process(graphPattern, (T)data);
@@ -197,6 +207,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
                 {
                     differs = true;
                 }
+            }
+
+            if(newPatterns.OfType<NotMatchingPattern>().Any())
+            {
+                return new NotMatchingPattern(joinPattern.Variables);
             }
 
             if (newPatterns.OfType<EmptyPattern>().Any())
@@ -238,6 +253,21 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
             var newLeftOperand = (IGraphPattern)leftJoinPattern.LeftOperand.Accept(this, data);
             var newRightOperand = (IGraphPattern)leftJoinPattern.RightOperand.Accept(this, data);
 
+            if (newLeftOperand is NotMatchingPattern)
+            {
+                return new NotMatchingPattern(leftJoinPattern.Variables);
+            }
+            else if(newRightOperand is NotMatchingPattern)
+            {
+                return newLeftOperand;
+            }
+
+            if(newLeftOperand != leftJoinPattern.LeftOperand
+                || newRightOperand != leftJoinPattern.RightOperand)
+            {
+                leftJoinPattern = new LeftJoinPattern(newLeftOperand, newRightOperand);
+            }
+
             return Process(leftJoinPattern, (T)data);
         }
 
@@ -249,6 +279,23 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(MinusPattern minusPattern, object data)
         {
+            var newLeftOperand = (IGraphPattern)minusPattern.LeftOperand.Accept(this, data);
+            var newRightOperand = (IGraphPattern)minusPattern.RightOperand.Accept(this, data);
+
+            if(newLeftOperand is NotMatchingPattern 
+                || newLeftOperand is EmptyPattern
+                || newRightOperand is NotMatchingPattern
+                || newRightOperand is EmptyPattern)
+            {
+                return newLeftOperand;
+            }
+
+            if(newLeftOperand != minusPattern.LeftOperand
+                || newRightOperand != minusPattern.RightOperand)
+            {
+                minusPattern = new MinusPattern(newLeftOperand, newRightOperand);
+            }
+
             return Process(minusPattern, (T)data);
         }
 
@@ -271,6 +318,46 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(UnionPattern unionPattern, object data)
         {
+            var oldPatterns = unionPattern.UnionedGraphPatterns.ToList();
+            var newPatterns = unionPattern.UnionedGraphPatterns
+                .Select(x => x.Accept(this, data)).Cast<IGraphPattern>()
+                .ToList();
+
+            bool differs = false;
+
+            for (int i = 0; i < oldPatterns.Count; i++)
+            {
+                if (oldPatterns[i] != newPatterns[i])
+                {
+                    differs = true;
+                }
+            }
+
+            if (newPatterns.OfType<NotMatchingPattern>().Any())
+            {
+                newPatterns = newPatterns
+                    .Where(x => !(x is NotMatchingPattern))
+                    .ToList();
+
+                differs = true;
+            }
+
+            if (differs)
+            {
+                if (newPatterns.Count == 0)
+                {
+                    return new NotMatchingPattern(unionPattern.Variables);
+                }
+                else if (newPatterns.Count == 1)
+                {
+                    return newPatterns[0];
+                }
+                else
+                {
+                    unionPattern = new UnionPattern(newPatterns);
+                }
+            }
+
             return Process(unionPattern, (T)data);
         }
 
