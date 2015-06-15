@@ -30,6 +30,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         object Visit(FilterPattern filterPattern, object data);
 
         /// <summary>
+        /// Visits <see cref="NotMatchingPattern"/>
+        /// </summary>
+        /// <param name="notMatchingPattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(NotMatchingPattern notMatchingPattern, object data);
+
+        /// <summary>
         /// Visits <see cref="GraphPattern"/>
         /// </summary>
         /// <param name="graphPattern">The visited instance</param>

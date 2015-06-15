@@ -106,6 +106,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="NotMatchingPattern"/>
+        /// </summary>
+        /// <param name="notMatchingPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(NotMatchingPattern notMatchingPattern, T data)
+        {
+            return notMatchingPattern;
+        }
+
+        /// <summary>
         /// Process the <see cref="SelectModifier"/>
         /// </summary>
         /// <param name="selectModifier">The instance to process</param>
@@ -261,6 +272,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         public object Visit(UnionPattern unionPattern, object data)
         {
             return Process(unionPattern, (T)data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="NotMatchingPattern"/>
+        /// </summary>
+        /// <param name="notMatchingPattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(NotMatchingPattern notMatchingPattern, object data)
+        {
+            return Process(notMatchingPattern, (T)data);
         }
         #endregion
 

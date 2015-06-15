@@ -107,6 +107,7 @@
     <Compile Include="Sparql\Algebra\Patterns\JoinPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\LeftJoinPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\MinusPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\NotMatchingPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\TriplePattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
     <Compile Include="Sparql\Algebra\SparqlBuilder.cs" />
