@@ -1,4 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
+﻿using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,112 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
     /// <summary>
     /// Base class for SPARQL transformations
     /// </summary>
-    public abstract class BaseSparqlTransformer
-        : IPatternVisitor
+    /// <typeparam name="T">Type of parameter passed to process</typeparam>
+    public abstract class BaseSparqlTransformer<T>
+        : IPatternVisitor, IModifierVisitor
     {
+        #region Virtual transformation methods to be overriden
+        /// <summary>
+        /// Process the <see cref="EmptyPattern"/>
+        /// </summary>
+        /// <param name="emptyPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(EmptyPattern emptyPattern, T data)
+        {
+            return emptyPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="FilterPattern"/>
+        /// </summary>
+        /// <param name="filterPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(FilterPattern filterPattern, T data)
+        {
+            return filterPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="GraphPattern"/>
+        /// </summary>
+        /// <param name="graphPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(GraphPattern graphPattern, T data)
+        {
+            return graphPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="JoinPattern"/>
+        /// </summary>
+        /// <param name="joinPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(JoinPattern joinPattern, T data)
+        {
+            return joinPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="LeftJoinPattern"/>
+        /// </summary>
+        /// <param name="leftJoinPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(LeftJoinPattern leftJoinPattern, T data)
+        {
+            return leftJoinPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="MinusPattern"/>
+        /// </summary>
+        /// <param name="minusPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(MinusPattern minusPattern, T data)
+        {
+            return minusPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="TriplePattern"/>
+        /// </summary>
+        /// <param name="triplePattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(TriplePattern triplePattern, T data)
+        {
+            return triplePattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="UnionPattern"/>
+        /// </summary>
+        /// <param name="unionPattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(UnionPattern unionPattern, T data)
+        {
+            return unionPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="SelectModifier"/>
+        /// </summary>
+        /// <param name="selectModifier">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        private object Process(SelectModifier selectModifier, T data)
+        {
+            return selectModifier;
+        }
+        #endregion
+
+        #region IPatternVisitor
         /// <summary>
         /// Visits <see cref="EmptyPattern"/>
         /// </summary>
@@ -21,7 +126,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(EmptyPattern emptyPattern, object data)
         {
-            return emptyPattern;
+            return Process(emptyPattern, (T)data);
         }
 
         /// <summary>
@@ -32,7 +137,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(FilterPattern filterPattern, object data)
         {
-            return filterPattern;
+            var newInner = (IGraphPattern)filterPattern.InnerPattern.Accept(this, data);
+
+            if(newInner != filterPattern.InnerPattern)
+            {
+                filterPattern = new FilterPattern(newInner);
+            }
+
+            return Process(filterPattern, (T)data);
         }
 
         /// <summary>
@@ -43,7 +155,14 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(GraphPattern graphPattern, object data)
         {
-            return graphPattern;
+            var newInner = (IGraphPattern)graphPattern.InnerPattern.Accept(this, data);
+
+            if (newInner != graphPattern.InnerPattern)
+            {
+                graphPattern = new GraphPattern(newInner);
+            }
+
+            return Process(graphPattern, (T)data);
         }
 
         /// <summary>
@@ -54,7 +173,47 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(JoinPattern joinPattern, object data)
         {
-            return joinPattern;
+            var oldPatterns = joinPattern.JoinedGraphPatterns.ToList();
+            var newPatterns = joinPattern.JoinedGraphPatterns
+                .Select(x => x.Accept(this, data)).Cast<IGraphPattern>()
+                .ToList();
+
+            bool differs = false;
+
+            for (int i = 0; i < oldPatterns.Count; i++)
+            {
+                if (oldPatterns[i] != newPatterns[i])
+                {
+                    differs = true;
+                }
+            }
+
+            if (newPatterns.OfType<EmptyPattern>().Any())
+            {
+                newPatterns = newPatterns
+                    .Where(x => !(x is EmptyPattern))
+                    .ToList();
+
+                differs = true;
+            }
+
+            if(differs)
+            {
+                if(newPatterns.Count == 0)
+                {
+                    return new EmptyPattern();
+                }
+                else if(newPatterns.Count == 1)
+                {
+                    return newPatterns[0];
+                }
+                else
+                {
+                    joinPattern = new JoinPattern(newPatterns);
+                }
+            }
+
+            return Process(joinPattern, (T)data);
         }
 
         /// <summary>
@@ -65,7 +224,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(LeftJoinPattern leftJoinPattern, object data)
         {
-            return leftJoinPattern;
+            var newLeftOperand = (IGraphPattern)leftJoinPattern.LeftOperand.Accept(this, data);
+            var newRightOperand = (IGraphPattern)leftJoinPattern.RightOperand.Accept(this, data);
+
+            return Process(leftJoinPattern, (T)data);
         }
 
         /// <summary>
@@ -76,7 +238,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(MinusPattern minusPattern, object data)
         {
-            return minusPattern;
+            return Process(minusPattern, (T)data);
         }
 
         /// <summary>
@@ -87,7 +249,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(TriplePattern triplePattern, object data)
         {
-            return triplePattern;
+            return Process(triplePattern, (T)data);
         }
 
         /// <summary>
@@ -98,7 +260,21 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(UnionPattern unionPattern, object data)
         {
-            return unionPattern;
+            return Process(unionPattern, (T)data);
         }
+        #endregion
+
+        #region IModifierVisitor
+        /// <summary>
+        /// Visits <see cref="SelectModifier"/>
+        /// </summary>
+        /// <param name="selectModifier">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(SelectModifier selectModifier, object data)
+        {
+            return Process(selectModifier, (T)data);
+        }
+        #endregion
     }
 }
