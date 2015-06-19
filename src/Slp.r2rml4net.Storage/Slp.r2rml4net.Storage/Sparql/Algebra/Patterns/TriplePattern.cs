@@ -16,25 +16,23 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
     public class TriplePattern
         : IGraphPattern
     {
-        private VDS.RDF.Query.Patterns.PatternItem _subjectPattern;
-        private VDS.RDF.Query.Patterns.PatternItem _predicatePattern;
-        private VDS.RDF.Query.Patterns.PatternItem _objectPattern;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TriplePattern"/> class.
         /// </summary>
         /// <param name="subjectPattern">The subject pattern.</param>
         /// <param name="predicatePattern">The predicate pattern.</param>
         /// <param name="objectPattern">The object pattern.</param>
-        public TriplePattern(VDS.RDF.Query.Patterns.PatternItem subjectPattern, VDS.RDF.Query.Patterns.PatternItem predicatePattern, VDS.RDF.Query.Patterns.PatternItem objectPattern)
+        public TriplePattern(PatternItem subjectPattern, PatternItem predicatePattern, PatternItem objectPattern)
         {
-            this._subjectPattern = subjectPattern;
-            this._predicatePattern = predicatePattern;
-            this._objectPattern = objectPattern;
+            SubjectPattern = subjectPattern;
+            PredicatePattern = predicatePattern;
+            ObjectPattern = objectPattern;
 
             var variables = new List<string>();
 
-            AddToVariables(this._subjectPattern, variables);
+            AddToVariables(SubjectPattern, variables);
+            AddToVariables(PredicatePattern, variables);
+            AddToVariables(ObjectPattern, variables);
 
             Variables = variables;
         }
@@ -70,5 +68,23 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the subject pattern.
+        /// </summary>
+        /// <value>The subject pattern.</value>
+        public PatternItem SubjectPattern { get; private set; }
+
+        /// <summary>
+        /// Gets the predicate pattern.
+        /// </summary>
+        /// <value>The predicate pattern.</value>
+        public PatternItem PredicatePattern { get; private set; }
+
+        /// <summary>
+        /// Gets the object pattern.
+        /// </summary>
+        /// <value>The object pattern.</value>
+        public PatternItem ObjectPattern { get; private set; }
     }
 }
