@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
@@ -44,9 +45,9 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// <returns>The processed SPARQL algebra.</returns>
         public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
         {
-            // TODO: Process
+            var transformer = new MappingTransformer(this);
 
-            return algebra;
+            return transformer.TransformSparqlQuery(algebra, context);
         }
 
         /// <summary>

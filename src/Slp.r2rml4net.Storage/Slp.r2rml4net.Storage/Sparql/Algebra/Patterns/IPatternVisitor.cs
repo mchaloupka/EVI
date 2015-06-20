@@ -84,5 +84,13 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(UnionPattern unionPattern, object data);
+
+        /// <summary>
+        /// Visits <see cref="RestrictedTriplePattern"/>
+        /// </summary>
+        /// <param name="restrictedTriplePattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(RestrictedTriplePattern restrictedTriplePattern, object data);
     }
 }

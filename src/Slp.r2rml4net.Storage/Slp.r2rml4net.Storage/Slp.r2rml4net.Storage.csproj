@@ -74,6 +74,7 @@
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Mapping\MappingProcessor.cs" />
+    <Compile Include="Mapping\MappingTransformer.cs" />
     <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Sparql\Algebra\Patterns\MinusPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\NotMatchingPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\TriplePattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\RestrictedTriplePattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
     <Compile Include="Sparql\Algebra\SparqlBuilder.cs" />
     <Compile Include="Query\QueryContext.cs" />

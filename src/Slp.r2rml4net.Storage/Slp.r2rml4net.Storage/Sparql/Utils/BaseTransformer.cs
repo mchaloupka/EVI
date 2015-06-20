@@ -16,6 +16,38 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
     public abstract class BaseSparqlTransformer<T>
         : IPatternVisitor, IModifierVisitor
     {
+        /// <summary>
+        /// Transforms the SPARQL query.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformed query</returns>
+        /// <exception cref="System.ArgumentException">Unexpected type of parameter;query</exception>
+        public ISparqlQuery TransformSparqlQuery(ISparqlQuery query, T data)
+        {
+            if (query is IGraphPattern)
+            {
+                return TransformGraphPattern((IGraphPattern)query, data);
+            }
+            else if (query is IModifier)
+            {
+                return (ISparqlQuery) ((IModifier) query).Accept(this, data);
+            }
+
+            throw new ArgumentException("Unexpected type of parameter", "query");
+        }
+
+        /// <summary>
+        /// Transforms the graph pattern.
+        /// </summary>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformed graph pattern.</returns>
+        public IGraphPattern TransformGraphPattern(IGraphPattern pattern, T data)
+        {
+            return (IGraphPattern) pattern.Accept(this, data);
+        }
+
         #region Virtual transformation methods to be overriden
         /// <summary>
         /// Process the <see cref="EmptyPattern"/>
@@ -114,6 +146,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         protected virtual IGraphPattern Process(NotMatchingPattern notMatchingPattern, T data)
         {
             return notMatchingPattern;
+        }
+
+        /// <summary>
+        /// Process the <see cref="RestrictedTriplePattern"/>
+        /// </summary>
+        /// <param name="restrictedTriplePattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns></returns>
+        protected virtual IGraphPattern Process(RestrictedTriplePattern restrictedTriplePattern, T data)
+        {
+            return restrictedTriplePattern;
         }
 
         /// <summary>
@@ -359,6 +402,17 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
             }
 
             return Process(unionPattern, (T)data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="RestrictedTriplePattern"/>
+        /// </summary>
+        /// <param name="restrictedTriplePattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(RestrictedTriplePattern restrictedTriplePattern, object data)
+        {
+            return Process(restrictedTriplePattern, (T) data);
         }
 
         /// <summary>
