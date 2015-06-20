@@ -73,6 +73,8 @@
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
+    <Compile Include="Mapping\ClassObjectMap.cs" />
+    <Compile Include="Mapping\ClassPredicateMap.cs" />
     <Compile Include="Mapping\MappingProcessor.cs" />
     <Compile Include="Mapping\MappingTransformer.cs" />
     <Compile Include="Mapping\R2RMLCache.cs" />

@@ -7,6 +7,8 @@ using Slp.r2rml4net.Storage.Relational.Query.Source;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
 using System.Diagnostics;
+using Slp.r2rml4net.Storage.Mapping;
+using TCode.r2rml4net.Mapping;
 
 namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
 {
@@ -17,16 +19,32 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         : IGraphPattern
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TriplePattern"/> class.
+        /// Initializes a new instance of the <see cref="RestrictedTriplePattern"/> class.
         /// </summary>
         /// <param name="subjectPattern">The subject pattern.</param>
         /// <param name="predicatePattern">The predicate pattern.</param>
         /// <param name="objectPattern">The object pattern.</param>
-        public RestrictedTriplePattern(PatternItem subjectPattern, PatternItem predicatePattern, PatternItem objectPattern)
+        /// <param name="tripleMap">The triple map.</param>
+        /// <param name="subjectMap">The subject map.</param>
+        /// <param name="predicateMap">The predicate map.</param>
+        /// <param name="objectMap">The object map.</param>
+        /// <param name="refObjectMap">The reference object map</param>
+        /// <param name="graphMap">The graph map.</param>
+        public RestrictedTriplePattern(PatternItem subjectPattern, PatternItem predicatePattern, 
+            PatternItem objectPattern, ITriplesMap tripleMap, ISubjectMap subjectMap, 
+            IPredicateMap predicateMap, IObjectMap objectMap, IRefObjectMap refObjectMap,
+            IGraphMap graphMap)
         {
             SubjectPattern = subjectPattern;
             PredicatePattern = predicatePattern;
             ObjectPattern = objectPattern;
+
+            TripleMap = tripleMap;
+            SubjectMap = subjectMap;
+            PredicateMap = predicateMap;
+            ObjectMap = objectMap;
+            RefObjectMap = refObjectMap;
+            GraphMap = graphMap;
 
             var variables = new List<string>();
 
@@ -36,6 +54,42 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
 
             Variables = variables;
         }
+
+        /// <summary>
+        /// Gets the graph map.
+        /// </summary>
+        /// <value>The graph map.</value>
+        public IGraphMap GraphMap { get; private set; }
+
+        /// <summary>
+        /// Gets the object map.
+        /// </summary>
+        /// <value>The object map.</value>
+        public IObjectMap ObjectMap { get; private set; }
+
+        /// <summary>
+        /// Gets the reference object map.
+        /// </summary>
+        /// <value>The reference object map.</value>
+        public IRefObjectMap RefObjectMap { get; private set; }
+
+        /// <summary>
+        /// Gets the predicate map.
+        /// </summary>
+        /// <value>The predicate map.</value>
+        public IPredicateMap PredicateMap { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the subject map.
+        /// </summary>
+        /// <value>The subject map.</value>
+        public ISubjectMap SubjectMap { get; private set; }
+
+        /// <summary>
+        /// Gets the triple map.
+        /// </summary>
+        /// <value>The triple map.</value>
+        public ITriplesMap TripleMap { get; private set; }
 
         /// <summary>
         /// Adds to variables list.
