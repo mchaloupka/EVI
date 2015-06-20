@@ -436,6 +436,13 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The returned data</returns>
         public object Visit(SelectModifier selectModifier, object data)
         {
+            var newInner = TransformSparqlQuery(selectModifier.InnerQuery, (T) data);
+
+            if (newInner != selectModifier.InnerQuery)
+            {
+                selectModifier = new SelectModifier(newInner, selectModifier.Variables);
+            }
+
             return Process(selectModifier, (T)data);
         }
         #endregion

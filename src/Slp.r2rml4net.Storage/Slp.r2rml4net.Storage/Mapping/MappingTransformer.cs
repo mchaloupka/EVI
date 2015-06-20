@@ -76,7 +76,7 @@ namespace Slp.r2rml4net.Storage.Mapping
             }
             else if (patterns.Count == 1)
             {
-                return patterns[1];
+                return patterns[0];
             }
             else
             {
