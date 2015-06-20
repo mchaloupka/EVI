@@ -198,6 +198,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             {
                 currentQuery = new EmptyPattern();
             }
+            else if (joinedQueries.Count == 1)
+            {
+                currentQuery = joinedQueries[0];
+            }
             else
             {
                 currentQuery = new JoinPattern(joinedQueries);
