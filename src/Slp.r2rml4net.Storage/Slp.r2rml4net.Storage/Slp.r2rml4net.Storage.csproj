@@ -82,6 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="Relational\Query\Condition\EqualVariablesCondition.cs" />
     <Compile Include="Relational\Builder\RelationalBuilder.cs" />
     <Compile Include="Relational\Database\Base\BaseSqlDb.cs" />
     <Compile Include="Relational\Database\IQueryResultReader.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Relational\Database\ISqlQueryBuilder.cs" />
     <Compile Include="Relational\Database\Reader\DataReaderWrapper.cs" />
     <Compile Include="Relational\Database\Vendor\MsSql\MsSqlDb.cs" />
+    <Compile Include="Relational\Query\Condition\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Query\ICalculusSource.cs" />
     <Compile Include="Relational\Query\Source\CalculusModel.cs" />
     <Compile Include="Relational\Query\ICondition.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Relational\Query\RelationalQuery.cs" />
     <Compile Include="Relational\Query\IValueBinder.cs" />
     <Compile Include="Relational\Query\Source\ICalculusSourceVisitor.cs" />
+    <Compile Include="Relational\Query\Source\SqlColumn.cs" />
     <Compile Include="Relational\Query\Source\SqlTable.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />
@@ -127,9 +130,7 @@
     <None Include="dotnetr2rmlstore.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Relational\Query\Condition\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

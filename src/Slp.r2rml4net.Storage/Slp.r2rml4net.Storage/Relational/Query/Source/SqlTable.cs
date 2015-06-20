@@ -10,13 +10,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
     /// <summary>
     /// SQL table representation
     /// </summary>
-    public class SqlTable : ICalculusSource
+    public class SqlTable : ISqlCalculusSource
     {
         /// <summary>
         /// Gets the provided variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<ICalculusVariable> Variables { get; private set; }
+        public IEnumerable<ICalculusVariable> Variables { get { return _variables.Values; } }
 
         /// <summary>
         /// Gets the name of the table.
@@ -37,6 +37,27 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         {
             _tableInfo = tableInfo;
             TableName = tableInfo.Name;
+            _variables = new Dictionary<string, ICalculusVariable>();
+        }
+
+        /// <summary>
+        /// The variables
+        /// </summary>
+        private Dictionary<string, ICalculusVariable> _variables;
+
+        /// <summary>
+        /// Gets the variable.
+        /// </summary>
+        /// <param name="name">The SQL name.</param>
+        /// <returns>ICalculusVariable.</returns>
+        public ICalculusVariable GetVariable(string name)
+        {
+            if (!_variables.ContainsKey(name))
+            {
+                _variables.Add(name, new SqlColumn(name));
+            }
+
+            return _variables[name];
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
+using Slp.r2rml4net.Storage.Relational.Builder;
 using Slp.r2rml4net.Storage.Relational.Database;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -46,6 +47,11 @@ namespace Slp.r2rml4net.Storage.Query
         /// </summary>
         private readonly IDbSchemaProvider _schemaProvider;
 
+        /// <summary>
+        /// The relational builder
+        /// </summary>
+        private RelationalBuilder _relationalBuilder;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryProcessor" /> class.
@@ -61,6 +67,7 @@ namespace Slp.r2rml4net.Storage.Query
             
             _mapping = factory.CreateMappingProcessor(mapping);
             _sparqlBuilder = factory.CreateSparqlBuilder();
+            _relationalBuilder = factory.CreateRelationalBuilder();
         }
 
         /// <summary>
@@ -373,7 +380,9 @@ namespace Slp.r2rml4net.Storage.Query
 
             // TODO: Transform graph and from statements
 
-            // TODO: Make algebra valid, take filters up as possible
+            // TODO: Convert to safe form
+
+            var relationalAlgebra = _relationalBuilder.Process(algebra, context);
 
             //// Transform to SQL algebra
             //var sqlAlgebra = _sqlAlgebraBuilder.Process(algebra, context);

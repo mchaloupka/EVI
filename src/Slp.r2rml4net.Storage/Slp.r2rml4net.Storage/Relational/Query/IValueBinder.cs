@@ -27,5 +27,11 @@ namespace Slp.r2rml4net.Storage.Relational.Query
         /// </summary>
         /// <value>The name of the variable.</value>
         string VariableName { get; }
+
+        /// <summary>
+        /// Gets the needed calculus variables to calculate the value.
+        /// </summary>
+        /// <value>The needed calculus variables.</value>
+        IEnumerable<ICalculusVariable> NeededCalculusVariables { get; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Utils;
 using TCode.r2rml4net;

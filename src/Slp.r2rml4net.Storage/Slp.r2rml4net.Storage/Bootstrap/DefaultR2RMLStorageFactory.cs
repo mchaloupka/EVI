@@ -1,6 +1,7 @@
 ﻿using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Builder;
 using Slp.r2rml4net.Storage.Relational.Database;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -53,6 +54,15 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
         {
             return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory);
+        }
+
+        /// <summary>
+        /// Creates the relational builder.
+        /// </summary>
+        /// <returns>The relational builder.</returns>
+        public RelationalBuilder CreateRelationalBuilder()
+        {
+            return new RelationalBuilder();
         }
     }
 }
