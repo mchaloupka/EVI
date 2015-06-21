@@ -8,6 +8,7 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Condition;
 using Slp.r2rml4net.Storage.Relational.Query.Source;
+using Slp.r2rml4net.Storage.Relational.Query.ValueBinder;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
@@ -198,7 +199,28 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(SelectModifier selectModifier, object data)
         {
-            throw new NotImplementedException();
+            var inner = Process(selectModifier.InnerQuery, (QueryContext) data);
+
+            var requestedVariables = selectModifier.Variables.ToList();
+            var providedVariables = inner.ValueBinders.Select(x => x.VariableName).ToList();
+
+            var neededToAdd = requestedVariables.Where(x => !providedVariables.Contains(x)).ToList();
+            var neededToRemove = providedVariables.Where(x => !requestedVariables.Contains(x)).ToList();
+
+            if ((neededToAdd.Count == 0) && (neededToRemove.Count == 0))
+            {
+                return inner;
+            }
+            else
+            {
+                var valueBinders = new List<IValueBinder>(inner.ValueBinders
+                    .Where(x => requestedVariables.Contains(x.VariableName)));
+
+                valueBinders.AddRange(
+                    neededToAdd.Select(addName => new EmptyValueBinder(addName)).Cast<IValueBinder>());
+
+                return new RelationalQuery(inner.Model, valueBinders);
+            }
         }
         #endregion
 
