@@ -365,11 +365,11 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source);
-            var notNullCondition = _conditionBuilder.CreateIsNotNullCondition(valueBinder, context);
-            conditions.Add(notNullCondition);
+            var notNullCondition = _conditionBuilder.CreateIsNotNullConditions(valueBinder, context);
+            conditions.AddRange(notNullCondition);
             
-            var condition = _conditionBuilder.CreateEqualsCondition(node, valueBinder, context);
-            conditions.Add(condition);
+            var condition = _conditionBuilder.CreateEqualsConditions(node, valueBinder, context);
+            conditions.AddRange(condition);
         }
 
         /// <summary>
@@ -385,8 +385,8 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         {
             var valueBinder = new BaseValueBinder(variableName, termMap, source);
 
-            var notNullCondition = _conditionBuilder.CreateIsNotNullCondition(valueBinder, context);
-            conditions.Add(notNullCondition);
+            var notNullCondition = _conditionBuilder.CreateIsNotNullConditions(valueBinder, context);
+            conditions.AddRange(notNullCondition);
 
             var sameVariableValueBinder = valueBinders.FirstOrDefault(x => x.VariableName == variableName);
 
@@ -396,8 +396,8 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             }
             else
             {
-                var condition = _conditionBuilder.CreateEqualsCondition(valueBinder, sameVariableValueBinder, context);
-                conditions.Add(condition);
+                var condition = _conditionBuilder.CreateEqualsConditions(valueBinder, sameVariableValueBinder, context);
+                conditions.AddRange(condition);
             }
         }
 

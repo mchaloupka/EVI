@@ -20,11 +20,6 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
         private Dictionary<string, ICalculusVariable> _variables;
 
         /// <summary>
-        /// The _template parts
-        /// </summary>
-        private ITemplatePart[] _templateParts;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="BaseValueBinder"/> class.
         /// </summary>
         /// <param name="variableName">Name of the variable.</param>
@@ -49,16 +44,16 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
                 var template = termMap.Template;
 
                 var templateProcessor = new TemplateProcessor();
-                _templateParts = templateProcessor.ParseTemplate(template).ToArray();
+                TemplateParts = templateProcessor.ParseTemplate(template).ToArray();
 
-                foreach (var part in _templateParts.Where(x => x.IsColumn))
+                foreach (var part in TemplateParts.Where(x => x.IsColumn))
                 {
                     _variables.Add(part.Column, source.GetVariable(part.Column));
                 }
             }
             else
             {
-                throw new NotImplementedException();
+                throw new Exception("Mapping can be only constant, column or template valued");
             }
         }
 
@@ -92,6 +87,21 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
         public IEnumerable<ICalculusVariable> NeededCalculusVariables
         {
             get { return _variables.Values; }
+        }
+
+        /// <summary>
+        /// Gets the template parts.
+        /// </summary>
+        /// <value>The template parts.</value>
+        public IEnumerable<ITemplatePart> TemplateParts { get; private set; } 
+
+        /// <summary>
+        /// Gets the calculus variable.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        public ICalculusVariable GetCalculusVariable(string columnName)
+        {
+            return _variables[columnName];
         }
     }
 }

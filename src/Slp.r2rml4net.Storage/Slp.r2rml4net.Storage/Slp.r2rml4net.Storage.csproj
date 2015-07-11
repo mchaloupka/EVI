@@ -84,6 +84,15 @@
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Relational\Query\Condition\AlwaysFalseCondition.cs" />
+    <Compile Include="Relational\Query\Condition\AlwaysTrueCondition.cs" />
+    <Compile Include="Relational\Query\Condition\EqualExpressionCondition.cs" />
+    <Compile Include="Relational\Query\Condition\IsNullCondition.cs" />
+    <Compile Include="Relational\Query\Condition\NegationCondition.cs" />
+    <Compile Include="Relational\Query\Expression\ColumnExpression.cs" />
+    <Compile Include="Relational\Query\Expression\ConcatenationExpression.cs" />
+    <Compile Include="Relational\Query\Expression\ConstantExpression.cs" />
+    <Compile Include="Relational\Query\IExpression.cs" />
     <Compile Include="Relational\Query\ValueBinder\BaseValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinder\EmptyValueBinder.cs" />
     <Compile Include="Relational\Query\Condition\EqualVariablesCondition.cs" />
