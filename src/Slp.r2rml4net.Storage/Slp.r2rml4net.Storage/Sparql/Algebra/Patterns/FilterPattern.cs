@@ -22,7 +22,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="innerPattern">The inner pattern.</param>
         public FilterPattern(IGraphPattern innerPattern)
         {
-            this.InnerPattern = innerPattern;
+            InnerPattern = innerPattern;
         }
 
         /// <summary>

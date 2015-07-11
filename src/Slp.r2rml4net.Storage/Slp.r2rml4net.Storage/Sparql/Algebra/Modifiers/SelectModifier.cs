@@ -21,8 +21,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers
         /// <param name="sparqlVariables">The sparql variables.</param>
         public SelectModifier(ISparqlQuery innerQuery, IEnumerable<string> sparqlVariables)
         {
-            this.InnerQuery = innerQuery;
-            this.Variables = sparqlVariables;
+            InnerQuery = innerQuery;
+            Variables = sparqlVariables;
         }
 
         /// <summary>

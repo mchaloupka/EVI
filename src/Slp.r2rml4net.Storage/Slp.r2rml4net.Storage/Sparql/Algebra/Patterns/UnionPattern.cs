@@ -19,8 +19,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="unionedGraphPatterns">The unioned graph patterns.</param>
         public UnionPattern(IEnumerable<IGraphPattern> unionedGraphPatterns)
         {
-            this.UnionedGraphPatterns = unionedGraphPatterns;
-            this.Variables = this.UnionedGraphPatterns.SelectMany(x => x.Variables)
+            UnionedGraphPatterns = unionedGraphPatterns;
+            Variables = UnionedGraphPatterns.SelectMany(x => x.Variables)
                 .Distinct().ToList();
         }
 

@@ -19,8 +19,8 @@ namespace Slp.r2rml4net.Storage.Relational.Query
         /// <param name="valueBinders">The value binders.</param>
         public RelationalQuery(CalculusModel model, IEnumerable<IValueBinder> valueBinders)
         {
-            this.Model = model;
-            this.ValueBinders = valueBinders;
+            Model = model;
+            ValueBinders = valueBinders;
         }
 
         /// <summary>

@@ -188,7 +188,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             foreach (var part in triplePatterns.OfType<VDS.RDF.Query.Patterns.TriplePattern>())
             {
                 var triplePattern = (VDS.RDF.Query.Patterns.TriplePattern)part;
-                var processed = new Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
+                var processed = new Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
                     triplePattern.Object);
                 joinedQueries.Add(processed);
             }

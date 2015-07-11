@@ -28,7 +28,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
         /// <returns>INode.</returns>
         public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         /// <summary>

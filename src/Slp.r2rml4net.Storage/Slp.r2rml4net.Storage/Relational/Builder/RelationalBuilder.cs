@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Condition;
@@ -13,6 +14,11 @@ using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
 using TCode.r2rml4net.Mapping;
+using VDS.RDF;
+using VDS.RDF.Query.Patterns;
+using FilterPattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.FilterPattern;
+using GraphPattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.GraphPattern;
+using TriplePattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.TriplePattern;
 
 namespace Slp.r2rml4net.Storage.Relational.Builder
 {
@@ -22,6 +28,25 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
     public class RelationalBuilder
         : IModifierVisitor, IPatternVisitor
     {
+        /// <summary>
+        /// The condition builder
+        /// </summary>
+        private ConditionBuilder _conditionBuilder;
+
+        /// <summary>
+        /// The expression builder
+        /// </summary>
+        private ExpressionBuilder _expressionBuilder;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.
+        /// </summary>
+        public RelationalBuilder()
+        {
+            _expressionBuilder = new ExpressionBuilder();
+            _conditionBuilder = new ConditionBuilder(_expressionBuilder);
+        }
+
         /// <summary>
         /// Processes the specified algebra.
         /// </summary>
@@ -62,7 +87,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         }
 
         /// <summary>
-        /// Visits <see cref="FilterPattern" />
+        /// Visits <see cref="Sparql.Algebra.Patterns.FilterPattern" />
         /// </summary>
         /// <param name="filterPattern">The visited instance</param>
         /// <param name="data">The passed data</param>
@@ -84,7 +109,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         }
 
         /// <summary>
-        /// Visits <see cref="GraphPattern" />
+        /// Visits <see cref="Sparql.Algebra.Patterns.GraphPattern" />
         /// </summary>
         /// <param name="graphPattern">The visited instance</param>
         /// <param name="data">The passed data</param>
@@ -128,7 +153,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         }
 
         /// <summary>
-        /// Visits <see cref="TriplePattern" />
+        /// Visits <see cref="Sparql.Algebra.Patterns.TriplePattern" />
         /// </summary>
         /// <param name="triplePattern">The visited instance</param>
         /// <param name="data">The passed data</param>
@@ -181,6 +206,11 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             }
 
             conditions.Add(new TupleFromSourceCondition(source.Variables, source));
+
+            if (refSource != null)
+            {
+                conditions.Add(new TupleFromSourceCondition(refSource.Variables, refSource));
+            }
 
             return new RelationalQuery(
                 new CalculusModel(
@@ -235,7 +265,6 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         private void ProcessTriplePatternSource(RestrictedTriplePattern triplePattern, List<ICondition> conditions, out ISqlCalculusSource source, out ISqlCalculusSource refSource, QueryContext context)
         {
             refSource = null;
-            source = null;
 
             source = GetTripleMapSource(triplePattern.TripleMap, context);
 
@@ -289,7 +318,87 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <param name="context">The query context.</param>
         private void ProcessTriplePatternPredicate(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
-            throw new NotImplementedException();
+            ProcessTriplePatternItem(triplePattern.PredicatePattern, triplePattern.PredicateMap, conditions, valueBinders, source, context);
+        }
+
+        /// <summary>
+        /// Processes the triple pattern item.
+        /// </summary>
+        /// <param name="pattern">The pattern.</param>
+        /// <param name="termMap">The term map</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The context.</param>
+        private void ProcessTriplePatternItem(PatternItem pattern, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        {
+            if (pattern is VariablePattern)
+            {
+                ProcessTriplePatternVariable(pattern.VariableName, termMap, conditions, valueBinders, source, context);
+            }
+            else if (pattern is NodeMatchPattern)
+            {
+                var node = ((NodeMatchPattern) pattern).Node;
+
+                ProcessTriplePatternCondition(node, termMap, conditions, valueBinders, source, context);
+            }
+            else if (pattern is BlankNodePattern)
+            {
+                ProcessTriplePatternVariable(((BlankNodePattern) pattern).ID, termMap, conditions, valueBinders,
+                    source, context);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Processes the triple pattern condition.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="termMap">The term map.</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The context.</param>
+        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        {
+            var valueBinder = new BaseValueBinder(null, termMap, source);
+            var notNullCondition = _conditionBuilder.CreateIsNotNullCondition(valueBinder, context);
+            conditions.Add(notNullCondition);
+            
+            var condition = _conditionBuilder.CreateEqualsCondition(node, valueBinder, context);
+            conditions.Add(condition);
+        }
+
+        /// <summary>
+        /// Processes the triple pattern variable.
+        /// </summary>
+        /// <param name="variableName">Name of the variable.</param>
+        /// <param name="termMap">The term map.</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="context">The context.</param>
+        private void ProcessTriplePatternVariable(string variableName, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        {
+            var valueBinder = new BaseValueBinder(variableName, termMap, source);
+
+            var notNullCondition = _conditionBuilder.CreateIsNotNullCondition(valueBinder, context);
+            conditions.Add(notNullCondition);
+
+            var sameVariableValueBinder = valueBinders.FirstOrDefault(x => x.VariableName == variableName);
+
+            if (sameVariableValueBinder == null)
+            {
+                valueBinders.Add(valueBinder);
+            }
+            else
+            {
+                var condition = _conditionBuilder.CreateEqualsCondition(valueBinder, sameVariableValueBinder, context);
+                conditions.Add(condition);
+            }
         }
 
         /// <summary>
@@ -302,34 +411,34 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <param name="context">The query context.</param>
         private void ProcessTriplePatternSubject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
-            throw new NotImplementedException();
+            ProcessTriplePatternItem(triplePattern.SubjectPattern, triplePattern.SubjectMap, conditions, valueBinders, source, context);
         }
 
         /// <summary>
         /// Processes the triple pattern object.
         /// </summary>
-        /// <param name="restrictedTriplePattern">The restricted triple pattern.</param>
+        /// <param name="triplePattern">The triple pattern.</param>
         /// <param name="conditions">The conditions.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternObject(RestrictedTriplePattern restrictedTriplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
-            throw new NotImplementedException();
+            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.ObjectMap, conditions, valueBinders, source, context);
         }
 
         /// <summary>
         /// Processes the triple pattern reference object.
         /// </summary>
-        /// <param name="restrictedTriplePattern">The restricted triple pattern.</param>
+        /// <param name="triplePattern">The triple pattern.</param>
         /// <param name="conditions">The conditions.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="refSource">The reference source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternRefObject(RestrictedTriplePattern restrictedTriplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, QueryContext context)
+        private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, QueryContext context)
         {
-            throw new NotImplementedException();
+            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
         }
     }
 }

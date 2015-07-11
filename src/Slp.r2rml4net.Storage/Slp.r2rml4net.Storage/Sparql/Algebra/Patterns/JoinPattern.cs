@@ -20,8 +20,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="joinedGraphPatterns">The joined graph patterns.</param>
         public JoinPattern(IEnumerable<IGraphPattern> joinedGraphPatterns)
         {
-            this.JoinedGraphPatterns = joinedGraphPatterns;
-            this.Variables = this.JoinedGraphPatterns.SelectMany(x => x.Variables)
+            JoinedGraphPatterns = joinedGraphPatterns;
+            Variables = JoinedGraphPatterns.SelectMany(x => x.Variables)
                 .Distinct().ToList();
         }
 

@@ -19,7 +19,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="variables">List of variables used</param>
         public NotMatchingPattern(IEnumerable<string> variables)
         {
-            this.Variables = variables.ToArray();
+            Variables = variables.ToArray();
         }
 
         /// <summary>

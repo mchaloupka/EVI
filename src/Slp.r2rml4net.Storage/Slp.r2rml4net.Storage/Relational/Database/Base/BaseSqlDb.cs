@@ -34,11 +34,11 @@ namespace Slp.r2rml4net.Storage.Relational.Database.Base
         /// <param name="sqlType">Type of the SQL.</param>
         protected BaseSqlDb(ISqlDbFactory factory, string connectionString, SqlType sqlType)
         {
-            this.SqlType = sqlType;
-            this.ConnectionString = connectionString;
+            SqlType = sqlType;
+            ConnectionString = connectionString;
 
-            this._queryBuilder = factory.CreateSqlQueryBuilder();
-            this._nameGenerator = factory.CreateNameGenerator(this);
+            _queryBuilder = factory.CreateSqlQueryBuilder();
+            _nameGenerator = factory.CreateNameGenerator(this);
         }
 
         /// <summary>

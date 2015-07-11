@@ -23,11 +23,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="rightOperand">The right operand.</param>
         public MinusPattern(IGraphPattern leftOperand, IGraphPattern rightOperand)
         {
-            this.LeftOperand = leftOperand;
-            this.RightOperand = rightOperand;
+            LeftOperand = leftOperand;
+            RightOperand = rightOperand;
 
-            this.Variables = this.LeftOperand.Variables
-                .Union(this.RightOperand.Variables).Distinct().ToList();
+            Variables = LeftOperand.Variables
+                .Union(RightOperand.Variables).Distinct().ToList();
         }
 
         /// <summary>

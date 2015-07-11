@@ -19,8 +19,8 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         /// <param name="conditions">The conditions.</param>
         public CalculusModel(IEnumerable<ICalculusVariable> variables, IEnumerable<ICondition> conditions)
         {
-            this.Variables = variables;
-            this.Conditions = conditions;
+            Variables = variables;
+            Conditions = conditions;
         }
 
         /// <summary>
