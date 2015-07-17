@@ -118,6 +118,7 @@
     <Compile Include="Relational\Query\Source\SqlTable.cs" />
     <Compile Include="Relational\Query\ValueBinder\IValueBinderVisitor.cs" />
     <Compile Include="Relational\Query\ValueBinder\TemplateProcessor.cs" />
+    <Compile Include="Relational\Utils\BaseSourceTransformer.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQuery.cs" />
