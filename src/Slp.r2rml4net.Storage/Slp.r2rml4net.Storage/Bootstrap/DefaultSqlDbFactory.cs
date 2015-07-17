@@ -1,5 +1,5 @@
-﻿using Slp.r2rml4net.Storage.Relational.Database;
-using Slp.r2rml4net.Storage.Relational.Database.Vendor.MsSql;
+﻿using Slp.r2rml4net.Storage.Database;
+using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
 
 namespace Slp.r2rml4net.Storage.Bootstrap
 {

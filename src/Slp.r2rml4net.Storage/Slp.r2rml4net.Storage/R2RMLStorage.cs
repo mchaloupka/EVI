@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Database;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;

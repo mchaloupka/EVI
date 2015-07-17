@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Relational.Database;
+using Slp.r2rml4net.Storage.Database;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
 {

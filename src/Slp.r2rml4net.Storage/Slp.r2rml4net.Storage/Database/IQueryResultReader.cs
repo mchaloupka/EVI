@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Database
+namespace Slp.r2rml4net.Storage.Database
 {
     /// <summary>
     /// The SQL result reader

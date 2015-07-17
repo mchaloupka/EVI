@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Database.Reader
+namespace Slp.r2rml4net.Storage.Database.Reader
 {
     /// <summary>
     /// Wrapper over data reader

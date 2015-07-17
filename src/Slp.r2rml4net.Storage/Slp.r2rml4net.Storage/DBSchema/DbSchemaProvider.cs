@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Relational.Database;
+using Slp.r2rml4net.Storage.Database;
 
 namespace Slp.r2rml4net.Storage.DBSchema
 {

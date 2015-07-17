@@ -12,7 +12,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using TCode.r2rml4net;
 using Slp.r2rml4net.Storage;
-using Slp.r2rml4net.Storage.Relational.Database;
+using Slp.r2rml4net.Storage.Database;
 using TCode.r2rml4net.Extensions;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite

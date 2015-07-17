@@ -71,6 +71,13 @@
     <Compile Include="Bootstrap\DefaultSqlDbFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
+    <Compile Include="Database\Base\BaseSqlDb.cs" />
+    <Compile Include="Database\IQueryResultReader.cs" />
+    <Compile Include="Database\ISqlDatabase.cs" />
+    <Compile Include="Database\ISqlNameGenerator.cs" />
+    <Compile Include="Database\ISqlQueryBuilder.cs" />
+    <Compile Include="Database\Reader\DataReaderWrapper.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlDb.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
@@ -97,13 +104,6 @@
     <Compile Include="Relational\Query\ValueBinder\EmptyValueBinder.cs" />
     <Compile Include="Relational\Query\Condition\EqualVariablesCondition.cs" />
     <Compile Include="Relational\Builder\RelationalBuilder.cs" />
-    <Compile Include="Relational\Database\Base\BaseSqlDb.cs" />
-    <Compile Include="Relational\Database\IQueryResultReader.cs" />
-    <Compile Include="Relational\Database\ISqlDatabase.cs" />
-    <Compile Include="Relational\Database\ISqlNameGenerator.cs" />
-    <Compile Include="Relational\Database\ISqlQueryBuilder.cs" />
-    <Compile Include="Relational\Database\Reader\DataReaderWrapper.cs" />
-    <Compile Include="Relational\Database\Vendor\MsSql\MsSqlDb.cs" />
     <Compile Include="Relational\Query\Condition\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Query\ICalculusSource.cs" />
     <Compile Include="Relational\Query\Source\CalculusModel.cs" />

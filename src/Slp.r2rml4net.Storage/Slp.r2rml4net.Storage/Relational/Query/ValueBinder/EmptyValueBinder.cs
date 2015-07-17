@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Database;
 using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder

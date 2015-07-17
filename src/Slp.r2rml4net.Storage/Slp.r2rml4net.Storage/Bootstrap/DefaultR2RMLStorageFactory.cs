@@ -1,8 +1,8 @@
-﻿using Slp.r2rml4net.Storage.DBSchema;
+﻿using Slp.r2rml4net.Storage.Database;
+using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Builder;
-using Slp.r2rml4net.Storage.Relational.Database;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using TCode.r2rml4net;

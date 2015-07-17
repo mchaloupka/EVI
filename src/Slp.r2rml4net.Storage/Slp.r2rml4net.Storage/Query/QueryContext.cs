@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Relational.Database;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF;

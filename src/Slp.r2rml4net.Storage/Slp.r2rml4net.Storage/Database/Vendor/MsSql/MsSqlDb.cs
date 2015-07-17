@@ -1,14 +1,13 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Relational.Database.Base;
-using Slp.r2rml4net.Storage.Relational.Database.Reader;
+using Slp.r2rml4net.Storage.Database.Base;
+using Slp.r2rml4net.Storage.Database.Reader;
 
-namespace Slp.r2rml4net.Storage.Relational.Database.Vendor.MsSql
+namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
 {
     /// <summary>
     /// MS SQL database vendor
