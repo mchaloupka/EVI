@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.Expression
@@ -7,12 +8,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
     /// <summary>
     /// The concatenation expression
     /// </summary>
-    public class ConcatenationExpression : IExpression
+    public class ConcatenationExpression 
+        : IExpression
     {
         /// <summary>
         /// The concatenated expressions
         /// </summary>
-        private readonly List<IExpression> expressions;
+        private readonly List<IExpression> _expressions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcatenationExpression"/> class.
@@ -21,7 +23,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         /// <param name="context">The context.</param>
         public ConcatenationExpression(List<IExpression> innerExpressions, QueryContext context)
         {
-            expressions = innerExpressions;
+            _expressions = innerExpressions;
         }
 
         /// <summary>
@@ -29,7 +31,19 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         /// </summary>
         public List<IExpression> InnerExpressions
         {
-            get { return expressions; }
+            get { return _expressions; }
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IExpressionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }

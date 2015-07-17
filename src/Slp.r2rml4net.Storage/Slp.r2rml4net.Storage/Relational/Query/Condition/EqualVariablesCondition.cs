@@ -1,11 +1,13 @@
 using System;
+using System.Diagnostics;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.Condition
 {
     /// <summary>
     /// Class representing condition: equal for two <see cref="ICalculusVariable"/>
     /// </summary>
-    public class EqualVariablesCondition : ICondition
+    public class EqualVariablesCondition 
+        : ICondition
     {
         /// <summary>
         /// Gets the left variable.
@@ -28,6 +30,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
         {
             LeftVariable = leftVariable;
             RightVariable = rightVariable;
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IConditionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }

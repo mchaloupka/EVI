@@ -8,7 +8,8 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
     /// <summary>
     /// Class ConstantExpression.
     /// </summary>
-    public class ConstantExpression : IExpression
+    public class ConstantExpression 
+        : IExpression
     {
         /// <summary>
         /// The context
@@ -73,5 +74,17 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; private set; }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IExpressionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
+        }
     }
 }

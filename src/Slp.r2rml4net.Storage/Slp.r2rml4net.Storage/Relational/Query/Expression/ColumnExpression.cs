@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.Expression
@@ -31,6 +32,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         {
             CalculusVariable = calculusVariable;
             IsUri = isUri;
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IExpressionVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }
