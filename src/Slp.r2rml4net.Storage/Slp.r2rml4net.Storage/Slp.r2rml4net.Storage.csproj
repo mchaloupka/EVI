@@ -116,6 +116,7 @@
     <Compile Include="Relational\Query\Source\ICalculusSourceVisitor.cs" />
     <Compile Include="Relational\Query\Source\SqlColumn.cs" />
     <Compile Include="Relational\Query\Source\SqlTable.cs" />
+    <Compile Include="Relational\Query\ValueBinder\IValueBinderVisitor.cs" />
     <Compile Include="Relational\Query\ValueBinder\TemplateProcessor.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />

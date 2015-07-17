@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
 using VDS.RDF;
@@ -8,7 +9,8 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
     /// <summary>
     /// The empty value binder
     /// </summary>
-    public class EmptyValueBinder : IValueBinder
+    public class EmptyValueBinder 
+        : IValueBinder
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EmptyValueBinder"/> class.
@@ -44,6 +46,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
         public IEnumerable<ICalculusVariable> NeededCalculusVariables
         {
             get { return new ICalculusVariable[] {}; }
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IValueBinderVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }

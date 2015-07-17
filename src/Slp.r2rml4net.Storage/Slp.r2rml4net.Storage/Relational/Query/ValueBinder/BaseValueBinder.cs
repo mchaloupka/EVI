@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
@@ -102,6 +103,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
         public ICalculusVariable GetCalculusVariable(string columnName)
         {
             return _variables[columnName];
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(IValueBinderVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }
