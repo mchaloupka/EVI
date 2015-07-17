@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Relational.Query.Source;
+using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Relational.Query
 {
@@ -10,6 +12,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     /// Calculus source
     /// </summary>
     public interface ICalculusSource
+        : IVisitable<ICalculusSourceVisitor>
     {
         /// <summary>
         /// Gets the provided variables.

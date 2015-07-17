@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
     /// <summary>
     /// SQL table representation
     /// </summary>
-    public class SqlTable : ISqlCalculusSource
+    public class SqlTable 
+        : ISqlCalculusSource
     {
         /// <summary>
         /// Gets the provided variables.
@@ -58,6 +60,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
             }
 
             return _variables[name];
+        }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>The returned value from visitor.</returns>
+        [DebuggerStepThrough]
+        public object Accept(ICalculusSourceVisitor visitor, object data)
+        {
+            return visitor.Visit(this, data);
         }
     }
 }
