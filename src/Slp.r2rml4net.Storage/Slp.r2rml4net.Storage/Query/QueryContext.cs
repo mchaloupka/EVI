@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Slp.r2rml4net.Storage.Database;
+using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Condition;
+using Slp.r2rml4net.Storage.Relational.Query.Source;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -16,11 +19,6 @@ namespace Slp.r2rml4net.Storage.Query
     /// </summary>
     public class QueryContext
     {
-        /// <summary>
-        /// The used SQL source names set.
-        /// </summary>
-        private readonly HashSet<string> _usedSqlSourceNames;
-
         /// <summary>
         /// The blank nodes subjects.
         /// </summary>
@@ -35,6 +33,8 @@ namespace Slp.r2rml4net.Storage.Query
         /// The used variables
         /// </summary>
         private readonly HashSet<string> _usedVariables;
+
+        private readonly QueryNamingHelpers _queryNamingHelpers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext" /> class.
@@ -52,10 +52,10 @@ namespace Slp.r2rml4net.Storage.Query
             Db = db;
             Mapping = mapping;
             SchemaProvider = schemaProvider;
-            _usedSqlSourceNames = new HashSet<string>();
             _blankNodesSubjects = new Dictionary<string, INode>();
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
+            _queryNamingHelpers = new QueryNamingHelpers(this);
         }
 
         /// <summary>
@@ -95,30 +95,12 @@ namespace Slp.r2rml4net.Storage.Query
         public ISqlDatabase Db { get; private set; }
 
         /// <summary>
-        /// Determines whether the specified name is already used SQL source name.
+        /// Gets the query naming helpers.
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns><c>true</c> if the specified name is already used SQL source name; otherwise, <c>false</c>.</returns>
-        public bool IsAlreadyUsedSqlSourceName(string name)
+        /// <value>The query naming helpers.</value>
+        public QueryNamingHelpers QueryNamingHelpers
         {
-            return _usedSqlSourceNames.Contains(name);
-        }
-
-        /// <summary>
-        /// Registers the name of the used SQL source.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="System.ArgumentException">This sql source name already used;name</exception>
-        public void RegisterUsedSqlSourceName(string name)
-        {
-            if (_usedSqlSourceNames.Contains(name))
-            {
-                throw new ArgumentException("This sql source name already used", "name");
-            }
-            else
-            {
-                _usedSqlSourceNames.Add(name);
-            }
+            get { return _queryNamingHelpers; }
         }
 
         /// <summary>

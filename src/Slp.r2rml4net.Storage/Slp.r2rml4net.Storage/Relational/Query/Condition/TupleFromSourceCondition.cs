@@ -11,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// Class representing condition: assigning a tuple from a source
     /// </summary>
     public class TupleFromSourceCondition
-        : ICondition
+        : ISourceCondition
     {
         /// <summary>
         /// Gets or sets the calculus variables.

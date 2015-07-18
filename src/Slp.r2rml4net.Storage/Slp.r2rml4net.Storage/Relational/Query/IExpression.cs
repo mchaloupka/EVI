@@ -1,4 +1,5 @@
-﻿using Slp.r2rml4net.Storage.Relational.Query.Expression;
+﻿using DatabaseSchemaReader.DataSchema;
+using Slp.r2rml4net.Storage.Relational.Query.Expression;
 using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Relational.Query
@@ -9,5 +10,9 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     public interface IExpression
         : IVisitable<IExpressionVisitor>
     {
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        DataType SqlType { get; }
     }
 }

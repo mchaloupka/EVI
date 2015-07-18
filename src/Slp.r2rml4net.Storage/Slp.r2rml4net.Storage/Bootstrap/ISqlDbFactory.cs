@@ -17,11 +17,5 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// Creates the SQL query builder.
         /// </summary>
         ISqlQueryBuilder CreateSqlQueryBuilder();
-
-        /// <summary>
-        /// Creates the name generator.
-        /// </summary>
-        /// <param name="db"></param>
-        ISqlNameGenerator CreateNameGenerator(ISqlDatabase db);
     }
 }

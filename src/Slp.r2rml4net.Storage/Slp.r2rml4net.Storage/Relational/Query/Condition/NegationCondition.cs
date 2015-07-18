@@ -11,13 +11,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// Class NegationCondition.
     /// </summary>
     public class NegationCondition
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NegationCondition"/> class.
         /// </summary>
         /// <param name="condition">The inner condition.</param>
-        public NegationCondition(ICondition condition)
+        public NegationCondition(IFilterCondition condition)
         {
             InnerCondition = condition;
         }
@@ -26,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
         /// Gets the inner condition.
         /// </summary>
         /// <value>The inner condition.</value>
-        public ICondition InnerCondition { get; private set; }
+        public IFilterCondition InnerCondition { get; private set; }
 
         /// <summary>
         /// Accepts the specified visitor.

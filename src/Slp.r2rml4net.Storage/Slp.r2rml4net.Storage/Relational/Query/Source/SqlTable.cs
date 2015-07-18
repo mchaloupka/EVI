@@ -40,6 +40,11 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
             _tableInfo = tableInfo;
             TableName = tableInfo.Name;
             _variables = new Dictionary<string, ICalculusVariable>();
+
+            foreach (var dbColumn in _tableInfo.Columns)
+            {
+                _variables.Add(dbColumn.Name, new SqlColumn(dbColumn.Name, dbColumn.DataType));
+            }
         }
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         {
             if (!_variables.ContainsKey(name))
             {
-                _variables.Add(name, new SqlColumn(name));
+                throw new ArgumentException("Unknown column name", "name");
             }
 
             return _variables[name];

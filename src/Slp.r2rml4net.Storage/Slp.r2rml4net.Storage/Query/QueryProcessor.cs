@@ -134,8 +134,16 @@ namespace Slp.r2rml4net.Storage.Query
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);
 
-            throw new NotImplementedException();
+            // Create query
+            var query = _db.GenerateQuery(sqlAlgebra, context);
 
+            // Execute query
+            using (var result = _db.ExecuteQuery(query))
+            {
+                ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
+            }
+            
+            // TODO: Check this out:
             //if(sqlAlgebra is NoRowSource)
             //{
             //    using(var result = new StaticDataReader())
@@ -395,7 +403,7 @@ namespace Slp.r2rml4net.Storage.Query
 
             //return sqlAlgebra;
 
-            throw new NotImplementedException();
+            return relationalAlgebra;
         }
     }
 }

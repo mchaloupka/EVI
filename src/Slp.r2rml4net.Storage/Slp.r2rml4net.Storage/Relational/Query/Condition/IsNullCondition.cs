@@ -11,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// The  IS  NULL Condition.
     /// </summary>
     public class IsNullCondition
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IsNullCondition"/> class.

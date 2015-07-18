@@ -38,7 +38,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable&lt;ICondition&gt;.</returns>
-        public IEnumerable<ICondition> CreateEqualsConditions(INode node, IValueBinder valueBinder, QueryContext context)
+        public IEnumerable<IFilterCondition> CreateEqualsConditions(INode node, IValueBinder valueBinder, QueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -62,7 +62,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// </summary>
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
-        public IEnumerable<ICondition> CreateIsNotNullConditions(IValueBinder valueBinder, QueryContext context)
+        public IEnumerable<IFilterCondition> CreateIsNotNullConditions(IValueBinder valueBinder, QueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -92,7 +92,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <param name="firstValueBinder">The first value binder.</param>
         /// <param name="secondValueBinder">The second value binder.</param>
         /// <param name="context">The context.</param>
-        public IEnumerable<ICondition> CreateEqualsConditions(IValueBinder firstValueBinder, IValueBinder secondValueBinder, QueryContext context)
+        public IEnumerable<IFilterCondition> CreateEqualsConditions(IValueBinder firstValueBinder, IValueBinder secondValueBinder, QueryContext context)
         {
             if (firstValueBinder is EmptyValueBinder)
             {

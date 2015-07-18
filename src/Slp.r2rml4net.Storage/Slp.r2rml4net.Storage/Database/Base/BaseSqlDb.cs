@@ -1,6 +1,7 @@
 ﻿using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Source;
 
 namespace Slp.r2rml4net.Storage.Database.Base
@@ -17,11 +18,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
         private ISqlQueryBuilder _queryBuilder;
 
         /// <summary>
-        /// The name generator
-        /// </summary>
-        private ISqlNameGenerator _nameGenerator;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlDb" /> class.
         /// </summary>
         /// <param name="factory">The factory.</param>
@@ -33,19 +29,17 @@ namespace Slp.r2rml4net.Storage.Database.Base
             ConnectionString = connectionString;
 
             _queryBuilder = factory.CreateSqlQueryBuilder();
-            _nameGenerator = factory.CreateNameGenerator(this);
         }
 
         /// <summary>
         /// Generates the query.
         /// </summary>
-        /// <param name="calculusModel">The SQL model.</param>
+        /// <param name="relationalQuery">The relational model.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The SQL query</returns>
-        public string GenerateQuery(CalculusModel calculusModel, QueryContext context)
+        public string GenerateQuery(RelationalQuery relationalQuery, QueryContext context)
         {
-            _nameGenerator.GenerateNames(calculusModel, context);
-            return _queryBuilder.GenerateQuery(calculusModel, context);
+            return _queryBuilder.GenerateQuery(relationalQuery, context);
         }
 
         /// <summary>

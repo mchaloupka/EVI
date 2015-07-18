@@ -1,5 +1,6 @@
 ﻿using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Source;
 
 namespace Slp.r2rml4net.Storage.Database
@@ -12,10 +13,10 @@ namespace Slp.r2rml4net.Storage.Database
         /// <summary>
         /// Generates the query.
         /// </summary>
-        /// <param name="calculusModel">The SQL model.</param>
+        /// <param name="relationalQuery">The relational model.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The SQL query</returns>
-        string GenerateQuery(CalculusModel calculusModel, QueryContext context);
+        string GenerateQuery(RelationalQuery relationalQuery, QueryContext context);
 
         /// <summary>
         /// Executes the query.

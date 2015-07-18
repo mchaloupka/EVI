@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.Database.Base;
 
 namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
 {
@@ -27,16 +28,7 @@ namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
         /// </summary>
         public virtual ISqlQueryBuilder CreateSqlQueryBuilder()
         {
-            return null;
-        }
-
-        /// <summary>
-        /// Creates the name generator.
-        /// </summary>
-        /// <param name="db">The database</param>
-        public virtual ISqlNameGenerator CreateNameGenerator(ISqlDatabase db)
-        {
-            return null;
+            return new BaseSqlQueryBuilder();
         }
     }
 }

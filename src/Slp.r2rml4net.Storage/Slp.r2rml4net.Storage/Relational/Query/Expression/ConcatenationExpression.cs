@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.Expression
@@ -24,12 +25,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         public ConcatenationExpression(List<IExpression> innerExpressions, QueryContext context)
         {
             _expressions = innerExpressions;
+            SqlType = context.Db.SqlTypeForString;
         }
 
         /// <summary>
         /// The concatenated expressions
         /// </summary>
-        public List<IExpression> InnerExpressions
+        public IEnumerable<IExpression> InnerExpressions
         {
             get { return _expressions; }
         }
@@ -45,5 +47,10 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType { get; private set; }
     }
 }

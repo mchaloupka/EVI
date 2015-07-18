@@ -7,7 +7,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// Class representing condition: equal for two <see cref="ICalculusVariable"/>
     /// </summary>
     public class EqualVariablesCondition 
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Gets the left variable.

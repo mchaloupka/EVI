@@ -6,7 +6,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// The always true condition
     /// </summary>
     public class AlwaysTrueCondition 
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Accepts the specified visitor.

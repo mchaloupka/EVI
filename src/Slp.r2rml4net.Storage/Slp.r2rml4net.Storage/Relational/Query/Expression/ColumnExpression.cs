@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
 
 namespace Slp.r2rml4net.Storage.Relational.Query.Expression
@@ -44,6 +45,14 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expression
         public object Accept(IExpressionVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
+        }
+
+        /// <summary>
+        /// The SQL type of the expression.
+        /// </summary>
+        public DataType SqlType
+        {
+            get { return CalculusVariable.SqlType; }
         }
     }
 }

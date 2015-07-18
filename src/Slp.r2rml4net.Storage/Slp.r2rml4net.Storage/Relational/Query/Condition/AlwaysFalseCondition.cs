@@ -11,7 +11,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// The always false condition
     /// </summary>
     public class AlwaysFalseCondition 
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Accepts the specified visitor.

@@ -7,7 +7,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// The equal expression condition
     /// </summary>
     public class EqualExpressionCondition 
-        : ICondition
+        : IFilterCondition
     {
         /// <summary>
         /// Gets the left operand.
