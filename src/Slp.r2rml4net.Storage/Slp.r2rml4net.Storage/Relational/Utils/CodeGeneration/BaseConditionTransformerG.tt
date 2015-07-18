@@ -1,0 +1,27 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+<#
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query");
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Condition");
+    WriteLine("");
+
+    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseConditionTransformerG", "IConditionVisitor", "BaseSourceTransformerG<T, T1>"
+        , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
+
+    GenerateCommonMethods("ICondition", false);
+
+    GenerateMethods("AlwaysFalseCondition");
+    GenerateMethods("AlwaysTrueCondition");
+    GenerateMethods("EqualExpressionCondition");
+    GenerateMethods("EqualVariablesCondition");
+    GenerateMethods("IsNullCondition");
+    GenerateMethods("NegationCondition");
+    GenerateMethods("TupleFromSourceCondition");
+
+    GenerateClassFooter();
+#>

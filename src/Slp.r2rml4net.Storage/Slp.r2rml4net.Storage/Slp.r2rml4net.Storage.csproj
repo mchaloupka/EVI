@@ -119,7 +119,17 @@
     <Compile Include="Relational\Query\Source\SqlTable.cs" />
     <Compile Include="Relational\Query\ValueBinder\IValueBinderVisitor.cs" />
     <Compile Include="Relational\Query\ValueBinder\TemplateProcessor.cs" />
-    <Compile Include="Relational\Utils\BaseSourceTransformer.cs" />
+    <Compile Include="Relational\Utils\BaseRelationalTransformer.cs" />
+    <Compile Include="Relational\Utils\CodeGeneration\BaseConditionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseExpressionTransformerG.tt</DependentUpon>
+    </Compile>
     <Compile Include="Relational\Utils\CodeGeneration\BaseSourceTransformerG.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -163,6 +173,14 @@
     <None Include="app.config" />
     <None Include="dotnetr2rmlstore.nuspec" />
     <None Include="packages.config" />
+    <None Include="Relational\Utils\CodeGeneration\BaseConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseExpressionTransformerG.cs</LastGenOutput>
+    </None>
     <None Include="Relational\Utils\CodeGeneration\BaseSourceTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseSourceTransformerG.cs</LastGenOutput>

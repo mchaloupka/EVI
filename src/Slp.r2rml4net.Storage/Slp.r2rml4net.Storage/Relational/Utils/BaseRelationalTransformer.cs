@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
     /// Base transformer for <see cref="ICalculusSource" />
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
-    public class BaseSourceTransformer<T>
+    public class BaseRelationalTransformer<T>
         : BaseSourceTransformerG<T, ICalculusSource>
     {
         /// <summary>
