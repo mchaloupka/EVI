@@ -12,6 +12,7 @@
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration", "BaseModifierTransformerG", "IModifierVisitor", null);
 
+    GenerateMainTransformMethod("IModifier");
     GenerateCommonMethods("IModifier", true);
 
     GenerateMethods("SelectModifier");

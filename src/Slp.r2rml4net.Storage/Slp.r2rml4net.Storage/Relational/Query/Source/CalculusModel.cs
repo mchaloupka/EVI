@@ -69,31 +69,6 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         public IEnumerable<ICalculusVariable> Variables { get; private set; }
 
         /// <summary>
-        /// Gets the conditions.
-        /// </summary>
-        /// <value>The conditions.</value>
-        public IEnumerable<ICondition> Conditions
-        {
-            get
-            {
-                foreach (var cond in _sourceConditions)
-                {
-                    yield return cond;
-                }
-
-                foreach (var cond in _filterConditions)
-                {
-                    yield return cond;
-                }
-
-                foreach (var cond in _assignmentConditions)
-                {
-                    yield return cond;
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the source conditions.
         /// </summary>
         /// <value>The source conditions.</value>

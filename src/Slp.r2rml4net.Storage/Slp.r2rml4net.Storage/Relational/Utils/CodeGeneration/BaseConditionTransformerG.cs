@@ -15,16 +15,35 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         : BaseSourceTransformerG<T, T1>, IConditionVisitor
     {
         /// <summary>
-        /// Transforms the <see cref="ICondition" />.
+        /// Transforms the <see cref="ISourceCondition" />.
         /// </summary>
         /// <param name="instance">The instance to tranform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public TR Transform(ICondition instance, T data)
+        public TR Transform(ISourceCondition instance, T data)
         {
             return (TR)instance.Accept(this, data);
         }
-
+        /// <summary>
+        /// Transforms the <see cref="IAssignmentCondition" />.
+        /// </summary>
+        /// <param name="instance">The instance to tranform.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformed calculus source.</returns>
+        public TR Transform(IAssignmentCondition instance, T data)
+        {
+            return (TR)instance.Accept(this, data);
+        }
+        /// <summary>
+        /// Transforms the <see cref="IFilterCondition" />.
+        /// </summary>
+        /// <param name="instance">The instance to tranform.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformed calculus source.</returns>
+        public TR Transform(IFilterCondition instance, T data)
+        {
+            return (TR)instance.Accept(this, data);
+        }
         /// <summary>
         /// Postprocess for the transformation.
         /// </summary>

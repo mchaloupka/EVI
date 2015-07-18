@@ -25,7 +25,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         {
             return (TR)instance.Accept(this, data);
         }
-
         /// <summary>
         /// Postprocess for the transformation.
         /// </summary>

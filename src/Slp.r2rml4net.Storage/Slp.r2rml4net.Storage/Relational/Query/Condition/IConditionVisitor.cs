@@ -10,7 +10,40 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
     /// <summary>
     /// Visitor for conditions
     /// </summary>
-    public interface IConditionVisitor : IVisitor
+    public interface IConditionVisitor 
+        : IFilterConditionVisitor, IAssignmentConditionVisitor, ISourceConditionVisitor
+    {
+        
+    }
+
+    /// <summary>
+    /// Visitor for assignment conditions
+    /// </summary>
+    public interface IAssignmentConditionVisitor
+        : IVisitor
+    {
+        
+    }
+
+    /// <summary>
+    /// Visitor for source conditions
+    /// </summary>
+    public interface ISourceConditionVisitor
+        : IVisitor
+    {
+        /// <summary>
+        /// Visits <see cref="TupleFromSourceCondition"/>
+        /// </summary>
+        /// <param name="tupleFromSourceCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data);
+    }
+
+    /// <summary>
+    /// Visitor for filter conditions
+    /// </summary>
+    public interface IFilterConditionVisitor : IVisitor
     {
         /// <summary>
         /// Visits <see cref="AlwaysFalseCondition"/>
@@ -59,13 +92,5 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Condition
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(NegationCondition negationCondition, object data);
-
-        /// <summary>
-        /// Visits <see cref="TupleFromSourceCondition"/>
-        /// </summary>
-        /// <param name="tupleFromSourceCondition">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data);
     }
 }

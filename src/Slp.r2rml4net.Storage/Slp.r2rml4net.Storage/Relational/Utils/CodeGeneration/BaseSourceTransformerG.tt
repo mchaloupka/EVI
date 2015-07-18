@@ -12,6 +12,7 @@
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseSourceTransformerG", "ICalculusSourceVisitor", null);
 
+    GenerateMainTransformMethod("ICalculusSource");
     GenerateCommonMethods("ICalculusSource", true);
 
     GenerateMethods("CalculusModel");

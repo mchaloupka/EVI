@@ -52,7 +52,7 @@ namespace <#= namespaceName #>
 <#+
     }
 
-    void GenerateCommonMethods(string parameterType, bool includePreTransform) 
+    void GenerateMainTransformMethod(string parameterType) 
     {
 #>
         /// <summary>
@@ -65,8 +65,11 @@ namespace <#= namespaceName #>
         {
             return (TR)instance.Accept(this, data);
         }
-
 <#+
+    }
+
+    void GenerateCommonMethods(string parameterType, bool includePreTransform) 
+    {
         if(includePreTransform)
         {
 #>

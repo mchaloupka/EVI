@@ -13,6 +13,7 @@
     GenerateClassHeader("Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration", "BaseGraphPatternTransformerG", "IPatternVisitor", "BaseModifierTransformerG<T, T1>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"IModifier\" />"));
 
+    GenerateMainTransformMethod("IGraphPattern");
     GenerateCommonMethods("IGraphPattern", false);
 
     GenerateMethods("EmptyPattern");

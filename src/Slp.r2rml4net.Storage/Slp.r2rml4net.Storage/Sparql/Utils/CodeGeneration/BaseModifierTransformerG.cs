@@ -23,7 +23,6 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         {
             return (TR)instance.Accept(this, data);
         }
-
         /// <summary>
         /// Preprocess for the transformation.
         /// </summary>

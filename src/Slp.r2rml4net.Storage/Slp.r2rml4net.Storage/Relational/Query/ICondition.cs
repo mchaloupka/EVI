@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
+﻿using Slp.r2rml4net.Storage.Relational.Query.Condition;
 using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Relational.Query
@@ -11,7 +6,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     /// <summary>
     /// Condition representation
     /// </summary>
-    public interface ICondition : IVisitable<IConditionVisitor>
+    public interface ICondition
     {
 
     }
@@ -20,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     /// Source condition
     /// </summary>
     public interface ISourceCondition
-        : ICondition
+        : ICondition, IVisitable<ISourceConditionVisitor>
     {
 
     }
@@ -29,7 +24,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     /// Assignment condition
     /// </summary>
     public interface IAssignmentCondition
-        : ICondition
+        : ICondition, IVisitable<IAssignmentConditionVisitor>
     {
 
     }
@@ -38,7 +33,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     /// Filter condition
     /// </summary>
     public interface IFilterCondition
-        : ICondition
+        : ICondition, IVisitable<IFilterConditionVisitor>
     {
         
     }
