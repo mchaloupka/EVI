@@ -10,9 +10,24 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
     /// <summary>
     /// Model representing calculus representation of a query
     /// </summary>
-    public class CalculusModel 
+    public class CalculusModel
         : ICalculusSource
     {
+        /// <summary>
+        /// The source conditions
+        /// </summary>
+        private List<ISourceCondition> _sourceConditions;
+
+        /// <summary>
+        /// The filter conditions
+        /// </summary>
+        private List<IFilterCondition> _filterConditions;
+
+        /// <summary>
+        /// The assignment conditions
+        /// </summary>
+        private List<IAssignmentCondition> _assignmentConditions;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculusModel"/> class.
         /// </summary>
@@ -20,8 +35,31 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         /// <param name="conditions">The conditions.</param>
         public CalculusModel(IEnumerable<ICalculusVariable> variables, IEnumerable<ICondition> conditions)
         {
+            _sourceConditions = new List<ISourceCondition>();
+            _filterConditions = new List<IFilterCondition>();
+            _assignmentConditions = new List<IAssignmentCondition>();
+
             Variables = variables;
-            Conditions = conditions;
+
+            foreach (var cond in conditions)
+            {
+                if (cond is ISourceCondition)
+                {
+                    _sourceConditions.Add((ISourceCondition) cond);
+                }
+                else if (cond is IFilterCondition)
+                {
+                    _filterConditions.Add((IFilterCondition) cond);
+                }
+                else if (cond is IAssignmentCondition)
+                {
+                    _assignmentConditions.Add((IAssignmentCondition) cond);
+                }
+                else
+                {
+                    throw new ArgumentException("Condition of unknown type found", "conditions");
+                }
+            }
         }
 
         /// <summary>
@@ -34,7 +72,53 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Source
         /// Gets the conditions.
         /// </summary>
         /// <value>The conditions.</value>
-        public IEnumerable<ICondition> Conditions { get; private set; }
+        public IEnumerable<ICondition> Conditions
+        {
+            get
+            {
+                foreach (var cond in _sourceConditions)
+                {
+                    yield return cond;
+                }
+
+                foreach (var cond in _filterConditions)
+                {
+                    yield return cond;
+                }
+
+                foreach (var cond in _assignmentConditions)
+                {
+                    yield return cond;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the source conditions.
+        /// </summary>
+        /// <value>The source conditions.</value>
+        public IEnumerable<ISourceCondition> SourceConditions
+        {
+            get { return _sourceConditions; }
+        }
+
+        /// <summary>
+        /// Gets the filter conditions.
+        /// </summary>
+        /// <value>The filter conditions.</value>
+        public IEnumerable<IFilterCondition> FilterConditions
+        {
+            get { return _filterConditions; }
+        }
+
+        /// <summary>
+        /// Gets the assignment conditions.
+        /// </summary>
+        /// <value>The assignment conditions.</value>
+        public IEnumerable<IAssignmentCondition> AssignmentConditions
+        {
+            get { return _assignmentConditions; }
+        }
 
         /// <summary>
         /// Accepts the specified visitor.
