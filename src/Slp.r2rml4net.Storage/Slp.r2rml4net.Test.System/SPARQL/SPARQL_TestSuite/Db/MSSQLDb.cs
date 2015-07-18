@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Database;
+using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
 
 namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
 {
@@ -16,7 +17,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
         protected override ISqlDatabase GetSqlDb()
         {
             var connectionString = ConfigurationManager.ConnectionStrings["mssql_connection"].ConnectionString;
-            return (new DefaultSqlDbFactory()).CreateSqlDb(connectionString);
+            return (new MsSqlDbFactory()).CreateSqlDb(connectionString);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using Slp.r2rml4net.Storage;
 using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping.Fluent;
 
@@ -35,7 +36,7 @@ namespace Slp.r2rml4net.Console.R2RML
                     mapping = R2RMLLoader.Load(fs);
                 }
 
-                _storage = new R2RmlStorage((new DefaultSqlDbFactory()).CreateSqlDb(connectionString), mapping, new DefaultIr2RmlStorageFactory());
+                _storage = new R2RmlStorage((new MsSqlDbFactory()).CreateSqlDb(connectionString), mapping, new DefaultIr2RmlStorageFactory());
             }
             catch (Exception e)
             {

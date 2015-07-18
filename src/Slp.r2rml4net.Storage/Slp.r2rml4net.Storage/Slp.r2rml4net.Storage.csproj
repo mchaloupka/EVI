@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\DefaultR2RMLStorageFactory.cs" />
-    <Compile Include="Bootstrap\DefaultSqlDbFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
     <Compile Include="Database\Base\BaseSqlDb.cs" />
@@ -79,6 +78,7 @@
     <Compile Include="Database\ISqlQueryBuilder.cs" />
     <Compile Include="Database\Reader\DataReaderWrapper.cs" />
     <Compile Include="Database\Vendor\MsSql\MsSqlDb.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlDbFactory.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />

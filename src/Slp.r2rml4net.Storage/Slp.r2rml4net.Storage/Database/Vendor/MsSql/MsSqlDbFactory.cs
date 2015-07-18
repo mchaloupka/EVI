@@ -1,12 +1,17 @@
-﻿using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Bootstrap;
 
-namespace Slp.r2rml4net.Storage.Bootstrap
+namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
 {
     /// <summary>
-    /// Class DefaultSqlDbFactory.
+    /// Sql factory for MS SQL
     /// </summary>
-    public class DefaultSqlDbFactory : ISqlDbFactory
+    public class MsSqlDbFactory 
+        : ISqlDbFactory
     {
         /// <summary>
         /// Creates the SQL database connection.
@@ -16,7 +21,6 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         {
             return new MsSqlDb(this, connectionString);
         }
-
 
         /// <summary>
         /// Creates the SQL query builder.
