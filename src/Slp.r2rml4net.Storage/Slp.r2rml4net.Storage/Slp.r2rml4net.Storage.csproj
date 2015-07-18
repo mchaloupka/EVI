@@ -143,7 +143,17 @@
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
     <Compile Include="Sparql\Algebra\SparqlBuilder.cs" />
     <Compile Include="Query\QueryContext.cs" />
-    <Compile Include="Sparql\Utils\BaseTransformer.cs" />
+    <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseGraphPatternTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseModifierTransformerG.tt</DependentUpon>
+    </Compile>
     <Compile Include="Sparql\Utils\FixesExtension.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
@@ -156,6 +166,14 @@
     <None Include="Relational\Utils\CodeGeneration\BaseSourceTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseSourceTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseGraphPatternTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseModifierTransformerG.cs</LastGenOutput>
     </None>
     <None Include="Utils\CodeGeneration\BaseTransformerTemplate.tt">
       <LastGenOutput>BaseTransformerTemplate.cs</LastGenOutput>

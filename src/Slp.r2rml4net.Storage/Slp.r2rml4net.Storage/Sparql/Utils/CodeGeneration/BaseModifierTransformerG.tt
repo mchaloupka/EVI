@@ -6,16 +6,15 @@
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 <#
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Source");
+    AddUsing("Slp.r2rml4net.Storage.Sparql.Algebra");
+    AddUsing("Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers");
     WriteLine("");
 
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseSourceTransformerG", "ICalculusSourceVisitor", null);
+    GenerateClassHeader("Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration", "BaseModifierTransformerG", "IModifierVisitor", null);
 
-    GenerateCommonMethods("ICalculusSource", true);
+    GenerateCommonMethods("IModifier", true);
 
-    GenerateMethods("CalculusModel");
-    GenerateMethods("SqlTable");
+    GenerateMethods("SelectModifier");
 
     GenerateClassFooter();
 #>

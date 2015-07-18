@@ -14,19 +14,10 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         : IGraphPattern
     {
         /// <summary>
-        /// Constructs an instance of <see cref="NotMatchingPattern"/>
-        /// </summary>
-        /// <param name="variables">List of variables used</param>
-        public NotMatchingPattern(IEnumerable<string> variables)
-        {
-            Variables = variables.ToArray();
-        }
-
-        /// <summary>
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get { return new string[] { }; } }
 
         /// <summary>
         /// Accepts the specified visitor.

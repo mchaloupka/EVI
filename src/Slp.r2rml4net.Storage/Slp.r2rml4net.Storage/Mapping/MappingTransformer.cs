@@ -30,12 +30,12 @@ namespace Slp.r2rml4net.Storage.Mapping
         }
 
         /// <summary>
-        /// Processes the specified triple pattern.
+        /// Process the <see cref="TriplePattern"/>
         /// </summary>
-        /// <param name="triplePattern">The triple pattern.</param>
-        /// <param name="data">The data.</param>
-        /// <returns></returns>
-        protected override IGraphPattern Process(TriplePattern triplePattern, QueryContext data)
+        /// <param name="triplePattern">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IGraphPattern Transform(TriplePattern triplePattern, QueryContext data)
         {
             List<RestrictedTriplePattern> patterns = new List<RestrictedTriplePattern>();
 
@@ -70,18 +70,7 @@ namespace Slp.r2rml4net.Storage.Mapping
                 }
             }
 
-            if (patterns.Count == 0)
-            {
-                return new NotMatchingPattern(triplePattern.Variables);
-            }
-            else if (patterns.Count == 1)
-            {
-                return patterns[0];
-            }
-            else
-            {
-                return new UnionPattern(patterns);
-            }
+            return Transform(new UnionPattern(patterns), data);
         }
 
         /// <summary>

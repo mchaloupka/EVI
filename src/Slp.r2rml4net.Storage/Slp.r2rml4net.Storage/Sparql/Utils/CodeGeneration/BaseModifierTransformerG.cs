@@ -1,75 +1,29 @@
-﻿<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-// This is generated code, do not edit!!!
-<#+
-    void AddUsing(string namespaceName)
-    {
-#>
-using <#= namespaceName #>;
-<#+
-    }
+﻿// This is generated code, do not edit!!!
 
-    void GenerateClassHeader(string namespaceName, string className, string visitorName, string inheritsFromName, params Tuple<string, string>[] additionalTypeParameters)
-    {
-#>
-namespace <#= namespaceName #>
+using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
+
+namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
 {
     /// <summary>
-    /// Base generated transformer for <see cref="<#= visitorName #>" />
+    /// Base generated transformer for <see cref="IModifierVisitor" />
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     /// <typeparam name="TR">Type of the transformation result</typeparam>
-<#+
-    foreach (var typeParam in additionalTypeParameters)
+    public abstract class BaseModifierTransformerG<T, TR>
+        : IModifierVisitor
     {
-#>
-    /// <typeparam name="<#= typeParam.Item1 #>"><#= typeParam.Item2 #></typeparam>
-<#+
-    }
-#>
-    public abstract class <#= className #><T, TR<#+ foreach (var typeParam in additionalTypeParameters) { Write(", "); Write(typeParam.Item1); } #>>
-        <#+ 
-        var inheritsFrom = (new string[] { inheritsFromName, visitorName }).Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
-        if(inheritsFrom.Length > 0)
-        {
-            Write(": ");
-
-            for(int i = 0; i < inheritsFrom.Length; i++)
-            {
-                if(i > 0)
-                    Write(", ");
-
-                Write(inheritsFrom[i]);
-            }
-
-            WriteLine("");
-        }
-    #>
-    {
-<#+
-    }
-
-    void GenerateCommonMethods(string parameterType, bool includePreTransform) 
-    {
-#>
         /// <summary>
-        /// Transforms the <see cref="<#= parameterType #>" />.
+        /// Transforms the <see cref="IModifier" />.
         /// </summary>
         /// <param name="instance">The instance to tranform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public TR Transform(<#= parameterType #> instance, T data)
+        public TR Transform(IModifier instance, T data)
         {
             return (TR)instance.Accept(this, data);
         }
 
-<#+
-        if(includePreTransform)
-        {
-#>
         /// <summary>
         /// Preprocess for the transformation.
         /// </summary>
@@ -81,9 +35,6 @@ namespace <#= namespaceName #>
             return true;
         }
 
-<#+
-        }
-#>
         /// <summary>
         /// Postprocess for the transformation.
         /// </summary>
@@ -91,7 +42,7 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The postprocessed transformation result</returns>
-        protected virtual TR CommonPostTransform(TR transformed, <#= parameterType #> toTransform, T data)
+        protected virtual TR CommonPostTransform(TR transformed, IModifier toTransform, T data)
         {
             return transformed;
         }
@@ -102,21 +53,15 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(<#= parameterType #> toTransform, T data);
+        protected abstract TR CommonFallbackTransform(IModifier toTransform, T data);
 
-<#+
-    }
-
-    void GenerateMethods(string parameterType)
-    {
-#>
         /// <summary>
-        /// Visits <see cref="<#= parameterType #>" />
+        /// Visits <see cref="SelectModifier" />
         /// </summary>
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(<#= parameterType #> toVisit, object data)
+        public object Visit(SelectModifier toVisit, object data)
         {
             var tData = (T)data;
             if(PreTransform(ref toVisit, tData))
@@ -131,12 +76,12 @@ namespace <#= namespaceName #>
         }
 
         /// <summary>
-        /// Process the <see cref="<#= parameterType #>"/>
+        /// Process the <see cref="SelectModifier"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR Transform(<#= parameterType #> toTransform, T data);
+        protected abstract TR Transform(SelectModifier toTransform, T data);
 
         /// <summary>
         /// Preprocess for the transformation.
@@ -144,7 +89,7 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref <#= parameterType #> toTransform, T data)
+        protected virtual bool PreTransform(ref SelectModifier toTransform, T data)
         {
             return CommonPreTransform(ref toTransform, data);
         }
@@ -156,7 +101,7 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The postprocessed transformation result</returns>
-        protected virtual TR PostTransform(TR transformed, <#= parameterType #> toTransform, T data)
+        protected virtual TR PostTransform(TR transformed, SelectModifier toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
         }
@@ -167,19 +112,10 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(<#= parameterType #> toTransform, T data)
+        protected virtual TR FallbackTransform(SelectModifier toTransform, T data)
         {
             return CommonFallbackTransform(toTransform, data);
         }
 
-<#+
-    }
-
-    void GenerateClassFooter()
-    {
-        #>
     }
 }
-<#+
-    }
-#>

@@ -29,9 +29,8 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
-        /// <typeparam name="TI">Type of the instance</typeparam>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool CommonPreTransform<TI>(ref TI toTransform, T data) where TI : ICalculusSource
+        protected virtual bool CommonPreTransform<TI>(ref TI toTransform, T data)
         {
             return true;
         }
@@ -42,9 +41,8 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <typeparam name="TI">Type of the instance</typeparam>
         /// <returns>The postprocessed transformation result</returns>
-        protected virtual TR CommonPostTransform<TI>(TR transformed, TI toTransform, T data) where TI : ICalculusSource
+        protected virtual TR CommonPostTransform(TR transformed, ICalculusSource toTransform, T data)
         {
             return transformed;
         }
@@ -54,9 +52,8 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// </summary>
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
-        /// <typeparam name="TI">Type of the instance</typeparam>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform<TI>(TI toTransform, T data) where TI : ICalculusSource;
+        protected abstract TR CommonFallbackTransform(ICalculusSource toTransform, T data);
 
         /// <summary>
         /// Visits <see cref="CalculusModel" />

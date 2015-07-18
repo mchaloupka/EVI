@@ -23,9 +23,8 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// </summary>
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
-        /// <typeparam name="TI">Type of the instance</typeparam>
         /// <returns>The transformation result</returns>
-        protected override ICalculusSource CommonFallbackTransform<TI>(TI toTransform, T data)
+        protected override ICalculusSource CommonFallbackTransform(ICalculusSource toTransform, T data)
         {
             throw new Exception("This code should not be reached");
         }
