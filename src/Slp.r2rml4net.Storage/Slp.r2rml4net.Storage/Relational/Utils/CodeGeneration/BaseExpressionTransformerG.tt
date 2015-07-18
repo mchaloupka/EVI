@@ -10,9 +10,11 @@
     AddUsing("Slp.r2rml4net.Storage.Relational.Query.Expression");
     WriteLine("");
 
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseExpressionTransformerG", "IExpressionVisitor", "BaseConditionTransformerG<T, T1, T2>"
-        , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"ICondition\" />")
-        , new Tuple<string, string>("T2", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
+    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseExpressionTransformerG", "IExpressionVisitor", "BaseAssignmentConditionTransformerG<T, T1, T2, T3, T4>"
+        , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"IAssignmentCondition\" />")
+        , new Tuple<string, string>("T2", "Type of the transformation result when processing <see cref=\"ISourceCondition\" />")
+        , new Tuple<string, string>("T3", "Type of the transformation result when processing <see cref=\"IFilterCondition\" />")
+        , new Tuple<string, string>("T4", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
 
     GenerateMainTransformMethod("IExpression");
     GenerateCommonMethods("IExpression", false);

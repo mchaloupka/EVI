@@ -17,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
     /// The base sql query builder
     /// </summary>
     public class BaseSqlQueryBuilder
-        : BaseExpressionTransformerG<BaseSqlQueryBuilder.VisitorContext, object, object, object>, ISqlQueryBuilder
+        : BaseExpressionTransformerG<BaseSqlQueryBuilder.VisitorContext, object, object, object, object, object>, ISqlQueryBuilder
     {
         /// <summary>
         /// Generates the query.
@@ -198,7 +198,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(ICondition toTransform, VisitorContext data)
+        protected override object CommonFallbackTransform(IFilterCondition toTransform, VisitorContext data)
         {
             throw new Exception("This code should not be reached");
         }
@@ -327,6 +327,17 @@ namespace Slp.r2rml4net.Storage.Database.Base
         }
 
         /// <summary>
+        /// Fallback variant for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformation result</returns>
+        protected override object CommonFallbackTransform(ISourceCondition toTransform, VisitorContext data)
+        {
+            throw new Exception("This code should not be reached");
+        }
+
+        /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -434,6 +445,17 @@ namespace Slp.r2rml4net.Storage.Database.Base
             {
                 throw new ArgumentException("Unexpected variable", "variable");
             }
+        }
+
+        /// <summary>
+        /// Fallback variant for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformation result</returns>
+        protected override object CommonFallbackTransform(IAssignmentCondition toTransform, VisitorContext data)
+        {
+            throw new Exception("This code should not be reached");
         }
     }
 }

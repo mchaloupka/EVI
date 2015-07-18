@@ -10,10 +10,12 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     /// <typeparam name="TR">Type of the transformation result</typeparam>
-    /// <typeparam name="T1">Type of the transformation result when processing <see cref="ICondition" /></typeparam>
-    /// <typeparam name="T2">Type of the transformation result when processing <see cref="ICalculusSource" /></typeparam>
-    public abstract class BaseExpressionTransformerG<T, TR, T1, T2>
-        : BaseConditionTransformerG<T, T1, T2>, IExpressionVisitor
+    /// <typeparam name="T1">Type of the transformation result when processing <see cref="IAssignmentCondition" /></typeparam>
+    /// <typeparam name="T2">Type of the transformation result when processing <see cref="ISourceCondition" /></typeparam>
+    /// <typeparam name="T3">Type of the transformation result when processing <see cref="IFilterCondition" /></typeparam>
+    /// <typeparam name="T4">Type of the transformation result when processing <see cref="ICalculusSource" /></typeparam>
+    public abstract class BaseExpressionTransformerG<T, TR, T1, T2, T3, T4>
+        : BaseAssignmentConditionTransformerG<T, T1, T2, T3, T4>, IExpressionVisitor
     {
         /// <summary>
         /// Transforms the <see cref="IExpression" />.

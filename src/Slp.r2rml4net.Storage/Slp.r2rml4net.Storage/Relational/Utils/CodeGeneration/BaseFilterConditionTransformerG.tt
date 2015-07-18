@@ -10,16 +10,12 @@
     AddUsing("Slp.r2rml4net.Storage.Relational.Query.Condition");
     WriteLine("");
 
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseConditionTransformerG", "IConditionVisitor", "BaseSourceTransformerG<T, T1>"
+    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseFilterConditionTransformerG", "IFilterConditionVisitor", "BaseSourceTransformerG<T, T1>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
-
-    GenerateMainTransformMethod("ISourceCondition");
-
-    GenerateMainTransformMethod("IAssignmentCondition");
 
     GenerateMainTransformMethod("IFilterCondition");
 
-    GenerateCommonMethods("ICondition", false);
+    GenerateCommonMethods("IFilterCondition", false);
 
     GenerateMethods("AlwaysFalseCondition");
     GenerateMethods("AlwaysTrueCondition");
@@ -27,7 +23,6 @@
     GenerateMethods("EqualVariablesCondition");
     GenerateMethods("IsNullCondition");
     GenerateMethods("NegationCondition");
-    GenerateMethods("TupleFromSourceCondition");
 
     GenerateClassFooter();
 #>

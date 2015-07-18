@@ -6,34 +6,14 @@ using Slp.r2rml4net.Storage.Relational.Query.Condition;
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
-    /// Base generated transformer for <see cref="IConditionVisitor" />
+    /// Base generated transformer for <see cref="IFilterConditionVisitor" />
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     /// <typeparam name="TR">Type of the transformation result</typeparam>
     /// <typeparam name="T1">Type of the transformation result when processing <see cref="ICalculusSource" /></typeparam>
-    public abstract class BaseConditionTransformerG<T, TR, T1>
-        : BaseSourceTransformerG<T, T1>, IConditionVisitor
+    public abstract class BaseFilterConditionTransformerG<T, TR, T1>
+        : BaseSourceTransformerG<T, T1>, IFilterConditionVisitor
     {
-        /// <summary>
-        /// Transforms the <see cref="ISourceCondition" />.
-        /// </summary>
-        /// <param name="instance">The instance to tranform.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformed calculus source.</returns>
-        public TR Transform(ISourceCondition instance, T data)
-        {
-            return (TR)instance.Accept(this, data);
-        }
-        /// <summary>
-        /// Transforms the <see cref="IAssignmentCondition" />.
-        /// </summary>
-        /// <param name="instance">The instance to tranform.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformed calculus source.</returns>
-        public TR Transform(IAssignmentCondition instance, T data)
-        {
-            return (TR)instance.Accept(this, data);
-        }
         /// <summary>
         /// Transforms the <see cref="IFilterCondition" />.
         /// </summary>
@@ -51,7 +31,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The postprocessed transformation result</returns>
-        protected virtual TR CommonPostTransform(TR transformed, ICondition toTransform, T data)
+        protected virtual TR CommonPostTransform(TR transformed, IFilterCondition toTransform, T data)
         {
             return transformed;
         }
@@ -62,7 +42,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(ICondition toTransform, T data);
+        protected abstract TR CommonFallbackTransform(IFilterCondition toTransform, T data);
 
         /// <summary>
         /// Visits <see cref="AlwaysFalseCondition" />
@@ -432,68 +412,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
         protected virtual TR FallbackTransform(NegationCondition toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
-        }
-
-        /// <summary>
-        /// Visits <see cref="TupleFromSourceCondition" />
-        /// </summary>
-        /// <param name="toVisit">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(TupleFromSourceCondition toVisit, object data)
-        {
-            var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
-            {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, tData);
-            }
-        }
-
-        /// <summary>
-        /// Process the <see cref="TupleFromSourceCondition"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected abstract TR Transform(TupleFromSourceCondition toTransform, T data);
-
-        /// <summary>
-        /// Preprocess for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref TupleFromSourceCondition toTransform, T data)
-        {
-            return CommonPreTransform(ref toTransform, data);
-        }
-
-        /// <summary>
-        /// Postprocess for the transformation.
-        /// </summary>
-        /// <param name="transformed">The transformation result.</param>
-        /// <param name="toTransform">The transformed instance</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
-        protected virtual TR PostTransform(TR transformed, TupleFromSourceCondition toTransform, T data)
-        {
-            return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(TupleFromSourceCondition toTransform, T data)
         {
             return CommonFallbackTransform(toTransform, data);
         }

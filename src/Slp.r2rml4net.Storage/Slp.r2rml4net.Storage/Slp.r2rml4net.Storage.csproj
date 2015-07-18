@@ -121,10 +121,20 @@
     <Compile Include="Relational\Query\ValueBinder\IValueBinderVisitor.cs" />
     <Compile Include="Relational\Query\ValueBinder\TemplateProcessor.cs" />
     <Compile Include="Relational\Utils\BaseRelationalTransformer.cs" />
-    <Compile Include="Relational\Utils\CodeGeneration\BaseConditionTransformerG.cs">
+    <Compile Include="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.cs">
+      <DependentUpon>BaseFilterConditionTransformerG.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BaseConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.cs">
+      <DependentUpon>BaseAssignmentConditionTransformerG.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseSourceConditionTransformerG.tt</DependentUpon>
     </Compile>
     <Compile Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.cs">
       <AutoGen>True</AutoGen>
@@ -174,9 +184,17 @@
     <None Include="app.config" />
     <None Include="dotnetr2rmlstore.nuspec" />
     <None Include="packages.config" />
-    <None Include="Relational\Utils\CodeGeneration\BaseConditionTransformerG.tt">
+    <None Include="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BaseConditionTransformerG.cs</LastGenOutput>
+      <LastGenOutput>BaseFilterConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseAssignmentConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSourceConditionTransformerG.cs</LastGenOutput>
     </None>
     <None Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
