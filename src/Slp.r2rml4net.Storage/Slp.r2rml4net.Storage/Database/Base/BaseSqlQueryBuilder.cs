@@ -136,7 +136,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             }
             else
             {
-                var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, this);
+                var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, toTransform);
                 neededVariables.AddRange(sourceInParent.CalculusVariables);
             }
 
@@ -162,7 +162,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     }
                     else
                     {
-                        var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, this);
+                        var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, toTransform);
                         data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetVariableName(sourceInParent, neededVariables[i]));
                     }
                 }
@@ -174,7 +174,43 @@ namespace Slp.r2rml4net.Storage.Database.Base
 
             data.EnterCalculusModel(toTransform);
 
+            var sourceConditions = toTransform.SourceConditions.ToList();
 
+            if (sourceConditions.Count > 0)
+            {
+                data.StringBuilder.Append(" FROM ");
+
+                for (int i = 0; i < sourceConditions.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        data.StringBuilder.Append(',');
+                    }
+
+                    var sourceCondition = sourceConditions[i];
+
+                    Transform(sourceCondition, data);
+                    data.StringBuilder.Append(" AS ");
+                    data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
+                }
+            }
+
+            var filterConditions = toTransform.FilterConditions.ToList();
+
+            if (filterConditions.Count > 0)
+            {
+                data.StringBuilder.Append(" WHERE ");
+
+                for (int i = 0; i < filterConditions.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        data.StringBuilder.Append(" AND ");
+                    }
+
+                    Transform(filterConditions[i], data);
+                }
+            }
 
             data.LeaveCalculusModel();
             return null;
@@ -345,7 +381,8 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(TupleFromSourceCondition toTransform, VisitorContext data)
         {
-            throw new Exception("This code should not be reached");
+            Transform(toTransform.Source, data);
+            return null;
         }
 
         /// <summary>
@@ -429,9 +466,9 @@ namespace Slp.r2rml4net.Storage.Database.Base
         {
             var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
 
-            if (variableSource is ISourceCondition)
+            if (variableSource is TupleFromSourceCondition)
             {
-                var sourceCondition = (ISourceCondition) variableSource;
+                var sourceCondition = (TupleFromSourceCondition)variableSource;
 
                 stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                 stringBuilder.Append('.');
@@ -443,7 +480,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             }
             else
             {
-                throw new ArgumentException("Unexpected variable", "variable");
+                throw new ArgumentException("Unexpected variable source", "variable");
             }
         }
 
