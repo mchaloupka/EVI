@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Utils;
+﻿using Slp.r2rml4net.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Condition
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
 {
     /// <summary>
     /// Visitor for conditions

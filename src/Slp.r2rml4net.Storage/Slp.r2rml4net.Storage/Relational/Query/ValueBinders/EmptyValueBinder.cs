@@ -4,7 +4,7 @@ using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
+namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// The empty value binder

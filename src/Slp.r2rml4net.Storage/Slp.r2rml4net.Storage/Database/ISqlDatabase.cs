@@ -1,7 +1,6 @@
 ﻿using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Source;
 
 namespace Slp.r2rml4net.Storage.Database
 {

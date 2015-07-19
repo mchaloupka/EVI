@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinder;
+using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 using Slp.r2rml4net.Storage.Utils;
 using VDS.RDF;
 

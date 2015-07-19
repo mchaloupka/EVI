@@ -7,7 +7,7 @@ using Slp.r2rml4net.Storage.Query;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
+namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// Representation of the base value binder

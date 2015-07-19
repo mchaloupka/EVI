@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinder;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 using VDS.RDF;
 
 namespace Slp.r2rml4net.Storage.Relational.Builder

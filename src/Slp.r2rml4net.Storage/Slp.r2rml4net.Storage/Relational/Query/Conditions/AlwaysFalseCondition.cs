@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Condition
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
 {
     /// <summary>
     /// The always false condition

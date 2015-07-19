@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
-using Slp.r2rml4net.Storage.Relational.Query.Source;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using VDS.RDF.Parsing;
 
 namespace Slp.r2rml4net.Storage.Query

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
-using Slp.r2rml4net.Storage.Relational.Query.Expression;
-using Slp.r2rml4net.Storage.Relational.Query.Source;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Expressions;
+using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
 
 namespace Slp.r2rml4net.Storage.Database.Base

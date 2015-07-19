@@ -1,7 +1,7 @@
 ﻿// This is generated code, do not edit!!!
 
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {

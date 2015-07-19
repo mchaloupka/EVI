@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DatabaseSchemaReader.DataSchema;
+﻿using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Source
+namespace Slp.r2rml4net.Storage.Relational.Query.Sources
 {
     /// <summary>
     /// The SQL column

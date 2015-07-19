@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinder
+namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// Template processor

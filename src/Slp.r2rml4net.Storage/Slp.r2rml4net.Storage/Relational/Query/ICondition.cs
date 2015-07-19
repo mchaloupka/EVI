@@ -1,4 +1,4 @@
-﻿using Slp.r2rml4net.Storage.Relational.Query.Condition;
+﻿using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 using Slp.r2rml4net.Storage.Utils;
 
 namespace Slp.r2rml4net.Storage.Relational.Query

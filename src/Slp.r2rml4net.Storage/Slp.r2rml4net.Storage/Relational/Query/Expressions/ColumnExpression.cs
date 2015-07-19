@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
 using Slp.r2rml4net.Storage.Query;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Expression
+namespace Slp.r2rml4net.Storage.Relational.Query.Expressions
 {
     /// <summary>
     /// Column expression

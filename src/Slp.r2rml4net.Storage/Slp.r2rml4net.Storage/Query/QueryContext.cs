@@ -5,8 +5,6 @@ using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Condition;
-using Slp.r2rml4net.Storage.Relational.Query.Source;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF;
 using VDS.RDF.Query;
