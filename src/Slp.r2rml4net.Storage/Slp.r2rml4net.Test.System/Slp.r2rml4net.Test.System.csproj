@@ -1660,7 +1660,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf01.ttl">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Datasets\simple.xml">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\readme.txt" />
