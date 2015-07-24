@@ -57,6 +57,22 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
         object Visit(AlwaysTrueCondition alwaysTrueCondition, object data);
 
         /// <summary>
+        /// Visits <see cref="ConjunctionCondition"/>
+        /// </summary>
+        /// <param name="conjunctionCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(ConjunctionCondition conjunctionCondition, object data);
+
+        /// <summary>
+        /// Visits <see cref="DisjunctionCondition"/>
+        /// </summary>
+        /// <param name="disjunctionCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(DisjunctionCondition disjunctionCondition, object data);
+
+        /// <summary>
         /// Visits <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="equalExpressionCondition">The visited instance</param>

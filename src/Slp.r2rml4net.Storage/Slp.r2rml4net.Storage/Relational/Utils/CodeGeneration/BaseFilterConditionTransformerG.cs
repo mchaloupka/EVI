@@ -169,6 +169,130 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Visits <see cref="ConjunctionCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ConjunctionCondition toVisit, object data)
+        {
+            var tData = (T)data;
+            if(PreTransform(ref toVisit, tData))
+            {
+                var transformed = Transform(toVisit, tData);
+                return PostTransform(transformed, toVisit, tData);
+            }
+            else
+            {
+                return FallbackTransform(toVisit, tData);
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="ConjunctionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(ConjunctionCondition toTransform, T data);
+
+        /// <summary>
+        /// Preprocess for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool PreTransform(ref ConjunctionCondition toTransform, T data)
+        {
+            return CommonPreTransform(ref toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, ConjunctionCondition toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Fallback variant for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformation result</returns>
+        protected virtual TR FallbackTransform(ConjunctionCondition toTransform, T data)
+        {
+            return CommonFallbackTransform(toTransform, data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="DisjunctionCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(DisjunctionCondition toVisit, object data)
+        {
+            var tData = (T)data;
+            if(PreTransform(ref toVisit, tData))
+            {
+                var transformed = Transform(toVisit, tData);
+                return PostTransform(transformed, toVisit, tData);
+            }
+            else
+            {
+                return FallbackTransform(toVisit, tData);
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="DisjunctionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(DisjunctionCondition toTransform, T data);
+
+        /// <summary>
+        /// Preprocess for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool PreTransform(ref DisjunctionCondition toTransform, T data)
+        {
+            return CommonPreTransform(ref toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, DisjunctionCondition toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Fallback variant for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformation result</returns>
+        protected virtual TR FallbackTransform(DisjunctionCondition toTransform, T data)
+        {
+            return CommonFallbackTransform(toTransform, data);
+        }
+
+        /// <summary>
         /// Visits <see cref="EqualExpressionCondition" />
         /// </summary>
         /// <param name="toVisit">The visited instance</param>

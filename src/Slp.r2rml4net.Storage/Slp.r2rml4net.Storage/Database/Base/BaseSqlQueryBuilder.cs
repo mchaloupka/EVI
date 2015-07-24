@@ -264,6 +264,58 @@ namespace Slp.r2rml4net.Storage.Database.Base
         }
 
         /// <summary>
+        /// Process the <see cref="ConjunctionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(ConjunctionCondition toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("(");
+
+            var innerConditions = toTransform.InnerConditions.ToList();
+
+            for (int i = 0; i < innerConditions.Count; i++)
+            {
+                if (i > 0)
+                {
+                    data.StringBuilder.Append(" AND ");
+                }
+
+                Transform(innerConditions[i], data);
+            }
+
+            data.StringBuilder.Append(")");
+            return null;
+        }
+
+        /// <summary>
+        /// Process the <see cref="DisjunctionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(DisjunctionCondition toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("(");
+
+            var innerConditions = toTransform.InnerConditions.ToList();
+
+            for (int i = 0; i < innerConditions.Count; i++)
+            {
+                if (i > 0)
+                {
+                    data.StringBuilder.Append(" OR ");
+                }
+
+                Transform(innerConditions[i], data);
+            }
+
+            data.StringBuilder.Append(")");
+            return null;
+        }
+
+        /// <summary>
         /// Process the <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

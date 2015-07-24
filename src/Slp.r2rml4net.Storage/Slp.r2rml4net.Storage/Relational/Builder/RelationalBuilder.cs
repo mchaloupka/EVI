@@ -127,7 +127,40 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(JoinPattern joinPattern, object data)
         {
-            throw new NotImplementedException();
+            var relationalQueries = joinPattern.JoinedGraphPatterns.Select(x => x.Accept(this, data)).Cast<RelationalQuery>().ToList();
+
+            Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
+            List<ICondition> conditions = new List<ICondition>();
+
+            foreach (var relationalQuery in relationalQueries)
+            {
+                var model = relationalQuery.Model;
+
+                conditions.AddRange(model.AssignmentConditions);
+                conditions.AddRange(model.FilterConditions);
+                conditions.AddRange(model.SourceConditions);
+
+                foreach (var valueBinder in relationalQuery.ValueBinders)
+                {
+                    if (valueBinders.ContainsKey(valueBinder.VariableName))
+                    {
+                        var otherValueBinder = valueBinders[valueBinder.VariableName];
+                        conditions.AddRange(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (QueryContext) data));
+
+                        valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
+                    }
+                    else
+                    {
+                        valueBinders.Add(valueBinder.VariableName, valueBinder);
+                    }
+                }
+            }
+
+            var finalValueBinders = valueBinders.Values.ToList();
+            var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct();
+            var calculusModel = new CalculusModel(neededVariables, conditions);
+            
+            return new RelationalQuery(calculusModel, finalValueBinders);
         }
 
         /// <summary>
@@ -232,25 +265,19 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             var inner = Process(selectModifier.InnerQuery, (QueryContext) data);
 
             var requestedVariables = selectModifier.Variables.ToList();
-            var providedVariables = inner.ValueBinders.Select(x => x.VariableName).ToList();
 
-            var neededToAdd = requestedVariables.Where(x => !providedVariables.Contains(x)).ToList();
-            var neededToRemove = providedVariables.Where(x => !requestedVariables.Contains(x)).ToList();
+            Dictionary<string, IValueBinder> providedValueBinders = inner.ValueBinders.ToDictionary(valueBinder => valueBinder.VariableName);
 
-            if ((neededToAdd.Count == 0) && (neededToRemove.Count == 0))
+            var valueBinders = new List<IValueBinder>();
+
+            foreach (var variable in selectModifier.Variables)
             {
-                return inner;
+                valueBinders.Add(providedValueBinders.ContainsKey(variable)
+                    ? providedValueBinders[variable]
+                    : new EmptyValueBinder(variable));
             }
-            else
-            {
-                var valueBinders = new List<IValueBinder>(inner.ValueBinders
-                    .Where(x => requestedVariables.Contains(x.VariableName)));
 
-                valueBinders.AddRange(
-                    neededToAdd.Select(addName => new EmptyValueBinder(addName)).Cast<IValueBinder>());
-
-                return new RelationalQuery(inner.Model, valueBinders);
-            }
+            return new RelationalQuery(inner.Model, valueBinders);
         }
         #endregion
 
@@ -365,7 +392,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source);
-            var notNullCondition = _conditionBuilder.CreateIsNotNullConditions(valueBinder, context);
+            var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
             conditions.AddRange(notNullCondition);
             
             var condition = _conditionBuilder.CreateEqualsConditions(node, valueBinder, context);
@@ -385,7 +412,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         {
             var valueBinder = new BaseValueBinder(variableName, termMap, source);
 
-            var notNullCondition = _conditionBuilder.CreateIsNotNullConditions(valueBinder, context);
+            var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
             conditions.AddRange(notNullCondition);
 
             var sameVariableValueBinder = valueBinders.FirstOrDefault(x => x.VariableName == variableName);

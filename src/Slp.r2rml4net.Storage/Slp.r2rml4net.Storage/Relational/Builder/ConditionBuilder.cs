@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
@@ -62,7 +63,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// </summary>
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
-        public IEnumerable<IFilterCondition> CreateIsNotNullConditions(IValueBinder valueBinder, QueryContext context)
+        public IEnumerable<IFilterCondition> CreateIsBoundConditions(IValueBinder valueBinder, QueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -87,6 +88,42 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         }
 
         /// <summary>
+        /// Creates the disjunction of the conditions
+        /// </summary>
+        /// <param name="context">The query context</param>
+        /// <param name="conditions">The conditions, conjunction of every array member taken as the disjunction parameter</param>
+        /// <returns></returns>
+        public IEnumerable<IFilterCondition> CreateDisjunctionConditions(QueryContext context,
+            params IEnumerable<IFilterCondition>[] conditions)
+        {
+            yield return new DisjunctionCondition(conditions.Select(x => CreateConjunctionCondition(x, context)));
+        }
+
+        /// <summary>
+        /// Creates the conjunction of the conditions.
+        /// </summary>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="context">The query context.</param>
+        /// <returns></returns>
+        public IFilterCondition CreateConjunctionCondition(IEnumerable<IFilterCondition> conditions,
+            QueryContext context)
+        {
+            return new ConjunctionCondition(conditions);
+        }
+
+        /// <summary>
+        /// Create negation conditions
+        /// </summary>
+        /// <param name="conditions">The conditions</param>
+        /// <param name="context">The query context.</param>
+        /// <returns>The negation of the conditions.</returns>
+        public IEnumerable<IFilterCondition> CreateNegationConditions(IEnumerable<IFilterCondition> conditions,
+            QueryContext context)
+        {
+            return conditions.Select(x => new NegationCondition(x));
+        }
+
+        /// <summary>
         /// Creates the equals conditions.
         /// </summary>
         /// <param name="firstValueBinder">The first value binder.</param>
@@ -96,7 +133,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         {
             if (firstValueBinder is EmptyValueBinder)
             {
-                foreach (var condition in CreateIsNotNullConditions(secondValueBinder, context).Select(x => new NegationCondition(x)))
+                foreach (var condition in CreateIsBoundConditions(secondValueBinder, context).Select(x => new NegationCondition(x)))
                 {
                     yield return condition;
                 }
@@ -107,6 +144,20 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
                 var rightOperand = _expressionBuilder.CreateExpression(context, secondValueBinder);
                 yield return new EqualExpressionCondition(leftOperand, rightOperand);
             }
+        }
+
+        /// <summary>
+        /// Creates the join equal condition
+        /// </summary>
+        /// <param name="valueBinder">First value binder</param>
+        /// <param name="otherValueBinder">Other value binder</param>
+        /// <param name="context">The query context</param>
+        public IEnumerable<IFilterCondition> CreateJoinEqualCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, QueryContext context)
+        {
+            return CreateDisjunctionConditions(context,
+                CreateNegationConditions(CreateIsBoundConditions(valueBinder, context), context),
+                CreateNegationConditions(CreateIsBoundConditions(otherValueBinder, context), context),
+                CreateEqualsConditions(valueBinder, otherValueBinder, context));
         }
     }
 }

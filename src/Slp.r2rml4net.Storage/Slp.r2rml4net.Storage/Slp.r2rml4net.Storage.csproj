@@ -91,10 +91,13 @@
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
     <Compile Include="Relational\Query\Conditions\AlwaysFalseCondition.cs" />
     <Compile Include="Relational\Query\Conditions\AlwaysTrueCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\ConjunctionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\DisjunctionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\EqualExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\IConditionVisitor.cs" />
     <Compile Include="Relational\Query\Conditions\IsNullCondition.cs" />

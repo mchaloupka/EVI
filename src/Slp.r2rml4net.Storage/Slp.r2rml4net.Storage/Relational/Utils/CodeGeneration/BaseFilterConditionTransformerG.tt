@@ -7,7 +7,7 @@
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 <#
     AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Condition");
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Conditions");
     WriteLine("");
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseFilterConditionTransformerG", "IFilterConditionVisitor", "BaseSourceTransformerG<T, T1>"
@@ -19,6 +19,8 @@
 
     GenerateMethods("AlwaysFalseCondition");
     GenerateMethods("AlwaysTrueCondition");
+    GenerateMethods("ConjunctionCondition");
+    GenerateMethods("DisjunctionCondition");
     GenerateMethods("EqualExpressionCondition");
     GenerateMethods("EqualVariablesCondition");
     GenerateMethods("IsNullCondition");
