@@ -35,7 +35,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        protected abstract R2RmlStorage GetStorage(string storageName);
+        protected abstract R2RMLStorage GetStorage(string storageName);
 
         private XDocument GetExpected(string resultFile)
         {

@@ -22,7 +22,7 @@ namespace Slp.r2rml4net.Storage.Mapping
         public MappingProcessor(IR2RML mapping)
         {
             Mapping = mapping;
-            Cache = new R2RmlCache();
+            Cache = new R2RMLCache();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// Gets the R2RML cache.
         /// </summary>
         /// <value>The R2RML cache.</value>
-        public R2RmlCache Cache { get; private set; }
+        public R2RMLCache Cache { get; private set; }
 
         /// <summary>
         /// Processes the SPARQL algebra.

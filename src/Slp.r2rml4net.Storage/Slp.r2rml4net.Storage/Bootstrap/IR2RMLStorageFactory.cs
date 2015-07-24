@@ -13,7 +13,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
     /// <summary>
     /// Factory for R2RML storage
     /// </summary>
-    public interface IR2RmlStorageFactory
+    public interface IR2RMLStorageFactory
     {
         /// <summary>
         /// Creates the query processor.

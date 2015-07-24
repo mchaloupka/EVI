@@ -15,12 +15,12 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
     [TestClass]
     public class MSSQLDb : TestSuite
     {
-        private static Dictionary<string, R2RmlStorage> _storages;
+        private static Dictionary<string, R2RMLStorage> _storages;
 
         [ClassInitialize]
         public static void TestSuiteInitialization(TestContext context)
         {
-            _storages = new Dictionary<string, R2RmlStorage>();
+            _storages = new Dictionary<string, R2RMLStorage>();
 
             foreach (var dataset in StorageNames)
             {
@@ -35,12 +35,12 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
             return (new DefaultSqlDbFactory()).CreateSqlDb(connectionString);
         }
 
-        private static IR2RmlStorageFactory GetStorageFactory()
+        private static IR2RMLStorageFactory GetStorageFactory()
         {
             return new DefaultIr2RmlStorageFactory();
         }
 
-        protected override R2RmlStorage GetStorage(string storageName)
+        protected override R2RMLStorage GetStorage(string storageName)
         {
             return _storages[storageName];
         }

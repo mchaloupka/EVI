@@ -22,7 +22,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL
             return path;
         }
 
-        protected static R2RmlStorage InitializeDataset(string dataset, ISqlDb sqlDb, IR2RmlStorageFactory storageFactory)
+        protected static R2RMLStorage InitializeDataset(string dataset, ISqlDb sqlDb, IR2RMLStorageFactory storageFactory)
         {
             var datasetFile = GetPath(@"Data\Datasets\" + dataset);
 
@@ -45,7 +45,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new R2RmlStorage(sqlDb, mapping, storageFactory);
+            return new R2RMLStorage(sqlDb, mapping, storageFactory);
         }
 
         private static void ExecuteQuery(ISqlDb sqlDb, XElement query)
