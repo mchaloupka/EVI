@@ -88,6 +88,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf02.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf02.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\rdf01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
