@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.r2rml4net.Storage", "Slp.r2rml4net.Storage\Slp.r2rml4net.Storage.csproj", "{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.r2rml4net.Console", "Slp.r2rml4net.Console\Slp.r2rml4net.Console.csproj", "{E3F1AF92-5A15-4EF2-8913-1F918D0113CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.r2rml4net.Test.Unit", "Slp.r2rml4net.Test.Unit\Slp.r2rml4net.Test.Unit.csproj", "{FF512691-CF73-42EE-80E1-382F692FEB00}"
 EndProject
@@ -21,10 +19,6 @@ Global
 		{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3F1AF92-5A15-4EF2-8913-1F918D0113CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3F1AF92-5A15-4EF2-8913-1F918D0113CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3F1AF92-5A15-4EF2-8913-1F918D0113CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3F1AF92-5A15-4EF2-8913-1F918D0113CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF512691-CF73-42EE-80E1-382F692FEB00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF512691-CF73-42EE-80E1-382F692FEB00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF512691-CF73-42EE-80E1-382F692FEB00}.Release|Any CPU.ActiveCfg = Release|Any CPU
