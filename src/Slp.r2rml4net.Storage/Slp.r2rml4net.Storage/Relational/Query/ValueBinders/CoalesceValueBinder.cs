@@ -41,7 +41,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the name of the variable.
         /// </summary>
         /// <value>The name of the variable.</value>
-        public string VariableName { get; }
+        public string VariableName { get; private set; }
 
         /// <summary>
         /// Accepts the specified visitor.
