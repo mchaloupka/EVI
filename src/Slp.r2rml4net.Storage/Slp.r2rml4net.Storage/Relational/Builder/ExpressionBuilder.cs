@@ -124,7 +124,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
                 }
                 else
                 {
-                    return new ConcatenationExpression(parts, context);
+                    return new ConcatenationExpression(parts, context.Db.SqlTypeForString);
                 }
             }
             else

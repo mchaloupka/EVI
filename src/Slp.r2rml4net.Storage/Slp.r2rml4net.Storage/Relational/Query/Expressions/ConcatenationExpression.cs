@@ -20,11 +20,11 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expressions
         /// Initializes a new instance of the <see cref="ConcatenationExpression"/> class.
         /// </summary>
         /// <param name="innerExpressions">The inner expressions.</param>
-        /// <param name="context">The context.</param>
-        public ConcatenationExpression(List<IExpression> innerExpressions, QueryContext context)
+        /// <param name="sqlTypeForString">The SQL type for string.</param>
+        public ConcatenationExpression(List<IExpression> innerExpressions, DataType sqlTypeForString)
         {
             _expressions = innerExpressions;
-            SqlType = context.Db.SqlTypeForString;
+            SqlType = sqlTypeForString;
         }
 
         /// <summary>

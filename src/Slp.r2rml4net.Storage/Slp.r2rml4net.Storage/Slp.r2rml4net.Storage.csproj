@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Slp.r2rml4net.Storage.XML</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -91,6 +93,7 @@
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="Relational\Optimization\IRelationalOptimizer.cs" />
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
@@ -222,6 +225,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
