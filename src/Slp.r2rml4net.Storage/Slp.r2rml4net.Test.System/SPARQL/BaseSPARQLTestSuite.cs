@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.r2rml4net.Storage;
+using Slp.r2rml4net.Storage.Bootstrap;
+using Slp.r2rml4net.Storage.Database;
+using TCode.r2rml4net.Mapping.Fluent;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -11,6 +16,91 @@ namespace Slp.r2rml4net.Test.System.SPARQL
 {
     public abstract class BaseSPARQLTestSuite
     {
+        protected static string GetPath(string dataFile)
+        {
+            var path = string.Format(".\\SPARQL\\SPARQL_TestSuite\\{0}", dataFile);
+            return path;
+        }
+
+        protected static R2RMLStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IR2RMLStorageFactory storageFactory)
+        {
+            var datasetFile = GetPath(@"Data\Datasets\" + dataset);
+
+            var doc = XDocument.Load(datasetFile);
+            var sqlCommands = doc.Root
+                .Elements()
+                .Where(x => x.Name == "sql")
+                .Single()
+                .Elements();
+
+            foreach (var command in sqlCommands)
+            {
+                if (command.Name == "table")
+                    CreateTable(sqlDb, command);
+                else if (command.Name == "query")
+                    ExecuteQuery(sqlDb, command);
+                else
+                    throw new Exception(String.Format("Unknown sql command {1} when creating dataset {0}", dataset, command.Name));
+            }
+
+            var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
+            var mapping = R2RMLLoader.Load(mappingString);
+            return new R2RMLStorage(sqlDb, mapping, storageFactory);
+        }
+
+        private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)
+        {
+            sqlDb.ExecuteQuery(query.Value);
+        }
+
+        private static void CreateTable(ISqlDatabase sqlDb, XElement table)
+        {
+            var tableName = table.Attribute("name").Value;
+            sqlDb.ExecuteQuery(String.Format("IF OBJECT_ID(\'{0}\', 'U') IS NOT NULL DROP TABLE {0}", tableName));
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("CREATE TABLE ");
+            sb.Append(tableName);
+            sb.Append(" (");
+
+            bool first = true;
+
+            foreach (var tablePart in table.Elements())
+            {
+                if (!first)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    first = false;
+                }
+
+                if (tablePart.Name == "column")
+                {
+                    sb.Append(tablePart.Attribute("name").Value);
+                    sb.Append(' ');
+                    sb.Append(tablePart.Attribute("type").Value);
+                    sb.Append(' ');
+
+                    if (tablePart.Attribute("nullable").Value == "true")
+                    {
+                        sb.Append("NULL");
+                    }
+                    else
+                    {
+                        sb.Append("NOT NULL");
+                    }
+                }
+                else
+                    throw new Exception(String.Format("Unknown table part {1} when creating table {0}", tableName, tablePart.Name));
+            }
+
+            sb.Append(")");
+
+            sqlDb.ExecuteQuery(sb.ToString());
+        }
+
         protected void AssertBagEqual(XDocument expected, object result)
         {
             var expectedSet = ParseSparqlResultSetXmlResultFile(expected);

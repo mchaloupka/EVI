@@ -7,12 +7,12 @@ namespace Slp.r2rml4net.Storage.Mapping
     /// <summary>
     /// Cache for R2RML
     /// </summary>
-    public class R2RmlCache
+    public class R2RMLCache
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="R2RmlCache"/> class.
+        /// Initializes a new instance of the <see cref="R2RMLCache"/> class.
         /// </summary>
-        public R2RmlCache()
+        public R2RMLCache()
         {
             _sqlStatementCache = new CacheDictionary<ITriplesMap,string>(x => x.SqlQuery);
             _sqlTableCache = new CacheDictionary<ITriplesMap, string>(x => x.TableName);

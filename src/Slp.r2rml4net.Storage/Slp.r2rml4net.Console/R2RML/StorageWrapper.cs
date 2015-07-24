@@ -14,9 +14,9 @@ namespace Slp.r2rml4net.Console.R2RML
 {
     public class StorageWrapper
     {
-        private static R2RmlStorage _storage = null;
+        private static R2RMLStorage _storage = null;
 
-        public static R2RmlStorage Storage { get { return _storage; } }
+        public static R2RMLStorage Storage { get { return _storage; } }
 
         public static void AppStart()
         {
@@ -36,7 +36,7 @@ namespace Slp.r2rml4net.Console.R2RML
                     mapping = R2RMLLoader.Load(fs);
                 }
 
-                _storage = new R2RmlStorage((new MsSqlDbFactory()).CreateSqlDb(connectionString), mapping, new DefaultIr2RmlStorageFactory());
+                _storage = new R2RMLStorage((new MsSqlDbFactory()).CreateSqlDb(connectionString), mapping, new DefaultR2RMLlStorageFactory());
             }
             catch (Exception e)
             {

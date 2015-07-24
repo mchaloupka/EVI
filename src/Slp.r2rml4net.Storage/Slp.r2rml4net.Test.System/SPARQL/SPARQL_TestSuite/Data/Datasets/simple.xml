@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<storage>
+  <sql>
+    <table name="simple_table">
+      <column name="subject" type="nvarchar(max)" nullable="true" />
+      <column name="predicate" type="nvarchar(max)" nullable="true" />
+      <column name="object" type="nvarchar(max)" nullable="true" />
+    </table>
+    <query>INSERT INTO simple_table VALUES('a','b','c')</query>
+    <query>INSERT INTO simple_table VALUES('b','c','a')</query>
+    <query>INSERT INTO simple_table VALUES('c','b','a')</query>
+  </sql>
+  <mapping>
+<![CDATA[
+    @base <http://example.com/base/> .
+    @prefix rr: <http://www.w3.org/ns/r2rml#> .
+
+    @prefix ex: <http://example.org/ns#> .
+
+    <#Triples> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "simple_table" ];
+      rr:subjectMap [
+        rr:template "http://example.org/ns#{subject}";
+      ];
+      rr:predicateObjectMap [
+        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:objectMap [ rr:template "http://example.org/ns#{object}"; ];
+      ];
+    .
+]]>
+  </mapping>
+</storage>
