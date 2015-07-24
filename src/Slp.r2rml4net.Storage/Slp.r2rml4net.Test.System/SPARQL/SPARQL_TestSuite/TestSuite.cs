@@ -47,7 +47,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 
             TestContext.WriteLine("Create storage: {0}", DateTime.Now.ToLongTimeString());
 
-            var storage = new R2RmlStorage(sqlDb, mapping, GetStorageFactory());
+            var storage = new R2RMLStorage(sqlDb, mapping, GetStorageFactory());
 
             TestContext.WriteLine("Create query: {0}", DateTime.Now.ToLongTimeString());
 
@@ -87,7 +87,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             return query;
         }
 
-        protected abstract IR2RmlStorageFactory GetStorageFactory();
+        protected abstract IR2RMLStorageFactory GetStorageFactory();
 
         protected abstract ISqlDb GetSqlDb();
 

@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage
     /// <summary>
     /// The R2RML Storage
     /// </summary>
-    public class R2RmlStorage : IQueryableStorage
+    public class R2RMLStorage : IQueryableStorage
     {
         /// <summary>
         /// The query processor
@@ -23,12 +23,12 @@ namespace Slp.r2rml4net.Storage
         private readonly QueryProcessor _queryProcessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="R2RmlStorage" /> class.
+        /// Initializes a new instance of the <see cref="R2RMLStorage" /> class.
         /// </summary>
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public R2RmlStorage(ISqlDb db, IR2RML mapping, IR2RmlStorageFactory factory)
+        public R2RMLStorage(ISqlDb db, IR2RML mapping, IR2RMLStorageFactory factory)
         {
             _queryProcessor = factory.CreateQueryProcessor(db, mapping);
         }

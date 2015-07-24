@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
     /// <summary>
     /// Class DefaultR2RMLStorageFactory.
     /// </summary>
-    public class DefaultIr2RmlStorageFactory : IR2RmlStorageFactory
+    public class DefaultIr2RmlStorageFactory : IR2RMLStorageFactory
     {
         /// <summary>
         /// Creates the query processor.

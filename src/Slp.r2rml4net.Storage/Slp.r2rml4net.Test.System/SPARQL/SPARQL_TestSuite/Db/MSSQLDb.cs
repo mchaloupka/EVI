@@ -8,7 +8,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
     [TestClass]
     public class MSSQLDb : TestSuite
     {
-        protected override IR2RmlStorageFactory GetStorageFactory()
+        protected override IR2RMLStorageFactory GetStorageFactory()
         {
             return new DefaultIr2RmlStorageFactory();
         }
