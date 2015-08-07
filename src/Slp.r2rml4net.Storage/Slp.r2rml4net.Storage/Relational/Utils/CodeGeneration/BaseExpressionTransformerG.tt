@@ -7,7 +7,7 @@
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 <#
     AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Expression");
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Expressions");
     WriteLine("");
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseExpressionTransformerG", "IExpressionVisitor", "BaseAssignmentConditionTransformerG<T, T1, T2, T3, T4>"

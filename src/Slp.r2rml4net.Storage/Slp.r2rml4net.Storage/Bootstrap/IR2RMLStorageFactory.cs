@@ -1,8 +1,10 @@
-﻿using Slp.r2rml4net.Storage.Database;
+﻿using System.Collections.Generic;
+using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Builder;
+using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using TCode.r2rml4net;
@@ -49,5 +51,10 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// </summary>
         /// <returns>RelationalBuilder.</returns>
         RelationalBuilder CreateRelationalBuilder();
+
+        /// <summary>
+        /// Gets the relational optimizers.
+        /// </summary>
+        IEnumerable<IRelationalOptimizer> GetRelationalOptimizers();
     }
 }

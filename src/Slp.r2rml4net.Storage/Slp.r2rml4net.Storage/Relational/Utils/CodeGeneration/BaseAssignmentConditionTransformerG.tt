@@ -7,7 +7,7 @@
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 <#
     AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Condition");
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Conditions");
     WriteLine("");
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseAssignmentConditionTransformerG", "IAssignmentConditionVisitor", "BaseSourceConditionTransformerG<T, T1, T2, T3>"

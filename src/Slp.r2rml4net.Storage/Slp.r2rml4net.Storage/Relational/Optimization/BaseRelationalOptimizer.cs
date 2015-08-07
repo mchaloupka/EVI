@@ -7,17 +7,44 @@ using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Storage.Relational.Utils;
+using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
 
 namespace Slp.r2rml4net.Storage.Relational.Optimization
 {
     /// <summary>
     /// The base class for relational optimizers
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class BaseRelationalOptimizer<T>
+    /// <typeparam name="T">Type of parameter passed to process</typeparam>
+    public abstract class BaseRelationalOptimizer<T>
         : BaseRelationalTransformer<BaseRelationalOptimizer<T>.OptimizationContext>,
         IRelationalOptimizer
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseRelationalOptimizer{T}"/> class.
+        /// </summary>
+        /// <param name="optimizerImplementation">The optimizer implementation.</param>
+        protected BaseRelationalOptimizer(BaseRelationalOptimizerImplementation<T> optimizerImplementation)
+        {
+            _optimizerImplementation = optimizerImplementation;
+        } 
+
+        /// <summary>
+        /// The optimizer implementation
+        /// </summary>
+        private BaseRelationalOptimizerImplementation<T> _optimizerImplementation;
+
+        /// <summary>
+        /// Gets the optimizer implementation.
+        /// </summary>
+        /// <value>The optimizer implementation.</value>
+        protected BaseRelationalOptimizerImplementation<T> OptimizerImplementation
+        {
+            get
+            {
+                return _optimizerImplementation;
+            }
+        }
+
         /// <summary>
         /// The optimization context
         /// </summary>
@@ -63,6 +90,69 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization
         protected virtual T CreateInitialData()
         {
             return default(T);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected override IAssignmentCondition CommonPostTransform(IAssignmentCondition transformed, IAssignmentCondition toTransform,
+            OptimizationContext data)
+        {
+            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected override IExpression CommonPostTransform(IExpression transformed, IExpression toTransform, OptimizationContext data)
+        {
+            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected override ISourceCondition CommonPostTransform(ISourceCondition transformed, ISourceCondition toTransform,
+            OptimizationContext data)
+        {
+            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected override ICalculusSource CommonPostTransform(ICalculusSource transformed, ICalculusSource toTransform, OptimizationContext data)
+        {
+            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+        }
+
+        /// <summary>
+        /// Postprocess for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The postprocessed transformation result</returns>
+        protected override IFilterCondition CommonPostTransform(IFilterCondition transformed, IFilterCondition toTransform,
+            OptimizationContext data)
+        {
+            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.DBSchema;
@@ -32,7 +33,15 @@ namespace Slp.r2rml4net.Storage.Query
         /// </summary>
         private readonly HashSet<string> _usedVariables;
 
+        /// <summary>
+        /// The query naming helpers
+        /// </summary>
         private readonly QueryNamingHelpers _queryNamingHelpers;
+
+        /// <summary>
+        /// The optimizers
+        /// </summary>
+        private readonly Optimizers _optimizers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext" /> class.
@@ -42,7 +51,8 @@ namespace Slp.r2rml4net.Storage.Query
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
-        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
+        /// <param name="factory">The storage factory</param>
+        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IR2RMLStorageFactory factory)
         {
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();
@@ -54,6 +64,7 @@ namespace Slp.r2rml4net.Storage.Query
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             _queryNamingHelpers = new QueryNamingHelpers(this);
+            _optimizers = new Optimizers(factory, this);
         }
 
         /// <summary>
@@ -135,30 +146,6 @@ namespace Slp.r2rml4net.Storage.Query
             }
 
             return _blankNodesObjects[sVal];
-        }
-
-        /// <summary>
-        /// Optimizes the algebra on the fly.
-        /// </summary>
-        /// <param name="algebra">The algebra.</param>
-        /// <returns>The optimized algebra.</returns>
-        public RelationalQuery OptimizeOnTheFly(RelationalQuery algebra)
-        {
-            var currentAlgebra = algebra;
-
-            return currentAlgebra;
-        }
-
-        /// <summary>
-        /// Optimizes the algebra on the fly.
-        /// </summary>
-        /// <param name="algebra">The SPARQL query.</param>
-        /// <returns>The optimized SPARQL query.</returns>
-        public ISparqlQuery OptimizeOnTheFly(ISparqlQuery algebra)
-        {
-            var currentAlgebra = algebra;
-
-            return currentAlgebra;
         }
 
         /// <summary>

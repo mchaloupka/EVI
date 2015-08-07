@@ -7,7 +7,7 @@
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 <#
     AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Source");
+    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Sources");
     WriteLine("");
 
     GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseSourceTransformerG", "ICalculusSourceVisitor", null);

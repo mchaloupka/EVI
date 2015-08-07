@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Slp.r2rml4net.Storage</RootNamespace>
     <AssemblyName>Slp.r2rml4net.Storage</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,11 +91,18 @@
     <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Mapping\Utils\FixesExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Optimizers.cs" />
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Optimization\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
+    </Compile>
     <Compile Include="Relational\Optimization\IRelationalOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
@@ -226,7 +234,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,8 +1,11 @@
-﻿using Slp.r2rml4net.Storage.Database;
+﻿using System.Collections.Generic;
+using Slp.r2rml4net.Storage.Database;
 using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Builder;
+using Slp.r2rml4net.Storage.Relational.Optimization;
+using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using TCode.r2rml4net;
@@ -53,7 +56,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <param name="nodeFactory">The node factory.</param>
         public QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
         {
-            return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory);
+            return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this);
         }
 
         /// <summary>
@@ -63,6 +66,14 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public RelationalBuilder CreateRelationalBuilder()
         {
             return new RelationalBuilder();
+        }
+
+        /// <summary>
+        /// Gets the relational optimizers.
+        /// </summary>
+        public IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
+        {
+            yield return new ConcatenationInEqualConditionOptimizer();
         }
     }
 }
