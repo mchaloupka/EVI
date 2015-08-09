@@ -68,7 +68,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization
         /// <param name="context">The context.</param>
         public virtual RelationalQuery Optimize(RelationalQuery query, QueryContext context)
         {
-            var modifiedModel = (CalculusModel)Transform(query.Model, new OptimizationContext()
+            var modifiedModel = (CalculusModel)Visit(query.Model, new OptimizationContext()
             {
                 Context = context,
                 Data = CreateInitialData()

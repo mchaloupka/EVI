@@ -113,6 +113,14 @@ namespace Slp.r2rml4net.Storage.Query
         }
 
         /// <summary>
+        /// The optimizers
+        /// </summary>
+        public Optimizers Optimizers
+        {
+            get { return _optimizers; }
+        }
+
+        /// <summary>
         /// Gets the blank node subject for value.
         /// </summary>
         /// <param name="factory">The factory.</param>

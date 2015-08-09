@@ -79,11 +79,11 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(EmptyPattern emptyPattern, object data)
         {
-            return new RelationalQuery(
+            return ((QueryContext) data).Optimizers.Optimize(new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] {},
                     new ICondition[] {}),
-                new IValueBinder[] {});
+                new IValueBinder[] {}));
         }
 
         /// <summary>
@@ -159,8 +159,8 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             var finalValueBinders = valueBinders.Values.ToList();
             var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct();
             var calculusModel = new CalculusModel(neededVariables, conditions);
-            
-            return new RelationalQuery(calculusModel, finalValueBinders);
+
+            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(calculusModel, finalValueBinders));
         }
 
         /// <summary>
@@ -245,11 +245,11 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
                 conditions.Add(new TupleFromSourceCondition(refSource.Variables, refSource));
             }
 
-            return new RelationalQuery(
+            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(
                 new CalculusModel(
                     valueBinders.SelectMany(x => x.NeededCalculusVariables),
                     conditions),
-                valueBinders);
+                valueBinders));
         }
         #endregion
 
@@ -277,7 +277,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
                     : new EmptyValueBinder(variable));
             }
 
-            return new RelationalQuery(inner.Model, valueBinders);
+            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(inner.Model, valueBinders));
         }
         #endregion
 

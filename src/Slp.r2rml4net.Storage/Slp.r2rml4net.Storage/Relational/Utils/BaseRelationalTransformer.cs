@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query;
@@ -39,7 +40,73 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override ICalculusSource Transform(CalculusModel toTransform, T data)
         {
-            return toTransform;
+            var newConditions = new List<ICondition>();
+            bool changed = false;
+
+            foreach (var sourceCondition in toTransform.SourceConditions)
+            {
+                var newCondition = Transform(sourceCondition, data);
+                newConditions.Add(newCondition);
+
+                if (newCondition != sourceCondition)
+                {
+                    changed = true;
+                }
+            }
+
+            foreach (var assignmentCondition in toTransform.AssignmentConditions)
+            {
+                var newCondition = Transform(assignmentCondition, data);
+                newConditions.Add(newCondition);
+
+                if (newCondition != assignmentCondition)
+                {
+                    changed = true;
+                }
+            }
+
+            var newFilterConditions = new List<IFilterCondition>();
+
+            foreach (var filterCondition in toTransform.FilterConditions)
+            {
+                var newCondition = Transform(filterCondition, data);
+                if (newCondition is AlwaysTrueCondition)
+                {
+                    changed = true;
+                }
+                else if (newCondition is AlwaysFalseCondition)
+                {
+                    changed = true;
+                    newFilterConditions.Clear();
+                    newFilterConditions.Add(new AlwaysFalseCondition());
+                    break;
+                }
+                else if (newCondition is ConjunctionCondition)
+                {
+                    changed = true;
+                    newFilterConditions.AddRange(((ConjunctionCondition)newCondition).InnerConditions);
+                }
+                else
+                {
+                    if (newCondition != filterCondition)
+                    {
+                        changed = true;
+                    }
+
+                    newFilterConditions.Add(newCondition);
+                }
+            }
+
+            if (changed)
+            {
+                newConditions.AddRange(newFilterConditions);
+
+                return new CalculusModel(toTransform.Variables.ToArray(), newConditions);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
 
         /// <summary>
@@ -193,7 +260,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
             }
             else if (changed)
             {
-                return new ConjunctionCondition(innerConditions);
+                return new DisjunctionCondition(innerConditions);
             }
             else
             {

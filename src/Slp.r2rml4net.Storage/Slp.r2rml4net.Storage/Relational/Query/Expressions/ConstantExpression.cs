@@ -39,7 +39,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Expressions
         public ConstantExpression(Uri uri, QueryContext context)
         {
             SqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
-            Value = uri;
+            Value = uri.AbsoluteUri;
             _context = context;
             SqlType = context.Db.SqlTypeForString;
         }
