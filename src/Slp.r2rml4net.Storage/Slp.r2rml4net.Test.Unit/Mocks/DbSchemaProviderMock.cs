@@ -8,6 +8,9 @@ using Slp.r2rml4net.Storage.DBSchema;
 
 namespace Slp.r2rml4net.Test.Unit.DbSchema
 {
+    /// <summary>
+    /// Mock of <see cref="IDbSchemaProvider" />
+    /// </summary>
     public class DbSchemaProviderMock : IDbSchemaProvider
     {
         /// <summary>
@@ -15,6 +18,9 @@ namespace Slp.r2rml4net.Test.Unit.DbSchema
         /// </summary>
         private readonly Dictionary<string, DatabaseTable> _tableCache;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbSchemaProviderMock"/> class.
+        /// </summary>
         public DbSchemaProviderMock()
         {
             _tableCache = new Dictionary<string, DatabaseTable>();
@@ -35,6 +41,11 @@ namespace Slp.r2rml4net.Test.Unit.DbSchema
             throw new Exception("Table not found in database schema");
         }
 
+        /// <summary>
+        /// Adds the database table information.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableInfo">The table information.</param>
         public void AddDatabaseTableInfo(string tableName, DatabaseTable tableInfo)
         {
             _tableCache.Add(tableName, tableInfo);

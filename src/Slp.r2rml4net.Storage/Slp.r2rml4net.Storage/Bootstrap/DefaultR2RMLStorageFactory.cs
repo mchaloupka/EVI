@@ -17,7 +17,8 @@ namespace Slp.r2rml4net.Storage.Bootstrap
     /// <summary>
     /// Class DefaultR2RMLStorageFactory.
     /// </summary>
-    public class DefaultR2RMLlStorageFactory : IR2RMLStorageFactory
+    public class DefaultR2RMLlStorageFactory 
+        : IR2RMLStorageFactory
     {
         /// <summary>
         /// Creates the query processor.
@@ -41,7 +42,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <summary>
         /// Creates the sparql algebra builder.
         /// </summary>
-        public SparqlBuilder CreateSparqlBuilder()
+        public virtual SparqlBuilder CreateSparqlBuilder()
         {
             return new SparqlBuilder();
         }
@@ -54,7 +55,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        public QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
+        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
         {
             return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this);
         }
@@ -63,7 +64,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// Creates the relational builder.
         /// </summary>
         /// <returns>The relational builder.</returns>
-        public RelationalBuilder CreateRelationalBuilder()
+        public virtual RelationalBuilder CreateRelationalBuilder()
         {
             return new RelationalBuilder();
         }
@@ -71,7 +72,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// <summary>
         /// Gets the relational optimizers.
         /// </summary>
-        public IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
+        public virtual IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
         {
             yield return new ConcatenationInEqualConditionOptimizer();
         }
