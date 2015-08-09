@@ -71,7 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrap\DefaultR2RMLStorageFactory.cs" />
+    <Compile Include="Bootstrap\R2RMLDefaultStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
     <Compile Include="Database\Base\BaseSqlDb.cs" />

@@ -38,7 +38,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
 
         private static IR2RMLStorageFactory GetStorageFactory()
         {
-            return new DefaultR2RMLlStorageFactory();
+            return new R2RMLDefaultStorageFactory();
         }
 
         protected override R2RMLStorage GetStorage(string storageName)

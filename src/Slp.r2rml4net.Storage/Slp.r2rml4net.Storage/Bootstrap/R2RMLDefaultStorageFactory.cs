@@ -17,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
     /// <summary>
     /// Class DefaultR2RMLStorageFactory.
     /// </summary>
-    public class DefaultR2RMLlStorageFactory 
+    public class R2RMLDefaultStorageFactory
         : IR2RMLStorageFactory
     {
         /// <summary>

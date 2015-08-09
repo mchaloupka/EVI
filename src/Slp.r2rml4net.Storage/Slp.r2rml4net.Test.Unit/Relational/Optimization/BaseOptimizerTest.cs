@@ -59,7 +59,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization
 
         protected virtual QueryContext GenerateQueryContext()
         {
-            var factory = new DefaultR2RMLlStorageFactory();
+            var factory = new R2RMLDefaultStorageFactory();
             return factory.CreateQueryContext(GenerateSparqlQuery(), null, GetDb(), GetSchemaProvider(), null);
         }
 
