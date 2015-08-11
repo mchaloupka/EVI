@@ -1,4 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Relational.Optimization;
+﻿// Generated code, do not edit!!!
+
+using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
@@ -13,17 +15,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
     public class BaseRelationalOptimizerImplementation<T>
         : BaseExpressionTransformerG<BaseRelationalOptimizer<T>.OptimizationContext, IExpression,IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
     {
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IExpression CommonFallbackTransform(IExpression toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
-        {
-            return toTransform;
-        }
 
         /// <summary>
         /// Process the <see cref="ColumnExpression"/>
@@ -59,45 +50,12 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IAssignmentCondition CommonFallbackTransform(IAssignmentCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
-        {
-            return toTransform;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override ISourceCondition CommonFallbackTransform(ISourceCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
-        {
-            return toTransform;
-        }
-
-        /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override ISourceCondition Transform(TupleFromSourceCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
-        {
-            return toTransform;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IFilterCondition CommonFallbackTransform(IFilterCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }
@@ -186,17 +144,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override IFilterCondition Transform(NegationCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
-        {
-            return toTransform;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override ICalculusSource CommonFallbackTransform(ICalculusSource toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }

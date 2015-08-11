@@ -5,23 +5,12 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Expressions;
 <#
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Expressions");
-    WriteLine("");
-
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseExpressionTransformerG", "IExpressionVisitor", "BaseAssignmentConditionTransformerG<T, T1, T2, T3, T4>"
+    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Expressions\IExpressionVisitor.cs", "BaseAssignmentConditionTransformerG<T, T1, T2, T3, T4>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"IAssignmentCondition\" />")
         , new Tuple<string, string>("T2", "Type of the transformation result when processing <see cref=\"ISourceCondition\" />")
         , new Tuple<string, string>("T3", "Type of the transformation result when processing <see cref=\"IFilterCondition\" />")
         , new Tuple<string, string>("T4", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
-
-    GenerateMainTransformMethod("IExpression");
-    GenerateCommonMethods("IExpression", false);
-
-    GenerateMethods("ColumnExpression");
-    GenerateMethods("ConcatenationExpression");
-    GenerateMethods("ConstantExpression");
-
-    GenerateClassFooter();
 #>

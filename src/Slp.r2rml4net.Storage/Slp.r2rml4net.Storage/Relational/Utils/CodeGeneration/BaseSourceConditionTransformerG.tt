@@ -5,20 +5,11 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 <#
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Conditions");
-    WriteLine("");
 
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseSourceConditionTransformerG", "ISourceConditionVisitor", "BaseFilterConditionTransformerG<T, T1, T2>"
+    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Conditions\ISourceConditionVisitor.cs", "BaseFilterConditionTransformerG<T, T1, T2>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"IFilterCondition\" />")
         , new Tuple<string, string>("T2", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
-
-    GenerateMainTransformMethod("ISourceCondition");
-
-    GenerateCommonMethods("ISourceCondition", false);
-
-    GenerateMethods("TupleFromSourceCondition");
-
-    GenerateClassFooter();
 #>

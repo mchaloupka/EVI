@@ -55,7 +55,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
         /// <param name="data">The data.</param>
         /// <returns>The returned value from visitor.</returns>
         [DebuggerStepThrough]
-        public object Accept(IPatternVisitor visitor, object data)
+        public object Accept(IGraphPatternVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
         }

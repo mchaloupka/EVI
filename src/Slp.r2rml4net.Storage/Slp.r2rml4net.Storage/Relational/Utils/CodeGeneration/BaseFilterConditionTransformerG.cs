@@ -1,8 +1,8 @@
 ﻿// This is generated code, do not edit!!!
+using System;
 
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
-
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
@@ -25,6 +25,17 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
             return (TR)instance.Accept(this, data);
         }
         /// <summary>
+        /// Decides whether we should use standard or fallback transformation for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool CommonShouldTransform(IFilterCondition toTransform, T data)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Postprocess for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -42,7 +53,10 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(IFilterCondition toTransform, T data);
+        protected virtual TR CommonFallbackTransform(IFilterCondition toTransform, T data)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Visits <see cref="AlwaysFalseCondition" />
@@ -53,7 +67,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(AlwaysFalseCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -78,9 +92,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref AlwaysFalseCondition toTransform, T data)
+        protected virtual bool ShouldTransform(AlwaysFalseCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -115,7 +129,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(AlwaysTrueCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -140,9 +154,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref AlwaysTrueCondition toTransform, T data)
+        protected virtual bool ShouldTransform(AlwaysTrueCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -177,7 +191,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(ConjunctionCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -202,9 +216,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref ConjunctionCondition toTransform, T data)
+        protected virtual bool ShouldTransform(ConjunctionCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -239,7 +253,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(DisjunctionCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -264,9 +278,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref DisjunctionCondition toTransform, T data)
+        protected virtual bool ShouldTransform(DisjunctionCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -301,7 +315,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(EqualExpressionCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -326,9 +340,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref EqualExpressionCondition toTransform, T data)
+        protected virtual bool ShouldTransform(EqualExpressionCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -363,7 +377,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(EqualVariablesCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -388,9 +402,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref EqualVariablesCondition toTransform, T data)
+        protected virtual bool ShouldTransform(EqualVariablesCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -425,7 +439,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(IsNullCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -450,9 +464,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref IsNullCondition toTransform, T data)
+        protected virtual bool ShouldTransform(IsNullCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -487,7 +501,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(NegationCondition toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -512,9 +526,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref NegationCondition toTransform, T data)
+        protected virtual bool ShouldTransform(NegationCondition toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>

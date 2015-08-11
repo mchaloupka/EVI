@@ -5,26 +5,9 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 <#
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query");
-    AddUsing("Slp.r2rml4net.Storage.Relational.Query.Conditions");
-    WriteLine("");
-
-    GenerateClassHeader("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", "BaseFilterConditionTransformerG", "IFilterConditionVisitor", "BaseSourceTransformerG<T, T1>"
+    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Conditions\IFilterConditionVisitor.cs", "BaseSourceTransformerG<T, T1>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));
-
-    GenerateMainTransformMethod("IFilterCondition");
-
-    GenerateCommonMethods("IFilterCondition", false);
-
-    GenerateMethods("AlwaysFalseCondition");
-    GenerateMethods("AlwaysTrueCondition");
-    GenerateMethods("ConjunctionCondition");
-    GenerateMethods("DisjunctionCondition");
-    GenerateMethods("EqualExpressionCondition");
-    GenerateMethods("EqualVariablesCondition");
-    GenerateMethods("IsNullCondition");
-    GenerateMethods("NegationCondition");
-
-    GenerateClassFooter();
 #>

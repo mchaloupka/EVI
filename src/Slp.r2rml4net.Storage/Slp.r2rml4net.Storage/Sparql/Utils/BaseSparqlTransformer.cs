@@ -40,17 +40,6 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override ISparqlQuery CommonFallbackTransform(IModifier toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
         /// Process the <see cref="SelectModifier"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -68,17 +57,6 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
             {
                 return toTransform;
             }
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IGraphPattern CommonFallbackTransform(IGraphPattern toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
         }
 
         /// <summary>

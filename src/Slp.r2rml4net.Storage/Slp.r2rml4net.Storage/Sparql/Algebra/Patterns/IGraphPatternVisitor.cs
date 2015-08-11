@@ -10,7 +10,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
     /// <summary>
     /// Visitor interface for SPARQL patterns
     /// </summary>
-    public interface IPatternVisitor
+    public interface IGraphPatternVisitor
         : IVisitor
     {
         /// <summary>

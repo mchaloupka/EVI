@@ -96,6 +96,9 @@
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Optimization\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Query\Conditions\IAssignmentConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\IFilterConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\ISourceConditionVisitor.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -169,7 +172,7 @@
     <Compile Include="Sparql\Algebra\Patterns\EmptyPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\FilterPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\GraphPattern.cs" />
-    <Compile Include="Sparql\Algebra\Patterns\IPatternVisitor.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\IGraphPatternVisitor.cs" />
     <Compile Include="Sparql\Algebra\Patterns\JoinPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\LeftJoinPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\MinusPattern.cs" />

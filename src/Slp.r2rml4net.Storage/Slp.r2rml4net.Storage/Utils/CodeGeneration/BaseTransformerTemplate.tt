@@ -1,14 +1,46 @@
 ﻿<#@ assembly name="System.Core" #>
+<#@ assembly name="System.IO" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Text.Encoding" #>
+<#@ assembly name="System.Threading.Tasks" #>
+<#@ assembly name="$(SolutionDir)/roslyn/Microsoft.CodeAnalysis.dll" #>
+<#@ assembly name="$(SolutionDir)/roslyn/Microsoft.CodeAnalysis.CSharp.dll" #>
+<#@ assembly name="$(SolutionDir)/roslyn/System.Collections.Immutable.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="Microsoft.CodeAnalysis" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #>
 // This is generated code, do not edit!!!
+using System;
 <#+
-    void AddUsing(string namespaceName)
+    void GenerateClass(string namespaceName, string visitorPath, string inheritsFromName, params Tuple<string, string>[] additionalTypeParameters)
     {
-#>
-using <#= namespaceName #>;
-<#+
+        var className = Path.GetFileNameWithoutExtension(Host.TemplateFile);
+
+        var syntaxTree = (CSharpSyntaxTree)CSharpSyntaxTree.ParseText(File.ReadAllText(Host.ResolveAssemblyReference(@"$(ProjectDir)\" + visitorPath)));
+        var interfaceDeclaration = syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single();
+
+        var visitorName = interfaceDeclaration.Identifier.ToString();
+
+        GenerateClassHeader(namespaceName, className, visitorName, inheritsFromName, additionalTypeParameters);
+
+        var parameterType = visitorName.Replace("Visitor", "");
+
+        GenerateMainTransformMethod(parameterType);
+        GenerateCommonMethods(parameterType);
+
+        foreach (var method in interfaceDeclaration.Members.OfType<MethodDeclarationSyntax>())
+        {
+            var firstParameter = method.ParameterList.Parameters.OfType<ParameterSyntax>().First();
+            var firstParameterType = firstParameter.Type.ToString();
+
+            GenerateMethods(firstParameterType);
+        }
+
+        GenerateClassFooter();
     }
 
     void GenerateClassHeader(string namespaceName, string className, string visitorName, string inheritsFromName, params Tuple<string, string>[] additionalTypeParameters)
@@ -68,25 +100,20 @@ namespace <#= namespaceName #>
 <#+
     }
 
-    void GenerateCommonMethods(string parameterType, bool includePreTransform) 
+    void GenerateCommonMethods(string parameterType) 
     {
-        if(includePreTransform)
-        {
 #>
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Decides whether we should use standard or fallback transformation for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool CommonPreTransform<TI>(ref TI toTransform, T data)
+        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool CommonShouldTransform(<#= parameterType #> toTransform, T data)
         {
             return true;
         }
 
-<#+
-        }
-#>
         /// <summary>
         /// Postprocess for the transformation.
         /// </summary>
@@ -105,7 +132,10 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(<#= parameterType #> toTransform, T data);
+        protected virtual TR CommonFallbackTransform(<#= parameterType #> toTransform, T data)
+        {
+            throw new NotImplementedException();
+        }
 
 <#+
     }
@@ -122,7 +152,7 @@ namespace <#= namespaceName #>
         public object Visit(<#= parameterType #> toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -147,9 +177,9 @@ namespace <#= namespaceName #>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref <#= parameterType #> toTransform, T data)
+        protected virtual bool ShouldTransform(<#= parameterType #> toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>

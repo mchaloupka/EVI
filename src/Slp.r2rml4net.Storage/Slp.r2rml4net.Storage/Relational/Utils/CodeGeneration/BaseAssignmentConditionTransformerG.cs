@@ -1,8 +1,8 @@
 ﻿// This is generated code, do not edit!!!
+using System;
 
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
-
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
@@ -27,6 +27,17 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
             return (TR)instance.Accept(this, data);
         }
         /// <summary>
+        /// Decides whether we should use standard or fallback transformation for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool CommonShouldTransform(IAssignmentCondition toTransform, T data)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Postprocess for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -44,7 +55,10 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(IAssignmentCondition toTransform, T data);
+        protected virtual TR CommonFallbackTransform(IAssignmentCondition toTransform, T data)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

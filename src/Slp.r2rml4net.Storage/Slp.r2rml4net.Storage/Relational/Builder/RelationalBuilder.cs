@@ -26,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
     /// Relational builder
     /// </summary>
     public class RelationalBuilder
-        : IModifierVisitor, IPatternVisitor
+        : IModifierVisitor, IGraphPatternVisitor
     {
         /// <summary>
         /// The condition builder

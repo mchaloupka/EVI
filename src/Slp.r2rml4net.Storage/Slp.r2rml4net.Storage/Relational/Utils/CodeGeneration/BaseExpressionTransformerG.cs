@@ -1,8 +1,8 @@
 ﻿// This is generated code, do not edit!!!
+using System;
 
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
@@ -28,6 +28,17 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
             return (TR)instance.Accept(this, data);
         }
         /// <summary>
+        /// Decides whether we should use standard or fallback transformation for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool CommonShouldTransform(IExpression toTransform, T data)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Postprocess for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -45,7 +56,10 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR CommonFallbackTransform(IExpression toTransform, T data);
+        protected virtual TR CommonFallbackTransform(IExpression toTransform, T data)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Visits <see cref="ColumnExpression" />
@@ -56,7 +70,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(ColumnExpression toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -81,9 +95,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref ColumnExpression toTransform, T data)
+        protected virtual bool ShouldTransform(ColumnExpression toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -118,7 +132,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(ConcatenationExpression toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -143,9 +157,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref ConcatenationExpression toTransform, T data)
+        protected virtual bool ShouldTransform(ConcatenationExpression toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>
@@ -180,7 +194,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         public object Visit(ConstantExpression toVisit, object data)
         {
             var tData = (T)data;
-            if(PreTransform(ref toVisit, tData))
+            if(ShouldTransform(toVisit, tData))
             {
                 var transformed = Transform(toVisit, tData);
                 return PostTransform(transformed, toVisit, tData);
@@ -205,9 +219,9 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
         /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool PreTransform(ref ConstantExpression toTransform, T data)
+        protected virtual bool ShouldTransform(ConstantExpression toTransform, T data)
         {
-            return CommonPreTransform(ref toTransform, data);
+            return CommonShouldTransform(toTransform, data);
         }
 
         /// <summary>

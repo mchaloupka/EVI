@@ -99,17 +99,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(ICalculusSource toTransform, VisitorContext data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
         /// Process the <see cref="CalculusModel"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -226,17 +215,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
         {
             data.StringBuilder.Append(toTransform.TableName);
             return null;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(IFilterCondition toTransform, VisitorContext data)
-        {
-            throw new Exception("This code should not be reached");
         }
 
         /// <summary>
@@ -415,17 +393,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(ISourceCondition toTransform, VisitorContext data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -435,17 +402,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
         {
             Transform(toTransform.Source, data);
             return null;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(IExpression toTransform, VisitorContext data)
-        {
-            throw new Exception("This code should not be reached");
         }
 
         /// <summary>
@@ -534,17 +490,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
             {
                 throw new ArgumentException("Unexpected variable source", "variable");
             }
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override object CommonFallbackTransform(IAssignmentCondition toTransform, VisitorContext data)
-        {
-            throw new Exception("This code should not be reached");
         }
     }
 }

@@ -22,17 +22,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         : BaseExpressionTransformerG<T, IExpression,IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
     {
         /// <summary>
-        /// Fall back variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override ICalculusSource CommonFallbackTransform(ICalculusSource toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
         /// Process the <see cref="CalculusModel" />
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -119,17 +108,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         protected override ICalculusSource Transform(SqlTable toTransform, T data)
         {
             return toTransform;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IFilterCondition CommonFallbackTransform(IFilterCondition toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
         }
 
         /// <summary>
@@ -344,17 +322,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override ISourceCondition CommonFallbackTransform(ISourceCondition toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -372,28 +339,6 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
             {
                 return toTransform;
             }
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IAssignmentCondition CommonFallbackTransform(IAssignmentCondition toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected override IExpression CommonFallbackTransform(IExpression toTransform, T data)
-        {
-            throw new Exception("This code should not be reached");
         }
 
         /// <summary>

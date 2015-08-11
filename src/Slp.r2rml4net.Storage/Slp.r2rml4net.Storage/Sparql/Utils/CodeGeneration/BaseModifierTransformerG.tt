@@ -5,17 +5,9 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
+
 <#
-    AddUsing("Slp.r2rml4net.Storage.Sparql.Algebra");
-    AddUsing("Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers");
-    WriteLine("");
-
-    GenerateClassHeader("Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration", "BaseModifierTransformerG", "IModifierVisitor", null);
-
-    GenerateMainTransformMethod("IModifier");
-    GenerateCommonMethods("IModifier", true);
-
-    GenerateMethods("SelectModifier");
-
-    GenerateClassFooter();
+    GenerateClass("Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration", @"Sparql\Algebra\Modifiers\IModifierVisitor.cs", null);
 #>
