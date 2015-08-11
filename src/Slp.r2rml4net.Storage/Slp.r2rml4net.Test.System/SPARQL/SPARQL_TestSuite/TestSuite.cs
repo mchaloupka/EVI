@@ -34,6 +34,18 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void students_student_names()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names.rq";
+            var resultFile = @"Data\Students\student_names.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
         protected abstract R2RMLStorage GetStorage(string storageName);
 
         private XDocument GetExpected(string resultFile)
