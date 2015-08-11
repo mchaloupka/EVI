@@ -49,7 +49,6 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstEscaped_Suffix()
         {
@@ -76,7 +75,6 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstEscaped_Both()
         {
@@ -168,7 +166,6 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstNotEscaped_Suffix()
         {
@@ -195,7 +192,6 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstNotEscaped_Both()
         {
@@ -216,14 +212,13 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             var result = optimizer.Transform(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(queryContext, dummyColumn1, false),
                 new ConstantExpression("12", queryContext)
                 ));
 
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstNotEscaped_TwoColumns()
         {

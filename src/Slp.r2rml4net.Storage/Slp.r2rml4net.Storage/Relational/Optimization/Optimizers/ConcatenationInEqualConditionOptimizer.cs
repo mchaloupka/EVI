@@ -151,6 +151,16 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
                         }
                     }
 
+                    if (leftStart > leftEnd)
+                    {
+                        leftSuffix = leftPrefix;
+                    }
+
+                    if (rightStart > rightEnd)
+                    {
+                        rightSuffix = rightPrefix;
+                    }
+
                     var minSharedSuffix = Math.Min(rightSuffix.Length, leftSuffix.Length);
 
                     if (minSharedSuffix > 0)
@@ -166,6 +176,15 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
                         {
                             return new AlwaysFalseCondition();
                         }
+                    }
+
+                    if (leftStart > leftEnd)
+                    {
+                        leftSuffix = new StringBuilder();
+                    }
+                    if (rightStart > rightEnd)
+                    {
+                        rightSuffix = new StringBuilder();
                     }
 
                     if (!performedAction)

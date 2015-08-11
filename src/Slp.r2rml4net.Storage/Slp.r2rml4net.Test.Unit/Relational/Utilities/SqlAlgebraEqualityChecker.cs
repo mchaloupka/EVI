@@ -131,7 +131,26 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Utilities
 
         public object Visit(ConcatenationExpression concatenationExpression, object data)
         {
-            throw new NotImplementedException();
+            if (!(data is ConcatenationExpression))
+                return false;
+
+            var actual = (ConcatenationExpression)data;
+
+            var expectedInnerExpressions = concatenationExpression.InnerExpressions.ToArray();
+            var actualInnerExpressions = actual.InnerExpressions.ToArray();
+
+            if (actualInnerExpressions.Length != expectedInnerExpressions.Length)
+                return false;
+
+            for (int i = 0; i < expectedInnerExpressions.Length; i++)
+            {
+                if(!(bool)expectedInnerExpressions[i].Accept(this, actualInnerExpressions[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public object Visit(ConstantExpression constantExpression, object data)
