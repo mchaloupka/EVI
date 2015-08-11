@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<storage>
+  <sql>
+    <table name="students_students">
+      <column name="id" type="int" primary-key="true" />
+      <column name="name" type="nvarchar(max)" />
+      <column name="gradyear" type="int" />
+    </table>
+    <table name="students_courses">
+      <column name="id" type="int" nullable="false" primary-key="true" />
+      <column name="name" type="nvarchar(max)" />
+    </table>
+    <table name="students_enrollments">
+      <column name="studentId" type="int" primary-key="true" />
+      <column name="courseId" type="int" primary-key="true" />
+      <column name="year" type="int" primary-key="true" />
+      <column name="grade" type="nvarchar(max)" nullable="true" />
+    </table>
+
+    <query>INSERT INTO students_students VALUES(1, 'John', 1)</query>
+    <query>INSERT INTO students_students VALUES(2, 'James', 1)</query>
+    <query>INSERT INTO students_students VALUES(3, 'Peter', 1)</query>
+    <query>INSERT INTO students_students VALUES(4, 'Catherine', 2)</query>
+    <query>INSERT INTO students_students VALUES(5, 'Scarlet', 2)</query>
+    <query>INSERT INTO students_students VALUES(6, 'Kali', 3)</query>
+    <query>INSERT INTO students_students VALUES(7, 'Isabella', 3)</query>
+    <query>INSERT INTO students_students VALUES(8, 'Chase', 4)</query>
+
+    <query>INSERT INTO students_courses VALUES(1, 'Mathematics')</query>
+    <query>INSERT INTO students_courses VALUES(2, 'Economics')</query>
+    <query>INSERT INTO students_courses VALUES(3, 'Physics')</query>
+
+    <query>INSERT INTO students_enrollments VALUES(1, 1, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(2, 1, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(3, 1, 2015, NULL)</query>
+    
+    <query>INSERT INTO students_enrollments VALUES(4, 1, 2014, NULL)</query>
+    <query>INSERT INTO students_enrollments VALUES(4, 1, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(5, 1, 2014, 'C')</query>
+    <query>INSERT INTO students_enrollments VALUES(5, 2, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(6, 1, 2013, 'C')</query>
+    <query>INSERT INTO students_enrollments VALUES(6, 2, 2014, 'B')</query>
+    <query>INSERT INTO students_enrollments VALUES(6, 3, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(7, 1, 2013, 'A')</query>
+    <query>INSERT INTO students_enrollments VALUES(7, 2, 2014, 'A')</query>
+    <query>INSERT INTO students_enrollments VALUES(7, 3, 2015, NULL)</query>
+
+    <query>INSERT INTO students_enrollments VALUES(8, 1, 2012, 'C')</query>
+    <query>INSERT INTO students_enrollments VALUES(8, 2, 2013, 'B')</query>
+    <query>INSERT INTO students_enrollments VALUES(8, 3, 2014, NULL)</query>
+    <query>INSERT INTO students_enrollments VALUES(8, 3, 2015, 'C')</query>
+  </sql>
+  <mapping>
+<![CDATA[
+    @base <http://example.com/base/> .
+    @prefix rr: <http://www.w3.org/ns/r2rml#> .
+
+    @prefix ex: <http://example.org/> .
+
+    <#Students> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "students_students" ];
+      rr:subjectMap [
+        rr:template "http://example.org/student/{id}";
+        rr:class ex:students;
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:id;
+        rr:objectMap [ rr:column "id"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:name;
+        rr:objectMap [ rr:column "name"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:gradYear;
+        rr:objectMap [ rr:column "gradyear"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:enrollment;
+        rr:objectMap [
+          rr:parentTriplesMap <#Enrollments>;
+          rr:joinCondition [
+            rr:child "id";
+            rr:parent "studentId";
+          ];
+        ];
+      ];
+    .
+    
+    <#Courses> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "students_courses"; ];
+      rr:subjectMap [
+        rr:template "http://example.org/course/{id}";
+        rr:class ex:courses;
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:id;
+        rr:objectMap [ rr:column "id"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:name;
+        rr:objectMap [ rr:column "name"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:enrollment;
+        rr:objectMap [
+          rr:parentTriplesMap <#Enrollments>;
+          rr:joinCondition [
+            rr:child "id";
+            rr:parent "courseId";
+          ];
+        ];
+      ];
+    .
+    
+    <#Enrollments> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "students_enrollments"; ];
+      rr:subjectMap [
+        rr:template "http://example.org/enrollment/{year}/{courseId}/{studentId}";
+        rr:class ex:enrollment;
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:year;
+        rr:objectMap [ rr:column "year"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:grade;
+        rr:objectMap [ rr:column "grade"; ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:student;
+        rr:objectMap [
+          rr:parentTriplesMap <#Students>;
+          rr:joinCondition [
+            rr:child "studentId";
+            rr:parent "id";
+          ];
+        ];
+      ];
+      rr:predicateObjectMap [
+        rr:predicate ex:course;
+        rr:objectMap [
+          rr:parentTriplesMap <#Courses>;
+          rr:joinCondition [
+            rr:child "courseId";
+            rr:parent "id";
+          ];
+        ];
+      ];
+    .
+]]>
+  </mapping>
+</storage>

@@ -83,7 +83,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL
                     sb.Append(tablePart.Attribute("type").Value);
                     sb.Append(' ');
 
-                    if (tablePart.Attribute("nullable").Value == "true")
+                    if (tablePart.Attribute("nullable") != null && tablePart.Attribute("nullable").Value == "true")
                     {
                         sb.Append("NULL");
                     }
@@ -98,7 +98,64 @@ namespace Slp.r2rml4net.Test.System.SPARQL
 
             sb.Append(")");
 
+            string primaryKeyName = "pk_" + tableName;
+
+            RemovePrimaryKey(sqlDb, tableName, primaryKeyName, table);
+
             sqlDb.ExecuteQuery(sb.ToString());
+
+            AddPrimaryKey(sqlDb, tableName, primaryKeyName, table);
+        }
+
+        private static void RemovePrimaryKey(ISqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'");
+            sb.Append(primaryKeyName);
+            sb.Append("') AND type in (N'U'))");
+            sb.AppendLine();
+            sb.Append("ALTER TABLE ");
+            sb.Append(tableName);
+            sb.Append(" DROP CONSTRAINT ");
+            sb.Append(primaryKeyName);
+
+            sqlDb.ExecuteQuery(sb.ToString());
+        }
+
+        private static void AddPrimaryKey(ISqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("ALTER TABLE ");
+            sb.Append(tableName);
+            sb.Append(" ADD CONSTRAINT ");
+            sb.Append(primaryKeyName);
+            sb.Append(" PRIMARY KEY (");
+
+            bool first = true;
+            foreach (var tablePart in table.Elements())
+            {
+                if (tablePart.Name == "column"
+                    && tablePart.Attribute("primary-key") != null
+                    && tablePart.Attribute("primary-key").Value == "true")
+                {
+                    if (!first)
+                    {
+                        sb.Append(", ");
+                    }
+                    else
+                    {
+                        first = false;
+                    }
+
+                    sb.Append(tablePart.Attribute("name").Value);
+                }
+            }
+
+            if(!first)
+            {
+                sb.Append(")");
+                sqlDb.ExecuteQuery(sb.ToString());
+            }
         }
 
         protected void AssertBagEqual(XDocument expected, object result)

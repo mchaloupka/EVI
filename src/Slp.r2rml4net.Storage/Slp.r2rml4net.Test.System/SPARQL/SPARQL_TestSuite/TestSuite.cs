@@ -8,7 +8,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
     public abstract class TestSuite
         : BaseSPARQLTestSuite
     {
-        protected static readonly string[] StorageNames = new string[] { "simple.xml" };
+        protected static readonly string[] StorageNames = new string[] { "simple.xml", "students.xml" };
 
         [TestMethod]
         public void simple_rdf01()

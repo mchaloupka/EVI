@@ -1671,6 +1671,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Datasets\students.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\readme.txt" />
     <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-err-01.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
