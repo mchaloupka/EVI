@@ -95,6 +95,12 @@
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\join.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\union.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\union.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\single.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

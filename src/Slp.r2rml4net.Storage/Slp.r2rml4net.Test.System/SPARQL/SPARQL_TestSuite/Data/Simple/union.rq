@@ -1,0 +1,8 @@
+PREFIX ex: <http://example.org/ns#>
+
+SELECT ?x
+WHERE {
+  { ex:a ?x ex:c . }
+  UNION
+  { ex:b ?x ex:a . }
+}

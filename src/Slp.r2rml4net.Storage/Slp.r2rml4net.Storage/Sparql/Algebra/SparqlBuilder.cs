@@ -121,6 +121,13 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
                 var orBgp = (IBgp)originalAlgebra;
                 return ProcessTriplePatterns(orBgp.TriplePatterns, context);
             }
+            else if (originalAlgebra is Union)
+            {
+                var orUnion = (Union)originalAlgebra;
+                var left = (IGraphPattern)ProcessAlgebra(orUnion.Lhs, context);
+                var right = (IGraphPattern)ProcessAlgebra(orUnion.Rhs, context);
+                return new UnionPattern(new IGraphPattern[] { left, right });
+            }
 
             throw new NotImplementedException();
 

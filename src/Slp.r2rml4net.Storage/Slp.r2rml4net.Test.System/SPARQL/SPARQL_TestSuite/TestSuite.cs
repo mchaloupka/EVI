@@ -36,6 +36,19 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
 
         [Ignore]
         [TestMethod]
+        public void simple_union()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\union.rq";
+            var resultFile = @"Data\Simple\union.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [Ignore]
+        [TestMethod]
         public void students_student_names()
         {
             var storage = GetStorage("students.xml");
