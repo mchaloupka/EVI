@@ -11,11 +11,11 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
         protected static readonly string[] StorageNames = new string[] { "simple.xml", "students.xml" };
 
         [TestMethod]
-        public void simple_rdf01()
+        public void simple_single()
         {
             var storage = GetStorage("simple.xml");
-            var queryFile = @"Data\Simple\rdf01.rq";
-            var resultFile = @"Data\Simple\rdf01.srx";
+            var queryFile = @"Data\Simple\single.rq";
+            var resultFile = @"Data\Simple\single.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
@@ -23,11 +23,11 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_rdf02()
+        public void simple_join()
         {
             var storage = GetStorage("simple.xml");
-            var queryFile = @"Data\Simple\rdf02.rq";
-            var resultFile = @"Data\Simple\rdf02.srx";
+            var queryFile = @"Data\Simple\join.rq";
+            var resultFile = @"Data\Simple\join.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
