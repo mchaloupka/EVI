@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,10 @@ using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
+using Slp.r2rml4net.Storage.Relational.Query.Expressions;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -207,7 +210,64 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(UnionPattern unionPattern, object data)
         {
-            throw new NotImplementedException();
+            var context = (QueryContext) data;
+            var relationalQueries = unionPattern.UnionedGraphPatterns.Select(x => x.Accept(this, data)).Cast<RelationalQuery>().ToList();
+
+            List<ICalculusSource> sources = new List<ICalculusSource>();
+            List<ICalculusVariable> variables = new List<ICalculusVariable>();
+            Dictionary<string, SwitchValueBinder> valueBinders = new Dictionary<string, SwitchValueBinder>();
+
+            var caseVariable = new AssignedVariable(context.Db.SqlTypeForInt);
+            variables.Add(caseVariable);
+
+            int counter = 0;
+
+            foreach (var relationalQuery in relationalQueries)
+            {
+                var oldModel = relationalQuery.Model;
+                variables.AddRange(oldModel.Variables);
+
+                var newConditions = new List<ICondition>();
+                newConditions.AddRange(oldModel.AssignmentConditions);
+                newConditions.AddRange(oldModel.FilterConditions);
+                newConditions.AddRange(oldModel.SourceConditions);
+
+                var caseValue = counter++;
+                var caseValueExpression = new ConstantExpression(caseValue, context);
+                var caseAssignmentCondition = new AssignmentFromExpressionCondition(caseVariable, caseValueExpression);
+
+                newConditions.Add(caseAssignmentCondition);
+                
+                var newVariables = new List<ICalculusVariable>(oldModel.Variables);
+                newVariables.Add(caseVariable);
+
+                var newModel = new CalculusModel(newVariables, newConditions);
+                sources.Add(newModel);
+
+                foreach (var valueBinder in relationalQuery.ValueBinders)
+                {
+                    var variableName = valueBinder.VariableName;
+
+                    var thisCase = new SwitchValueBinder.Case(caseValue, valueBinder);
+
+                    if (valueBinders.ContainsKey(variableName))
+                    {
+                        var oldValueBinder = valueBinders[variableName];
+                        var cases = new List<SwitchValueBinder.Case>(oldValueBinder.Cases);
+                        cases.Add(thisCase);
+
+                        valueBinders[variableName] = new SwitchValueBinder(variableName, caseVariable, cases);
+                    }
+                    else
+                    {
+                        valueBinders.Add(variableName, new SwitchValueBinder(variableName, caseVariable, new SwitchValueBinder.Case[] { thisCase }));
+                    }
+                }
+            }
+
+            var unionedSourcesCondition = new UnionedSourcesCondition(caseVariable, variables, sources);
+            var model = new CalculusModel(variables, new ICondition[] { unionedSourcesCondition });
+            return new RelationalQuery(model, valueBinders.Values.ToList());
         }
 
         /// <summary>

@@ -10,16 +10,16 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Source
         : ISourceCondition
     {
         /// <summary>
-        /// Gets or sets the calculus variables.
+        /// Gets the calculus variables.
         /// </summary>
         /// <value>The calculus variables.</value>
-        public IEnumerable<ICalculusVariable> CalculusVariables { get; set; }
+        public IEnumerable<ICalculusVariable> CalculusVariables { get; private set; }
 
         /// <summary>
-        /// Gets or sets the source.
+        /// Gets the source.
         /// </summary>
         /// <value>The source.</value>
-        public ICalculusSource Source { get; set; }
+        public ICalculusSource Source { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TupleFromSourceCondition"/> class.

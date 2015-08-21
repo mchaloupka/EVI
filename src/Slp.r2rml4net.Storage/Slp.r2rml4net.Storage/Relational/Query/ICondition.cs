@@ -1,4 +1,4 @@
-﻿using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+﻿using System.Collections.Generic;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
@@ -20,7 +20,11 @@ namespace Slp.r2rml4net.Storage.Relational.Query
     public interface ISourceCondition
         : ICondition, IVisitable<ISourceConditionVisitor>
     {
-
+        /// <summary>
+        /// Gets the calculus variables.
+        /// </summary>
+        /// <value>The calculus variables.</value>
+        IEnumerable<ICalculusVariable> CalculusVariables { get; }
     }
 
     /// <summary>

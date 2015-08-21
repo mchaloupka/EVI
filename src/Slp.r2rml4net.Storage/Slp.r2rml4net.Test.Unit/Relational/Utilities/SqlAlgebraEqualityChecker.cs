@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
@@ -121,6 +122,11 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        public object Visit(UnionedSourcesCondition unionedSourcesCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(ColumnExpression columnExpression, object data)
         {
             if (!(data is ColumnExpression))
@@ -163,6 +169,11 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Utilities
             var actual = (ConstantExpression)data;
 
             return constantExpression.Value.Equals(actual.Value);
+        }
+
+        public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
+        {
+            throw new NotImplementedException();
         }
     }
 }

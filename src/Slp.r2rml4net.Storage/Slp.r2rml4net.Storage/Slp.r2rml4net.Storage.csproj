@@ -96,6 +96,8 @@
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Optimization\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\AlwaysFalseCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\AlwaysTrueCondition.cs" />
@@ -108,6 +110,8 @@
     <Compile Include="Relational\Query\Conditions\Filter\NegationCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\ISourceConditionVisitor.cs" />
     <Compile Include="Relational\Query\Conditions\Source\TupleFromSourceCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\UninonedSourcesCondition.cs" />
+    <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

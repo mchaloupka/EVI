@@ -6,9 +6,9 @@
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 <#
-    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Conditions\IAssignmentConditionVisitor.cs", "BaseSourceConditionTransformerG<T, T1, T2, T3>"
+    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs", "BaseSourceConditionTransformerG<T, T1, T2, T3>"
         , new Tuple<string, string>("T1", "Type of the transformation result when processing <see cref=\"ISourceCondition\" />")
         , new Tuple<string, string>("T2", "Type of the transformation result when processing <see cref=\"IFilterCondition\" />")
         , new Tuple<string, string>("T3", "Type of the transformation result when processing <see cref=\"ICalculusSource\" />"));

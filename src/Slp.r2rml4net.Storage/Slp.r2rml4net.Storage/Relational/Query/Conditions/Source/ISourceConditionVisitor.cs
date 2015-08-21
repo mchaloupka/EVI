@@ -15,5 +15,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Source
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data);
+
+        /// <summary>
+        /// Visits <see cref="UnionedSourcesCondition"/>
+        /// </summary>
+        /// <param name="unionedSourcesCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(UnionedSourcesCondition unionedSourcesCondition, object data);
     }
 }

@@ -3,6 +3,7 @@
 using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
@@ -52,12 +53,34 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="AssignmentFromExpressionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IAssignmentCondition Transform(AssignmentFromExpressionCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override ISourceCondition Transform(TupleFromSourceCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="UnionedSourcesCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISourceCondition Transform(UnionedSourcesCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }

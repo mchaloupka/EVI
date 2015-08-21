@@ -210,23 +210,10 @@ namespace Slp.r2rml4net.Storage.Query
                 ((CalculusModelSpecificData)data).AddData(tupleFromSourceCondition);
                 return null;
             }
-        }
 
-        private class GetVariableName_Visitor
-            : ISourceConditionVisitor
-        {
-            public object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data)
+            public object Visit(UnionedSourcesCondition unionedSourcesCondition, object data)
             {
-                var variable = (ICalculusVariable) data;
-
-                if (tupleFromSourceCondition.CalculusVariables.Contains(variable))
-                {
-                    return tupleFromSourceCondition;
-                }
-                else
-                {
-                    return null;
-                }
+                throw new NotImplementedException();
             }
         }
     }

@@ -31,5 +31,13 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(CoalesceValueBinder coalesceValueBinder, object data);
+
+        /// <summary>
+        /// Visits <see cref="SwitchValueBinder"/>
+        /// </summary>
+        /// <param name="switchValueBinder">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(SwitchValueBinder switchValueBinder, object data);
     }
 }

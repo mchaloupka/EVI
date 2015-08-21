@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
@@ -344,6 +345,17 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="UnionedSourcesCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISourceCondition Transform(UnionedSourcesCondition toTransform, T data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Process the <see cref="ColumnExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -396,6 +408,17 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         protected override IExpression Transform(ConstantExpression toTransform, T data)
         {
             return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="AssignmentFromExpressionCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IAssignmentCondition Transform(AssignmentFromExpressionCondition toTransform, T data)
+        {
+            throw new NotImplementedException();
         }
     }
 }
