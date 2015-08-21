@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -352,7 +353,29 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override ISourceCondition Transform(UnionedSourcesCondition toTransform, T data)
         {
-            throw new NotImplementedException();
+            var newSources = new List<ICalculusSource>();
+            bool changed = false;
+
+            foreach (var calculusSource in toTransform.Sources)
+            {
+                var newSource = Transform(calculusSource, data);
+
+                newSources.Add(newSource);
+
+                if (newSource != calculusSource)
+                {
+                    changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                return new UnionedSourcesCondition(toTransform.CaseVariable, toTransform.CalculusVariables, newSources);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
 
         /// <summary>
@@ -418,7 +441,16 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override IAssignmentCondition Transform(AssignmentFromExpressionCondition toTransform, T data)
         {
-            throw new NotImplementedException();
+            var newExpression = Transform(toTransform.Expression, data);
+
+            if (newExpression != toTransform.Expression)
+            {
+                return new AssignmentFromExpressionCondition(toTransform.Variable, newExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
     }
 }
