@@ -96,9 +96,18 @@
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Optimization\BaseRelationalOptimizer.cs" />
-    <Compile Include="Relational\Query\Conditions\IAssignmentConditionVisitor.cs" />
-    <Compile Include="Relational\Query\Conditions\IFilterConditionVisitor.cs" />
-    <Compile Include="Relational\Query\Conditions\ISourceConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\AlwaysFalseCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\AlwaysTrueCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\ConjunctionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\DisjunctionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\EqualExpressionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\EqualVariablesCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\IFilterConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\IsNullCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\NegationCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\ISourceConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,14 +118,7 @@
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
-    <Compile Include="Relational\Query\Conditions\AlwaysFalseCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\AlwaysTrueCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\ConjunctionCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\DisjunctionCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\EqualExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\IConditionVisitor.cs" />
-    <Compile Include="Relational\Query\Conditions\IsNullCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\NegationCondition.cs" />
     <Compile Include="Relational\Query\Expressions\ColumnExpression.cs" />
     <Compile Include="Relational\Query\Expressions\ConcatenationExpression.cs" />
     <Compile Include="Relational\Query\Expressions\ConstantExpression.cs" />
@@ -124,9 +126,7 @@
     <Compile Include="Relational\Query\IExpression.cs" />
     <Compile Include="Relational\Query\ValueBinders\BaseValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\EmptyValueBinder.cs" />
-    <Compile Include="Relational\Query\Conditions\EqualVariablesCondition.cs" />
     <Compile Include="Relational\Builder\RelationalBuilder.cs" />
-    <Compile Include="Relational\Query\Conditions\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Query\ICalculusSource.cs" />
     <Compile Include="Relational\Query\Sources\CalculusModel.cs" />
     <Compile Include="Relational\Query\ICondition.cs" />
@@ -243,6 +243,7 @@
       <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

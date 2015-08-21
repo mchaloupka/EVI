@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter
 {
     /// <summary>
-    /// The always false condition
+    /// The always true condition
     /// </summary>
-    public class AlwaysFalseCondition 
+    public class AlwaysTrueCondition 
         : IFilterCondition
     {
         /// <summary>

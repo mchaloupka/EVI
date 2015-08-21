@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter
 {
     /// <summary>
     /// The equal expression condition

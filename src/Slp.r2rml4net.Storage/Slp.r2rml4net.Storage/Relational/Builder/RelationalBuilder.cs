@@ -8,6 +8,8 @@ using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 using Slp.r2rml4net.Storage.Sparql.Algebra;

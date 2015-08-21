@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Source
 {
     /// <summary>
     /// Class representing condition: assigning a tuple from a source

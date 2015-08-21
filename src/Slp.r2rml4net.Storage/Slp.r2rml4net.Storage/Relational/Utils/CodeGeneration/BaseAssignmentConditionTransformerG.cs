@@ -3,6 +3,8 @@ using System;
 
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
+
 namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>

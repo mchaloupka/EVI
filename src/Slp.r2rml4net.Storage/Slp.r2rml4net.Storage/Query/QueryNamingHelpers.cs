@@ -4,6 +4,7 @@ using System.Linq;
 using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using VDS.RDF.Parsing;
 

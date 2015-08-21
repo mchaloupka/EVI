@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
+namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter
 {
     /// <summary>
     /// The disjunction of conditions
     /// </summary>
-    public class ConjunctionCondition
+    public class DisjunctionCondition
         : IFilterCondition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConjunctionCondition"/> class.
+        /// Initializes a new instance of the <see cref="DisjunctionCondition"/> class.
         /// </summary>
         /// <param name="conditions">The inner conditions.</param>
-        public ConjunctionCondition(IEnumerable<IFilterCondition> conditions)
+        public DisjunctionCondition(IEnumerable<IFilterCondition> conditions)
         {
             this.InnerConditions = conditions;
         }
