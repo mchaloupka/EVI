@@ -74,7 +74,18 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the needed calculus variables to calculate the value.
         /// </summary>
         /// <value>The needed calculus variables.</value>
-        public IEnumerable<ICalculusVariable> NeededCalculusVariables { get; }
+        public IEnumerable<ICalculusVariable> NeededCalculusVariables
+        {
+            get
+            {
+                yield return CaseVariable;
+
+                foreach (var neededCalculusVariable in Cases.SelectMany(@case => @case.ValueBinder.NeededCalculusVariables))
+                {
+                    yield return neededCalculusVariable;
+                }
+            }
+        }
 
         /// <summary>
         /// Value binder case
