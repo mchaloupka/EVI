@@ -178,18 +178,13 @@ namespace Slp.r2rml4net.Storage.Query
         {
             public CalculusModelSpecificData()
             {
-                _tupleFromSourceConditions = new Dictionary<ICalculusSource, TupleFromSourceCondition>();
                 _sourceConditions = new Dictionary<ICalculusVariable, ISourceCondition>();
             }
 
-            private readonly Dictionary<ICalculusVariable, ISourceCondition> _sourceConditions; 
-
-            private readonly Dictionary<ICalculusSource, TupleFromSourceCondition> _tupleFromSourceConditions; 
+            private readonly Dictionary<ICalculusVariable, ISourceCondition> _sourceConditions;
 
             public void AddData(TupleFromSourceCondition tupleFromSourceCondition)
             {
-                _tupleFromSourceConditions.Add(tupleFromSourceCondition.Source, tupleFromSourceCondition);
-
                 foreach (var variable in tupleFromSourceCondition.CalculusVariables)
                 {
                     _sourceConditions.Add(variable, tupleFromSourceCondition);
@@ -199,6 +194,14 @@ namespace Slp.r2rml4net.Storage.Query
             public ISourceCondition GetSourceOfVariable(ICalculusVariable variable)
             {
                 return _sourceConditions[variable];
+            }
+
+            public void AddData(UnionedSourcesCondition unionedSourcesCondition)
+            {
+                foreach (var variable in unionedSourcesCondition.CalculusVariables)
+                {
+                    _sourceConditions.Add(variable, unionedSourcesCondition);
+                }
             }
         }
 
@@ -213,7 +216,8 @@ namespace Slp.r2rml4net.Storage.Query
 
             public object Visit(UnionedSourcesCondition unionedSourcesCondition, object data)
             {
-                throw new NotImplementedException();
+                ((CalculusModelSpecificData)data).AddData(unionedSourcesCondition);
+                return null;
             }
         }
     }
