@@ -19,9 +19,9 @@ namespace Slp.r2rml4net.Storage.Query
 
         private readonly Dictionary<CalculusModel, CalculusModelSpecificData> _calculusModelSpecificDatas;
 
-        private readonly Dictionary<TupleFromSourceCondition, TupleFromSourceSpecificData> _tupleFromSourceSpecificDatas;
+        private readonly Dictionary<ISourceCondition, SourceConditionSourceSpecificData> _sourceConditionSpecificData;
 
-        private TupleFromSourceSpecificData _tupleFromSourceSpecificData_nullData;
+        private SourceConditionSourceSpecificData _sourceConditionSourceSpecificDataNullData;
 
         private readonly Dictionary<ISourceCondition, string> _sourceConditionNames;
 
@@ -38,8 +38,8 @@ namespace Slp.r2rml4net.Storage.Query
             _calculusModelSpecificDatas = new Dictionary<CalculusModel, CalculusModelSpecificData>();
             _sourceConditionNameCounter = 1;
             _sourceConditionNames = new Dictionary<ISourceCondition, string>();
-            _tupleFromSourceSpecificDatas = new Dictionary<TupleFromSourceCondition, TupleFromSourceSpecificData>();
-            _tupleFromSourceSpecificData_nullData = null;
+            _sourceConditionSpecificData = new Dictionary<ISourceCondition, SourceConditionSourceSpecificData>();
+            _sourceConditionSourceSpecificDataNullData = null;
         }
 
         /// <summary>
@@ -72,25 +72,25 @@ namespace Slp.r2rml4net.Storage.Query
         /// </summary>
         /// <param name="sourceCondition">The source condition.</param>
         /// <param name="variable">The variable.</param>
-        public string GetVariableName(TupleFromSourceCondition sourceCondition, ICalculusVariable variable)
+        public string GetVariableName(ISourceCondition sourceCondition, ICalculusVariable variable)
         {
             if (sourceCondition != null)
             {
-                if (!_tupleFromSourceSpecificDatas.ContainsKey(sourceCondition))
+                if (!_sourceConditionSpecificData.ContainsKey(sourceCondition))
                 {
-                    _tupleFromSourceSpecificDatas.Add(sourceCondition, new TupleFromSourceSpecificData(sourceCondition));
+                    _sourceConditionSpecificData.Add(sourceCondition, new SourceConditionSourceSpecificData(sourceCondition));
                 }
 
-                return _tupleFromSourceSpecificDatas[sourceCondition].GetVariableName(variable);
+                return _sourceConditionSpecificData[sourceCondition].GetVariableName(variable);
             }
             else
             {
-                if (_tupleFromSourceSpecificData_nullData == null)
+                if (_sourceConditionSourceSpecificDataNullData == null)
                 {
-                    _tupleFromSourceSpecificData_nullData = new TupleFromSourceSpecificData(null);
+                    _sourceConditionSourceSpecificDataNullData = new SourceConditionSourceSpecificData(null);
                 }
 
-                return _tupleFromSourceSpecificData_nullData.GetVariableName(variable);
+                return _sourceConditionSourceSpecificDataNullData.GetVariableName(variable);
             }
         }
 
@@ -110,33 +110,25 @@ namespace Slp.r2rml4net.Storage.Query
         }
 
         /// <summary>
-        /// Adds the assignment condition.
-        /// </summary>
-        /// <param name="condition">The condition.</param>
-        /// <param name="assignmentCondition">The assignment condition.</param>
-        public void AddAssignmentCondition(CalculusModel condition, IAssignmentCondition assignmentCondition)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Gets the tuple from source condtion.
         /// </summary>
         /// <param name="parentModel">The parent model.</param>
-        /// <param name="model">The model we are looking for.</param>
-        public TupleFromSourceCondition GetTupleFromSourceCondtion(CalculusModel parentModel, CalculusModel model)
+        /// <param name="source">The source we are looking for.</param>
+        public ISourceCondition GetSourceCondtion(CalculusModel parentModel, ICalculusSource source)
         {
-            throw new NotImplementedException();
+            var data = _calculusModelSpecificDatas[parentModel];
+            return data.GetSourceCondition(source);
         }
 
-        private class TupleFromSourceSpecificData
+        private class SourceConditionSourceSpecificData
+            : ISourceConditionVisitor
         {
             private Dictionary<ICalculusVariable, string> _columnNames;
 
             private bool _canGenerateNewNames;
             private int _counter;
 
-            public TupleFromSourceSpecificData(TupleFromSourceCondition sourceCondition)
+            public SourceConditionSourceSpecificData(ISourceCondition sourceCondition)
             {
                 _columnNames = new Dictionary<ICalculusVariable, string>();
                 _canGenerateNewNames = false;
@@ -147,19 +139,9 @@ namespace Slp.r2rml4net.Storage.Query
                 {
                     _canGenerateNewNames = true;
                 }
-                else if (sourceCondition.Source is SqlTable)
-                {
-                    foreach (var column in sourceCondition.CalculusVariables.Cast<SqlColumn>())
-                    {
-                        _columnNames.Add(column, column.Name);
-                    }
-                }
                 else
                 {
-                    foreach (var column in sourceCondition.CalculusVariables)
-                    {
-                        _columnNames.Add(column, string.Format("c{0}", _counter++));
-                    }
+                    sourceCondition.Accept(this, null);
                 }
             }
 
@@ -172,35 +154,80 @@ namespace Slp.r2rml4net.Storage.Query
 
                 return _columnNames[variable];
             }
+
+            public object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data)
+            {
+                if (tupleFromSourceCondition.Source is SqlTable)
+                {
+                    foreach (var column in tupleFromSourceCondition.CalculusVariables.Cast<SqlColumn>())
+                    {
+                        _columnNames.Add(column, column.Name);
+                    }
+                }
+                else
+                {
+                    foreach (var column in tupleFromSourceCondition.CalculusVariables)
+                    {
+                        _columnNames.Add(column, string.Format("c{0}", _counter++));
+                    }
+                }
+
+                return null;
+            }
+
+            public object Visit(UnionedSourcesCondition unionedSourcesCondition, object data)
+            {
+                foreach (var column in unionedSourcesCondition.CalculusVariables)
+                {
+                    _columnNames.Add(column, string.Format("c{0}", _counter++));
+                }
+
+                return null;
+            }
         }
 
         private class CalculusModelSpecificData
         {
             public CalculusModelSpecificData()
             {
-                _sourceConditions = new Dictionary<ICalculusVariable, ISourceCondition>();
+                _variableConditions = new Dictionary<ICalculusVariable, ISourceCondition>();
+                _sourceConditions = new Dictionary<ICalculusSource, ISourceCondition>();
             }
 
-            private readonly Dictionary<ICalculusVariable, ISourceCondition> _sourceConditions;
+            private readonly Dictionary<ICalculusVariable, ISourceCondition> _variableConditions;
+
+            private readonly Dictionary<ICalculusSource, ISourceCondition> _sourceConditions;
 
             public void AddData(TupleFromSourceCondition tupleFromSourceCondition)
             {
                 foreach (var variable in tupleFromSourceCondition.CalculusVariables)
                 {
-                    _sourceConditions.Add(variable, tupleFromSourceCondition);
+                    _variableConditions.Add(variable, tupleFromSourceCondition);
                 }
+
+                _sourceConditions.Add(tupleFromSourceCondition.Source, tupleFromSourceCondition);
             }
 
             public ISourceCondition GetSourceOfVariable(ICalculusVariable variable)
             {
-                return _sourceConditions[variable];
+                return _variableConditions[variable];
+            }
+
+            public ISourceCondition GetSourceCondition(ICalculusSource calculusSource)
+            {
+                return _sourceConditions[calculusSource];
             }
 
             public void AddData(UnionedSourcesCondition unionedSourcesCondition)
             {
                 foreach (var variable in unionedSourcesCondition.CalculusVariables)
                 {
-                    _sourceConditions.Add(variable, unionedSourcesCondition);
+                    _variableConditions.Add(variable, unionedSourcesCondition);
+                }
+
+                foreach (var calculusSource in unionedSourcesCondition.Sources)
+                {
+                    _sourceConditions.Add(calculusSource, unionedSourcesCondition);
                 }
             }
         }

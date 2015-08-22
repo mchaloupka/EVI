@@ -114,11 +114,6 @@ namespace Slp.r2rml4net.Storage.Database.Base
                 data.Context.QueryNamingHelpers.AddSourceCondition(toTransform, sourceCondition);
             }
 
-            foreach (var assignmentCondition in toTransform.AssignmentConditions)
-            {
-                data.Context.QueryNamingHelpers.AddAssignmentCondition(toTransform, assignmentCondition);
-            }
-
             List<ICalculusVariable> neededVariables = new List<ICalculusVariable>();
 
             var parentModel = data.CurrentCalculusModel;
@@ -128,7 +123,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             }
             else
             {
-                var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, toTransform);
+                var sourceInParent = data.Context.QueryNamingHelpers.GetSourceCondtion(parentModel, toTransform);
                 neededVariables.AddRange(sourceInParent.CalculusVariables);
             }
 
@@ -154,7 +149,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     }
                     else
                     {
-                        var sourceInParent = data.Context.QueryNamingHelpers.GetTupleFromSourceCondtion(parentModel, toTransform);
+                        var sourceInParent = data.Context.QueryNamingHelpers.GetSourceCondtion(parentModel, toTransform);
                         data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetVariableName(sourceInParent, neededVariables[i]));
                     }
                 }
@@ -415,7 +410,26 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(UnionedSourcesCondition toTransform, VisitorContext data)
         {
-            throw new NotImplementedException();
+            data.StringBuilder.Append("(");
+
+            bool first = true;
+
+            foreach (var calculusSource in toTransform.Sources)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    data.StringBuilder.Append(" UNION ALL ");
+                }
+
+                Transform(calculusSource, data);
+            }
+
+            data.StringBuilder.Append(")");
+            return null;
         }
 
         /// <summary>
@@ -488,9 +502,9 @@ namespace Slp.r2rml4net.Storage.Database.Base
         {
             var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
 
-            if (variableSource is TupleFromSourceCondition)
+            if (variableSource is ISourceCondition)
             {
-                var sourceCondition = (TupleFromSourceCondition)variableSource;
+                var sourceCondition = (ISourceCondition)variableSource;
 
                 stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                 stringBuilder.Append('.');
