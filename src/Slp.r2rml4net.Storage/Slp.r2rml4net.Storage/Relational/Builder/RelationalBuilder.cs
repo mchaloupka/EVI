@@ -150,7 +150,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
                     if (valueBinders.ContainsKey(valueBinder.VariableName))
                     {
                         var otherValueBinder = valueBinders[valueBinder.VariableName];
-                        conditions.AddRange(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (QueryContext) data));
+                        conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (QueryContext) data));
 
                         valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                     }
@@ -302,14 +302,9 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
 
             conditions.Add(new TupleFromSourceCondition(source.Variables, source));
 
-            if (refSource != null)
-            {
-                conditions.Add(new TupleFromSourceCondition(refSource.Variables, refSource));
-            }
-
             return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(
                 new CalculusModel(
-                    valueBinders.SelectMany(x => x.NeededCalculusVariables),
+                    valueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct(),
                     conditions),
                 valueBinders));
         }
@@ -455,10 +450,10 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         {
             var valueBinder = new BaseValueBinder(null, termMap, source);
             var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
-            conditions.AddRange(notNullCondition);
-            
+            conditions.Add(notNullCondition);
+
             var condition = _conditionBuilder.CreateEqualsConditions(node, valueBinder, context);
-            conditions.AddRange(condition);
+            conditions.Add(condition);
         }
 
         /// <summary>
@@ -475,7 +470,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             var valueBinder = new BaseValueBinder(variableName, termMap, source);
 
             var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
-            conditions.AddRange(notNullCondition);
+            conditions.Add(notNullCondition);
 
             var sameVariableValueBinder = valueBinders.FirstOrDefault(x => x.VariableName == variableName);
 
@@ -486,7 +481,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             else
             {
                 var condition = _conditionBuilder.CreateEqualsConditions(valueBinder, sameVariableValueBinder, context);
-                conditions.AddRange(condition);
+                conditions.Add(condition);
             }
         }
 

@@ -44,6 +44,14 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         public string VariableName { get; private set; }
 
         /// <summary>
+        /// The coalesced value binders
+        /// </summary>
+        public IValueBinder[] ValueBinders
+        {
+            get { return _valueBinders; }
+        }
+
+        /// <summary>
         /// Accepts the specified visitor.
         /// </summary>
         /// <param name="visitor">The visitor.</param>
