@@ -13,6 +13,7 @@ using Slp.r2rml4net.Storage.DBSchema;
 using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Optimization;
+using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Test.Unit.DbSchema;

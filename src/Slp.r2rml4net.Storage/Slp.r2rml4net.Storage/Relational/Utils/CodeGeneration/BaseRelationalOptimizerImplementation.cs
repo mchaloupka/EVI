@@ -1,8 +1,7 @@
 ﻿// Generated code, do not edit!!!
 
-using Slp.r2rml4net.Storage.Relational.Optimization;
+using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
 using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
@@ -16,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     public class BaseRelationalOptimizerImplementation<T>
-        : BaseExpressionTransformerG<BaseRelationalOptimizer<T>.OptimizationContext, IExpression,IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
+        : BaseExpressionTransformerG<BaseRelationalOptimizer<T>.OptimizationContext, IExpression, IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
     {
 
         /// <summary>

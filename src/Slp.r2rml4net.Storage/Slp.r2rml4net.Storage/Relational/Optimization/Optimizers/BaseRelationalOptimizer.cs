@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Query;
+﻿using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using Slp.r2rml4net.Storage.Relational.Utils;
 using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization
+namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
 {
     /// <summary>
     /// The base class for relational optimizers
@@ -31,7 +26,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization
         /// <summary>
         /// The optimizer implementation
         /// </summary>
-        private BaseRelationalOptimizerImplementation<T> _optimizerImplementation;
+        private readonly BaseRelationalOptimizerImplementation<T> _optimizerImplementation;
 
         /// <summary>
         /// Gets the optimizer implementation.

@@ -95,7 +95,7 @@
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="R2RMLStorage.cs" />
-    <Compile Include="Relational\Optimization\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
@@ -186,6 +186,8 @@
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
     <Compile Include="Sparql\Algebra\SparqlBuilder.cs" />
     <Compile Include="Query\QueryContext.cs" />
+    <Compile Include="Sparql\Optimization\ISparqlOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\BaseSparqlOptimizer.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
       <AutoGen>True</AutoGen>
@@ -196,6 +198,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BaseModifierTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.cs">
+      <DependentUpon>BaseSparqlOptimizerImplementation.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Sparql\Utils\FixesExtension.cs" />
     <Compile Include="Utils\IVisitable.cs" />
@@ -245,6 +252,10 @@
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+    </Content>
+    <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSparqlOptimizerImplementation.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup />

@@ -17,23 +17,43 @@
 <#@ output extension=".cs" #>
 // Generated code, do not edit!!!
 
-using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+using System;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
+using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
+using Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers;
 
-namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
+namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
 {
     /// <summary>
-    /// The base class for relational optimizers
+    /// The base class for SPARQL optimizers
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
-    public class BaseRelationalOptimizerImplementation<T>
-        : BaseExpressionTransformerG<BaseRelationalOptimizer<T>.OptimizationContext, IExpression, IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
+    public class BaseSparqlOptimizerImplementation<T>
+        : BaseGraphPatternTransformerG<BaseSparqlOptimizer<T>.OptimizationContext, IGraphPattern, ISparqlQuery>
     {
+        /// <summary>
+        /// Process the <see cref="ISparqlQuery"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        public virtual ISparqlQuery TransformSparqlQuery(ISparqlQuery toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            if (toTransform is IModifier)
+            {
+                return Transform((IModifier)toTransform, data);
+            }
+            else if (toTransform is IGraphPattern)
+            {
+                return Transform((IGraphPattern)toTransform, data);
+            }
+            else
+            {
+                throw new ArgumentException("Unexpected type of parameter", "instance");
+            }
+        }
+
 <#
     var classDeclarations = new Dictionary<string, ClassDeclarationSyntax>();
 
@@ -57,14 +77,11 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
     }
 
     var toProcess = new Queue<string>();
-    toProcess.Enqueue("BaseExpressionTransformerG");
+    toProcess.Enqueue("BaseGraphPatternTransformerG");
 
     var returnTypes = new Queue<string>();
-    returnTypes.Enqueue("IExpression");
-    returnTypes.Enqueue("IAssignmentCondition");
-    returnTypes.Enqueue("ISourceCondition");
-    returnTypes.Enqueue("IFilterCondition");
-    returnTypes.Enqueue("ICalculusSource");
+    returnTypes.Enqueue("IGraphPattern");
+    returnTypes.Enqueue("ISparqlQuery");
 
     while(toProcess.Count > 0) 
     {
@@ -108,7 +125,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
 
                     if(type == "T") 
                     {
-                        type = "BaseRelationalOptimizer<T>.OptimizationContext";
+                        type = "BaseSparqlOptimizer<T>.OptimizationContext";
                     }
 
                     if(first) 
