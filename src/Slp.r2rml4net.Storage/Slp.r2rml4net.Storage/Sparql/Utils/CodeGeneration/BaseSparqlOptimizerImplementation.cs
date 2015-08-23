@@ -33,10 +33,9 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
             }
             else
             {
-                throw new ArgumentException("Unexpected type of parameter", "instance");
+                throw new ArgumentException("Unexpected type of parameter", "toTransform");
             }
         }
-
 
         /// <summary>
         /// Process the <see cref="EmptyPattern"/>
