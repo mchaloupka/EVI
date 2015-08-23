@@ -24,7 +24,7 @@ using VDS.RDF.Query;
 
 namespace Slp.r2rml4net.Test.Unit.Relational.Optimization
 {
-    public class BaseOptimizerTest<T>
+    public abstract class BaseOptimizerTest<T>
     {
         protected void AssertFilterConditionsEqual(IFilterCondition expected, IFilterCondition actual)
         {

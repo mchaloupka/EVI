@@ -8,6 +8,7 @@ using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
 using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
 using TCode.r2rml4net.Mapping;
+using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
@@ -28,7 +29,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
         /// <summary>
         /// The implementation class for <see cref="TriplePatternOptimizer"/>
         /// </summary>
-        private class TriplePatternOptimizerImplementation
+        public class TriplePatternOptimizerImplementation
             : BaseSparqlOptimizerImplementation<object>
         {
             /// <summary>
@@ -64,7 +65,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern) pattern;
 
-                    return CanMatch(nodeMatchPattern, toTransform.SubjectMap);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap);
                 }
                 else
                 {
@@ -85,7 +86,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern)pattern;
 
-                    return CanMatch(nodeMatchPattern, toTransform.PredicateMap);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap);
                 }
                 else
                 {
@@ -119,7 +120,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
 
                 if (pattern is NodeMatchPattern)
                 {
-                    return CanMatch((NodeMatchPattern)pattern, r2RmlDef);
+                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef);
                 }
 
                 return true;
@@ -130,7 +131,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
             /// </summary>
             /// <param name="nodeMatchPattern">The match pattern.</param>
             /// <param name="termMap">The mapping.</param>
-            private bool CanMatch(NodeMatchPattern nodeMatchPattern, ITermMap termMap)
+            public bool CanMatch(INode nodeMatchPattern, ITermMap termMap)
             {
                 return true;
             }
