@@ -40,7 +40,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
@@ -66,7 +66,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
@@ -93,7 +93,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
@@ -124,7 +124,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ConjunctionCondition(new List<IFilterCondition>()
             {
@@ -157,7 +157,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
@@ -183,7 +183,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
@@ -210,7 +210,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = (new EqualExpressionCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
@@ -240,7 +240,7 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
 
             var condition = new EqualExpressionCondition(left, right);
 
-            var result = optimizer.Transform(condition, GetContext(queryContext));
+            var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new EqualExpressionCondition(
                 new ConcatenationExpression(new List<IExpression>()

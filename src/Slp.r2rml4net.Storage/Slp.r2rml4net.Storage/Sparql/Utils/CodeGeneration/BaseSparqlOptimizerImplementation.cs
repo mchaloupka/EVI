@@ -25,11 +25,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         {
             if (toTransform is IModifier)
             {
-                return Transform((IModifier)toTransform, data);
+                return TransformModifier((IModifier)toTransform, data);
             }
             else if (toTransform is IGraphPattern)
             {
-                return Transform((IGraphPattern)toTransform, data);
+                return TransformGraphPattern((IGraphPattern)toTransform, data);
             }
             else
             {

@@ -20,7 +20,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <param name="instance">The instance to tranform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public TR Transform(IGraphPattern instance, T data)
+        public TR TransformGraphPattern(IGraphPattern instance, T data)
         {
             return (TR)instance.Accept(this, data);
         }

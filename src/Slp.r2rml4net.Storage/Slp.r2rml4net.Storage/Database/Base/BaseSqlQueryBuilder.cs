@@ -181,7 +181,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
 
                     var sourceCondition = sourceConditions[i];
 
-                    Transform(sourceCondition, data);
+                    TransformSourceCondition(sourceCondition, data);
                     data.StringBuilder.Append(" AS ");
                     data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                 }
@@ -200,7 +200,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                         data.StringBuilder.Append(" AND ");
                     }
 
-                    Transform(filterConditions[i], data);
+                    TransformFilterCondition(filterConditions[i], data);
                 }
             }
 
@@ -263,7 +263,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     data.StringBuilder.Append(" AND ");
                 }
 
-                Transform(innerConditions[i], data);
+                TransformFilterCondition(innerConditions[i], data);
             }
 
             data.StringBuilder.Append(")");
@@ -289,7 +289,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     data.StringBuilder.Append(" OR ");
                 }
 
-                Transform(innerConditions[i], data);
+                TransformFilterCondition(innerConditions[i], data);
             }
 
             data.StringBuilder.Append(")");
@@ -308,8 +308,8 @@ namespace Slp.r2rml4net.Storage.Database.Base
             var rightExpr = toTransform.RightOperand;
 
             TransformEqualCondition(
-                () => Transform(leftExpr, data),
-                () => Transform(rightExpr, data),
+                () => TransformExpression(leftExpr, data),
+                () => TransformExpression(rightExpr, data),
                 x => data.StringBuilder.Append(x),
                 leftExpr.SqlType,
                 rightExpr.SqlType);
@@ -391,7 +391,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         protected override object Transform(NegationCondition toTransform, VisitorContext data)
         {
             data.StringBuilder.Append("NOT ");
-            Transform(toTransform.InnerCondition, data);
+            TransformFilterCondition(toTransform.InnerCondition, data);
             return null;
         }
 
@@ -403,7 +403,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(TupleFromSourceCondition toTransform, VisitorContext data)
         {
-            Transform(toTransform.Source, data);
+            TransformCalculusSource(toTransform.Source, data);
             return null;
         }
 
@@ -430,7 +430,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     data.StringBuilder.Append(" UNION ALL ");
                 }
 
-                Transform(calculusSource, data);
+                TransformCalculusSource(calculusSource, data);
             }
 
             data.StringBuilder.Append(")");
@@ -470,12 +470,12 @@ namespace Slp.r2rml4net.Storage.Database.Base
 
                 if (parts[i].SqlType.IsString)
                 {
-                    Transform(parts[i], data);
+                    TransformExpression(parts[i], data);
                 }
                 else
                 {
                     data.StringBuilder.Append("CAST(");
-                    Transform(parts[i], data);
+                    TransformExpression(parts[i], data);
                     data.StringBuilder.Append(" AS nvarchar(MAX))");
                 }
             }
@@ -557,7 +557,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             /// <returns>The returned data</returns>
             public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
             {
-                QueryBuilder.Transform(assignmentFromExpressionCondition.Expression, (VisitorContext) data);
+                QueryBuilder.TransformExpression(assignmentFromExpressionCondition.Expression, (VisitorContext) data);
                 return null;
             }
 

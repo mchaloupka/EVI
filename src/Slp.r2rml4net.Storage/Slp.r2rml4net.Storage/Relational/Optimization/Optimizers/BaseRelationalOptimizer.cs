@@ -97,7 +97,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         protected override IAssignmentCondition CommonPostTransform(IAssignmentCondition transformed, IAssignmentCondition toTransform,
             OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformAssignmentCondition(transformed, data), toTransform, data);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <returns>The postprocessed transformation result</returns>
         protected override IExpression CommonPostTransform(IExpression transformed, IExpression toTransform, OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformExpression(transformed, data), toTransform, data);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         protected override ISourceCondition CommonPostTransform(ISourceCondition transformed, ISourceCondition toTransform,
             OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformSourceCondition(transformed, data), toTransform, data);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <returns>The postprocessed transformation result</returns>
         protected override ICalculusSource CommonPostTransform(ICalculusSource transformed, ICalculusSource toTransform, OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformCalculusSource(transformed, data), toTransform, data);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         protected override IFilterCondition CommonPostTransform(IFilterCondition transformed, IFilterCondition toTransform,
             OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformFilterCondition(transformed, data), toTransform, data);
         }
     }
 }

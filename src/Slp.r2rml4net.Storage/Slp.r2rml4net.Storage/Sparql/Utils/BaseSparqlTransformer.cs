@@ -27,11 +27,11 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         {
             if (instance is IModifier)
             {
-                return Transform((IModifier)instance, data);
+                return TransformModifier((IModifier)instance, data);
             }
             else if (instance is IGraphPattern)
             {
-                return Transform((IGraphPattern)instance, data);
+                return TransformGraphPattern((IGraphPattern)instance, data);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(FilterPattern toTransform, T data)
         {
-            var newInner = Transform(toTransform.InnerPattern, data);
+            var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
             if (newInner is NotMatchingPattern)
             {
@@ -102,7 +102,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(GraphPattern toTransform, T data)
         {
-            var newInner = Transform(toTransform.InnerPattern, data);
+            var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
             if (newInner is NotMatchingPattern)
             {
@@ -131,7 +131,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
 
             foreach (IGraphPattern oldPattern in toTransform.JoinedGraphPatterns)
             {
-                var newPattern = Transform(oldPattern, data);
+                var newPattern = TransformGraphPattern(oldPattern, data);
 
                 if (newPattern is NotMatchingPattern)
                 {
@@ -178,8 +178,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(LeftJoinPattern toTransform, T data)
         {
-            var newLeftOperand = Transform(toTransform.LeftOperand, data);
-            var newRightOperand = Transform(toTransform.RightOperand, data);
+            var newLeftOperand = TransformGraphPattern(toTransform.LeftOperand, data);
+            var newRightOperand = TransformGraphPattern(toTransform.RightOperand, data);
 
             if (newLeftOperand is NotMatchingPattern)
             {
@@ -208,8 +208,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(MinusPattern toTransform, T data)
         {
-            var newLeftOperand = Transform(toTransform.LeftOperand, data);
-            var newRightOperand = Transform(toTransform.RightOperand, data);
+            var newLeftOperand = TransformGraphPattern(toTransform.LeftOperand, data);
+            var newRightOperand = TransformGraphPattern(toTransform.RightOperand, data);
 
             if (newLeftOperand is NotMatchingPattern
                 || newLeftOperand is EmptyPattern
@@ -254,7 +254,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
 
             foreach (IGraphPattern oldPattern in toTransform.UnionedGraphPatterns)
             {
-                var newPattern = Transform(oldPattern, data);
+                var newPattern = TransformGraphPattern(oldPattern, data);
 
                 if (newPattern is NotMatchingPattern)
                 {

@@ -93,7 +93,7 @@ namespace <#= namespaceName #>
         /// <param name="instance">The instance to tranform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public TR Transform(<#= parameterType #> instance, T data)
+        public TR Transform<#= parameterType.Substring(1) #>(<#= parameterType #> instance, T data)
         {
             return (TR)instance.Accept(this, data);
         }

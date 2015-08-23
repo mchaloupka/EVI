@@ -38,7 +38,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var sourceCondition in toTransform.SourceConditions)
             {
-                var newCondition = Transform(sourceCondition, data);
+                var newCondition = TransformSourceCondition(sourceCondition, data);
                 newConditions.Add(newCondition);
 
                 if (newCondition != sourceCondition)
@@ -49,7 +49,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var assignmentCondition in toTransform.AssignmentConditions)
             {
-                var newCondition = Transform(assignmentCondition, data);
+                var newCondition = TransformAssignmentCondition(assignmentCondition, data);
                 newConditions.Add(newCondition);
 
                 if (newCondition != assignmentCondition)
@@ -62,7 +62,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var filterCondition in toTransform.FilterConditions)
             {
-                var newCondition = Transform(filterCondition, data);
+                var newCondition = TransformFilterCondition(filterCondition, data);
                 if (newCondition is AlwaysTrueCondition)
                 {
                     changed = true;
@@ -149,7 +149,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var condition in toTransform.InnerConditions)
             {
-                var newCondition = Transform(condition, data);
+                var newCondition = TransformFilterCondition(condition, data);
 
                 if (newCondition is AlwaysFalseCondition)
                 {
@@ -206,7 +206,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var condition in toTransform.InnerConditions)
             {
-                var newCondition = Transform(condition, data);
+                var newCondition = TransformFilterCondition(condition, data);
 
                 if (newCondition is AlwaysTrueCondition)
                 {
@@ -258,8 +258,8 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override IFilterCondition Transform(EqualExpressionCondition toTransform, T data)
         {
-            var newLeftOperand = Transform(toTransform.LeftOperand, data);
-            var newRightOperand = Transform(toTransform.RightOperand, data);
+            var newLeftOperand = TransformExpression(toTransform.LeftOperand, data);
+            var newRightOperand = TransformExpression(toTransform.RightOperand, data);
 
             if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand)
             {
@@ -301,7 +301,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override IFilterCondition Transform(NegationCondition toTransform, T data)
         {
-            var newInner = Transform(toTransform.InnerCondition, data);
+            var newInner = TransformFilterCondition(toTransform.InnerCondition, data);
 
             if (newInner is NegationCondition)
             {
@@ -333,7 +333,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override ISourceCondition Transform(TupleFromSourceCondition toTransform, T data)
         {
-            var newSource = Transform(toTransform.Source, data);
+            var newSource = TransformCalculusSource(toTransform.Source, data);
 
             if (newSource != toTransform.Source)
             {
@@ -358,7 +358,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var calculusSource in toTransform.Sources)
             {
-                var newSource = Transform(calculusSource, data);
+                var newSource = TransformCalculusSource(calculusSource, data);
 
                 newSources.Add(newSource);
 
@@ -402,7 +402,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
 
             foreach (var innerExpression in toTransform.InnerExpressions)
             {
-                var newExpression = Transform(innerExpression, data);
+                var newExpression = TransformExpression(innerExpression, data);
 
                 innerExpressions.Add(newExpression);
 
@@ -441,7 +441,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override IAssignmentCondition Transform(AssignmentFromExpressionCondition toTransform, T data)
         {
-            var newExpression = Transform(toTransform.Expression, data);
+            var newExpression = TransformExpression(toTransform.Expression, data);
 
             if (newExpression != toTransform.Expression)
             {

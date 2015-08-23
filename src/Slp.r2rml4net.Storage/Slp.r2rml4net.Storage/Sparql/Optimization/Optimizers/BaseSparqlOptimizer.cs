@@ -91,7 +91,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
         /// <returns>The postprocessed transformation result</returns>
         protected override IGraphPattern CommonPostTransform(IGraphPattern transformed, IGraphPattern toTransform, OptimizationContext data)
         {
-            return base.CommonPostTransform(_optimizerImplementation.Transform(transformed, data), toTransform, data);
+            return base.CommonPostTransform(_optimizerImplementation.TransformGraphPattern(transformed, data), toTransform, data);
         }
 
         /// <summary>

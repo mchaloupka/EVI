@@ -21,7 +21,7 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <param name="instance">The instance to tranform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public TR Transform(ISourceCondition instance, T data)
+        public TR TransformSourceCondition(ISourceCondition instance, T data)
         {
             return (TR)instance.Accept(this, data);
         }
