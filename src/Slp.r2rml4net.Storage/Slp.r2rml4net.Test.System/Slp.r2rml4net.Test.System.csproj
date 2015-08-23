@@ -110,7 +110,9 @@
     <None Include="SPARQL\SPARQL_TestSuite\Data\Students\student_names.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Students\student_names.srx" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Students\student_names.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\_SparqlTests\aggregates\agg-avg-01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

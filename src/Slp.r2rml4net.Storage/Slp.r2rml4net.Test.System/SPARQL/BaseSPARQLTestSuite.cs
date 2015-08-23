@@ -237,6 +237,11 @@ namespace Slp.r2rml4net.Test.System.SPARQL
                     string uri = element.Value;
                     return resultSetHandler.CreateUriNode(new Uri(uri));
                 }
+                else if (element.Name.LocalName == "string")
+                {
+                    string value = element.Value;
+                    return resultSetHandler.CreateLiteralNode(value);
+                }
             }
 
             throw new NotImplementedException();
