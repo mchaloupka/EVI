@@ -184,10 +184,11 @@
     <Compile Include="Sparql\Algebra\Patterns\TriplePattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\RestrictedTriplePattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
-    <Compile Include="Sparql\Algebra\SparqlBuilder.cs" />
     <Compile Include="Query\QueryContext.cs" />
+    <Compile Include="Sparql\Builder\SparqlBuilder.cs" />
     <Compile Include="Sparql\Optimization\ISparqlOptimizer.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\BaseSparqlOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
       <AutoGen>True</AutoGen>

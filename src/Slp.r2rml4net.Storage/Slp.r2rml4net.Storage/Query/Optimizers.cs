@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Optimization;
 
 namespace Slp.r2rml4net.Storage.Query
 {
@@ -22,6 +24,11 @@ namespace Slp.r2rml4net.Storage.Query
         private List<IRelationalOptimizer> _relationalOptimizers;
 
         /// <summary>
+        /// The SPARQL optimizers
+        /// </summary>
+        private List<ISparqlOptimizer> _sparqlOptimizers;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Optimizers" /> class.
         /// </summary>
         /// <param name="factory">The factory.</param>
@@ -30,6 +37,7 @@ namespace Slp.r2rml4net.Storage.Query
         {
             _context = context;
             this._relationalOptimizers = new List<IRelationalOptimizer>(factory.GetRelationalOptimizers());
+            this._sparqlOptimizers = new List<ISparqlOptimizer>(factory.GetSparqlOptimizers());
         }
 
         /// <summary>
@@ -39,14 +47,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <returns>The optimized algebra.</returns>
         public RelationalQuery Optimize(RelationalQuery algebra)
         {
-            var currentAlgebra = algebra;
-
-            foreach (var relationalOptimizer in _relationalOptimizers)
-            {
-                currentAlgebra = relationalOptimizer.Optimize(currentAlgebra, _context);
-            }
-
-            return currentAlgebra;
+            return _relationalOptimizers.Aggregate(algebra, (current, optimizer) => optimizer.Optimize(current, _context));
         }
 
         /// <summary>
@@ -56,9 +57,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <returns>The optimized SPARQL query.</returns>
         public ISparqlQuery Optimize(ISparqlQuery algebra)
         {
-            var currentAlgebra = algebra;
-
-            return currentAlgebra;
+            return _sparqlOptimizers.Aggregate(algebra, (current, optimizer) => optimizer.Optimize(current, _context));
         }
     }
 }

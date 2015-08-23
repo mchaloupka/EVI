@@ -8,6 +8,9 @@ using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Builder;
+using Slp.r2rml4net.Storage.Sparql.Optimization;
+using Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -75,6 +78,14 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public virtual IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
         {
             yield return new ConcatenationInEqualConditionOptimizer();
+        }
+
+        /// <summary>
+        /// Gets the SPARQL optimizers.
+        /// </summary>
+        public IEnumerable<ISparqlOptimizer> GetSparqlOptimizers()
+        {
+            yield return new TriplePatternOptimizer();
         }
     }
 }

@@ -7,6 +7,7 @@ using Slp.r2rml4net.Storage.Mapping;
 using Slp.r2rml4net.Storage.Relational.Builder;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Builder;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -382,9 +383,6 @@ namespace Slp.r2rml4net.Storage.Query
         private RelationalQuery GenerateSqlAlgebra(QueryContext context)
         {
             var algebra = _sparqlBuilder.Process(context);
-
-            // Transform using R2RML
-            algebra = _mapping.ProcessAlgebra(algebra, context);
 
             // TODO: Transform graph and from statements
 

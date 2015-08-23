@@ -41,14 +41,13 @@ namespace Slp.r2rml4net.Storage.Mapping
         /// <summary>
         /// Processes the SPARQL algebra.
         /// </summary>
-        /// <param name="algebra">The SPARQL algebra.</param>
+        /// <param name="graphPattern">The SPARQL algebra.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The processed SPARQL algebra.</returns>
-        public ISparqlQuery ProcessAlgebra(ISparqlQuery algebra, QueryContext context)
+        public IGraphPattern ProcessPattern(IGraphPattern graphPattern, QueryContext context)
         {
             var transformer = new MappingTransformer(this);
-
-            return transformer.TransformSparqlQuery(algebra, context);
+            return transformer.TransformGraphPattern(graphPattern, context);
         }
     }
 }

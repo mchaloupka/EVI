@@ -7,6 +7,8 @@ using Slp.r2rml4net.Storage.Relational.Builder;
 using Slp.r2rml4net.Storage.Relational.Optimization;
 using Slp.r2rml4net.Storage.Sparql;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
+using Slp.r2rml4net.Storage.Sparql.Builder;
+using Slp.r2rml4net.Storage.Sparql.Optimization;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -56,5 +58,10 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         /// Gets the relational optimizers.
         /// </summary>
         IEnumerable<IRelationalOptimizer> GetRelationalOptimizers();
+
+        /// <summary>
+        /// Gets the SPARQL optimizers.
+        /// </summary>
+        IEnumerable<ISparqlOptimizer> GetSparqlOptimizers();
     }
 }

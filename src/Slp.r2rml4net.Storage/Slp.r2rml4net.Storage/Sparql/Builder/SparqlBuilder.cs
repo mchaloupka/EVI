@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Utils;
-using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.r2rml4net.Storage.Sparql.Builder
 {
     /// <summary>
     /// SPARQL algebra builder.
@@ -109,24 +103,24 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
 
                 if (!orSel.IsSelectAll)
                 {
-                    return new SelectModifier(innerAlgebra, orSel.SparqlVariables.Select(x => x.Name).ToList());
+                    return context.Optimizers.Optimize(new SelectModifier(innerAlgebra, orSel.SparqlVariables.Select(x => x.Name).ToList()));
                 }
                 else
                 {
-                    return new SelectModifier(innerAlgebra, innerAlgebra.Variables);
+                    return context.Optimizers.Optimize(new SelectModifier(innerAlgebra, innerAlgebra.Variables));
                 }
             }
             else if (originalAlgebra is IBgp)
             {
                 var orBgp = (IBgp)originalAlgebra;
-                return ProcessTriplePatterns(orBgp.TriplePatterns, context);
+                return context.Optimizers.Optimize(ProcessTriplePatterns(orBgp.TriplePatterns, context));
             }
             else if (originalAlgebra is Union)
             {
                 var orUnion = (Union)originalAlgebra;
                 var left = (IGraphPattern)ProcessAlgebra(orUnion.Lhs, context);
                 var right = (IGraphPattern)ProcessAlgebra(orUnion.Rhs, context);
-                return new UnionPattern(new IGraphPattern[] { left, right });
+                return context.Optimizers.Optimize(new UnionPattern(new IGraphPattern[] { left, right }));
             }
 
             throw new NotImplementedException();
@@ -188,19 +182,18 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
 
         }
 
-        private ISparqlQuery ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
+        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
         {
             List<IGraphPattern> joinedQueries = new List<IGraphPattern>();
 
-            foreach (var part in triplePatterns.OfType<VDS.RDF.Query.Patterns.TriplePattern>())
+            foreach (var triplePattern in triplePatterns.OfType<VDS.RDF.Query.Patterns.TriplePattern>())
             {
-                var triplePattern = (VDS.RDF.Query.Patterns.TriplePattern)part;
-                var processed = new Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
+                var processed = new Algebra.Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
                     triplePattern.Object);
                 joinedQueries.Add(processed);
             }
 
-            ISparqlQuery currentQuery;
+            IGraphPattern currentQuery;
             if (joinedQueries.Count == 0)
             {
                 currentQuery = new EmptyPattern();
@@ -224,7 +217,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Algebra
             //    //SubQueryPattern
             //    //TriplePattern
 
-            return currentQuery;
+            return context.Mapping.ProcessPattern(currentQuery, context);
         }
     }
 }

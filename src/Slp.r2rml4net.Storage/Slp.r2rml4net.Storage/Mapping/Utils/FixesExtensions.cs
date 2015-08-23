@@ -42,27 +42,5 @@ namespace Slp.r2rml4net.Storage.Mapping.Utils
 
             //return refObjectPattern.JoinConditions;
         }
-
-        /// <summary>
-        /// Gets the parent triples map.
-        /// </summary>
-        /// <param name="refObjectPattern">The reference object pattern.</param>
-        /// <param name="mapping">The mapping.</param>
-        /// <returns>ITriplesMap.</returns>
-        /// <exception cref="System.Exception">Parent triples map not found</exception>
-        public static ITriplesMap GetParentTriplesMap(this IRefObjectMap refObjectPattern, IR2RML mapping)
-        {
-            // TODO: Remove this method as soon as the reference will be public
-
-            var subjectMap = refObjectPattern.SubjectMap;
-
-            foreach (var tripleMap in mapping.TriplesMaps)
-            {
-                if (tripleMap.SubjectMap == subjectMap)
-                    return tripleMap;
-            }
-
-            throw new Exception("Parent triples map not found");
-        }
     }
 }
