@@ -55,7 +55,20 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// <param name="context">The context.</param>
         public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
         {
-            throw new NotImplementedException();
+            var columnName = context.QueryNamingHelpers.GetVariableName(null, CaseVariable);
+            var column = rowData.GetColumn(columnName);
+            var value = (int) column.Value;
+
+            var selectedCase = Cases.FirstOrDefault(x => x.CaseValue == value);
+
+            if (selectedCase != null)
+            {
+                return selectedCase.ValueBinder.LoadNode(nodeFactory, rowData, context);
+            }
+            else
+            {
+                throw new Exception("Every row should be in some case");
+            }
         }
 
         /// <summary>

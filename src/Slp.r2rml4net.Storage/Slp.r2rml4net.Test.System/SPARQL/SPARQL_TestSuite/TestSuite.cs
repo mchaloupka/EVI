@@ -34,7 +34,6 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void simple_union()
         {
