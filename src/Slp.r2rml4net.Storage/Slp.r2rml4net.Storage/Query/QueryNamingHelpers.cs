@@ -4,6 +4,7 @@ using System.Linq;
 using Slp.r2rml4net.Storage.Database.Base;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions;
+using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
 using VDS.RDF.Parsing;
@@ -110,6 +111,21 @@ namespace Slp.r2rml4net.Storage.Query
         }
 
         /// <summary>
+        /// Adds the assignment condition.
+        /// </summary>
+        /// <param name="calculusModel">The calculus model.</param>
+        /// <param name="assignmentCondition">The assignment condition.</param>
+        public void AddAssignmentCondition(CalculusModel calculusModel, IAssignmentCondition assignmentCondition)
+        {
+            if (!_calculusModelSpecificDatas.ContainsKey(calculusModel))
+            {
+                _calculusModelSpecificDatas.Add(calculusModel, new CalculusModelSpecificData());
+            }
+
+            assignmentCondition.Accept(new AddAssignmentCondition_Visitor(), _calculusModelSpecificDatas[calculusModel]);
+        }
+
+        /// <summary>
         /// Gets the tuple from source condtion.
         /// </summary>
         /// <param name="parentModel">The parent model.</param>
@@ -190,11 +206,11 @@ namespace Slp.r2rml4net.Storage.Query
         {
             public CalculusModelSpecificData()
             {
-                _variableConditions = new Dictionary<ICalculusVariable, ISourceCondition>();
+                _variableConditions = new Dictionary<ICalculusVariable, ICondition>();
                 _sourceConditions = new Dictionary<ICalculusSource, ISourceCondition>();
             }
 
-            private readonly Dictionary<ICalculusVariable, ISourceCondition> _variableConditions;
+            private readonly Dictionary<ICalculusVariable, ICondition> _variableConditions;
 
             private readonly Dictionary<ICalculusSource, ISourceCondition> _sourceConditions;
 
@@ -208,9 +224,16 @@ namespace Slp.r2rml4net.Storage.Query
                 _sourceConditions.Add(tupleFromSourceCondition.Source, tupleFromSourceCondition);
             }
 
-            public ISourceCondition GetSourceOfVariable(ICalculusVariable variable)
+            public ICondition GetSourceOfVariable(ICalculusVariable variable)
             {
-                return _variableConditions[variable];
+                if (_variableConditions.ContainsKey(variable))
+                {
+                    return _variableConditions[variable];
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             public ISourceCondition GetSourceCondition(ICalculusSource calculusSource)
@@ -230,6 +253,11 @@ namespace Slp.r2rml4net.Storage.Query
                     _sourceConditions.Add(calculusSource, unionedSourcesCondition);
                 }
             }
+
+            public void AddData(AssignmentFromExpressionCondition assignmentFromExpressionCondition)
+            {
+                _variableConditions.Add(assignmentFromExpressionCondition.Variable, assignmentFromExpressionCondition);
+            }
         }
 
         private class AddSourceCondition_Visitor
@@ -244,6 +272,16 @@ namespace Slp.r2rml4net.Storage.Query
             public object Visit(UnionedSourcesCondition unionedSourcesCondition, object data)
             {
                 ((CalculusModelSpecificData)data).AddData(unionedSourcesCondition);
+                return null;
+            }
+        }
+
+        private class AddAssignmentCondition_Visitor
+            : IAssignmentConditionVisitor
+        {
+            public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
+            {
+                ((CalculusModelSpecificData)data).AddData(assignmentFromExpressionCondition);
                 return null;
             }
         }

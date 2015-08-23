@@ -114,6 +114,11 @@ namespace Slp.r2rml4net.Storage.Database.Base
                 data.Context.QueryNamingHelpers.AddSourceCondition(toTransform, sourceCondition);
             }
 
+            foreach (var assignmentCondition in toTransform.AssignmentConditions)
+            {
+                data.Context.QueryNamingHelpers.AddAssignmentCondition(toTransform, assignmentCondition);
+            }
+
             List<ICalculusVariable> neededVariables = new List<ICalculusVariable>();
 
             var parentModel = data.CurrentCalculusModel;
@@ -139,7 +144,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
                     }
 
                     data.StringBuilder.Append(' ');
-                    WriteCalculusVariable(neededVariables[i], data.StringBuilder, toTransform, data.Context);
+                    WriteCalculusVariable(neededVariables[i], toTransform, data);
 
                     data.StringBuilder.Append(" AS ");
 
@@ -324,8 +329,8 @@ namespace Slp.r2rml4net.Storage.Database.Base
             var rightExpr = toTransform.RightVariable;
 
             TransformEqualCondition(
-                () => WriteCalculusVariable(leftExpr, data.StringBuilder, data.CurrentCalculusModel, data.Context),
-                () => WriteCalculusVariable(rightExpr, data.StringBuilder, data.CurrentCalculusModel, data.Context),
+                () => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data),
+                () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data),
                 x => data.StringBuilder.Append(x),
                 leftExpr.SqlType,
                 rightExpr.SqlType);
@@ -372,7 +377,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(IsNullCondition toTransform, VisitorContext data)
         {
-            WriteCalculusVariable(toTransform.Variable, data.StringBuilder, data.CurrentCalculusModel, data.Context);
+            WriteCalculusVariable(toTransform.Variable, data.CurrentCalculusModel, data);
             data.StringBuilder.Append(" IS NULL");
             return null;
         }
@@ -440,7 +445,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(ColumnExpression toTransform, VisitorContext data)
         {
-            WriteCalculusVariable(toTransform.CalculusVariable, data.StringBuilder, data.CurrentCalculusModel, data.Context);
+            WriteCalculusVariable(toTransform.CalculusVariable, data.CurrentCalculusModel, data);
             return null;
         }
 
@@ -495,14 +500,22 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// Writes the calculus variable.
         /// </summary>
         /// <param name="variable">The variable.</param>
-        /// <param name="stringBuilder">The string builder.</param>
         /// <param name="currentModel">The current model.</param>
-        /// <param name="context">The context.</param>
-        private void WriteCalculusVariable(ICalculusVariable variable, StringBuilder stringBuilder, CalculusModel currentModel, QueryContext context)
+        /// <param name="data"></param>
+        /// 
+        /// 
+        private void WriteCalculusVariable(ICalculusVariable variable, CalculusModel currentModel, VisitorContext data)
         {
+            var stringBuilder = data.StringBuilder;
+            var context = data.Context;
+
             var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
 
-            if (variableSource is ISourceCondition)
+            if (variableSource == null)
+            {
+                stringBuilder.Append("NULL");
+            }
+            else if (variableSource is ISourceCondition)
             {
                 var sourceCondition = (ISourceCondition)variableSource;
 
@@ -512,12 +525,47 @@ namespace Slp.r2rml4net.Storage.Database.Base
             }
             else if (variableSource is IAssignmentCondition)
             {
-                throw new NotImplementedException();
+                var assignmentCondition = (IAssignmentCondition) variableSource;
+                assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
             }
             else
             {
                 throw new ArgumentException("Unexpected variable source", "variable");
             }
+        }
+
+        /// <summary>
+        /// Visitor for writing the calculus variable comming from assignment condition
+        /// </summary>
+        private class WriteCalculusVariable_Assignment_Visitor
+            : IAssignmentConditionVisitor
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WriteCalculusVariable_Assignment_Visitor"/> class.
+            /// </summary>
+            /// <param name="queryBuilder">The query builder.</param>
+            public WriteCalculusVariable_Assignment_Visitor(BaseSqlQueryBuilder queryBuilder)
+            {
+                QueryBuilder = queryBuilder;
+            }
+
+            /// <summary>
+            /// Visits <see cref="AssignmentFromExpressionCondition"/>
+            /// </summary>
+            /// <param name="assignmentFromExpressionCondition">The visited instance</param>
+            /// <param name="data">The passed data</param>
+            /// <returns>The returned data</returns>
+            public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
+            {
+                QueryBuilder.Transform(assignmentFromExpressionCondition.Expression, (VisitorContext) data);
+                return null;
+            }
+
+            /// <summary>
+            /// Gets or sets the query builder.
+            /// </summary>
+            /// <value>The query builder.</value>
+            public BaseSqlQueryBuilder QueryBuilder { get; private set; }
         }
 
         /// <summary>
