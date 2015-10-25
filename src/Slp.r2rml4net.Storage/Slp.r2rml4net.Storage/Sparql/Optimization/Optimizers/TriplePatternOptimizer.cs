@@ -7,6 +7,8 @@ using Slp.r2rml4net.Storage.Mapping.Utils;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
 using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
 using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
+using Slp.r2rml4net.Storage.Utils;
+using TCode.r2rml4net.Extensions;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
@@ -129,10 +131,61 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
             /// <summary>
             /// Determines whether the pattern can match the mapping.
             /// </summary>
-            /// <param name="nodeMatchPattern">The match pattern.</param>
+            /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
-            public bool CanMatch(INode nodeMatchPattern, ITermMap termMap)
+            public bool CanMatch(INode node, ITermMap termMap)
             {
+                if (termMap.IsConstantValued)
+                {
+                    if (termMap is IUriValuedTermMap)
+                    {
+                        var uriValued = (IUriValuedTermMap)termMap;
+
+                        if (node is IUriNode)
+                        {
+                            var uNode = (IUriNode)node;
+
+                            return uriValued.URI.UriEquals(uNode.Uri);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else if (termMap is IObjectMap)
+                    {
+                        var objectMap = (IObjectMap)termMap;
+
+                        if (objectMap.URI != null)
+                        {
+                            if (node is IUriNode)
+                            {
+                                var uNode = (IUriNode)node;
+
+                                return objectMap.URI.UriEquals(uNode.Uri);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else if (objectMap.Literal != null)
+                        {
+                            if (node.NodeType == NodeType.Uri)
+                                return false;
+                            else if (node.NodeType == NodeType.Literal)
+                            {
+                                // NOTE: Better comparison
+                                var ln = (ILiteralNode)node;
+
+                                return ln.Value == objectMap.Literal;
+                            }
+                        }
+                        else
+                            throw new Exception("IObjectMap must have URI or Literal assigned.");
+                    }
+                }
+
                 return true;
             }
         }

@@ -34,7 +34,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Uri_NoMatch_DifferentUri()
         {
             var node = new Mock<IUriNode>();
@@ -49,7 +48,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Uri_NoMatch_NotUri()
         {
             var node = new Mock<IUriNode>();
@@ -79,7 +77,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Uri_NoMatch_ObjectDifferentUri()
         {
             var node = new Mock<IUriNode>();
@@ -109,7 +106,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Literal_NoMatch_NotLiteral()
         {
             var node = new Mock<ILiteralNode>();
@@ -124,7 +120,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Literal_NoMatch_UriMap()
         {
             var node = new Mock<ILiteralNode>();
@@ -139,7 +134,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void MatchConstantMap_Literal_NoMatch_Different()
         {
             var node = new Mock<ILiteralNode>();
