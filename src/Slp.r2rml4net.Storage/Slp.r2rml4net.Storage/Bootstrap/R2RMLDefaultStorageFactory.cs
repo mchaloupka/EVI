@@ -86,6 +86,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public IEnumerable<ISparqlOptimizer> GetSparqlOptimizers()
         {
             yield return new TriplePatternOptimizer();
+            yield return new UnionJoinOptimizer();
         }
     }
 }

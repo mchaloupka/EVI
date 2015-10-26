@@ -189,6 +189,7 @@
     <Compile Include="Sparql\Optimization\ISparqlOptimizer.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\BaseSparqlOptimizer.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\UnionJoinOptimizer.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
       <AutoGen>True</AutoGen>
