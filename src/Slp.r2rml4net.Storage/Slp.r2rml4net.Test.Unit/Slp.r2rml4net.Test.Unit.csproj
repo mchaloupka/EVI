@@ -91,6 +91,7 @@
     <Compile Include="Relational\Utilities\SqlAlgebraEqualityChecker.cs" />
     <Compile Include="Sparql\Optimization\BaseOptimizerTest.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizerTest.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\UnionJoinOptimizerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage.csproj">

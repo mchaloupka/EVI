@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Bootstrap;
 using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Sparql.Algebra;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -22,6 +23,11 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization
         {
             var factory = new R2RMLDefaultStorageFactory();
             return factory.CreateQueryContext(GenerateSparqlQuery(), null, null, null, null);
+        }
+
+        protected void AssertPatternsEqual(IGraphPattern expected, IGraphPattern result)
+        {
+            throw new NotImplementedException();
         }
     }
 }
