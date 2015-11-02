@@ -46,7 +46,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void JoinOfUnionToJoin()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
@@ -65,7 +64,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void JoinOfUnionToUnionOfJoin()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
@@ -89,6 +87,13 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
             AssertPatternsEqual(expected, result);
         }
 
+        [TestMethod]
+        [Ignore]
+        public void TestMatchVariants()
+        {
+            throw new NotImplementedException();
+        }
+
         private RestrictedTriplePattern CreateTemplatedRestrictedTriplePattern(string subjectVariable, string predicateVariable,
             string objectVariable, string subjectTemplate, string predicateTemplate, string objectTemplate)
         {
@@ -97,21 +102,33 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
             subjectMap.Setup(x => x.IsTemplateValued).Returns(true);
             subjectMap.Setup(x => x.IsColumnValued).Returns(false);
             subjectMap.Setup(x => x.IsColumnValued).Returns(false);
+            subjectMap.Setup(x => x.TermType).Returns(CreateURITermType());
 
             var predicateMap = new Mock<IPredicateMap>();
             predicateMap.Setup(x => x.Template).Returns(predicateTemplate);
             predicateMap.Setup(x => x.IsTemplateValued).Returns(true);
             predicateMap.Setup(x => x.IsColumnValued).Returns(false);
             predicateMap.Setup(x => x.IsColumnValued).Returns(false);
+            predicateMap.Setup(x => x.TermType).Returns(CreateURITermType());
 
             var objectMap = new Mock<IObjectMap>();
             objectMap.Setup(x => x.Template).Returns(objectTemplate);
             objectMap.Setup(x => x.IsTemplateValued).Returns(true);
             objectMap.Setup(x => x.IsColumnValued).Returns(false);
             objectMap.Setup(x => x.IsColumnValued).Returns(false);
+            objectMap.Setup(x => x.TermType).Returns(CreateURITermType());
 
             return new RestrictedTriplePattern(new VariablePattern(subjectVariable), new VariablePattern(predicateVariable),
                 new VariablePattern(objectVariable), null, subjectMap.Object, predicateMap.Object, objectMap.Object, null, null);
+        }
+
+        private ITermType CreateURITermType()
+        {
+            var termType = new Mock<ITermType>();
+            termType.Setup(x => x.IsBlankNode).Returns(false);
+            termType.Setup(x => x.IsLiteral).Returns(false);
+            termType.Setup(x => x.IsURI).Returns(true);
+            return termType.Object;
         }
     }
 }
