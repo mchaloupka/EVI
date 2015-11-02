@@ -45,6 +45,50 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
             AssertPatternsEqual(expected, result);
         }
 
+        [TestMethod]
+        [Ignore]
+        public void JoinOfUnionToJoin()
+        {
+            var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
+            var p2 = CreateTemplatedRestrictedTriplePattern("v2", "p2", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test2.com/{id}");
+            var p3 = CreateTemplatedRestrictedTriplePattern("v3", "p3", "v4", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
+
+            var up1 = new UnionPattern(new IGraphPattern[] { p1, p2 });
+
+            var join = new JoinPattern(new IGraphPattern[] { up1, p3 });
+
+            var result = _optimizerImplementation.TransformGraphPattern(join, new BaseSparqlOptimizer<object>.OptimizationContext());
+
+            var expected = new JoinPattern(new IGraphPattern[] {p1, p3});
+
+            AssertPatternsEqual(expected, result);
+        }
+
+        [TestMethod]
+        [Ignore]
+        public void JoinOfUnionToUnionOfJoin()
+        {
+            var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
+            var p2 = CreateTemplatedRestrictedTriplePattern("v2", "p2", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test2.com/{id}");
+            var p3 = CreateTemplatedRestrictedTriplePattern("v3", "p3", "v4", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
+            var p4 = CreateTemplatedRestrictedTriplePattern("v3", "p3", "v4", "http://test2.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
+
+            var up1 = new UnionPattern(new IGraphPattern[] { p1, p2 });
+            var up2 = new UnionPattern(new IGraphPattern[] { p3, p4 });
+
+            var join = new JoinPattern(new IGraphPattern[] { up1, up2 });
+
+            var result = _optimizerImplementation.TransformGraphPattern(join, new BaseSparqlOptimizer<object>.OptimizationContext());
+
+            var expected = new UnionPattern(new IGraphPattern[]
+            {
+                new JoinPattern(new IGraphPattern[] {p1, p3}),
+                new JoinPattern(new IGraphPattern[] {p2, p4}),
+            });
+
+            AssertPatternsEqual(expected, result);
+        }
+
         private RestrictedTriplePattern CreateTemplatedRestrictedTriplePattern(string subjectVariable, string predicateVariable,
             string objectVariable, string subjectTemplate, string predicateTemplate, string objectTemplate)
         {
