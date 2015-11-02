@@ -96,7 +96,64 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization
 
         protected override bool Transform(RestrictedTriplePattern toTransform, object data)
         {
-            throw new NotImplementedException();
+            var other = data as RestrictedTriplePattern;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (!BagCollectionEqual(toTransform.Variables, other.Variables, (x, y) => x == y))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.GraphMap, other.GraphMap))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.PredicateMap, other.PredicateMap))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.PredicatePattern, other.PredicatePattern))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.RefObjectMap, other.RefObjectMap))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.ObjectMap, other.ObjectMap))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.ObjectPattern, other.ObjectPattern))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.SubjectMap, other.SubjectMap))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.SubjectPattern, other.SubjectPattern))
+            {
+                return false;
+            }
+
+            if (!object.Equals(toTransform.TripleMap, other.TripleMap))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private bool BagCollectionEqual<T>(IEnumerable<T> leftItemsCollection, IEnumerable<T> rightItemsCollection, Func<T, T, bool> compareFunc)

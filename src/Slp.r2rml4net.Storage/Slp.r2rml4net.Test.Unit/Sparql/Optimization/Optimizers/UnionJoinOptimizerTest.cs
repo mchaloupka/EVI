@@ -24,7 +24,6 @@ namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
         }
 
         [TestMethod]
-        [Ignore]
         public void JoinOfUnionToUnionOfJoins()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
