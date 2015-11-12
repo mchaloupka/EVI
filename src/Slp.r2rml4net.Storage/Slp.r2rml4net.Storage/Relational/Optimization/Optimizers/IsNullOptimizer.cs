@@ -49,20 +49,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <summary>
         /// The is null columns
         /// </summary>
-        private readonly Dictionary<ICalculusVariable, IsNullCondition> _isNullConditions;
+        private readonly Dictionary<ICalculusVariable, HashSet<IsNullCondition>> _isNullConditions;
 
         /// <summary>
         /// The is not null columns
         /// </summary>
-        private readonly Dictionary<ICalculusVariable, IsNullCondition> _isNotNullConditions;
+        private readonly Dictionary<ICalculusVariable, HashSet<IsNullCondition>> _isNotNullConditions;
 
         /// <summary>
         /// Creates an instance of <see cref="IsNullOptimizerAggregatedValues"/>
         /// </summary>
         public IsNullOptimizerAggregatedValues()
         {
-            _isNullConditions = new Dictionary<ICalculusVariable, IsNullCondition>();
-            _isNotNullConditions = new Dictionary<ICalculusVariable, IsNullCondition>();
+            _isNullConditions = new Dictionary<ICalculusVariable, HashSet<IsNullCondition>>();
+            _isNotNullConditions = new Dictionary<ICalculusVariable, HashSet<IsNullCondition>>();
         }
 
         /// <summary>
@@ -78,12 +78,21 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <summary>
         /// Merges the <paramref name="source"/> dictionary with the <paramref name="with"/> dictionary
         /// </summary>
-        private void MergeWith(Dictionary<ICalculusVariable, IsNullCondition> source, Dictionary<ICalculusVariable, IsNullCondition> with)
+        private void MergeWith(Dictionary<ICalculusVariable, HashSet<IsNullCondition>> source, Dictionary<ICalculusVariable, HashSet<IsNullCondition>> with)
         {
             foreach (var item in with.Keys.ToArray())
             {
-                if (!source.ContainsKey(item))
+                if (source.ContainsKey(item))
+                {
+                    if (source[item].Count > with[item].Count)
+                    {
+                        source[item] = with[item];
+                    }
+                }
+                else
+                {
                     source.Add(item, with[item]);
+                }
             }
         }
 
@@ -100,12 +109,18 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <summary>
         /// Intersects the <paramref name="source"/> dictionary with the <paramref name="with"/> dictionary
         /// </summary>
-        private void IntersectsWith(Dictionary<ICalculusVariable, IsNullCondition> source, Dictionary<ICalculusVariable, IsNullCondition> with)
+        private void IntersectsWith(Dictionary<ICalculusVariable, HashSet<IsNullCondition>> source, Dictionary<ICalculusVariable, HashSet<IsNullCondition>> with)
         {
             foreach (var item in source.Keys.ToArray())
             {
-                if (!with.ContainsKey(item))
+                if (with.ContainsKey(item))
+                {
+                    source[item].UnionWith(with[item]);
+                }
+                else
+                {
                     source.Remove(item);
+                }
             }
         }
 
@@ -126,7 +141,12 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <param name="condition">The condition.</param>
         public void AddIsNullCondition(IsNullCondition condition)
         {
-            _isNullConditions.Add(condition.Variable, condition);
+            if (!_isNullConditions.ContainsKey(condition.Variable))
+            {
+                _isNullConditions.Add(condition.Variable, new HashSet<IsNullCondition>());
+            }
+
+            _isNullConditions[condition.Variable].Add(condition);
         }
 
         /// <summary>
@@ -142,7 +162,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// Determines whether the column is in "is not null list".
         /// </summary>
         /// <param name="calculusVariable">The calculus variable.</param>
-        public bool IsInNullColumns(ICalculusVariable calculusVariable)
+        public bool IsInNullConditions(ICalculusVariable calculusVariable)
         {
             return _isNullConditions.ContainsKey(calculusVariable);
         }
@@ -151,11 +171,11 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// Determines whether the condition is in "is null list" as the reason.
         /// </summary>
         /// <param name="condition">The condition.</param>
-        public bool IsInNullColumns(IsNullCondition condition)
+        public bool IsInNullConditions(IsNullCondition condition)
         {
             if (_isNullConditions.ContainsKey(condition.Variable))
             {
-                return condition == _isNullConditions[condition.Variable];
+                return _isNullConditions[condition.Variable].Contains(condition);
             }
 
             return false;
