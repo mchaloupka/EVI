@@ -88,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Relational\Optimization\BaseOptimizerTest.cs" />
     <Compile Include="Relational\Optimization\Optimizers\ConcatenationInEqualConditionTest.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityTest.cs" />
     <Compile Include="Relational\Utilities\SqlAlgebraEqualityChecker.cs" />
     <Compile Include="Sparql\Optimization\BaseOptimizerTest.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizerTest.cs" />

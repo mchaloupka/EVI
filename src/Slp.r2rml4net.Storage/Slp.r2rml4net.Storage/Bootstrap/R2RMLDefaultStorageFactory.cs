@@ -78,6 +78,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
         public virtual IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
         {
             yield return new ConcatenationInEqualConditionOptimizer();
+            yield return new ConstantExpressionEqualityOptimizer();
         }
 
         /// <summary>
