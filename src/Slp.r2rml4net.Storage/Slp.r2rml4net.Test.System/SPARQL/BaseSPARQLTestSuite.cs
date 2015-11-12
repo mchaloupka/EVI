@@ -215,7 +215,10 @@ namespace Slp.r2rml4net.Test.System.SPARQL
                     var varNane = binding.Attribute("name").Value;
                     var value = GetSparqlValue(binding, handler);
 
-                    set.Add(varNane, value);
+                    if (value != null)
+                    {
+                        set.Add(varNane, value);
+                    }
                 }
 
                 handler.HandleResult(new SparqlResult(set));
@@ -241,6 +244,10 @@ namespace Slp.r2rml4net.Test.System.SPARQL
                 {
                     string value = element.Value;
                     return resultSetHandler.CreateLiteralNode(value);
+                }
+                else if (element.Name.LocalName == "unbound")
+                {
+                    return null;
                 }
             }
 

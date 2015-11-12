@@ -8,7 +8,7 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
     public abstract class TestSuite
         : BaseSPARQLTestSuite
     {
-        protected static readonly string[] StorageNames = new string[] { "simple.xml", "students.xml" };
+        protected static readonly string[] StorageNames = { "simple.xml", "students.xml" };
 
         [TestMethod]
         public void simple_single()
@@ -40,6 +40,18 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\union.rq";
             var resultFile = @"Data\Simple\union.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void simple_empty()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\empty.rq";
+            var resultFile = @"Data\Simple\empty.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
