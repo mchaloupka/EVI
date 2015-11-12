@@ -63,11 +63,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <param name="context">The context.</param>
         public virtual RelationalQuery Optimize(RelationalQuery query, QueryContext context)
         {
-            var modifiedModel = (CalculusModel)Visit(query.Model, new OptimizationContext()
-            {
-                Context = context,
-                Data = CreateInitialData()
-            });
+            var modifiedModel = (CalculusModel)Visit(query.Model, CreateInitialiContext(context));
 
             if (modifiedModel != query.Model)
             {
@@ -77,6 +73,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
             {
                 return query;
             }
+        }
+
+        /// <summary>
+        /// Creates the initial context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected OptimizationContext CreateInitialiContext(QueryContext context)
+        {
+            return new OptimizationContext()
+            {
+                Context = context,
+                Data = CreateInitialData()
+            };
         }
 
         /// <summary>

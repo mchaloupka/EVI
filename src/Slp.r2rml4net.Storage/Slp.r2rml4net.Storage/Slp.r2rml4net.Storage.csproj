@@ -97,6 +97,7 @@
     <Compile Include="R2RMLStorage.cs" />
     <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizer.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
