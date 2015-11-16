@@ -69,15 +69,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(ColumnExpression toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="ColumnExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(ColumnExpression toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -131,15 +141,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(ConcatenationExpression toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="ConcatenationExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(ConcatenationExpression toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -193,15 +213,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(ConstantExpression toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="ConstantExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(ConstantExpression toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 

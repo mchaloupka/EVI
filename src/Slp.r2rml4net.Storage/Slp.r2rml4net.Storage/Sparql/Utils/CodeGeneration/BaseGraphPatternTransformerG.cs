@@ -66,15 +66,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(EmptyPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="EmptyPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(EmptyPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -128,15 +138,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(FilterPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="FilterPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(FilterPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -190,15 +210,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(NotMatchingPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="NotMatchingPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(NotMatchingPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -252,15 +282,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(GraphPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="GraphPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(GraphPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -314,15 +354,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(JoinPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="JoinPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(JoinPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -376,15 +426,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(LeftJoinPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="LeftJoinPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(LeftJoinPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -438,15 +498,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(MinusPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="MinusPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(MinusPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -500,15 +570,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(TriplePattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="TriplePattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(TriplePattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -562,15 +642,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(UnionPattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="UnionPattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(UnionPattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -624,15 +714,25 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(RestrictedTriplePattern toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="RestrictedTriplePattern" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(RestrictedTriplePattern toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 

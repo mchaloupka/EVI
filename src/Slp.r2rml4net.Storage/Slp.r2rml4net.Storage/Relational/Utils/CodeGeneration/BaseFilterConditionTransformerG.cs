@@ -66,15 +66,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(AlwaysFalseCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="AlwaysFalseCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(AlwaysFalseCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -128,15 +138,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(AlwaysTrueCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="AlwaysTrueCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(AlwaysTrueCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -190,15 +210,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(ConjunctionCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="ConjunctionCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(ConjunctionCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -252,15 +282,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(DisjunctionCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="DisjunctionCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(DisjunctionCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -314,15 +354,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(EqualExpressionCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="EqualExpressionCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(EqualExpressionCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -376,15 +426,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(EqualVariablesCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="EqualVariablesCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(EqualVariablesCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -438,15 +498,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(IsNullCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="IsNullCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(IsNullCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
@@ -500,15 +570,25 @@ namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
         /// <returns>The returned data</returns>
         public object Visit(NegationCondition toVisit, object data)
         {
-            var tData = (T)data;
-            if(ShouldTransform(toVisit, tData))
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="NegationCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(NegationCondition toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
             {
-                var transformed = Transform(toVisit, tData);
-                return PostTransform(transformed, toVisit, tData);
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
             }
             else
             {
-                return FallbackTransform(toVisit, tData);
+                return FallbackTransform(toVisit, data);
             }
         }
 
