@@ -123,6 +123,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         }
 
         /// <summary>
+        /// Determines whether the condition is in "is not null list" as the reason.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        public bool IsInNotNullConditions(IsNullCondition condition)
+        {
+            if (_isNotNullConditions.ContainsKey(condition.Variable))
+            {
+                return _isNotNullConditions[condition.Variable].Contains(condition);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether the column is in "is not null list".
         /// </summary>
         /// <param name="calculusVariable">The calculus variable.</param>

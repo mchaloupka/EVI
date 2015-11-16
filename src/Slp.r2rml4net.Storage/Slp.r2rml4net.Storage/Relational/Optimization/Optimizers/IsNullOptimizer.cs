@@ -68,21 +68,6 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         }
 
         /// <summary>
-        /// Checks whether the analysis result is present.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="analyzeResult">The analysis result.</param>
-        private void CheckPresentAnalysisResult(ICalculusSource source, IsNullOptimizerAnalyzeResult analyzeResult)
-        {
-            if (!analyzeResult.HasValueForSource(source))
-            {
-                var newAnalyzeResult = new IsNullOptimizerAnalyzeResult(source);
-                IsNullCalculator.TransformCalculusSource(source, newAnalyzeResult);
-                newAnalyzeResult.CopyTo(analyzeResult);
-            }
-        }
-
-        /// <summary>
         /// Processes the visit of <see cref="SqlTable" />
         /// </summary>
         /// <param name="toVisit">The visited instance</param>
@@ -93,6 +78,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
             data.Data.PushCurrentSource(toVisit);
             var result = base.ProcessVisit(toVisit, data);
             data.Data.PopCurrentSource();
+            return result;
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="NegationCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected override IFilterCondition ProcessVisit(NegationCondition toVisit, OptimizationContext data)
+        {
+            data.Data.EnterNegationCondition();
+            var result = base.ProcessVisit(toVisit, data);
+            data.Data.LeaveNegationCondition();
             return result;
         }
 
@@ -149,13 +148,30 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
 
                 var analysisData = data.Data.GetCurrentValue();
 
-                if (analysisData.IsInNotNullConditions(toTransform.Variable))
+                Func<ICalculusVariable, bool> isInNullCondition = null;
+                Func<ICalculusVariable, bool> isInNotNullCondition = null;
+                Func<IsNullCondition, bool> isTheReasonFunc = null;
+
+                if (data.Data.IsCurrentlyNegated)
+                {
+                    isInNotNullCondition = x => analysisData.IsInNullConditions(x);
+                    isInNullCondition = x => analysisData.IsInNotNullConditions(x);
+                    isTheReasonFunc = x => analysisData.IsInNotNullConditions(x);
+                }
+                else
+                {
+                    isInNullCondition = x => analysisData.IsInNullConditions(x);
+                    isInNotNullCondition = x => analysisData.IsInNotNullConditions(x);
+                    isTheReasonFunc = x => analysisData.IsInNullConditions(x);
+                }
+
+                if (isInNotNullCondition(toTransform.Variable))
                 {
                     return new AlwaysFalseCondition();
                 }
-                else if (analysisData.IsInNullConditions(toTransform.Variable))
+                else if (isInNullCondition(toTransform.Variable))
                 {
-                    if (!analysisData.IsInNullConditions(toTransform))
+                    if (!isTheReasonFunc(toTransform))
                     {
                         return new AlwaysTrueCondition();
                     }

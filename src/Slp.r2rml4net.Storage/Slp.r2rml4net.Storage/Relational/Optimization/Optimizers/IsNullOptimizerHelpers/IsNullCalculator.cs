@@ -39,6 +39,8 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
                 result.MergeWith(TransformFilterCondition(filterCondition, data));
             }
 
+            data.GetValue(toTransform).MergeWith(result);
+
             return result;
         }
 

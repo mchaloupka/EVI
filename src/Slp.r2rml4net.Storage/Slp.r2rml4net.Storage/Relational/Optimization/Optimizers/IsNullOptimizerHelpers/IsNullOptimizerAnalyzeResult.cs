@@ -19,6 +19,11 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         private readonly Dictionary<ICalculusSource, IsNullOptimizerAggregatedValues> _storedValues;
 
         /// <summary>
+        /// The nested negations count
+        /// </summary>
+        private readonly Dictionary<ICalculusSource, int> _nestedNegationsCount; 
+
+        /// <summary>
         /// The current source
         /// </summary>
         public ICalculusSource CurrentSource => _currentSources.Peek();
@@ -34,6 +39,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="currentSource">The current source.</param>
         public IsNullOptimizerAnalyzeResult(ICalculusSource currentSource)
         {
+            _nestedNegationsCount = new Dictionary<ICalculusSource, int>();
             _currentSources = new Stack<ICalculusSource>();
             _currentSources.Push(currentSource);
 
@@ -85,6 +91,54 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         public void PopCurrentSource()
         {
             _currentSources.Pop();
+        }
+
+        /// <summary>
+        /// Increases the current negation count.
+        /// </summary>
+        public void EnterNegationCondition()
+        {
+            if (!_nestedNegationsCount.ContainsKey(CurrentSource))
+            {
+                _nestedNegationsCount.Add(CurrentSource, 1);
+            }
+            else
+            {
+                _nestedNegationsCount[CurrentSource]++;
+            }
+        }
+
+        /// <summary>
+        /// Decreases the current negation count.
+        /// </summary>
+        public void LeaveNegationCondition()
+        {
+            if (_nestedNegationsCount.ContainsKey(CurrentSource))
+            {
+                _nestedNegationsCount[CurrentSource]--;
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot decrease negation count without proper increment");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether we are currently in a negated condition.
+        /// </summary>
+        public bool IsCurrentlyNegated
+        {
+            get
+            {
+                if (_nestedNegationsCount.ContainsKey(CurrentSource))
+                {
+                    return (_nestedNegationsCount[CurrentSource] % 2) == 1;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         /// <summary>
