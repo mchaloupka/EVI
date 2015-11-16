@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Sources;
 
 namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
 {
@@ -20,7 +21,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <summary>
         /// The current source
         /// </summary>
-        private ICalculusSource CurrentSource => _currentSources.Peek();
+        public ICalculusSource CurrentSource => _currentSources.Peek();
 
         /// <summary>
         /// The stack of current sources
@@ -84,6 +85,15 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         public void PopCurrentSource()
         {
             _currentSources.Pop();
+        }
+
+        /// <summary>
+        /// Determines whether there is a stored value for the desired source.
+        /// </summary>
+        /// <param name="calculusSource">The calculus source.</param>
+        public bool HasValueForSource(ICalculusSource calculusSource)
+        {
+            return _storedValues.ContainsKey(calculusSource);
         }
     }
 }

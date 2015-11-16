@@ -117,7 +117,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// Determines whether the column is in "is not null list".
         /// </summary>
         /// <param name="calculusVariable">The calculus variable.</param>
-        public bool IsInNotNullColumns(ICalculusVariable calculusVariable)
+        public bool IsInNotNullConditions(ICalculusVariable calculusVariable)
         {
             return _isNotNullConditions.ContainsKey(calculusVariable);
         }
