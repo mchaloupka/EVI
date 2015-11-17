@@ -9,6 +9,8 @@
     <query>INSERT INTO simple_table VALUES('a','b','c')</query>
     <query>INSERT INTO simple_table VALUES('b','c','a')</query>
     <query>INSERT INTO simple_table VALUES('c','a','b')</query>
+    <query>INSERT INTO simple_table VALUES('a','b',NULL)</query>
+    <query>INSERT INTO simple_table VALUES(NULL,'c','b')</query>
   </sql>
   <mapping>
 <![CDATA[
