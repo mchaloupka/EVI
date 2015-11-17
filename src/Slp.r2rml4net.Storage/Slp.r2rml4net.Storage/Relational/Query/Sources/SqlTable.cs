@@ -40,7 +40,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Sources
 
             foreach (var dbColumn in _tableInfo.Columns)
             {
-                _variables.Add(dbColumn.Name, new SqlColumn(dbColumn.Name, dbColumn.DataType));
+                _variables.Add(dbColumn.Name, new SqlColumn(dbColumn.Name, this, dbColumn.DataType));
             }
         }
 

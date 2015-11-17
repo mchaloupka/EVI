@@ -80,6 +80,7 @@ namespace Slp.r2rml4net.Storage.Bootstrap
             yield return new ConcatenationInEqualConditionOptimizer();
             yield return new ConstantExpressionEqualityOptimizer();
             yield return new IsNullOptimizer();
+            yield return new SelfJoinOptimizer();
         }
 
         /// <summary>

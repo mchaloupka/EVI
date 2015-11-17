@@ -40,17 +40,14 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         }
 
         /// <summary>
-        /// Optimizes the specified query.
+        /// Optimizes the relational query.
         /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="context">The context.</param>
-        public override RelationalQuery Optimize(RelationalQuery query, QueryContext context)
+        /// <param name="relationalQuery">The relational query.</param>
+        /// <param name="optimizationContext">The optimization context.</param>
+        protected override RelationalQuery OptimizeRelationalQuery(RelationalQuery relationalQuery, OptimizationContext optimizationContext)
         {
-            var result = base.Optimize(query, context);
-
             // TODO: Optimize value binders
-
-            return result;
+            return base.OptimizeRelationalQuery(relationalQuery, optimizationContext);
         }
 
         /// <summary>

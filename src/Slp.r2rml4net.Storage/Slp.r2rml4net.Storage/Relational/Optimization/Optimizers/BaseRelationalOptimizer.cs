@@ -63,16 +63,27 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <param name="context">The context.</param>
         public virtual RelationalQuery Optimize(RelationalQuery query, QueryContext context)
         {
-            var modifiedModel = (CalculusModel)Visit(query.Model, CreateInitialContext(query, context));
+            var optimizationContext = CreateInitialContext(query, context);
+            var modifiedModel = (CalculusModel)Visit(query.Model, optimizationContext);
 
             if (modifiedModel != query.Model)
             {
-                return new RelationalQuery(modifiedModel, query.ValueBinders);
+                return OptimizeRelationalQuery(new RelationalQuery(modifiedModel, query.ValueBinders), optimizationContext);
             }
             else
             {
-                return query;
+                return OptimizeRelationalQuery(query, optimizationContext);
             }
+        }
+
+        /// <summary>
+        /// Optimizes the relational query.
+        /// </summary>
+        /// <param name="relationalQuery">The relational query.</param>
+        /// <param name="optimizationContext">The optimization context.</param>
+        protected virtual RelationalQuery OptimizeRelationalQuery(RelationalQuery relationalQuery, OptimizationContext optimizationContext)
+        {
+            return relationalQuery;
         }
 
         /// <summary>
