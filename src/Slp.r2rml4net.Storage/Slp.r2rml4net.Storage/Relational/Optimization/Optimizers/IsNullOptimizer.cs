@@ -35,7 +35,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         protected override IsNullOptimizerAnalyzeResult CreateInitialData(RelationalQuery query, QueryContext context)
         {
             var analyzeResult = new IsNullOptimizerAnalyzeResult(query.Model);
-            IsNullCalculator.TransformCalculusSource(query.Model, analyzeResult);
+            IsNullCalculator.TransformCalculusSource(query.Model, new IsNullCalculator.IsNullCalculatorParameter(analyzeResult, context));
             return analyzeResult;
         }
 
@@ -124,14 +124,15 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
             /// Checks whether the analysis result is present.
             /// </summary>
             /// <param name="analyzeResult">The analysis result.</param>
-            public void CheckPresentAnalysisResult(IsNullOptimizerAnalyzeResult analyzeResult)
+            /// <param name="context">The query context</param>
+            public void CheckPresentAnalysisResult(IsNullOptimizerAnalyzeResult analyzeResult, QueryContext context)
             {
                 var source = analyzeResult.CurrentSource;
 
                 if (!analyzeResult.HasValueForSource(source))
                 {
                     var newAnalyzeResult = new IsNullOptimizerAnalyzeResult(source);
-                    _isNullCalculator.TransformCalculusSource(source, newAnalyzeResult);
+                    _isNullCalculator.TransformCalculusSource(source, new IsNullCalculator.IsNullCalculatorParameter(newAnalyzeResult, context));
                     newAnalyzeResult.CopyTo(analyzeResult);
                 }
             }
@@ -144,34 +145,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
             /// <returns>The transformation result</returns>
             protected override IFilterCondition Transform(IsNullCondition toTransform, OptimizationContext data)
             {
-                CheckPresentAnalysisResult(data.Data);
+                CheckPresentAnalysisResult(data.Data, data.Context);
 
                 var analysisData = data.Data.GetCurrentValue();
 
-                Func<ICalculusVariable, bool> isInNullCondition = null;
-                Func<ICalculusVariable, bool> isInNotNullCondition = null;
-                Func<IsNullCondition, bool> isTheReasonFunc = null;
-
-                if (data.Data.IsCurrentlyNegated)
+                if (analysisData.IsInNotNullConditions(toTransform.Variable))
                 {
-                    isInNotNullCondition = x => analysisData.IsInNullConditions(x);
-                    isInNullCondition = x => analysisData.IsInNotNullConditions(x);
-                    isTheReasonFunc = x => analysisData.IsInNotNullConditions(x);
+                    if (!analysisData.IsInNotNullConditions(toTransform))
+                    {
+                        return new AlwaysFalseCondition();
+                    }
                 }
-                else
+                else if (analysisData.IsInNullConditions(toTransform.Variable))
                 {
-                    isInNullCondition = x => analysisData.IsInNullConditions(x);
-                    isInNotNullCondition = x => analysisData.IsInNotNullConditions(x);
-                    isTheReasonFunc = x => analysisData.IsInNullConditions(x);
-                }
-
-                if (isInNotNullCondition(toTransform.Variable))
-                {
-                    return new AlwaysFalseCondition();
-                }
-                else if (isInNullCondition(toTransform.Variable))
-                {
-                    if (!isTheReasonFunc(toTransform))
+                    if (!analysisData.IsInNullConditions(toTransform))
                     {
                         return new AlwaysTrueCondition();
                     }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
+using Slp.r2rml4net.Storage.Relational.Query.Sources;
 
 namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
 {
@@ -108,9 +109,24 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
             if (!_isNullConditions.ContainsKey(condition.Variable))
             {
                 _isNullConditions.Add(condition.Variable, new HashSet<IsNullCondition>());
+                _isNullConditions[condition.Variable].Add(condition);
             }
+        }
 
-            _isNullConditions[condition.Variable].Add(condition);
+        /// <summary>
+        /// Adds the is not null information.
+        /// </summary>
+        /// <param name="calculusVariable">The calculus variable.</param>
+        public void AddIsNotNull(ICalculusVariable calculusVariable)
+        {
+            if (!_isNotNullConditions.ContainsKey(calculusVariable))
+            {
+                _isNotNullConditions.Add(calculusVariable, new HashSet<IsNullCondition>());
+            }
+            else
+            {
+                _isNotNullConditions[calculusVariable].Clear();
+            }
         }
 
         /// <summary>

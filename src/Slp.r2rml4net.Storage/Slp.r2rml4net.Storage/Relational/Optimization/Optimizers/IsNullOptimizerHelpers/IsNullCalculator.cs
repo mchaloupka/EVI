@@ -1,4 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Relational.Query;
+﻿using System.Linq;
+using Slp.r2rml4net.Storage.Query;
+using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
@@ -12,15 +14,42 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
     /// Calculates the <see cref="IsNullOptimizerAggregatedValues"/> from the calculus model
     /// </summary>
     public class IsNullCalculator
-        : BaseExpressionTransformerG<IsNullOptimizerAnalyzeResult, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues>
+        : BaseExpressionTransformerG<IsNullCalculator.IsNullCalculatorParameter, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues, IsNullOptimizerAggregatedValues>
     {
+        /// <summary>
+        /// The parameter for <see cref="IsNullCalculator"/> transformer
+        /// </summary>
+        public class IsNullCalculatorParameter
+        {
+            /// <summary>
+            /// Gets the analysis result
+            /// </summary>
+            public IsNullOptimizerAnalyzeResult Result { get; }
+
+            /// <summary>
+            /// Gets the query context.
+            /// </summary>
+            public QueryContext Context { get; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="IsNullCalculatorParameter"/> class.
+            /// </summary>
+            /// <param name="result">The analysis result.</param>
+            /// <param name="context">The query context.</param>
+            public IsNullCalculatorParameter(IsNullOptimizerAnalyzeResult result, QueryContext context)
+            {
+                Result = result;
+                Context = context;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="CalculusModel"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(CalculusModel toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(CalculusModel toTransform, IsNullCalculatorParameter data)
         {
             var result = new IsNullOptimizerAggregatedValues();
 
@@ -39,7 +68,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
                 result.MergeWith(TransformFilterCondition(filterCondition, data));
             }
 
-            data.GetValue(toTransform).MergeWith(result);
+            data.Result.GetValue(toTransform).MergeWith(result);
 
             return result;
         }
@@ -50,11 +79,23 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(SqlTable toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(SqlTable toTransform, IsNullCalculatorParameter data)
         {
-            // TODO: Here should be detection from SQL properties
+            var aggregatedValues = new IsNullOptimizerAggregatedValues();
 
-            return new IsNullOptimizerAggregatedValues();
+            var tableInfo = data.Context.SchemaProvider.GetTableInfo(toTransform.TableName);
+
+            foreach (var calculusVariable in toTransform.Variables.OfType<SqlColumn>())
+            {
+                var columnInfo = tableInfo.FindColumn(calculusVariable.Name);
+
+                if (!columnInfo.Nullable)
+                {
+                    aggregatedValues.AddIsNotNull(calculusVariable);
+                }
+            }
+
+            return aggregatedValues;
         }
 
         /// <summary>
@@ -63,7 +104,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(AlwaysFalseCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(AlwaysFalseCondition toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -74,7 +115,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(AlwaysTrueCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(AlwaysTrueCondition toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -85,7 +126,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(ConjunctionCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(ConjunctionCondition toTransform, IsNullCalculatorParameter data)
         {
             var result = new IsNullOptimizerAggregatedValues();
 
@@ -103,7 +144,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(DisjunctionCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(DisjunctionCondition toTransform, IsNullCalculatorParameter data)
         {
             var result = new IsNullOptimizerAggregatedValues();
 
@@ -121,7 +162,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(EqualExpressionCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(EqualExpressionCondition toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -132,7 +173,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(EqualVariablesCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(EqualVariablesCondition toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -143,7 +184,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(IsNullCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(IsNullCondition toTransform, IsNullCalculatorParameter data)
         {
             var result = new IsNullOptimizerAggregatedValues();
             result.AddIsNullCondition(toTransform);
@@ -156,7 +197,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(NegationCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(NegationCondition toTransform, IsNullCalculatorParameter data)
         {
             var result = TransformFilterCondition(toTransform.InnerCondition, null);
             return result.GetInverse();
@@ -168,12 +209,12 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(TupleFromSourceCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(TupleFromSourceCondition toTransform, IsNullCalculatorParameter data)
         {
             var newResult = new IsNullOptimizerAnalyzeResult(toTransform.Source);
-            var newAggregatedValues = TransformCalculusSource(toTransform.Source, newResult);
+            var newAggregatedValues = TransformCalculusSource(toTransform.Source, new IsNullCalculatorParameter(newResult, data.Context));
 
-            newResult.CopyTo(data);
+            newResult.CopyTo(data.Result);
             return newAggregatedValues;
         }
 
@@ -183,15 +224,15 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(UnionedSourcesCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(UnionedSourcesCondition toTransform, IsNullCalculatorParameter data)
         {
             var newAggregatedValues = new IsNullOptimizerAggregatedValues();
 
             foreach (var source in toTransform.Sources)
             {
                 var newResult = new IsNullOptimizerAnalyzeResult(source);
-                newAggregatedValues.IntersectsWith(TransformCalculusSource(source, newResult));
-                newResult.CopyTo(data);
+                newAggregatedValues.IntersectsWith(TransformCalculusSource(source, new IsNullCalculatorParameter(newResult, data.Context)));
+                newResult.CopyTo(data.Result);
             }
 
             return newAggregatedValues;
@@ -203,7 +244,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(AssignmentFromExpressionCondition toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(AssignmentFromExpressionCondition toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -214,7 +255,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(ColumnExpression toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(ColumnExpression toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -225,7 +266,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(ConcatenationExpression toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(ConcatenationExpression toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
@@ -236,7 +277,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimiz
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IsNullOptimizerAggregatedValues Transform(ConstantExpression toTransform, IsNullOptimizerAnalyzeResult data)
+        protected override IsNullOptimizerAggregatedValues Transform(ConstantExpression toTransform, IsNullCalculatorParameter data)
         {
             return new IsNullOptimizerAggregatedValues();
         }
