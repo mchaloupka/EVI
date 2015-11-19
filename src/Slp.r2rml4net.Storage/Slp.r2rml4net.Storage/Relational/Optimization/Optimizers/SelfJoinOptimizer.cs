@@ -16,12 +16,16 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
     public class SelfJoinOptimizer
         : BaseRelationalOptimizer<SelfJoinOptimizerData>
     {
+        private readonly SelfJoinConstraintsCalculator _selfJoinConstraintsCalculator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfJoinOptimizer"/> class.
         /// </summary>
         public SelfJoinOptimizer() 
-            : base(new SelfJoinOptimizerImplementation())
-        { }
+            : base(new SelfJoinOptimizer.SelfJoinOptimizerImplementation())
+        {
+            _selfJoinConstraintsCalculator = new SelfJoinConstraintsCalculator();
+        }
 
         /// <summary>
         /// Processes the visit of <see cref="CalculusModel" />
@@ -93,32 +97,6 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
             //{
                 return base.Transform(toTransform, data);
             //}
-        }
-
-        /// <summary>
-        /// Processes the self join conditions.
-        /// </summary>
-        /// <param name="filterConditions">The filter conditions.</param>
-        /// <param name="presentTables"></param>
-        /// <param name="data">The data.</param>
-        /// <returns>List of all tables that are self joined</returns>
-        private Dictionary<string, List<SqlTable>> ProcessSelfJoinConditions(IEnumerable<IFilterCondition> filterConditions, HashSet<SqlTable> presentTables, OptimizationContext data)
-        {
-            var result = new Dictionary<string, List<SqlTable>>();
-
-            foreach (var filterCondition in filterConditions.OfType<EqualVariablesCondition>())
-            {
-                var leftVariable = filterCondition.LeftVariable as SqlColumn;
-                var rightVariable = filterCondition.RightVariable as SqlColumn;
-
-                if (leftVariable != null && rightVariable != null
-                    && presentTables.Contains(leftVariable.Table) && presentTables.Contains(rightVariable.Table))
-                {
-                    
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
