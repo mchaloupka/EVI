@@ -22,7 +22,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// The needed variables
         /// </summary>
-        private Dictionary<string, ICalculusVariable> _variables;
+        private readonly Dictionary<string, ICalculusVariable> _variables;
 
         /// <summary>
         /// The load node function
@@ -69,6 +69,27 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="BaseValueBinder"/> class by copying another <see cref="BaseValueBinder"/>
+        /// while replacing some of its columns
+        /// </summary>
+        /// <param name="baseValueBinder">The other base value binder.</param>
+        /// <param name="calculusVariableSelection">The calculus variable selection function.</param>
+        public BaseValueBinder(BaseValueBinder baseValueBinder, Func<ICalculusVariable, ICalculusVariable> calculusVariableSelection)
+        {
+            VariableName = baseValueBinder.VariableName;
+            TermMap = baseValueBinder.TermMap;
+            TemplateParts = baseValueBinder.TemplateParts;
+
+            _variables = new Dictionary<string, ICalculusVariable>();
+            _loadNodeFunc = null;
+
+            foreach (var variableName in baseValueBinder._variables.Keys)
+            {
+                _variables.Add(variableName, calculusVariableSelection(baseValueBinder._variables[variableName]));
+            }
+        }
+
+        /// <summary>
         /// Gets the term map.
         /// </summary>
         /// <value>The term map.</value>
@@ -84,10 +105,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the needed calculus variables to calculate the value.
         /// </summary>
         /// <value>The needed calculus variables.</value>
-        public IEnumerable<ICalculusVariable> NeededCalculusVariables
-        {
-            get { return _variables.Values; }
-        }
+        public IEnumerable<ICalculusVariable> NeededCalculusVariables => _variables.Values;
 
         /// <summary>
         /// Gets the template parts.

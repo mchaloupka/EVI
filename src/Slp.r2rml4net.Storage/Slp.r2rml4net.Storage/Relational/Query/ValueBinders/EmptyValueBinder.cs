@@ -43,10 +43,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the needed calculus variables to calculate the value.
         /// </summary>
         /// <value>The needed calculus variables.</value>
-        public IEnumerable<ICalculusVariable> NeededCalculusVariables
-        {
-            get { return new ICalculusVariable[] {}; }
-        }
+        public IEnumerable<ICalculusVariable> NeededCalculusVariables => new ICalculusVariable[] {};
 
         /// <summary>
         /// Accepts the specified visitor.

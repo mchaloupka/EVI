@@ -32,13 +32,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// Gets the optimizer implementation.
         /// </summary>
         /// <value>The optimizer implementation.</value>
-        protected BaseRelationalOptimizerImplementation<T> OptimizerImplementation
-        {
-            get
-            {
-                return _optimizerImplementation;
-            }
-        }
+        protected BaseRelationalOptimizerImplementation<T> OptimizerImplementation => _optimizerImplementation;
 
         /// <summary>
         /// The optimization context

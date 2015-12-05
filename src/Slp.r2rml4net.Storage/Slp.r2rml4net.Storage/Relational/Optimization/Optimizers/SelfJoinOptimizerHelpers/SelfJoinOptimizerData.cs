@@ -47,5 +47,24 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
                 _variablesMap.Add(calculusVariable, data._variablesMap[calculusVariable]);
             }
         }
+
+        /// <summary>
+        /// Determines whether the specified calculus variable is replaced.
+        /// </summary>
+        /// <param name="calculusVariable">The calculus variable.</param>
+        /// <returns><c>true</c> if the specified calculus variable is replaced; otherwise, <c>false</c>.</returns>
+        public bool IsReplaced(ICalculusVariable calculusVariable)
+        {
+            return _variablesMap.ContainsKey(calculusVariable);
+        }
+
+        /// <summary>
+        /// Gets the variable that is replacing <paramref name="calculusVariable"/>.
+        /// </summary>
+        /// <param name="calculusVariable">The calculus variable.</param>
+        public ICalculusVariable GetReplacingVariable(ICalculusVariable calculusVariable)
+        {
+            return _variablesMap[calculusVariable];
+        }
     }
 }
