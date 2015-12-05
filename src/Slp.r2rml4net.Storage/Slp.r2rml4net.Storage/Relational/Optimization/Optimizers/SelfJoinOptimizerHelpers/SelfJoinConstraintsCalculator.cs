@@ -78,20 +78,20 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// <returns></returns>
         private Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>> CreateInitialSatisfactionMap(List<SqlTable> presentTables, QueryContext context)
         {
-            var firstTableOccurence = new Dictionary<string, SqlTable>();
+            var firstTableOccurrence = new Dictionary<string, SqlTable>();
             var result = new Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>>();
 
             foreach (var sqlTable in presentTables)
             {
                 var tableName = sqlTable.TableName;
 
-                if (!firstTableOccurence.ContainsKey(tableName))
+                if (!firstTableOccurrence.ContainsKey(tableName))
                 {
-                    firstTableOccurence.Add(tableName, sqlTable);
+                    firstTableOccurrence.Add(tableName, sqlTable);
                 }
                 else
                 {
-                    var replaceByTable = firstTableOccurence[tableName];
+                    var replaceByTable = firstTableOccurrence[tableName];
 
                     result.Add(sqlTable, new Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>());
                     result[sqlTable].Add(replaceByTable, GetSelfJoinConstraints(sqlTable, replaceByTable, context));

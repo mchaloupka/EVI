@@ -35,24 +35,17 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <returns>The returned data</returns>
         protected override ICalculusSource ProcessVisit(CalculusModel toVisit, OptimizationContext data)
         {
-            // TODO: Propagate the replacement information upwards
-
-            return base.ProcessVisit(toVisit, new OptimizationContext()
+            var newContext = new OptimizationContext()
             {
                 Data = new SelfJoinOptimizerData(),
                 Context = data.Context
-            });
-        }
+            };
 
-        /// <summary>
-        /// Processes the visit of <see cref="SqlTable" />
-        /// </summary>
-        /// <param name="toVisit">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        protected override ICalculusSource ProcessVisit(SqlTable toVisit, OptimizationContext data)
-        {
-            return toVisit;
+            var result = base.ProcessVisit(toVisit, newContext);
+
+            data.Data.LoadOtherData(newContext.Data);
+
+            return result;
         }
 
         /// <summary>
@@ -63,40 +56,63 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
         /// <returns>The transformation result</returns>
         protected override ICalculusSource Transform(CalculusModel toTransform, OptimizationContext data)
         {
-            //var presentTables = new HashSet<SqlTable>(toTransform.SourceConditions.OfType<TupleFromSourceCondition>()
-            //        .Select(sourceCondition => sourceCondition.Source as SqlTable));
+            var presentTables = toTransform.SourceConditions
+                .OfType<TupleFromSourceCondition>()
+                .Select(x => x.Source)
+                .OfType<SqlTable>()
+                .ToList();
 
-            //var findSelfJoins = ProcessSelfJoinConditions(toTransform.FilterConditions, presentTables, data);
+            var processedSelfJoinConditions = _selfJoinConstraintsCalculator.ProcessSelfJoinConditions(toTransform.FilterConditions,
+                presentTables, data);
 
-            //if (findSelfJoins.Count > 0)
-            //{
-            //    var newConditions = new List<ICondition>();
+            if (processedSelfJoinConditions.Keys.Any())
+            {
+                var conditions = new List<ICondition>();
 
-            //    foreach (var sourceCondition in toTransform.SourceConditions)
-            //    {
-            //        var sqlTable = (sourceCondition as TupleFromSourceCondition)?.Source as SqlTable;
+                foreach (var sourceCondition in toTransform.SourceConditions)
+                {
+                    if (!(sourceCondition is TupleFromSourceCondition))
+                    {
+                        conditions.Add(sourceCondition);
+                        continue;
+                    }
 
-            //        if (sqlTable != null)
-            //        {
-            //            if (findSelfJoins.ContainsKey(sqlTable.TableName) && findSelfJoins[sqlTable.TableName][0] != sqlTable)
-            //            {
-            //                data.Data.AddReplaceTableInformation(sqlTable, findSelfJoins[sqlTable.TableName][0]);
-            //                continue;
-            //            }
-            //        }
+                    var tupleFromSourceCondition = (TupleFromSourceCondition) sourceCondition;
 
-            //        newConditions.Add(sourceCondition);
-            //    }
+                    if (!(tupleFromSourceCondition.Source is SqlTable))
+                    {
+                        conditions.Add(tupleFromSourceCondition);
+                        continue;
+                    }
 
-            //    newConditions.AddRange(toTransform.AssignmentConditions);
-            //    newConditions.AddRange(toTransform.FilterConditions);
+                    var sqlTable = (SqlTable) tupleFromSourceCondition.Source;
 
-            //    return new CalculusModel(toTransform.Variables, newConditions);
-            //}
-            //else
-            //{
+                    if (!processedSelfJoinConditions.ContainsKey(sqlTable))
+                    {
+                        conditions.Add(tupleFromSourceCondition);
+                        continue;
+                    }
+
+                    var targetTable = processedSelfJoinConditions[sqlTable];
+
+                    foreach (var sqlColumn in tupleFromSourceCondition.CalculusVariables.Cast<SqlColumn>())
+                    {
+                        var targetColumn = targetTable.GetVariable(sqlColumn.Name);
+
+                        data.Data.AddReplaceColumnInformation(sqlColumn, targetColumn);
+                    }
+                }
+
+                conditions.AddRange(toTransform.FilterConditions);
+                conditions.AddRange(toTransform.AssignmentConditions);
+
+                var transformed = new CalculusModel(toTransform.Variables, conditions);
+                return base.Transform(transformed, data);
+            }
+            else
+            {
                 return base.Transform(toTransform, data);
-            //}
+            }
         }
 
         /// <summary>
