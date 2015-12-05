@@ -261,7 +261,14 @@ namespace Slp.r2rml4net.Storage.Relational.Utils
             var newLeftOperand = TransformExpression(toTransform.LeftOperand, data);
             var newRightOperand = TransformExpression(toTransform.RightOperand, data);
 
-            if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand)
+            var leftColumnExpression = newLeftOperand as ColumnExpression;
+            var rightColumnExpression = newRightOperand as ColumnExpression;
+
+            if (leftColumnExpression != null && rightColumnExpression != null)
+            {
+                return new EqualVariablesCondition(leftColumnExpression.CalculusVariable, rightColumnExpression.CalculusVariable);
+            }
+            else if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand)
             {
                 return new EqualExpressionCondition(newLeftOperand, newRightOperand);
             }
