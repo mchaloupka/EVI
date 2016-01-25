@@ -1,4 +1,1 @@
-DotNetR2RMLStore [![Build status](https://ci.appveyor.com/api/projects/status/0occxl9nsbjcmkc2/branch/master?svg=true)](https://ci.appveyor.com/project/mchaloupka/dotnetr2rmlstore/branch/master)
-================
-
-.NET implementation of an RDB2RDF storage based on R2RML mapping file
+This is just a branch referencing old code, which may be rewritten back to master. This branch is not intended for any development. Nothing should be merged from here to master.
