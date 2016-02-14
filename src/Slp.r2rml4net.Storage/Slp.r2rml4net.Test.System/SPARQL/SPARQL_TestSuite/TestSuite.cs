@@ -74,8 +74,8 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
         public void students_no_result()
         {
             var storage = GetStorage("students.xml");
-            var queryFile = @"Data\Simple\no_result.rq";
-            var resultFile = @"Data\Simple\no_result.srx";
+            var queryFile = @"Data\Students\no_result.rq";
+            var resultFile = @"Data\Students\no_result.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
