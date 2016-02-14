@@ -71,6 +71,18 @@ namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
+        public void students_no_result()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Simple\no_result.rq";
+            var resultFile = @"Data\Simple\no_result.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
         public void students_student_names()
         {
             var storage = GetStorage("students.xml");
