@@ -166,7 +166,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             }
 
             var finalValueBinders = valueBinders.Values.ToList();
-            var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct();
+            var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
             var calculusModel = new CalculusModel(neededVariables, conditions);
 
             return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(calculusModel, finalValueBinders));

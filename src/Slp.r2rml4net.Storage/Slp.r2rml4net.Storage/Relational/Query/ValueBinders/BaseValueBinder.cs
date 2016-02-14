@@ -105,7 +105,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the needed calculus variables to calculate the value.
         /// </summary>
         /// <value>The needed calculus variables.</value>
-        public IEnumerable<ICalculusVariable> NeededCalculusVariables => _variables.Values;
+        public IEnumerable<ICalculusVariable> NeededCalculusVariables => _variables.Values.Distinct();
 
         /// <summary>
         /// Gets the template parts.

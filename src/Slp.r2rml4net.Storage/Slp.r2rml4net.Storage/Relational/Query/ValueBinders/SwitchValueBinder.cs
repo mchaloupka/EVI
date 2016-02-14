@@ -87,7 +87,14 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
         /// Gets the needed calculus variables to calculate the value.
         /// </summary>
         /// <value>The needed calculus variables.</value>
-        public IEnumerable<ICalculusVariable> NeededCalculusVariables
+        public IEnumerable<ICalculusVariable> NeededCalculusVariables => ReferencedVariables.Distinct();
+
+        /// <summary>
+        /// Gets the needed calculus variables to calculate the value.
+        /// </summary>
+        /// <value>The needed calculus variables.</value>
+        /// <remarks>May contain duplicate values</remarks>
+        private IEnumerable<ICalculusVariable> ReferencedVariables
         {
             get
             {

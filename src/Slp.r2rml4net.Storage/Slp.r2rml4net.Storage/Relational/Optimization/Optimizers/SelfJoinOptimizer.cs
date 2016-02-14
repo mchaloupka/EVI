@@ -253,6 +253,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
                 {
                     var variables = toTransform.Variables
                         .Select(x => data.Data.IsReplaced(x) ? data.Data.GetReplacingVariable(x) : x)
+                        .Distinct()
                         .ToList();
 
                     var conditions = new List<ICondition>();
@@ -280,6 +281,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
                 {
                     var variables = toTransform.CalculusVariables
                         .Select(x => data.Data.IsReplaced(x) ? data.Data.GetReplacingVariable(x) : x)
+                        .Distinct()
                         .ToList();
 
                     return new TupleFromSourceCondition(variables, toTransform.Source);
@@ -303,6 +305,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
                 {
                     var variables = toTransform.CalculusVariables
                         .Select(x => data.Data.IsReplaced(x) ? data.Data.GetReplacingVariable(x) : x)
+                        .Distinct()
                         .ToList();
 
                     var caseVariable = data.Data.IsReplaced(toTransform.CaseVariable)
