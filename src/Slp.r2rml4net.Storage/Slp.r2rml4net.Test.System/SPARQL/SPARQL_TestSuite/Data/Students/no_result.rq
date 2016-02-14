@@ -1,0 +1,6 @@
+PREFIX ex: <http://example.org/>
+
+SELECT ?x
+WHERE {
+  ?x a ex:not-existing-class.
+}
