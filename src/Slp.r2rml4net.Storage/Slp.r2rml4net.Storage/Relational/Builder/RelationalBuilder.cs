@@ -110,7 +110,11 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(NotMatchingPattern notMatchingPattern, object data)
         {
-            throw new NotImplementedException();
+            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(
+                new CalculusModel(
+                    new ICalculusVariable[] { },
+                    new ICondition[] { new AlwaysFalseCondition() }),
+                notMatchingPattern.Variables.Select(x => new EmptyValueBinder(x))));
         }
 
         /// <summary>
