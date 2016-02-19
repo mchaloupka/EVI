@@ -15,7 +15,7 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         public CompareResult(IEnumerable<MatchCondition> conditions)
         {
             Conditions = conditions.ToArray();
-            CanMatch = !Conditions.Any(x => x.IsAlwaysFalse);
+            NeverMatch = Conditions.Any(x => x.IsAlwaysFalse);
             AlwaysMatch = Conditions.Length == 0;
         }
 
@@ -26,10 +26,10 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         public MatchCondition[] Conditions { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this instance can match.
+        /// Gets a value indicating whether this instance never matches.
         /// </summary>
-        /// <value><c>true</c> if this instance can match; otherwise, <c>false</c>.</value>
-        public bool CanMatch { get; }
+        /// <value><c>true</c> if this instance never matches; otherwise, <c>false</c>.</value>
+        public bool NeverMatch { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance always matches.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Relational.Query;
 
 namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
 {
@@ -49,5 +50,10 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         /// Gets the assigned text (if the instance is constant)
         /// </summary>
         public string Text { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the relational column of this pattern item.
+        /// </summary>
+        public ICalculusVariable RelationalColumn { get; set; }
     }
 }
