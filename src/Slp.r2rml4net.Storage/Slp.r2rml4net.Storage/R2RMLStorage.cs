@@ -160,7 +160,7 @@ namespace Slp.r2rml4net.Storage
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             if (graphUri == null)
-                throw new ArgumentException("Graph uri cannot be null  or empty", "graphUri");
+                throw new ArgumentException("Graph uri cannot be null  or empty", nameof(graphUri));
 
             SparqlParameterizedString queryString = new SparqlParameterizedString
             {

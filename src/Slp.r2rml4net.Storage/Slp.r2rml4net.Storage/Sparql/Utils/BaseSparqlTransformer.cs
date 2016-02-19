@@ -35,7 +35,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils
             }
             else
             {
-                throw new ArgumentException("Unexpected type of parameter", "instance");
+                throw new ArgumentException("Unexpected type of parameter", nameof(instance));
             }
         }
 

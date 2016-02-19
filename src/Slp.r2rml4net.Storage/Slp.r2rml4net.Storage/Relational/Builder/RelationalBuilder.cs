@@ -71,7 +71,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             }
             else
             {
-                throw new ArgumentException("Unexpected type", "algebra");
+                throw new ArgumentException("Unexpected type", nameof(algebra));
             }
         }
 
@@ -392,7 +392,7 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
             }
             else
             {
-                throw new ArgumentException("Unknown source", "tripleMap");
+                throw new ArgumentException("Unknown source", nameof(tripleMap));
             }
         }
 

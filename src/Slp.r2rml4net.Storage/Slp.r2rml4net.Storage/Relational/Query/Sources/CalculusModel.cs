@@ -54,7 +54,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Sources
                 }
                 else
                 {
-                    throw new ArgumentException("Condition of unknown type found", "conditions");
+                    throw new ArgumentException("Condition of unknown type found", nameof(conditions));
                 }
             }
         }

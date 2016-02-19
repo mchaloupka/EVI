@@ -530,7 +530,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             }
             else
             {
-                throw new ArgumentException("Unexpected variable source", "variable");
+                throw new ArgumentException("Unexpected variable source", nameof(variable));
             }
         }
 

@@ -58,7 +58,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Sources
         {
             if (!_variables.ContainsKey(name))
             {
-                throw new ArgumentException("Unknown column name", "name");
+                throw new ArgumentException("Unknown column name", nameof(name));
             }
 
             return _variables[name];

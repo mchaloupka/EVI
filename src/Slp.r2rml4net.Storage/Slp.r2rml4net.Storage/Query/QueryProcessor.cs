@@ -97,20 +97,20 @@ namespace Slp.r2rml4net.Storage.Query
             {
                 case SparqlQueryType.Ask:
                     if (resultsHandler == null)
-                        throw new ArgumentNullException("resultsHandler", "Cannot handle a Ask query with a null SPARQL Results Handler");
+                        throw new ArgumentNullException(nameof(resultsHandler), "Cannot handle a Ask query with a null SPARQL Results Handler");
 
                     nodeFactory = resultsHandler;
                     break;
                 case SparqlQueryType.Construct:
                     if (rdfHandler == null)
-                        throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
+                        throw new ArgumentNullException(nameof(rdfHandler), "Cannot handle a Graph result with a null RDF Handler");
 
                     nodeFactory = rdfHandler;
                     break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
                     if (rdfHandler == null)
-                        throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
+                        throw new ArgumentNullException(nameof(rdfHandler), "Cannot handle a Graph result with a null RDF Handler");
 
                     nodeFactory = rdfHandler;
                     break;
@@ -121,7 +121,7 @@ namespace Slp.r2rml4net.Storage.Query
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
                     if (resultsHandler == null)
-                        throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
+                        throw new ArgumentNullException(nameof(resultsHandler), "Cannot handle SPARQL Results with a null Results Handler");
 
                     nodeFactory = resultsHandler;
                     break;
