@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 
 namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
 {
@@ -55,5 +56,25 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         /// Gets or sets the relational column of this pattern item.
         /// </summary>
         public ICalculusVariable RelationalColumn { get; set; }
+
+        /// <summary>
+        /// Creates <see cref="PatternItem"/> from the template part.
+        /// </summary>
+        /// <param name="templatePart">The template part.</param>
+        public static PatternItem FromTemplatePart(ITemplatePart templatePart)
+        {
+            if (templatePart.IsText)
+            {
+                return new PatternItem(templatePart.Text);
+            }
+            else if (templatePart.IsColumn)
+            {
+                return new PatternItem();
+            }
+            else
+            {
+                throw new InvalidOperationException("ITemplatePart has to be text or column");
+            }
+        }
     }
 }

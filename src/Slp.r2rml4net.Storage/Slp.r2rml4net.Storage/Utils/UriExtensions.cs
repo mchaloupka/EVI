@@ -17,5 +17,13 @@ namespace Slp.r2rml4net.Storage.Utils
         {
             return first.Equals(second) && string.Equals(first.Fragment, second.Fragment);
         }
+
+        /// <summary>
+        /// Returns complete URI string (including fragment)
+        /// </summary>
+        public static string ToCompleteUri(this Uri uri)
+        {
+            return $"{uri}{uri.Fragment}";
+        }
     }
 }
