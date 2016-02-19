@@ -98,7 +98,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
             /// <summary>
             /// The models stack
             /// </summary>
-            private Stack<CalculusModel> modelsStack;
+            private readonly Stack<CalculusModel> modelsStack;
         }
 
         /// <summary>

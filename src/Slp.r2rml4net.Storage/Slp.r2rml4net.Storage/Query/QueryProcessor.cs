@@ -51,7 +51,7 @@ namespace Slp.r2rml4net.Storage.Query
         /// <summary>
         /// The relational builder
         /// </summary>
-        private RelationalBuilder _relationalBuilder;
+        private readonly RelationalBuilder _relationalBuilder;
 
 
         /// <summary>

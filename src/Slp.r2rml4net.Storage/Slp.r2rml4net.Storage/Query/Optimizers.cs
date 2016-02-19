@@ -21,12 +21,12 @@ namespace Slp.r2rml4net.Storage.Query
         /// <summary>
         /// The relational optimizers
         /// </summary>
-        private List<IRelationalOptimizer> _relationalOptimizers;
+        private readonly List<IRelationalOptimizer> _relationalOptimizers;
 
         /// <summary>
         /// The SPARQL optimizers
         /// </summary>
-        private List<ISparqlOptimizer> _sparqlOptimizers;
+        private readonly List<ISparqlOptimizer> _sparqlOptimizers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Optimizers" /> class.

@@ -13,17 +13,17 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Sources
         /// <summary>
         /// The source conditions
         /// </summary>
-        private List<ISourceCondition> _sourceConditions;
+        private readonly List<ISourceCondition> _sourceConditions;
 
         /// <summary>
         /// The filter conditions
         /// </summary>
-        private List<IFilterCondition> _filterConditions;
+        private readonly List<IFilterCondition> _filterConditions;
 
         /// <summary>
         /// The assignment conditions
         /// </summary>
-        private List<IAssignmentCondition> _assignmentConditions;
+        private readonly List<IAssignmentCondition> _assignmentConditions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculusModel"/> class.

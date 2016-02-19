@@ -36,12 +36,12 @@ namespace Slp.r2rml4net.Storage.Relational.Builder
         /// <summary>
         /// The condition builder
         /// </summary>
-        private ConditionBuilder _conditionBuilder;
+        private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
         /// The expression builder
         /// </summary>
-        private ExpressionBuilder _expressionBuilder;
+        private readonly ExpressionBuilder _expressionBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.

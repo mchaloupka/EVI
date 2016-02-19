@@ -14,7 +14,7 @@ namespace Slp.r2rml4net.Storage.Database.Base
         /// <summary>
         /// The query builder
         /// </summary>
-        private ISqlQueryBuilder _queryBuilder;
+        private readonly ISqlQueryBuilder _queryBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlDb" /> class.

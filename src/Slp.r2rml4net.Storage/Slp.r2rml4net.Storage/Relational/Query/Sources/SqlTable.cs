@@ -47,7 +47,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.Sources
         /// <summary>
         /// The variables
         /// </summary>
-        private Dictionary<string, ICalculusVariable> _variables;
+        private readonly Dictionary<string, ICalculusVariable> _variables;
 
         /// <summary>
         /// Gets the variable.

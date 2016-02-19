@@ -16,7 +16,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// <summary>
         /// The variables map
         /// </summary>
-        private Dictionary<ICalculusVariable, ICalculusVariable> _variablesMap;
+        private readonly Dictionary<ICalculusVariable, ICalculusVariable> _variablesMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfJoinOptimizerData"/> class.

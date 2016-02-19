@@ -17,7 +17,7 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         /// <summary>
         /// Value indicating whether this instance is column.
         /// </summary>
-        private bool _isColumn;
+        private readonly bool _isColumn;
 
         /// <summary>
         /// Gets a value indicating whether this instance is column.

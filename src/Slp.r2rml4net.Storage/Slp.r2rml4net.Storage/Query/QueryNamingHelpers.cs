@@ -139,9 +139,9 @@ namespace Slp.r2rml4net.Storage.Query
         private class SourceConditionSourceSpecificData
             : ISourceConditionVisitor
         {
-            private Dictionary<ICalculusVariable, string> _columnNames;
+            private readonly Dictionary<ICalculusVariable, string> _columnNames;
 
-            private bool _canGenerateNewNames;
+            private readonly bool _canGenerateNewNames;
             private int _counter;
 
             public SourceConditionSourceSpecificData(ISourceCondition sourceCondition)
