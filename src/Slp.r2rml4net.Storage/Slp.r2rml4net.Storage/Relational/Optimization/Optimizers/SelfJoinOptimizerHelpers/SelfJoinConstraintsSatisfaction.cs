@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Relational.Query;
+using Slp.r2rml4net.Storage.Relational.Query.Expressions;
 using Slp.r2rml4net.Storage.Relational.Query.Sources;
+using VDS.RDF.Query.Expressions.Arithmetic;
 
 namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
@@ -28,15 +31,25 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         private readonly List<HashSet<string>> _notSatisfiedUniqueConstraintParts;
 
         /// <summary>
+        /// The <see cref="SqlTable"/> map from columns to their equal expressions
+        /// </summary>
+        private readonly Dictionary<string, List<ConstantExpression>> _sqlTableColumnsEqualExpressions;
+
+        /// <summary>
+        /// The <see cref="ReplaceByTable"/> map from columns to their equal expressions
+        /// </summary>
+        private readonly Dictionary<string, List<ConstantExpression>> _replaceByTableColumnsEqualExpressions;
+
+        /// <summary>
         /// Constructs an instance of <see cref="SelfJoinConstraintsSatisfaction"/>
         /// </summary>
-        /// <param name="sqlTable"></param>
-        /// <param name="replaceByTable"></param>
-        /// <param name="uniqueColumnConstraints"></param>
         public SelfJoinConstraintsSatisfaction(SqlTable sqlTable, SqlTable replaceByTable, IEnumerable<IEnumerable<string>> uniqueColumnConstraints)
         {
             SqlTable = sqlTable;
             ReplaceByTable = replaceByTable;
+
+            _sqlTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
+            _replaceByTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
 
             _notSatisfiedUniqueConstraintParts = new List<HashSet<string>>();
 
@@ -80,14 +93,97 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         {
             if (leftVariable.Name == rightVariable.Name)
             {
-                foreach (var notSatisfiedUniqueConstraintPart in _notSatisfiedUniqueConstraintParts)
+                SatisfyConditionsWithVariable(leftVariable.Name);
+            }
+        }
+
+        /// <summary>
+        /// Satisfies the conditions with variable specified by <paramref name="name"/>
+        /// </summary>
+        private void SatisfyConditionsWithVariable(string name)
+        {
+            foreach (var notSatisfiedUniqueConstraintPart in _notSatisfiedUniqueConstraintParts)
+            {
+                if (notSatisfiedUniqueConstraintPart.Contains(name))
                 {
-                    if (notSatisfiedUniqueConstraintPart.Contains(leftVariable.Name))
-                    {
-                        notSatisfiedUniqueConstraintPart.Remove(leftVariable.Name);
-                    }
+                    notSatisfiedUniqueConstraintPart.Remove(name);
                 }
             }
+        }
+
+        /// <summary>
+        /// Process the variable equal to variables condition.
+        /// </summary>
+        /// <param name="leftVariable">The left variable.</param>
+        /// <param name="rightOperand">The right operand.</param>
+        public void ProcessVariableEqualToVariablesCondition(SqlColumn leftVariable, IExpression rightOperand)
+        {
+            if (!(rightOperand is ConstantExpression))
+            {
+                // Currently we support only constant expressions
+                return;
+            }
+
+            var constantExpression = (ConstantExpression)rightOperand;
+
+            if (leftVariable.Table == SqlTable)
+            {
+                AddExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, constantExpression);
+                if (CheckExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, constantExpression))
+                {
+                    SatisfyConditionsWithVariable(leftVariable.Name);
+                }
+            }
+            else if (leftVariable.Table == ReplaceByTable)
+            {
+                AddExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, constantExpression);
+                if (CheckExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, constantExpression))
+                {
+                    SatisfyConditionsWithVariable(leftVariable.Name);
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Checks the expression, whether the same is present also in the map <paramref name="tableColumnsEqualExpressions"/> for the variable
+        /// specified by <paramref name="variableName"/>
+        /// </summary>
+        private bool CheckExpression(Dictionary<string, List<ConstantExpression>> tableColumnsEqualExpressions, string variableName, ConstantExpression expression)
+        {
+            if (tableColumnsEqualExpressions.ContainsKey(variableName))
+            {
+                return tableColumnsEqualExpressions[variableName].Any(constantExpression => AreEqual(expression, constantExpression));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the expression are equal.
+        /// </summary>
+        private bool AreEqual(ConstantExpression expression, ConstantExpression constantExpression)
+        {
+            return expression.Value.Equals(constantExpression.Value);
+        }
+
+        /// <summary>
+        /// Adds the expression to the map <paramref name="tableColumnsEqualExpressions"/>
+        /// </summary>
+        /// <param name="tableColumnsEqualExpressions">The table columns equal expressions map.</param>
+        /// <param name="variableName">Name of the variable.</param>
+        /// <param name="expression">The expression.</param>
+        private void AddExpression(Dictionary<string, List<ConstantExpression>> tableColumnsEqualExpressions, string variableName, ConstantExpression expression)
+        {
+            if (!tableColumnsEqualExpressions.ContainsKey(variableName))
+            {
+                tableColumnsEqualExpressions.Add(variableName, new List<ConstantExpression>());
+            }
+
+            tableColumnsEqualExpressions[variableName].Add(expression);
         }
     }
 }
