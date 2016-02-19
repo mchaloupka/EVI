@@ -33,9 +33,19 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
         public class TriplePatternOptimizerImplementation
             : BaseSparqlOptimizerImplementation<object>
         {
+            /// <summary>
+            /// The template processor
+            /// </summary>
             private readonly TemplateProcessor _templateProcessor;
+
+            /// <summary>
+            /// The pattern comparer
+            /// </summary>
             private readonly PatternComparer _patternComparer;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="TriplePatternOptimizerImplementation"/> class.
+            /// </summary>
             public TriplePatternOptimizerImplementation()
             {
                 _templateProcessor = new TemplateProcessor();
