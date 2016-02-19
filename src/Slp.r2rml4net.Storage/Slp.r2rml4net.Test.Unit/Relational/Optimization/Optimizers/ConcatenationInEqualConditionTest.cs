@@ -103,7 +103,6 @@ namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [Ignore]
         [TestMethod]
         public void ConcatenationToConstEscaped_TwoColumns()
         {

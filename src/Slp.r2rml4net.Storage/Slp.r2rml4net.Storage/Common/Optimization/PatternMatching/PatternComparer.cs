@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TCode.r2rml4net;
 
 namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
 {
@@ -15,6 +16,8 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
         /// </summary>
         public CompareResult Compare(Pattern left, Pattern right)
         {
+            var isIriEscaped = left.IsIriEscaped && right.IsIriEscaped;
+
             int leftStart = 0;
             int rightStart = 0;
             StringBuilder leftPrefix = new StringBuilder();
@@ -25,6 +28,9 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
             StringBuilder leftSuffix = new StringBuilder();
             StringBuilder rightSuffix = new StringBuilder();
 
+            var leftPatternItems = left.PatternItems;
+            var rightPatternItems = right.PatternItems;
+
             bool performedAction;
             List<MatchCondition> conditions = new List<MatchCondition>();
 
@@ -32,26 +38,15 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
             {
                 performedAction = false;
 
-                GetPrefix(left.PatternItems, leftPrefix, ref leftStart, leftEnd, leftSuffix);
-                GetPrefix(right.PatternItems, rightPrefix, ref rightStart, rightEnd, rightSuffix);
+                GetPrefix(leftPatternItems, leftPrefix, ref leftStart, leftEnd, leftSuffix);
+                GetPrefix(rightPatternItems, rightPrefix, ref rightStart, rightEnd, rightSuffix);
 
-                GetSuffix(left.PatternItems, leftStart, ref leftEnd, leftSuffix);
-                GetSuffix(right.PatternItems, rightStart, ref rightEnd, rightSuffix);
+                GetSuffix(leftPatternItems, leftStart, ref leftEnd, leftSuffix);
+                GetSuffix(rightPatternItems, rightStart, ref rightEnd, rightSuffix);
 
-                var minSharedPrefix = Math.Min(leftPrefix.Length, rightPrefix.Length);
-
-                if (minSharedPrefix > 0)
+                if (ProcessPrefixes(leftPrefix, rightPrefix, conditions, ref performedAction))
                 {
-                    var leftSubPrefix = GetAndCutPrefixStart(leftPrefix, minSharedPrefix);
-                    var rightSubPrefix = GetAndCutPrefixStart(rightPrefix, minSharedPrefix);
-                    performedAction = true;
-
-                    if (leftSubPrefix != rightSubPrefix)
-                    {
-                        conditions.Clear();
-                        conditions.Add(MatchCondition.CreateAlwaysFalseCondition());
-                        break;
-                    }
+                    break;
                 }
 
                 if (leftStart > leftEnd)
@@ -64,20 +59,9 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
                     rightSuffix = rightPrefix;
                 }
 
-                var minSharedSuffix = Math.Min(leftSuffix.Length, rightSuffix.Length);
-
-                if (minSharedSuffix > 0)
+                if (ProcessSuffixes(leftSuffix, rightSuffix, conditions, ref performedAction))
                 {
-                    var leftSubSuffix = GetAndCutSuffixEnd(leftSuffix, minSharedSuffix);
-                    var rightSubSuffix = GetAndCutSuffixEnd(rightSuffix, minSharedSuffix);
-                    performedAction = true;
-
-                    if (leftSubSuffix != rightSubSuffix)
-                    {
-                        conditions.Clear();
-                        conditions.Add(MatchCondition.CreateAlwaysFalseCondition());
-                        break;
-                    }
+                    break;
                 }
 
                 if (leftStart > leftEnd)
@@ -89,10 +73,23 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
                 {
                     rightSuffix = new StringBuilder();
                 }
+
+                if (!performedAction && isIriEscaped)
+                {
+                    var leftIriEscapedPrefix = GetIriEscapedPrefix(leftPatternItems, ref leftStart, leftEnd, leftPrefix, leftSuffix);
+                    var rightIriEscapedPrefix = GetIriEscapedPrefix(rightPatternItems, ref rightStart, rightEnd, rightPrefix, rightSuffix);
+
+                    if (leftIriEscapedPrefix.Count > 0 || rightIriEscapedPrefix.Count > 0)
+                    {
+                        conditions.Add(CreateConditionFromIriEscapedPrefixes(leftIriEscapedPrefix, rightIriEscapedPrefix));
+                        performedAction = true;
+                    }
+                }
+
             } while (performedAction);
 
-            var remainingLeftPattern = GetRemainingPattern(left, leftPrefix, leftStart, leftEnd, leftSuffix);
-            var remainingRightPattern = GetRemainingPattern(right, rightPrefix, rightStart, rightEnd, rightSuffix);
+            var remainingLeftPattern = GetRemainingPattern(left.IsIriEscaped, leftPatternItems, leftPrefix, leftStart, leftEnd, leftSuffix);
+            var remainingRightPattern = GetRemainingPattern(right.IsIriEscaped, rightPatternItems, rightPrefix, rightStart, rightEnd, rightSuffix);
 
             if (remainingLeftPattern.PatternItems.Length > 0 || remainingRightPattern.PatternItems.Length > 0)
             {
@@ -102,28 +99,204 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
             return new CompareResult(conditions);
         }
 
+        private MatchCondition CreateConditionFromIriEscapedPrefixes(List<PatternItem> leftIriEscapedPrefix, List<PatternItem> rightIriEscapedPrefix)
+        {
+            if (leftIriEscapedPrefix.Count == 0)
+            {
+                leftIriEscapedPrefix.Add(new PatternItem(string.Empty));
+            }
+
+            if (rightIriEscapedPrefix.Count == 0)
+            {
+                rightIriEscapedPrefix.Add(new PatternItem(string.Empty));
+            }
+
+            var leftPattern = new Pattern(true, leftIriEscapedPrefix);
+            var rightPattern = new Pattern(true, rightIriEscapedPrefix);
+
+            return MatchCondition.CreateCondition(leftPattern, rightPattern);
+        }
+
+        /// <summary>
+        /// Gets the IRI escaped prefix.
+        /// </summary>
+        /// <param name="patternItems">The pattern items.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="prefix">The prefix.</param>
+        /// <param name="suffix">The suffix.</param>
+        private List<PatternItem> GetIriEscapedPrefix(PatternItem[] patternItems, ref int start, int end, StringBuilder prefix, StringBuilder suffix)
+        {
+            List<PatternItem> toReturn = new List<PatternItem>();
+
+            var foundUnallowed = false;
+            var foundString = new StringBuilder();
+
+            for (int i = 0; i < prefix.Length; i++)
+            {
+                if (MappingHelper.IsIUnreserved(prefix[i]))
+                {
+                    foundString.Append(prefix[i]);
+                }
+                else
+                {
+                    foundUnallowed = true;
+                    break;
+                }
+            }
+
+            if (foundString.Length > 0)
+            {
+                prefix.Remove(0, foundString.Length);
+            }
+
+            if (!foundUnallowed)
+            {
+                for (; start <= end; start++)
+                {
+                    var part = patternItems[start];
+
+                    if (part.IsConstant)
+                    {
+                        for (int i = 0; i < part.Text.Length; i++)
+                        {
+                            if (MappingHelper.IsIUnreserved(part.Text[i]))
+                            {
+                                foundString.Append(part.Text[i]);
+                            }
+                            else
+                            {
+                                foundUnallowed = true;
+                                prefix.Append(part.Text.Substring(i));
+                                start++;
+                                break;
+                            }
+                        }
+
+                        if (foundUnallowed)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (foundString.Length > 0)
+                        {
+                            toReturn.Add(new PatternItem(foundString.ToString()));
+                            foundString.Clear();
+                        }
+
+                        toReturn.Add(part);
+                    }
+                }
+            }
+
+            if (!foundUnallowed)
+            {
+                for (int i = 0; i < prefix.Length; i++)
+                {
+                    if (MappingHelper.IsIUnreserved(prefix[i]))
+                    {
+                        foundString.Append(prefix[i]);
+                    }
+                    else
+                    {
+                        foundUnallowed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (foundString.Length > 0)
+            {
+                toReturn.Add(new PatternItem(foundString.ToString()));
+                foundString.Clear();
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Processes the suffixes.
+        /// </summary>
+        /// <param name="leftSuffix">The left suffix.</param>
+        /// <param name="rightSuffix">The right suffix.</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="performedAction">if set to <c>true</c> the method performed some action.</param>
+        /// <returns><c>true</c> if there was a "never match" condition found.</returns>
+        private bool ProcessSuffixes(StringBuilder leftSuffix, StringBuilder rightSuffix, List<MatchCondition> conditions,
+            ref bool performedAction)
+        {
+            var minSharedSuffix = Math.Min(leftSuffix.Length, rightSuffix.Length);
+
+            if (minSharedSuffix > 0)
+            {
+                var leftSubSuffix = GetAndCutSuffixEnd(leftSuffix, minSharedSuffix);
+                var rightSubSuffix = GetAndCutSuffixEnd(rightSuffix, minSharedSuffix);
+                performedAction = true;
+
+                if (leftSubSuffix != rightSubSuffix)
+                {
+                    conditions.Clear();
+                    conditions.Add(MatchCondition.CreateAlwaysFalseCondition());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Processes the prefixes.
+        /// </summary>
+        /// <param name="leftPrefix">The left prefix.</param>
+        /// <param name="rightPrefix">The right prefix.</param>
+        /// <param name="conditions">The conditions.</param>
+        /// <param name="performedAction">if set to <c>true</c> the method performed some action.</param>
+        /// <returns><c>true</c> if there was a "never match" condition found.</returns>
+        private static bool ProcessPrefixes(StringBuilder leftPrefix, StringBuilder rightPrefix, List<MatchCondition> conditions,
+            ref bool performedAction)
+        {
+            var minSharedPrefix = Math.Min(leftPrefix.Length, rightPrefix.Length);
+
+            if (minSharedPrefix > 0)
+            {
+                var leftSubPrefix = GetAndCutPrefixStart(leftPrefix, minSharedPrefix);
+                var rightSubPrefix = GetAndCutPrefixStart(rightPrefix, minSharedPrefix);
+                performedAction = true;
+
+                if (leftSubPrefix != rightSubPrefix)
+                {
+                    conditions.Clear();
+                    conditions.Add(MatchCondition.CreateAlwaysFalseCondition());
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Gets the remaining pattern.
         /// </summary>
-        /// <param name="pattern">The pattern.</param>
+        /// <param name="isIriEscaped">Is the pattern IRI escaped.</param>
+        /// <param name="patternItems">The pattern items.</param>
         /// <param name="prefix">The prefix.</param>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <param name="suffix">The suffix.</param>
-        private Pattern GetRemainingPattern(Pattern pattern, StringBuilder prefix, int start, int end, StringBuilder suffix)
+        private Pattern GetRemainingPattern(bool isIriEscaped, PatternItem[] patternItems, StringBuilder prefix, int start, int end, StringBuilder suffix)
         {
-            return new Pattern(pattern.IsIriEscaped, GetRemainingPatternItems(pattern, prefix, start, end, suffix));
+            return new Pattern(isIriEscaped, GetRemainingPatternItems(patternItems, prefix, start, end, suffix));
         }
 
         /// <summary>
         /// Gets the remaining pattern items.
         /// </summary>
-        /// <param name="pattern">The pattern.</param>
+        /// <param name="patternItems">The pattern items.</param>
         /// <param name="prefix">The prefix.</param>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <param name="suffix">The suffix.</param>
-        private IEnumerable<PatternItem> GetRemainingPatternItems(Pattern pattern, StringBuilder prefix, int start, int end, StringBuilder suffix)
+        private IEnumerable<PatternItem> GetRemainingPatternItems(PatternItem[] patternItems, StringBuilder prefix, int start, int end, StringBuilder suffix)
         {
             if (prefix.Length > 0)
             {
@@ -132,7 +305,7 @@ namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
 
             for (int i = start; i <= end; i++)
             {
-                yield return pattern.PatternItems[i];
+                yield return patternItems[i];
             }
 
             if (suffix.Length > 0)
