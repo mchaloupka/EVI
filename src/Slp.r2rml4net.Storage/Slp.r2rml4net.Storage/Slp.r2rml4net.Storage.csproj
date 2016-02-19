@@ -74,6 +74,11 @@
     <Compile Include="Bootstrap\R2RMLDefaultStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\Pattern.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\PatternComparer.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\PatternItem.cs" />
     <Compile Include="Database\Base\BaseSqlDb.cs" />
     <Compile Include="Database\Base\BaseSqlQueryBuilder.cs" />
     <Compile Include="Database\IQueryResultReader.cs" />
