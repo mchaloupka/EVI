@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.r2rml4net.Storage.Common.Optimization.PatternMatching;
 using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
 using Slp.r2rml4net.Storage.Sparql.Algebra;
@@ -12,6 +13,8 @@ using Slp.r2rml4net.Storage.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
+using SlpPatternItem = Slp.r2rml4net.Storage.Common.Optimization.PatternMatching.PatternItem;
+using PatternItem = VDS.RDF.Query.Patterns.PatternItem;
 
 namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
 {
@@ -190,6 +193,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 {
                     _variables = new Dictionary<string, List<ITermMap>>();
                     Queries = new List<IGraphPattern>();
+                    _patternComparer = new PatternComparer();
                 }
 
                 /// <summary>
@@ -366,6 +370,8 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 /// The template processor
                 /// </summary>
                 private readonly TemplateProcessor _templateProcessor = new TemplateProcessor();
+
+                private readonly PatternComparer _patternComparer;
 
                 /// <summary>
                 /// Determines whether the first mapping can match the second mapping.
@@ -641,10 +647,15 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 /// <returns><c>true</c> if the template can match the value, <c>false</c> otherwise.</returns>
                 private bool TemplateMatchCheck(string template, string value, bool isIri)
                 {
-                    var templateParts = _templateProcessor.ParseTemplate(template).ToArray();
-                    var secondParts = new ITemplatePart[] { new TemplateProcessor.TextTemplatePart(value) };
+                    var templateParts =
+                        _templateProcessor.ParseTemplate(template)
+                        .Select(SlpPatternItem.FromTemplatePart);
 
-                    return TemplateMatchCheck(string.Empty, string.Empty, 0, templateParts.Length, templateParts, string.Empty, string.Empty, 0, secondParts.Length, secondParts, isIri);
+                    var leftPattern = new Pattern(isIri, templateParts);
+                    var rightPattern = new Pattern(isIri, new[] {new SlpPatternItem(value)});
+
+                    var result = _patternComparer.Compare(leftPattern, rightPattern);
+                    return !result.NeverMatch;
                 }
 
                 /// <summary>
@@ -656,198 +667,20 @@ namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
                 /// <returns><c>true</c> if the templates can match, <c>false</c> otherwise.</returns>
                 private bool TemplatesMatchCheck(string firstTemplate, string secondTemplate, bool isIri)
                 {
-                    var firstTemplateParts = _templateProcessor.ParseTemplate(firstTemplate).ToArray();
-                    var secondTemplateParts = _templateProcessor.ParseTemplate(secondTemplate).ToArray();
+                    var leftTemplateParts =
+                       _templateProcessor.ParseTemplate(firstTemplate)
+                       .Select(SlpPatternItem.FromTemplatePart);
 
-                    return TemplateMatchCheck(string.Empty, string.Empty, 0, firstTemplateParts.Length, firstTemplateParts, string.Empty, string.Empty, 0, secondTemplateParts.Length, secondTemplateParts, isIri);
-                }
+                    var leftPattern = new Pattern(isIri, leftTemplateParts);
 
-                /// <summary>
-                /// Can the templates match.
-                /// </summary>
-                /// <param name="firstPrefix">The first prefix.</param>
-                /// <param name="firstSuffix">The first suffix.</param>
-                /// <param name="firstIndex">The first index.</param>
-                /// <param name="firstEndIndex">The first index of the end.</param>
-                /// <param name="firstParts">The first parts.</param>
-                /// <param name="secondPrefix">The second prefix.</param>
-                /// <param name="secondSuffix">The second suffix.</param>
-                /// <param name="secondIndex">The index of the second.</param>
-                /// <param name="secondEndIndex">the end index of the second.</param>
-                /// <param name="secondParts">The second parts.</param>
-                /// <param name="isIri">if set to <c>true</c> the values are IRI.</param>
-                /// <returns><c>true</c> if the templates can match, <c>false</c> otherwise.</returns>
-                private bool TemplateMatchCheck(string firstPrefix, string firstSuffix, int firstIndex, int firstEndIndex, ITemplatePart[] firstParts,
-                    string secondPrefix, string secondSuffix, int secondIndex, int secondEndIndex, ITemplatePart[] secondParts, bool isIri)
-                {
-                    while (firstIndex != firstEndIndex || secondIndex != secondEndIndex)
-                    {
-                        ExtractStartEndFromTemplates(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
-                        ExtractStartEndFromTemplates(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
+                    var rightTemplateParts =
+                       _templateProcessor.ParseTemplate(secondTemplate)
+                       .Select(SlpPatternItem.FromTemplatePart);
 
-                        if (!PrefixMatch(ref firstPrefix, ref secondPrefix))
-                            return false;
+                    var rightPattern = new Pattern(isIri, rightTemplateParts);
 
-                        if (!SuffixMatch(ref firstSuffix, ref secondSuffix))
-                            return false;
-
-                        if (!isIri)
-                            return true;
-
-                        CanColumnMatch(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts, ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
-                    }
-
-                    return firstPrefix == secondPrefix && firstSuffix == secondSuffix;
-                }
-
-                /// <summary>
-                /// Can the templates match, when one of them starts with column
-                /// </summary>
-                /// <param name="firstPrefix">The first prefix.</param>
-                /// <param name="firstSuffix">The first suffix.</param>
-                /// <param name="firstIndex">The first index.</param>
-                /// <param name="firstEndIndex">The first index of the end.</param>
-                /// <param name="firstParts">The first parts.</param>
-                /// <param name="secondPrefix">The second prefix.</param>
-                /// <param name="secondSuffix">The second suffix.</param>
-                /// <param name="secondIndex">The index of the second.</param>
-                /// <param name="secondEndIndex">the end index of the second.</param>
-                /// <param name="secondParts">The second parts.</param>
-                /// <remarks>It does not return a value, it only skips the parts that can match</remarks>
-                private void CanColumnMatch(ref string firstPrefix, ref string firstSuffix, ref int firstIndex, ref int firstEndIndex, ITemplatePart[] firstParts, ref string secondPrefix, ref string secondSuffix, ref int secondIndex, ref int secondEndIndex, ITemplatePart[] secondParts)
-                {
-                    if (firstIndex < firstEndIndex && firstParts[firstIndex].IsColumn)
-                    {
-                        firstIndex++;
-                    }
-                    else if (secondIndex < secondEndIndex && secondParts[secondIndex].IsColumn)
-                    {
-                        secondIndex++;
-                    }
-                    else
-                    {
-                        return; // No colums found
-                    }
-
-                    SkipToFirstNotIUnreserverdCharacter(ref firstPrefix, ref firstSuffix, ref firstIndex, ref firstEndIndex, firstParts);
-                    SkipToFirstNotIUnreserverdCharacter(ref secondPrefix, ref secondSuffix, ref secondIndex, ref secondEndIndex, secondParts);
-                }
-
-                /// <summary>
-                /// Can suffixes match
-                /// </summary>
-                /// <param name="firstSuffix">The first suffix.</param>
-                /// <param name="secondSuffix">The second suffix.</param>
-                /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
-                private bool SuffixMatch(ref string firstSuffix, ref string secondSuffix)
-                {
-                    int index = 0;
-
-                    while (index < firstSuffix.Length && index < secondSuffix.Length)
-                    {
-                        if (firstSuffix[firstSuffix.Length - index - 1] != secondSuffix[secondSuffix.Length - index - 1])
-                            return false;
-
-                        index++;
-                    }
-
-                    firstSuffix = index == firstSuffix.Length ? string.Empty : firstSuffix.Substring(0, firstSuffix.Length - index);
-
-                    secondSuffix = index == secondSuffix.Length ? string.Empty : secondSuffix.Substring(0, secondSuffix.Length - index);
-
-                    return true;
-                }
-
-                /// <summary>
-                /// Can prefixes match.
-                /// </summary>
-                /// <param name="firstPrefix">The first prefix.</param>
-                /// <param name="secondPrefix">The second prefix.</param>
-                /// <returns><c>true</c> if they can match, <c>false</c> otherwise.</returns>
-                private bool PrefixMatch(ref string firstPrefix, ref string secondPrefix)
-                {
-                    int index = 0;
-
-                    while (index < firstPrefix.Length && index < secondPrefix.Length)
-                    {
-                        if (firstPrefix[index] != secondPrefix[index])
-                            return false;
-
-                        index++;
-                    }
-
-                    firstPrefix = index == firstPrefix.Length ? string.Empty : firstPrefix.Substring(index);
-
-                    secondPrefix = index == secondPrefix.Length ? string.Empty : secondPrefix.Substring(index);
-
-                    return true;
-                }
-
-                /// <summary>
-                /// Extracts the start and end from template.
-                /// </summary>
-                /// <param name="prefix">The prefix.</param>
-                /// <param name="suffix">The suffix.</param>
-                /// <param name="index">The index.</param>
-                /// <param name="endIndex">The end index.</param>
-                /// <param name="parts">The parts.</param>
-                private static void ExtractStartEndFromTemplates(ref string prefix, ref string suffix, ref int index, ref int endIndex, ITemplatePart[] parts)
-                {
-                    while (index < endIndex && parts[index].IsText)
-                    {
-                        prefix += parts[index++].Text;
-                    }
-
-                    while (endIndex > index && parts[endIndex - 1].IsText)
-                    {
-                        suffix = parts[endIndex-- - 1].Text + suffix;
-                    }
-                }
-
-                /// <summary>
-                /// Skips to first not IUnreserverd character.
-                /// </summary>
-                /// <param name="prefix">The prefix.</param>
-                /// <param name="suffix">The suffix.</param>
-                /// <param name="index">The index.</param>
-                /// <param name="endIndex">The end index.</param>
-                /// <param name="parts">The parts.</param>
-                private void SkipToFirstNotIUnreserverdCharacter(ref string prefix, ref string suffix, ref int index, ref int endIndex, ITemplatePart[] parts)
-                {
-                    int prefixSkip;
-                    for (prefixSkip = 0; prefixSkip < prefix.Length; prefixSkip++)
-                    {
-                        if (!MappingHelper.IsIUnreserved(prefix[prefixSkip]))
-                        {
-                            prefix = prefix.Substring(prefixSkip);
-                            return;
-                        }
-                    }
-
-                    prefix = string.Empty;
-
-                    while (index < endIndex)
-                    {
-                        var current = parts[index];
-
-                        if (current.IsText)
-                        {
-                            ExtractStartEndFromTemplates(ref prefix, ref suffix, ref index, ref endIndex, parts);
-                            SkipToFirstNotIUnreserverdCharacter(ref prefix, ref suffix, ref index, ref endIndex, parts);
-                            return;
-                        }
-                        else
-                        {
-                            index++;
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(suffix))
-                    {
-                        prefix = suffix;
-                        suffix = string.Empty;
-                        SkipToFirstNotIUnreserverdCharacter(ref prefix, ref suffix, ref index, ref endIndex, parts);
-                    }
+                    var result = _patternComparer.Compare(leftPattern, rightPattern);
+                    return !result.NeverMatch;
                 }
             }
         }
