@@ -361,17 +361,20 @@ namespace Slp.r2rml4net.Storage.Query
 
             var constructContext = new ConstructContext(rdfHandler, s, false);
 
-            // NOTE: Currently we support only simple triples
-            foreach (var pattern in template.TriplePatterns)
+            foreach (IConstructTriplePattern p in template.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                if (pattern is TriplePattern)
+                try
                 {
-                    var triplePattern = (TriplePattern)pattern;
-                    var triple = triplePattern.Construct(constructContext);
-                    rdfHandler.HandleTriple(triple);
+                    if (!rdfHandler.HandleTriple(p.Construct(constructContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
-                else
-                    throw new NotImplementedException();
+                catch (RdfQueryException)
+                {
+                    //If we get an error here then we could not construct a specific triple
+                    //so we continue anyway
+                }
             }
         }
 
