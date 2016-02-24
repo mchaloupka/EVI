@@ -67,7 +67,7 @@ namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
             }
             else
             {
-                throw new Exception("Every row should be in some case");
+                return null;
             }
         }
 
