@@ -69,6 +69,12 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
                 (current1, filterCondition) => filterCondition.Accept(this, current1));
         }
 
+        /// <summary>
+        /// Visits <see cref="DisjunctionCondition"/>
+        /// </summary>
+        /// <param name="disjunctionCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
         public object Visit(DisjunctionCondition disjunctionCondition, object data)
         {
             var satisfactionMap = (SatisfactionMap)data;
