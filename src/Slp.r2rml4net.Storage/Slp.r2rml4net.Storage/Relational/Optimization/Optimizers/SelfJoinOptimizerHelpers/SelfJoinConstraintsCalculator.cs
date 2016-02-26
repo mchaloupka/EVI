@@ -25,11 +25,18 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// <returns>List of all tables that are self joined</returns>
         public Dictionary<SqlTable, SqlTable> ProcessSelfJoinConditions(IEnumerable<IFilterCondition> filterConditions, List<SqlTable> presentTables, BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext data)
         {
+            var currentMap = SatisfactionMap.CreateInitialSatisfactionMap(presentTables, data.Context);
+
+            currentMap = filterConditions.Aggregate(currentMap, (current, filterCondition) => (SatisfactionMap) filterCondition.Accept(this, current));
+
             var result = new Dictionary<SqlTable, SqlTable>();
-
-            var satisfactionMap = SatisfactionMap.CreateInitialSatisfactionMap(presentTables, data.Context);
-
-
+            foreach (var selfJoinConstraintsSatisfaction in currentMap.GetSatisfiedSatisfactions())
+            {
+                if (!result.ContainsKey(selfJoinConstraintsSatisfaction.SqlTable))
+                {
+                    result.Add(selfJoinConstraintsSatisfaction.SqlTable, selfJoinConstraintsSatisfaction.ReplaceByTable);
+                }
+            }
 
             return result;
         }
