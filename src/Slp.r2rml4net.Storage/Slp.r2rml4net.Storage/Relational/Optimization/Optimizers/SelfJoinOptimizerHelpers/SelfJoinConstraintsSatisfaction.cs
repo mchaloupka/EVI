@@ -26,9 +26,9 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         public SqlTable ReplaceByTable { get; }
 
         /// <summary>
-        /// The list of not satisfied constraint parts
+        /// The list of unique constraints between tables
         /// </summary>
-        private readonly List<HashSet<string>> _notSatisfiedUniqueConstraintParts;
+        private readonly List<UniqueConstraint> _uniqueConstraints;
 
         /// <summary>
         /// The <see cref="SqlTable"/> map from columns to their equal expressions
@@ -43,7 +43,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// <summary>
         /// Constructs an instance of <see cref="SelfJoinConstraintsSatisfaction"/>
         /// </summary>
-        public SelfJoinConstraintsSatisfaction(SqlTable sqlTable, SqlTable replaceByTable, IEnumerable<IEnumerable<string>> uniqueColumnConstraints)
+        public SelfJoinConstraintsSatisfaction(SqlTable sqlTable, SqlTable replaceByTable, IEnumerable<UniqueConstraint> uniqueColumnConstraints)
         {
             SqlTable = sqlTable;
             ReplaceByTable = replaceByTable;
@@ -51,18 +51,11 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
             _sqlTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
             _replaceByTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
 
-            _notSatisfiedUniqueConstraintParts = new List<HashSet<string>>();
+            _uniqueConstraints = new List<UniqueConstraint>();
 
             foreach (var uniqueColumnConstraint in uniqueColumnConstraints)
             {
-                var columnSet = new HashSet<string>();
-
-                foreach (var column in uniqueColumnConstraint)
-                {
-                    columnSet.Add(column);
-                }
-
-                _notSatisfiedUniqueConstraintParts.Add(columnSet);
+                _uniqueConstraints.Add(uniqueColumnConstraint);
             }
         }
 
@@ -73,9 +66,9 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         {
             get
             {
-                if (_notSatisfiedUniqueConstraintParts.Count > 0)
+                if (_uniqueConstraints.Count > 0)
                 {
-                    return _notSatisfiedUniqueConstraintParts.Any(x => x.Count == 0);
+                    return _uniqueConstraints.Any(x => x.Satisfied);
                 }
                 else
                 {
@@ -102,11 +95,11 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// </summary>
         private void SatisfyConditionsWithVariable(string name)
         {
-            foreach (var notSatisfiedUniqueConstraintPart in _notSatisfiedUniqueConstraintParts)
+            foreach (var notSatisfiedUniqueConstraintPart in _uniqueConstraints)
             {
-                if (notSatisfiedUniqueConstraintPart.Contains(name))
+                if (notSatisfiedUniqueConstraintPart.HasNotEqualColumn(name))
                 {
-                    notSatisfiedUniqueConstraintPart.Remove(name);
+                    notSatisfiedUniqueConstraintPart.MarkAsEqual(name);
                 }
             }
         }
@@ -165,7 +158,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         /// <summary>
         /// Determines whether the expression are equal.
         /// </summary>
-        private bool AreEqual(ConstantExpression expression, ConstantExpression constantExpression)
+        private static bool AreEqual(ConstantExpression expression, ConstantExpression constantExpression)
         {
             return expression.Value.Equals(constantExpression.Value);
         }
@@ -184,6 +177,102 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
             }
 
             tableColumnsEqualExpressions[variableName].Add(expression);
+        }
+
+        /// <summary>
+        /// Intersects with the <paramref name="other"/> satisfaction.
+        /// </summary>
+        public void IntersectWith(SelfJoinConstraintsSatisfaction other)
+        {
+            foreach (var uniqueConstraint in _uniqueConstraints)
+            {
+                var otherUniqueConstraint =
+                    other._uniqueConstraints.Single(x => ReferenceEquals(x.DatabaseConstraint, uniqueConstraint.DatabaseConstraint));
+
+                uniqueConstraint.IntersectWith(otherUniqueConstraint);
+            }
+
+            IntersectColumnsEqualLists(_sqlTableColumnsEqualExpressions, other._sqlTableColumnsEqualExpressions);
+            IntersectColumnsEqualLists(_replaceByTableColumnsEqualExpressions, other._replaceByTableColumnsEqualExpressions);
+        }
+
+        /// <summary>
+        /// Intersects the columns equal lists.
+        /// </summary>
+        /// <param name="sqlTableColumnsEqualExpressions">The SQL table columns equal expressions.</param>
+        /// <param name="otherSqlTableColumnsEqualExpressions">The other SQL table columns equal expressions.</param>
+        private static void IntersectColumnsEqualLists(Dictionary<string, List<ConstantExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<ConstantExpression>> otherSqlTableColumnsEqualExpressions)
+        {
+            foreach (var column in sqlTableColumnsEqualExpressions.Keys)
+            {
+                if (!otherSqlTableColumnsEqualExpressions.ContainsKey(column))
+                {
+                    sqlTableColumnsEqualExpressions[column].Clear();
+                }
+                else
+                {
+                    var unMatched = sqlTableColumnsEqualExpressions[column].ToArray();
+                    var otherUnMatched = otherSqlTableColumnsEqualExpressions[column];
+
+                    foreach (var constantExpression in unMatched)
+                    {
+                        if (!otherUnMatched.Any(x => AreEqual(x, constantExpression)))
+                        {
+                            sqlTableColumnsEqualExpressions[column].Remove(constantExpression);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Merges with the <paramref name="other"/> satisfaction.
+        /// </summary>
+        public void MergeWith(SelfJoinConstraintsSatisfaction other)
+        {
+            foreach (var uniqueConstraint in _uniqueConstraints)
+            {
+                var otherUniqueConstraint =
+                    other._uniqueConstraints.Single(x => ReferenceEquals(x.DatabaseConstraint, uniqueConstraint.DatabaseConstraint));
+
+                uniqueConstraint.MergeWith(otherUniqueConstraint);
+            }
+
+            MergeColumnsEqualLists(_sqlTableColumnsEqualExpressions, other._sqlTableColumnsEqualExpressions);
+            MergeColumnsEqualLists(_replaceByTableColumnsEqualExpressions, other._replaceByTableColumnsEqualExpressions);
+        }
+
+        /// <summary>
+        /// Merges the columns equal lists.
+        /// </summary>
+        /// <param name="sqlTableColumnsEqualExpressions">The SQL table columns equal expressions.</param>
+        /// <param name="otherSqlTableColumnsEqualExpressions">The other SQL table columns equal expressions.</param>
+        private void MergeColumnsEqualLists(Dictionary<string, List<ConstantExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<ConstantExpression>> otherSqlTableColumnsEqualExpressions)
+        {
+            foreach (var column in sqlTableColumnsEqualExpressions.Keys)
+            {
+                if (otherSqlTableColumnsEqualExpressions.ContainsKey(column))
+                {
+                    var unMatched = sqlTableColumnsEqualExpressions[column].ToArray();
+                    var otherUnMatched = otherSqlTableColumnsEqualExpressions[column];
+
+                    foreach (var constantExpression in otherUnMatched)
+                    {
+                        if (!unMatched.Any(x => AreEqual(x, constantExpression)))
+                        {
+                            sqlTableColumnsEqualExpressions[column].Add(constantExpression);
+                        }
+                    }
+                }
+            }
+
+            foreach (var column in otherSqlTableColumnsEqualExpressions.Keys)
+            {
+                if (!sqlTableColumnsEqualExpressions.ContainsKey(column))
+                {
+                    sqlTableColumnsEqualExpressions.Add(column, new List<ConstantExpression>(otherSqlTableColumnsEqualExpressions[column]));
+                }
+            }
         }
     }
 }

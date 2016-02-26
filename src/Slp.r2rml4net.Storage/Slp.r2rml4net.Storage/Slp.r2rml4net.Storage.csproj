@@ -107,10 +107,12 @@
     <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAggregatedValues.cs" />
     <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAnalyzeResult.cs" />
     <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SatisfactionMap.cs" />
     <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsCalculator.cs" />
     <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsSatisfaction.cs" />
     <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinOptimizerData.cs" />
     <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinValueBindersOptimizerImplementation.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\UniqueConstraint.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />

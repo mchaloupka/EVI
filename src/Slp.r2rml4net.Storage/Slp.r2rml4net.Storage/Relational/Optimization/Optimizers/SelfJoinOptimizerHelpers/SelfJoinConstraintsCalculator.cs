@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Query;
 using Slp.r2rml4net.Storage.Relational.Query;
 using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
 using Slp.r2rml4net.Storage.Relational.Query.Expressions;
@@ -15,6 +14,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
     /// Calculator of self join constraints, able to find self join of SqlTables according to filter conditions
     /// </summary>
     public class SelfJoinConstraintsCalculator
+        : IFilterConditionVisitor
     {
         /// <summary>
         /// Processes the self join conditions.
@@ -27,170 +27,163 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
         {
             var result = new Dictionary<SqlTable, SqlTable>();
 
-            var satisfactionMap = CreateInitialSatisfactionMap(presentTables, data.Context);
-            var filterConditionArray = filterConditions.ToArray();
+            var satisfactionMap = SatisfactionMap.CreateInitialSatisfactionMap(presentTables, data.Context);
 
-            foreach (var filterCondition in filterConditionArray.OfType<EqualVariablesCondition>())
-            {
-                var leftVariable = filterCondition.LeftVariable as SqlColumn;
-                var rightVariable = filterCondition.RightVariable as SqlColumn;
 
-                if (leftVariable != null && rightVariable != null)
-                {
-                    var satisfaction = GetSatisfactionFromMap(satisfactionMap, leftVariable.Table, rightVariable.Table);
-
-                    if (satisfaction != null && !result.ContainsKey(satisfaction.SqlTable) && !satisfaction.IsSatisfied)
-                    {
-                        satisfaction.ProcessEqualVariablesCondition(leftVariable, rightVariable);
-
-                        if (satisfaction.IsSatisfied)
-                        {
-                            result.Add(satisfaction.SqlTable, satisfaction.ReplaceByTable);
-                        }
-                    }
-                }
-            }
-
-            foreach (var filterCondition in filterConditionArray.OfType<EqualExpressionCondition>())
-            {
-                var leftOperand = filterCondition.LeftOperand;
-                var rightOperand = filterCondition.RightOperand;
-
-                if (leftOperand is ColumnExpression)
-                { }
-                else if (rightOperand is ColumnExpression)
-                {
-                    leftOperand = rightOperand;
-                    rightOperand = filterCondition.LeftOperand;
-                }
-                else
-                {
-                    continue;
-                }
-
-                var leftVariable = ((ColumnExpression) leftOperand).CalculusVariable as SqlColumn;
-
-                if (leftVariable != null)
-                {
-                    foreach (var satisfaction in GetSatisfactionsFromMap(satisfactionMap, leftVariable.Table))
-                    {
-                        if (satisfaction.IsSatisfied)
-                        {
-                            continue;
-                        }
-
-                        satisfaction.ProcessVariableEqualToVariablesCondition(leftVariable, rightOperand);
-
-                        if (satisfaction.IsSatisfied)
-                        {
-                            result.Add(satisfaction.SqlTable, satisfaction.ReplaceByTable);
-                        }
-                    }
-                }
-            }
 
             return result;
         }
 
         /// <summary>
-        /// Gets the satisfaction maps from <paramref name="satisfactionMap"/> for table <paramref name="table"/>
+        /// Visits <see cref="AlwaysFalseCondition"/>
         /// </summary>
-        private IEnumerable<SelfJoinConstraintsSatisfaction> GetSatisfactionsFromMap(Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>> satisfactionMap, SqlTable table)
+        /// <param name="alwaysFalseCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(AlwaysFalseCondition alwaysFalseCondition, object data)
         {
-            foreach (var sqlTable in satisfactionMap.Keys)
-            {
-                if (sqlTable == table)
-                {
-                    foreach (var selfJoinConstraintsSatisfaction in satisfactionMap[sqlTable].Values)
-                    {
-                        yield return selfJoinConstraintsSatisfaction;
-                    }
-                }
-                else
-                {
-                    foreach (var replaceByTable in satisfactionMap[sqlTable].Keys)
-                    {
-                        if (replaceByTable == table)
-                        {
-                            yield return satisfactionMap[sqlTable][replaceByTable];
-                        }
-                    }
-                }
-            }
+            return data;
         }
 
         /// <summary>
-        /// Gets the satisfaction from <paramref name="satisfactionMap"/> for tables <paramref name="table"/> and <paramref name="otherTable"/>
+        /// Visits <see cref="AlwaysTrueCondition"/>
         /// </summary>
-        private SelfJoinConstraintsSatisfaction GetSatisfactionFromMap(Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>> satisfactionMap, SqlTable table, SqlTable otherTable)
+        /// <param name="alwaysTrueCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(AlwaysTrueCondition alwaysTrueCondition, object data)
         {
-            if (satisfactionMap.ContainsKey(table) && satisfactionMap[table].ContainsKey(otherTable))
+            return data;
+        }
+
+        /// <summary>
+        /// Visits <see cref="ConjunctionCondition"/>
+        /// </summary>
+        /// <param name="conjunctionCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ConjunctionCondition conjunctionCondition, object data)
+        {
+            return conjunctionCondition.InnerConditions.Aggregate(
+                data, 
+                (current1, filterCondition) => filterCondition.Accept(this, current1));
+        }
+
+        public object Visit(DisjunctionCondition disjunctionCondition, object data)
+        {
+            var satisfactionMap = (SatisfactionMap)data;
+
+            var current = satisfactionMap.CreateInitialSatisfactionMap();
+
+            foreach (var filterCondition in disjunctionCondition.InnerConditions)
             {
-                return satisfactionMap[table][otherTable];
+                current.IntersectWith(
+                    (SatisfactionMap) filterCondition.Accept(this, current.CreateInitialSatisfactionMap()));
             }
-            else if (satisfactionMap.ContainsKey(otherTable) && satisfactionMap[otherTable].ContainsKey(table))
+
+            satisfactionMap.MergeWith(current);
+            return satisfactionMap;
+        }
+
+        /// <summary>
+        /// Visits <see cref="EqualExpressionCondition"/>
+        /// </summary>
+        /// <param name="equalExpressionCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(EqualExpressionCondition equalExpressionCondition, object data)
+        {
+            var satisfactionMap = (SatisfactionMap) data;
+
+            var leftOperand = equalExpressionCondition.LeftOperand;
+            var rightOperand = equalExpressionCondition.RightOperand;
+
+            if (leftOperand is ColumnExpression)
+            { }
+            else if (rightOperand is ColumnExpression)
             {
-                return satisfactionMap[otherTable][table];
+                leftOperand = rightOperand;
+                rightOperand = equalExpressionCondition.LeftOperand;
             }
             else
             {
-                return null;
+                return satisfactionMap;
             }
-        }
 
-        /// <summary>
-        /// Creates initial satisfaction map
-        /// </summary>
-        /// <param name="presentTables">Tables present in the model</param>
-        /// <param name="context">The query context</param>
-        /// <returns></returns>
-        private Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>> CreateInitialSatisfactionMap(List<SqlTable> presentTables, QueryContext context)
-        {
-            var firstTableOccurrence = new Dictionary<string, SqlTable>();
-            var result = new Dictionary<SqlTable, Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>>();
+            var leftVariable = ((ColumnExpression)leftOperand).CalculusVariable as SqlColumn;
 
-            foreach (var sqlTable in presentTables)
+            if (leftVariable != null)
             {
-                var tableName = sqlTable.TableName;
-
-                if (!firstTableOccurrence.ContainsKey(tableName))
+                foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(leftVariable.Table))
                 {
-                    firstTableOccurrence.Add(tableName, sqlTable);
-                }
-                else
-                {
-                    var replaceByTable = firstTableOccurrence[tableName];
+                    if (satisfaction.IsSatisfied)
+                    {
+                        continue;
+                    }
 
-                    result.Add(sqlTable, new Dictionary<SqlTable, SelfJoinConstraintsSatisfaction>());
-                    result[sqlTable].Add(replaceByTable, GetSelfJoinConstraints(sqlTable, replaceByTable, context));
+                    satisfaction.ProcessVariableEqualToVariablesCondition(leftVariable, rightOperand);
+
+                    if (satisfaction.IsSatisfied)
+                    {
+                        satisfactionMap.MarkAsSatisfied(satisfaction);
+                    }
                 }
             }
 
-            return result;
+            return satisfactionMap;
         }
 
         /// <summary>
-        /// Gets the self join constraints of a table
+        /// Visits <see cref="EqualVariablesCondition"/>
         /// </summary>
-        /// <param name="sqlTable">The SQL table</param>
-        /// <param name="replaceByTable">The table that will be used to replace the <paramref name="sqlTable"/></param>
-        /// <param name="context">The query context</param>
-        private SelfJoinConstraintsSatisfaction GetSelfJoinConstraints(SqlTable sqlTable, SqlTable replaceByTable, QueryContext context)
+        /// <param name="equalVariablesCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(EqualVariablesCondition equalVariablesCondition, object data)
         {
-            var tableName = sqlTable.TableName;
-            var tableInfo = context.SchemaProvider.GetTableInfo(tableName);
+            var satisfactionMap = (SatisfactionMap)data;
 
-            var constraints = tableInfo.UniqueKeys.ToList();
+            var leftVariable = equalVariablesCondition.LeftVariable as SqlColumn;
+            var rightVariable = equalVariablesCondition.RightVariable as SqlColumn;
 
-            if (tableInfo.PrimaryKey != null)
+            if (leftVariable != null && rightVariable != null)
             {
-                constraints.Add(tableInfo.PrimaryKey);
+                var satisfaction = satisfactionMap.GetSatisfactionFromMap(leftVariable.Table, rightVariable.Table);
+
+                if (!satisfaction.IsSatisfied)
+                {
+                    satisfaction.ProcessEqualVariablesCondition(leftVariable, rightVariable);
+
+                    if (satisfaction.IsSatisfied)
+                    {
+                        satisfactionMap.MarkAsSatisfied(satisfaction);
+                    }
+                }
             }
 
-            var columnConstraints = constraints
-                .Select(databaseConstraint => databaseConstraint.Columns);
+            return satisfactionMap;
+        }
 
-            return new SelfJoinConstraintsSatisfaction(sqlTable, replaceByTable, columnConstraints);
+        /// <summary>
+        /// Visits <see cref="IsNullCondition"/>
+        /// </summary>
+        /// <param name="isNullCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(IsNullCondition isNullCondition, object data)
+        {
+            return data;
+        }
+
+        /// <summary>
+        /// Visits <see cref="NegationCondition"/>
+        /// </summary>
+        /// <param name="negationCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(NegationCondition negationCondition, object data)
+        {
+            return data;
         }
     }
 }
