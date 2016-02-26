@@ -163,7 +163,7 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
             {
                 var satisfaction = satisfactionMap.GetSatisfactionFromMap(leftVariable.Table, rightVariable.Table);
 
-                if (!satisfaction.IsSatisfied)
+                if (satisfaction != null && !satisfaction.IsSatisfied)
                 {
                     satisfaction.ProcessEqualVariablesCondition(leftVariable, rightVariable);
 
