@@ -87,11 +87,21 @@ namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptim
             var satisfactionMap = (SatisfactionMap)data;
 
             var current = satisfactionMap.CreateInitialSatisfactionMap();
+            var first = true;
 
             foreach (var filterCondition in disjunctionCondition.InnerConditions)
             {
-                current.IntersectWith(
-                    (SatisfactionMap) filterCondition.Accept(this, current.CreateInitialSatisfactionMap()));
+                var currentResult = (SatisfactionMap)filterCondition.Accept(this, current.CreateInitialSatisfactionMap());
+
+                if (first)
+                {
+                    current = currentResult;
+                    first = false;
+                }
+                else
+                {
+                    current.IntersectWith(currentResult);
+                }
             }
 
             satisfactionMap.MergeWith(current);
