@@ -132,10 +132,6 @@ UpgradeLog*.htm
 App_Data/*.mdf
 App_Data/*.ldf
 
-# Publish profile
-src/Slp.r2rml4net.Storage/Slp.r2rml4net.Server/Properties/PublishProfiles/r2rmlstore.pubxml
-r2rmlstore.pubxml
-
 #LightSwitch generated files
 GeneratedArtifacts/
 _Pvt_Extensions/
