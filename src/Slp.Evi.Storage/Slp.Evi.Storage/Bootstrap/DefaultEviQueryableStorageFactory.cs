@@ -16,10 +16,10 @@ using VDS.RDF.Query;
 namespace Slp.Evi.Storage.Bootstrap
 {
     /// <summary>
-    /// Class DefaultR2RMLStorageFactory.
+    /// Class DefaultEviQueryableStorageFactory.
     /// </summary>
-    public class R2RMLDefaultStorageFactory
-        : IR2RMLStorageFactory
+    public class DefaultEviQueryableStorageFactory
+        : IEviQueryableStorageFactory
     {
         /// <summary>
         /// Creates the query processor.

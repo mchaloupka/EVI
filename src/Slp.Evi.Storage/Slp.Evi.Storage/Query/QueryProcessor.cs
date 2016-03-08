@@ -40,7 +40,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The factory used to generate classes
         /// </summary>
-        private readonly IR2RMLStorageFactory _factory;
+        private readonly IEviQueryableStorageFactory _factory;
 
         /// <summary>
         /// The database schema provider
@@ -59,7 +59,7 @@ namespace Slp.Evi.Storage.Query
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public QueryProcessor(ISqlDatabase db, IR2RML mapping, IR2RMLStorageFactory factory)
+        public QueryProcessor(ISqlDatabase db, IR2RML mapping, IEviQueryableStorageFactory factory)
         {
             _db = db;
             _factory = factory;

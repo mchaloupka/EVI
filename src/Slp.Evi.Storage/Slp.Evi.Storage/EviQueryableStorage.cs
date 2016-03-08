@@ -29,7 +29,7 @@ namespace Slp.Evi.Storage
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public EviQueryableStorage(ISqlDatabase db, IR2RML mapping, IR2RMLStorageFactory factory)
+        public EviQueryableStorage(ISqlDatabase db, IR2RML mapping, IEviQueryableStorageFactory factory)
         {
             _queryProcessor = factory.CreateQueryProcessor(db, mapping);
         }

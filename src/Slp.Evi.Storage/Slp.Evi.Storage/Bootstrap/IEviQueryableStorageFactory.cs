@@ -14,9 +14,9 @@ using VDS.RDF.Query;
 namespace Slp.Evi.Storage.Bootstrap
 {
     /// <summary>
-    /// Factory for R2RML storage
+    /// Factory for <see cref="EviQueryableStorage"/>
     /// </summary>
-    public interface IR2RMLStorageFactory
+    public interface IEviQueryableStorageFactory
     {
         /// <summary>
         /// Creates the query processor.

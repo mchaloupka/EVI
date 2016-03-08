@@ -52,7 +52,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization
 
         protected virtual QueryContext GenerateQueryContext()
         {
-            var factory = new R2RMLDefaultStorageFactory();
+            var factory = new DefaultEviQueryableStorageFactory();
             return factory.CreateQueryContext(GenerateSparqlQuery(), null, GetDb(), GetSchemaProvider(), null);
         }
 

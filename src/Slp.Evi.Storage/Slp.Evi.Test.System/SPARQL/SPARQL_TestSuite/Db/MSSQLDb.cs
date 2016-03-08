@@ -31,9 +31,9 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
             return (new MsSqlDbFactory()).CreateSqlDb(connectionString);
         }
 
-        private static IR2RMLStorageFactory GetStorageFactory()
+        private static IEviQueryableStorageFactory GetStorageFactory()
         {
-            return new R2RMLDefaultStorageFactory();
+            return new DefaultEviQueryableStorageFactory();
         }
 
         protected override EviQueryableStorage GetStorage(string storageName)

@@ -33,7 +33,7 @@ namespace Slp.Evi.Storage.Query
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="context">The context.</param>
-        public Optimizers(IR2RMLStorageFactory factory, QueryContext context)
+        public Optimizers(IEviQueryableStorageFactory factory, QueryContext context)
         {
             _context = context;
             this._relationalOptimizers = new List<IRelationalOptimizer>(factory.GetRelationalOptimizers());

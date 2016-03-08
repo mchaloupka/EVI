@@ -71,9 +71,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrap\R2RMLDefaultStorageFactory.cs" />
+    <Compile Include="Bootstrap\DefaultEviQueryableStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
-    <Compile Include="Bootstrap\IR2RMLStorageFactory.cs" />
+    <Compile Include="Bootstrap\IEviQueryableStorageFactory.cs" />
     <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
     <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
     <Compile Include="Common\Optimization\PatternMatching\Pattern.cs" />

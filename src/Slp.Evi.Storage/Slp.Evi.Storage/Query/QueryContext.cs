@@ -48,7 +48,7 @@ namespace Slp.Evi.Storage.Query
         /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="factory">The storage factory</param>
-        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IR2RMLStorageFactory factory)
+        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory)
         {
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();

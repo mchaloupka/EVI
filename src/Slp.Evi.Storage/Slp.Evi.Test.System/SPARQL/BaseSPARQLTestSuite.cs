@@ -22,7 +22,7 @@ namespace Slp.Evi.Test.System.SPARQL
             return path;
         }
 
-        protected static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IR2RMLStorageFactory storageFactory)
+        protected static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IEviQueryableStorageFactory storageFactory)
         {
             var datasetFile = GetPath(@"Data\Datasets\" + dataset);
 
