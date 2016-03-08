@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Source
+namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
 {
     /// <summary>
     /// The source condition representing union

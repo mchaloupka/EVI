@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Sparql.Utils
+namespace Slp.Evi.Storage.Sparql.Utils
 {
     /// <summary>
     /// Base class for SPARQL transformations

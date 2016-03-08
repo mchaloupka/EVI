@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.DBSchema;
+using Slp.Evi.Storage.DBSchema;
 
-namespace Slp.r2rml4net.Test.Unit.DbSchema
+namespace Slp.Evi.Test.Unit.Mocks
 {
     /// <summary>
     /// Mock of <see cref="IDbSchemaProvider" />

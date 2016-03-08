@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DatabaseSchemaReader.DataSchema;
+﻿using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment
+namespace Slp.Evi.Storage.Relational.Query.Conditions.Assignment
 {
     /// <summary>
     /// The variable from assignment

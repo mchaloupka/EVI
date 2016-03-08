@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
 {
     /// <summary>
     /// The aggregation result of the <see cref="IsNullCalculator"/>.

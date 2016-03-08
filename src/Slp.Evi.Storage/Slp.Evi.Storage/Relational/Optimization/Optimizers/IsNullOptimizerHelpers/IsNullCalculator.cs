@@ -1,14 +1,13 @@
 ﻿using System.Linq;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Conditions.Source;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers
 {
     /// <summary>
     /// Calculates the <see cref="IsNullOptimizerAggregatedValues"/> from the calculus model

@@ -1,8 +1,8 @@
 ﻿using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Utils;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Relational.Query
+namespace Slp.Evi.Storage.Relational.Query
 {
     /// <summary>
     /// The relational expression

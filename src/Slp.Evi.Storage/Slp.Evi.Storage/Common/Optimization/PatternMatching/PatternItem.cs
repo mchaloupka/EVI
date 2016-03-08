@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
 
-namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
+namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {
     /// <summary>
     /// Class part of pattern in the pattern matching.

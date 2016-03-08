@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Sources
+namespace Slp.Evi.Storage.Relational.Query.Sources
 {
     /// <summary>
     /// Model representing calculus representation of a query

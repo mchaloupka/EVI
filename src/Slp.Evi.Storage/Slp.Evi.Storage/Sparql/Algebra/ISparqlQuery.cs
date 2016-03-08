@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS.RDF.Query;
+﻿using System.Collections.Generic;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra
+namespace Slp.Evi.Storage.Sparql.Algebra
 {
     /// <summary>
     /// Base interface for all SPARQL queries

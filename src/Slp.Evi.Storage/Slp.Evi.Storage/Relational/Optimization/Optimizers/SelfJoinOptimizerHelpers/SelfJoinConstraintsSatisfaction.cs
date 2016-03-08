@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using VDS.RDF.Query.Expressions.Arithmetic;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.Sources;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
     /// <summary>
     /// Class representing unsatisfied self-join constraints between tables

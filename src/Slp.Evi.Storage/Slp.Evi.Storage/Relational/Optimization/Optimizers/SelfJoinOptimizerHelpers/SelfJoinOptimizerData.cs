@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+﻿using System.Collections.Generic;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Sources;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
     /// <summary>
     /// The data for <see cref="SelfJoinOptimizer"/>

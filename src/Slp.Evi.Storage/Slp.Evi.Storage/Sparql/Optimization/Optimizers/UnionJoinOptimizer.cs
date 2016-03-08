@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Common.Optimization.PatternMatching;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
-using Slp.r2rml4net.Storage.Utils;
-using TCode.r2rml4net;
+using Slp.Evi.Storage.Common.Optimization.PatternMatching;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
+using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
-using SlpPatternItem = Slp.r2rml4net.Storage.Common.Optimization.PatternMatching.PatternItem;
+using SlpPatternItem = Slp.Evi.Storage.Common.Optimization.PatternMatching.PatternItem;
 using PatternItem = VDS.RDF.Query.Patterns.PatternItem;
 
-namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
+namespace Slp.Evi.Storage.Sparql.Optimization.Optimizers
 {
     /// <summary>
     /// The union / join optimization

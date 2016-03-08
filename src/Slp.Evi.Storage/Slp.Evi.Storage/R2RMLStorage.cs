@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Query;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Query;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
@@ -10,7 +10,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 
-namespace Slp.r2rml4net.Storage
+namespace Slp.Evi.Storage
 {
     /// <summary>
     /// The R2RML Storage

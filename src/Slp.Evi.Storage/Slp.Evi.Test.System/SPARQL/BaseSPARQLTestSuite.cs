@@ -3,16 +3,16 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
+using Slp.Evi.Storage;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
 using TCode.r2rml4net.Mapping.Fluent;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 
-namespace Slp.r2rml4net.Test.System.SPARQL
+namespace Slp.Evi.Test.System.SPARQL
 {
     public abstract class BaseSPARQLTestSuite
     {

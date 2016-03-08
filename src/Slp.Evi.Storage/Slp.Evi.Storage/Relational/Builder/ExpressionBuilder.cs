@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
-namespace Slp.r2rml4net.Storage.Relational.Builder
+namespace Slp.Evi.Storage.Relational.Builder
 {
     /// <summary>
     /// The expression builder

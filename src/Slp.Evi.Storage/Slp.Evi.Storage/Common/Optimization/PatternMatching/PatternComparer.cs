@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using TCode.r2rml4net;
 
-namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
+namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {
     /// <summary>
     /// Class PatternComparer.

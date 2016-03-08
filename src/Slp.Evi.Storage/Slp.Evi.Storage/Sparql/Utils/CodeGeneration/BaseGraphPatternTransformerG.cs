@@ -1,9 +1,10 @@
 ﻿// This is generated code, do not edit!!!
-using System;
 
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
+using System;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+
+namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
 {
     /// <summary>
     /// Base generated transformer for <see cref="IGraphPatternVisitor" />

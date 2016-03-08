@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter
+namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
 {
     /// <summary>
     /// The always true condition

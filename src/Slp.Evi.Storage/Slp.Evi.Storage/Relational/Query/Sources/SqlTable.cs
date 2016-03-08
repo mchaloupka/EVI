@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Sources
+namespace Slp.Evi.Storage.Relational.Query.Sources
 {
     /// <summary>
     /// SQL table representation

@@ -1,31 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Mapping.Utils;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Conditions.Source;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
-using FilterPattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.FilterPattern;
-using GraphPattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.GraphPattern;
-using TriplePattern = Slp.r2rml4net.Storage.Sparql.Algebra.Patterns.TriplePattern;
+using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
+using GraphPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.GraphPattern;
+using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;
 
-namespace Slp.r2rml4net.Storage.Relational.Builder
+namespace Slp.Evi.Storage.Relational.Builder
 {
     /// <summary>
     /// Relational builder

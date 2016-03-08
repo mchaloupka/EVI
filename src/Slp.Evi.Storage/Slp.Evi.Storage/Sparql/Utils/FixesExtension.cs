@@ -2,7 +2,7 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace Slp.r2rml4net.Storage.Sparql.Utils
+namespace Slp.Evi.Storage.Sparql.Utils
 {
     /// <summary>
     /// Fixes for SPARQL

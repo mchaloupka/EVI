@@ -3,11 +3,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database.Base;
-using Slp.r2rml4net.Storage.Database.Reader;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database.Base;
+using Slp.Evi.Storage.Database.Reader;
 
-namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
+namespace Slp.Evi.Storage.Database.Vendor.MsSql
 {
     /// <summary>
     /// MS SQL database vendor

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
+﻿using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
 {
     /// <summary>
     /// Comparison of constants

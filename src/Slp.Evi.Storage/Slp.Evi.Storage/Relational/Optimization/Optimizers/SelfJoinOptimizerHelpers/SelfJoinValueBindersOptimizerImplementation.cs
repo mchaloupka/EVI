@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
-using Slp.r2rml4net.Storage.Relational.Utils;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
     /// <summary>
     /// The implementation of the transformation <see cref="IValueBinder"/> to replace the variables

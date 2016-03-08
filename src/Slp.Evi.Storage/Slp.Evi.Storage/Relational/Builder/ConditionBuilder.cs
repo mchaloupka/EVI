@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Relational.Builder
+namespace Slp.Evi.Storage.Relational.Builder
 {
     /// <summary>
     /// The conditions builder

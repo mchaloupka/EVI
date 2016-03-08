@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Slp.r2rml4net.Storage.Database
+namespace Slp.Evi.Storage.Database
 {
     /// <summary>
     /// The SQL result reader

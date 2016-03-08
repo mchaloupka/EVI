@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database.Base;
+﻿using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database.Base;
 
-namespace Slp.r2rml4net.Storage.Database.Vendor.MsSql
+namespace Slp.Evi.Storage.Database.Vendor.MsSql
 {
     /// <summary>
     /// Sql factory for MS SQL

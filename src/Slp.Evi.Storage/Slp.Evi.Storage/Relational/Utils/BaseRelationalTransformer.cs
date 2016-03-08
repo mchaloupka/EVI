@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Utils;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Conditions.Source;
+using Slp.Evi.Storage.Relational.Query.Expressions;
+using Slp.Evi.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Relational.Utils
+namespace Slp.Evi.Storage.Relational.Utils
 {
     /// <summary>
     /// Base transformer for <see cref="ICalculusSource" />

@@ -1,7 +1,7 @@
-﻿using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
+﻿using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
 
-namespace Slp.r2rml4net.Storage.Sparql.Optimization
+namespace Slp.Evi.Storage.Sparql.Optimization
 {
     /// <summary>
     /// Interface for SPARQL optimization

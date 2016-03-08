@@ -1,6 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Utils;
+﻿using Slp.Evi.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Expressions
+namespace Slp.Evi.Storage.Relational.Query.Expressions
 {
     /// <summary>
     /// The expression visitor

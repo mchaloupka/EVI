@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Utils;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Utils;
-using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
+﻿using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Utils;
+using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers
+namespace Slp.Evi.Storage.Sparql.Optimization.Optimizers
 {
     /// <summary>
     /// The base class for SPARQL optimization

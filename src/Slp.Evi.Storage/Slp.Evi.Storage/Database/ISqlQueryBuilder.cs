@@ -1,7 +1,7 @@
-﻿using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
+﻿using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query;
 
-namespace Slp.r2rml4net.Storage.Database
+namespace Slp.Evi.Storage.Database
 {
     /// <summary>
     /// The SQL query builder

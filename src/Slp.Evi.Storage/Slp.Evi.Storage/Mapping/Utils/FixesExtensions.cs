@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Mapping.Utils
+namespace Slp.Evi.Storage.Mapping.Utils
 {
     /// <summary>
     /// Extension class for r2rml4net fixes

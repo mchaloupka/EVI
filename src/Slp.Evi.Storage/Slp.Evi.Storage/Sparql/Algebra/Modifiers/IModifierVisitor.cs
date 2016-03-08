@@ -1,11 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Slp.Evi.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers
+namespace Slp.Evi.Storage.Sparql.Algebra.Modifiers
 {
     /// <summary>
     /// Visitor interface of SPARQL result modifiers

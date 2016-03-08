@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace Slp.r2rml4net.Storage.Database.Reader
+namespace Slp.Evi.Storage.Database.Reader
 {
     /// <summary>
     /// Wrapper over data reader

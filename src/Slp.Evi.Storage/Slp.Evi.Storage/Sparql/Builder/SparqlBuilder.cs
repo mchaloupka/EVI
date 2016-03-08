@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Sparql.Builder
+namespace Slp.Evi.Storage.Sparql.Builder
 {
     /// <summary>
     /// SPARQL algebra builder.

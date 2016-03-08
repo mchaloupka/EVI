@@ -2,7 +2,7 @@ using System;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Mapping
+namespace Slp.Evi.Storage.Mapping
 {
     /// <summary>
     /// Object map for class

@@ -1,12 +1,12 @@
 ﻿// Generated code, do not edit!!!
 
 using System;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
 
-namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
+namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
 {
     /// <summary>
     /// The base class for SPARQL optimizers

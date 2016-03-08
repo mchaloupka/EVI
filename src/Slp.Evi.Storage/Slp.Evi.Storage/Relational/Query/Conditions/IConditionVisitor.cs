@@ -1,9 +1,8 @@
-﻿using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Source;
-using Slp.r2rml4net.Storage.Utils;
+﻿using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Conditions.Source;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Conditions
+namespace Slp.Evi.Storage.Relational.Query.Conditions
 {
     /// <summary>
     /// Visitor for conditions

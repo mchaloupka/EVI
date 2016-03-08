@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization.Optimizers
+namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
 {
     [TestClass]
     public class TriplePatternOptimizerTest

@@ -1,6 +1,6 @@
 ﻿using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.DBSchema
+namespace Slp.Evi.Storage.DBSchema
 {
     /// <summary>
     /// Interface for the provider for functions related to database schema.

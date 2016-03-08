@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers
+namespace Slp.Evi.Storage.Sparql.Algebra.Modifiers
 {
     /// <summary>
     /// Select modifier

@@ -4,14 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Query;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Query;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Extensions;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
+namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// Representation of the base value binder

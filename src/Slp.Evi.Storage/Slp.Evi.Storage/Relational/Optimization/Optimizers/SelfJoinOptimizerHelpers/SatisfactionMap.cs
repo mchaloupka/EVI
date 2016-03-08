@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query.Sources;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
     /// <summary>
     /// The type representing satisfaction map

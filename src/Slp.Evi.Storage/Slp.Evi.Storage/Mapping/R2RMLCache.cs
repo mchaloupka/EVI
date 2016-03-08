@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TCode.r2rml4net.Mapping;
 
-namespace Slp.r2rml4net.Storage.Mapping
+namespace Slp.Evi.Storage.Mapping
 {
     /// <summary>
     /// Cache for R2RML

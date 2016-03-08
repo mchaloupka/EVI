@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Database;
+using Slp.Evi.Storage.Database;
 
-namespace Slp.r2rml4net.Storage.DBSchema
+namespace Slp.Evi.Storage.DBSchema
 {
     /// <summary>
     /// Provider for functions related to database schema.

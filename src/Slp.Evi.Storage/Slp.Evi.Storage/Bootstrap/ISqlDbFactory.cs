@@ -1,6 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Database;
+﻿using Slp.Evi.Storage.Database;
 
-namespace Slp.r2rml4net.Storage.Bootstrap
+namespace Slp.Evi.Storage.Bootstrap
 {
     /// <summary>
     /// Factory for database related things

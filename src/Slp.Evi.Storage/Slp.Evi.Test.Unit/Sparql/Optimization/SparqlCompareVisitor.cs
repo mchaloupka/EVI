@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Modifiers;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization
+namespace Slp.Evi.Test.Unit.Sparql.Optimization
 {
     public class SparqlCompareVisitor
         : BaseGraphPatternTransformerG<object, bool, bool>

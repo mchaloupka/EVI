@@ -2,7 +2,7 @@
 using System.Linq;
 using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
     /// <summary>
     /// Class representing a unique constraint.

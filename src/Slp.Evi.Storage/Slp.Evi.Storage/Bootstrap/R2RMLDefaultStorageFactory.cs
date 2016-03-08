@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.DBSchema;
-using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Builder;
-using Slp.r2rml4net.Storage.Relational.Optimization;
-using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
-using Slp.r2rml4net.Storage.Sparql;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Builder;
-using Slp.r2rml4net.Storage.Sparql.Optimization;
-using Slp.r2rml4net.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.DBSchema;
+using Slp.Evi.Storage.Mapping;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Builder;
+using Slp.Evi.Storage.Relational.Optimization;
+using Slp.Evi.Storage.Relational.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.Builder;
+using Slp.Evi.Storage.Sparql.Optimization;
+using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Storage.Bootstrap
+namespace Slp.Evi.Storage.Bootstrap
 {
     /// <summary>
     /// Class DefaultR2RMLStorageFactory.

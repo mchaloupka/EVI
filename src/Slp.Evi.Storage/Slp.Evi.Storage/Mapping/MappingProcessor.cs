@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Utils;
+﻿using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
 using TCode.r2rml4net;
-using TCode.r2rml4net.Mapping;
-using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Mapping
+namespace Slp.Evi.Storage.Mapping
 {
     /// <summary>
     /// Processor for R2RML mapping

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
-using Slp.r2rml4net.Storage.Query;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Expressions
+namespace Slp.Evi.Storage.Relational.Query.Expressions
 {
     /// <summary>
     /// The concatenation expression

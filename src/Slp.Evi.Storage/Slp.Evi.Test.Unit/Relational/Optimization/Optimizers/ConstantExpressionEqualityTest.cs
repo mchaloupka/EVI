@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Expressions;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.Evi.Storage.Relational.Optimization.Optimizers;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Expressions;
 
-namespace Slp.r2rml4net.Test.Unit.Relational.Optimization.Optimizers
+namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 {
     [TestClass]
     public class ConstantExpressionEqualityTest

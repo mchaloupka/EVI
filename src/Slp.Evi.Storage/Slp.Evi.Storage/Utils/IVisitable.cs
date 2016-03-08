@@ -1,4 +1,4 @@
-﻿namespace Slp.r2rml4net.Storage.Utils
+﻿namespace Slp.Evi.Storage.Utils
 {
     /// <summary>
     /// Visitable object for visitor pattern

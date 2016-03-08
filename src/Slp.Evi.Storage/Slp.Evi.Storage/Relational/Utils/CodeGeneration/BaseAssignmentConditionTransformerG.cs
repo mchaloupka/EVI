@@ -1,9 +1,10 @@
 ﻿// This is generated code, do not edit!!!
-using System;
 
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Assignment;
-namespace Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration
+using System;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+
+namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
     /// Base generated transformer for <see cref="IAssignmentConditionVisitor" />

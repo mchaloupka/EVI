@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Relational.Optimization;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Optimization;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Relational.Optimization;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Optimization;
 
-namespace Slp.r2rml4net.Storage.Query
+namespace Slp.Evi.Storage.Query
 {
     /// <summary>
     /// Class Optimizers.

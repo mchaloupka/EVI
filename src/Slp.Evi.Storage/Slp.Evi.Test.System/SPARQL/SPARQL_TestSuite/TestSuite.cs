@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage;
+using Slp.Evi.Storage;
 
-namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite
+namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 {
     public abstract class TestSuite
         : BaseSPARQLTestSuite

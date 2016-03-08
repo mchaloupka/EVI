@@ -1,13 +1,11 @@
-﻿using System;
-using System.Text;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Conditions.Filter;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration;
+﻿using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelpers;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
 
-namespace Slp.r2rml4net.Storage.Relational.Optimization.Optimizers
+namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
 {
     /// <summary>
     /// The optimizer of <c>IS NULL</c> statements

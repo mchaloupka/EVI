@@ -1,6 +1,6 @@
-﻿using Slp.r2rml4net.Storage.Utils;
+﻿using Slp.Evi.Storage.Utils;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
+namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// Visitor for value binders

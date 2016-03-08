@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
+namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// Template processor

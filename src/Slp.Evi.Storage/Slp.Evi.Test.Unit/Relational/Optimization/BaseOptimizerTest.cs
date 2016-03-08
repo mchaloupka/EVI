@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using DatabaseSchemaReader.DataSchema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
-using Slp.r2rml4net.Storage.DBSchema;
-using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Relational.Optimization;
-using Slp.r2rml4net.Storage.Relational.Optimization.Optimizers;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
-using Slp.r2rml4net.Test.Unit.DbSchema;
-using Slp.r2rml4net.Test.Unit.Relational.Utilities;
-using VDS.RDF;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Database.Vendor.MsSql;
+using Slp.Evi.Storage.DBSchema;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Optimization.Optimizers;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Sources;
+using Slp.Evi.Test.Unit.Mocks;
+using Slp.Evi.Test.Unit.Relational.Utilities;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Test.Unit.Relational.Optimization
+namespace Slp.Evi.Test.Unit.Relational.Optimization
 {
     public abstract class BaseOptimizerTest<T>
     {

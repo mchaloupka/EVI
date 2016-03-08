@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Database.Vendor.MsSql;
-using TCode.r2rml4net.Mapping.Fluent;
+using Slp.Evi.Storage;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Database.Vendor.MsSql;
 
-namespace Slp.r2rml4net.Test.System.SPARQL.SPARQL_TestSuite.Db
+namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
 {
     [TestClass]
     public class MSSQLDb : TestSuite

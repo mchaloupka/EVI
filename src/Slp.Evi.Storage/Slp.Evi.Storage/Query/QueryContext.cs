@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Database.Base;
-using Slp.r2rml4net.Storage.DBSchema;
-using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
+﻿using System.Collections.Generic;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.DBSchema;
+using Slp.Evi.Storage.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 
-namespace Slp.r2rml4net.Storage.Query
+namespace Slp.Evi.Storage.Query
 {
     /// <summary>
     /// The query context.

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.Query;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Query;
 using VDS.RDF;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.ValueBinders
+namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 {
     /// <summary>
     /// The switch value binder

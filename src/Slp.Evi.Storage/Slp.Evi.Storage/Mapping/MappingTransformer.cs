@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Algebra.Patterns;
-using Slp.r2rml4net.Storage.Sparql.Utils;
 using System.Linq;
-using System.Reflection;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Utils;
 using TCode.r2rml4net.Mapping;
 
-namespace Slp.r2rml4net.Storage.Mapping
+namespace Slp.Evi.Storage.Mapping
 {
     /// <summary>
     /// Mapping transformer

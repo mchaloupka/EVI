@@ -1,6 +1,6 @@
 ﻿using DatabaseSchemaReader.DataSchema;
 
-namespace Slp.r2rml4net.Storage.Relational.Query.Sources
+namespace Slp.Evi.Storage.Relational.Query.Sources
 {
     /// <summary>
     /// The SQL column

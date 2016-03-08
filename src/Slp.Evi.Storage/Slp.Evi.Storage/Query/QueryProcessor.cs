@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Database;
-using Slp.r2rml4net.Storage.DBSchema;
-using Slp.r2rml4net.Storage.Mapping;
-using Slp.r2rml4net.Storage.Relational.Builder;
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
-using Slp.r2rml4net.Storage.Sparql.Builder;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.DBSchema;
+using Slp.Evi.Storage.Mapping;
+using Slp.Evi.Storage.Relational.Builder;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Sparql.Builder;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -16,7 +15,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Query
+namespace Slp.Evi.Storage.Query
 {
     /// <summary>
     /// Query processor

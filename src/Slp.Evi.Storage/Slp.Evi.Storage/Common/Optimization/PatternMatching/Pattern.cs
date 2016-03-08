@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
+namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {
     /// <summary>
     /// Class representing pattern in pattern matching.

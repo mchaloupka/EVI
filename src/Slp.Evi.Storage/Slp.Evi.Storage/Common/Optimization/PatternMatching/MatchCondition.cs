@@ -1,4 +1,4 @@
-namespace Slp.r2rml4net.Storage.Common.Optimization.PatternMatching
+namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {
     /// <summary>
     /// The match condition

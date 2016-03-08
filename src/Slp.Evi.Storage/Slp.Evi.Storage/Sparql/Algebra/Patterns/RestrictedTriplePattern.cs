@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Patterns;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using Slp.r2rml4net.Storage.Mapping;
 using TCode.r2rml4net.Mapping;
+using VDS.RDF.Query.Patterns;
 
-namespace Slp.r2rml4net.Storage.Sparql.Algebra.Patterns
+namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
 {
     /// <summary>
     /// Triple pattern

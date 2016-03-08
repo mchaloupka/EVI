@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+﻿using System.Collections.Generic;
+using Slp.Evi.Storage.Relational.Query.Sources;
 
-namespace Slp.r2rml4net.Storage.Relational.Query
+namespace Slp.Evi.Storage.Relational.Query
 {
     /// <summary>
     /// Relational query

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.r2rml4net.Storage.Bootstrap;
-using Slp.r2rml4net.Storage.Query;
-using Slp.r2rml4net.Storage.Sparql.Algebra;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Algebra;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace Slp.r2rml4net.Test.Unit.Sparql.Optimization
+namespace Slp.Evi.Test.Unit.Sparql.Optimization
 {
     public abstract class BaseOptimizerTest
     {
