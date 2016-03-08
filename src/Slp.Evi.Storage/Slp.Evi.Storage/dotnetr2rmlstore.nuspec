@@ -19,9 +19,9 @@
   </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Slp.r2rml4net.Storage.dll" target="lib\net45" />
-    <file src="bin\Release\Slp.r2rml4net.Storage.xml" target="lib\net45" />
-    <file src="bin\Release\Slp.r2rml4net.Storage.pdb" target="lib\net45" />
+    <file src="bin\Release\Slp.Evi.Storage.dll" target="lib\net45" />
+    <file src="bin\Release\Slp.Evi.Storage.xml" target="lib\net45" />
+    <file src="bin\Release\Slp.Evi.Storage.pdb" target="lib\net45" />
     <file src="**\*.cs" target="src" />
   </files>
 </package>
