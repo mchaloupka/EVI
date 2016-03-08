@@ -6,8 +6,8 @@
     <ProjectGuid>{7820EF0B-5D85-42B3-B4B6-89A1D1432CA8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Slp.r2rml4net.Test.System</RootNamespace>
-    <AssemblyName>Slp.r2rml4net.Test.System</AssemblyName>
+    <RootNamespace>Slp.Evi.Test.System</RootNamespace>
+    <AssemblyName>Slp.Evi.Test.System</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -84,7 +84,7 @@
     <Compile Include="SPARQL\SPARQL_TestSuite\TestSuite.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage.csproj">
+    <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj">
       <Project>{1d04a0ad-3e86-4f3c-9065-fc9211d6bf64}</Project>
       <Name>Slp.r2rml4net.Storage</Name>
     </ProjectReference>

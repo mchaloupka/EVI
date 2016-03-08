@@ -33,7 +33,7 @@ namespace Slp.r2rml4net.Storage.Sparql.Utils.CodeGeneration
             }
             else
             {
-                throw new ArgumentException("Unexpected type of parameter", nameof(toTransform));
+                throw new ArgumentException("Unexpected type of parameter", "toTransform");
             }
         }
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Slp.r2rml4net.Storage</RootNamespace>
-    <AssemblyName>Slp.r2rml4net.Storage</AssemblyName>
+    <RootNamespace>Slp.Evi.Storage</RootNamespace>
+    <AssemblyName>Slp.Evi.Storage</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Slp.r2rml4net.Storage.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Slp.Evi.Storage.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
