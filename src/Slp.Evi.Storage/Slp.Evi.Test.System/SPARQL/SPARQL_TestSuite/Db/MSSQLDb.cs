@@ -11,12 +11,12 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
     [TestClass]
     public class MSSQLDb : TestSuite
     {
-        private static Dictionary<string, R2RMLStorage> _storages;
+        private static Dictionary<string, EviQueryableStorage> _storages;
 
         [ClassInitialize]
         public static void TestSuiteInitialization(TestContext context)
         {
-            _storages = new Dictionary<string, R2RMLStorage>();
+            _storages = new Dictionary<string, EviQueryableStorage>();
 
             foreach (var dataset in StorageNames)
             {
@@ -36,7 +36,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
             return new R2RMLDefaultStorageFactory();
         }
 
-        protected override R2RMLStorage GetStorage(string storageName)
+        protected override EviQueryableStorage GetStorage(string storageName)
         {
             return _storages[storageName];
         }

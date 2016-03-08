@@ -99,7 +99,7 @@
     <Compile Include="Query\Optimizers.cs" />
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
-    <Compile Include="R2RMLStorage.cs" />
+    <Compile Include="EviQueryableStorage.cs" />
     <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizer.cs" />

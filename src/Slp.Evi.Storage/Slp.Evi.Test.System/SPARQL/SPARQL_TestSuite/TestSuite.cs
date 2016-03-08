@@ -94,7 +94,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        protected abstract R2RMLStorage GetStorage(string storageName);
+        protected abstract EviQueryableStorage GetStorage(string storageName);
 
         private XDocument GetExpected(string resultFile)
         {

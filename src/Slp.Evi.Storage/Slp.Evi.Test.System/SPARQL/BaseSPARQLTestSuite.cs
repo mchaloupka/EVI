@@ -22,7 +22,7 @@ namespace Slp.Evi.Test.System.SPARQL
             return path;
         }
 
-        protected static R2RMLStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IR2RMLStorageFactory storageFactory)
+        protected static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IR2RMLStorageFactory storageFactory)
         {
             var datasetFile = GetPath(@"Data\Datasets\" + dataset);
 
@@ -45,7 +45,7 @@ namespace Slp.Evi.Test.System.SPARQL
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new R2RMLStorage(sqlDb, mapping, storageFactory);
+            return new EviQueryableStorage(sqlDb, mapping, storageFactory);
         }
 
         private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)

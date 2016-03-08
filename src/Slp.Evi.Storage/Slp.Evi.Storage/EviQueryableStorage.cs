@@ -13,9 +13,10 @@ using VDS.RDF.Storage.Management;
 namespace Slp.Evi.Storage
 {
     /// <summary>
-    /// The R2RML Storage
+    /// The <see cref="IQueryableStorage" /> which creates an RDB2RDF wrapper
+    /// over a relational database
     /// </summary>
-    public class R2RMLStorage : IQueryableStorage
+    public class EviQueryableStorage : IQueryableStorage
     {
         /// <summary>
         /// The query processor
@@ -23,12 +24,12 @@ namespace Slp.Evi.Storage
         private readonly QueryProcessor _queryProcessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="R2RMLStorage" /> class.
+        /// Initializes a new instance of the <see cref="EviQueryableStorage" /> class.
         /// </summary>
         /// <param name="db">The database.</param>
         /// <param name="mapping">The mapping.</param>
         /// <param name="factory">The factory.</param>
-        public R2RMLStorage(ISqlDatabase db, IR2RML mapping, IR2RMLStorageFactory factory)
+        public EviQueryableStorage(ISqlDatabase db, IR2RML mapping, IR2RMLStorageFactory factory)
         {
             _queryProcessor = factory.CreateQueryProcessor(db, mapping);
         }
