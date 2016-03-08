@@ -1,9 +1,8 @@
 ﻿// This is generated code, do not edit!!!
-
 using System;
+
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-
 namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
 {
     /// <summary>
@@ -18,7 +17,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <summary>
         /// Transforms the <see cref="IGraphPattern" />.
         /// </summary>
-        /// <param name="instance">The instance to tranform.</param>
+        /// <param name="instance">The instance to transform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
         public TR TransformGraphPattern(IGraphPattern instance, T data)
@@ -37,12 +36,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR CommonPostTransform(TR transformed, IGraphPattern toTransform, T data)
         {
             return transformed;
@@ -98,7 +97,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(EmptyPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -109,12 +108,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, EmptyPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -170,7 +169,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(FilterPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -181,12 +180,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, FilterPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -242,7 +241,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(NotMatchingPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -253,12 +252,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, NotMatchingPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -314,7 +313,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(GraphPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -325,12 +324,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, GraphPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -386,7 +385,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(JoinPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -397,12 +396,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, JoinPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -458,7 +457,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(LeftJoinPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -469,12 +468,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, LeftJoinPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -530,7 +529,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(MinusPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -541,12 +540,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, MinusPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -602,7 +601,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(TriplePattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -613,12 +612,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, TriplePattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -674,7 +673,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(UnionPattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -685,12 +684,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, UnionPattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
@@ -746,7 +745,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(RestrictedTriplePattern toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -757,12 +756,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, RestrictedTriplePattern toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);

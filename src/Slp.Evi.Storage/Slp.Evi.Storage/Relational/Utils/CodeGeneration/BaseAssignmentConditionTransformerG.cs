@@ -1,9 +1,8 @@
 ﻿// This is generated code, do not edit!!!
-
 using System;
+
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
-
 namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
 {
     /// <summary>
@@ -20,7 +19,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         /// <summary>
         /// Transforms the <see cref="IAssignmentCondition" />.
         /// </summary>
-        /// <param name="instance">The instance to tranform.</param>
+        /// <param name="instance">The instance to transform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
         public TR TransformAssignmentCondition(IAssignmentCondition instance, T data)
@@ -39,12 +38,12 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR CommonPostTransform(TR transformed, IAssignmentCondition toTransform, T data)
         {
             return transformed;
@@ -100,7 +99,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         protected abstract TR Transform(AssignmentFromExpressionCondition toTransform, T data);
 
         /// <summary>
-        /// Preprocess for the transformation.
+        /// Pre-process for the transformation.
         /// </summary>
         /// <param name="toTransform">Instance to be transformed</param>
         /// <param name="data">The passed data</param>
@@ -111,12 +110,12 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Postprocess for the transformation.
+        /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
-        /// <returns>The postprocessed transformation result</returns>
+        /// <returns>The post-processed transformation result</returns>
         protected virtual TR PostTransform(TR transformed, AssignmentFromExpressionCondition toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);

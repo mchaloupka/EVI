@@ -5,8 +5,8 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
-using Slp.r2rml4net.Storage.Relational.Query;
-using Slp.r2rml4net.Storage.Relational.Query.Sources;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Sources;
 <#
-    GenerateClass("Slp.r2rml4net.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Sources\ICalculusSourceVisitor.cs", null);
+    GenerateClass("Slp.Evi.Storage.Relational.Utils.CodeGeneration", @"Relational\Query\Sources\ICalculusSourceVisitor.cs", null);
 #>
