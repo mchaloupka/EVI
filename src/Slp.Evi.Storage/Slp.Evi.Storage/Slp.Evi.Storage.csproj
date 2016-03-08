@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1D04A0AD-3E86-4F3C-9065-FC9211D6BF64}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Slp.Evi.Storage</RootNamespace>
+    <AssemblyName>Slp.Evi.Storage</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Slp.Evi.Storage.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="DatabaseSchemaReader, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DatabaseSchemaReader.1.4.4.0\lib\net40\DatabaseSchemaReader.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="dotNetRDF, Version=1.0.9.3683, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\packages\dotNetRDF.1.0.9.3683\lib\net40\dotNetRDF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TCode.r2rml4net, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\r2rml4net.0.4.0.0-pre01\lib\net40\TCode.r2rml4net.dll</HintPath>
+    </Reference>
+    <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bootstrap\DefaultEviQueryableStorageFactory.cs" />
+    <Compile Include="Bootstrap\ISqlDbFactory.cs" />
+    <Compile Include="Bootstrap\IEviQueryableStorageFactory.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\Pattern.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\PatternComparer.cs" />
+    <Compile Include="Common\Optimization\PatternMatching\PatternItem.cs" />
+    <Compile Include="Database\Base\BaseSqlDb.cs" />
+    <Compile Include="Database\Base\BaseSqlQueryBuilder.cs" />
+    <Compile Include="Database\IQueryResultReader.cs" />
+    <Compile Include="Database\ISqlDatabase.cs" />
+    <Compile Include="Database\ISqlQueryBuilder.cs" />
+    <Compile Include="Database\Reader\DataReaderWrapper.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlDb.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlDbFactory.cs" />
+    <Compile Include="DBSchema\DbSchemaProvider.cs" />
+    <Compile Include="DBSchema\IDbSchemaProvider.cs" />
+    <Compile Include="Mapping\ClassObjectMap.cs" />
+    <Compile Include="Mapping\ClassPredicateMap.cs" />
+    <Compile Include="Mapping\MappingProcessor.cs" />
+    <Compile Include="Mapping\MappingTransformer.cs" />
+    <Compile Include="Mapping\R2RMLCache.cs" />
+    <Compile Include="Mapping\Utils\FixesExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Optimizers.cs" />
+    <Compile Include="Query\QueryNamingHelpers.cs" />
+    <Compile Include="Query\QueryProcessor.cs" />
+    <Compile Include="EviQueryableStorage.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullCalculator.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAggregatedValues.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAnalyzeResult.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SatisfactionMap.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsCalculator.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsSatisfaction.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinOptimizerData.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinValueBindersOptimizerImplementation.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\UniqueConstraint.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\AlwaysFalseCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\AlwaysTrueCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\ConjunctionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\DisjunctionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\EqualExpressionCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\EqualVariablesCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\IFilterConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\IsNullCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\NegationCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\ISourceConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\TupleFromSourceCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\UninonedSourcesCondition.cs" />
+    <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
+    <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Relational\Optimization\IRelationalOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
+    <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilder.cs" />
+    <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Relational\Query\Conditions\IConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Expressions\ColumnExpression.cs" />
+    <Compile Include="Relational\Query\Expressions\ConcatenationExpression.cs" />
+    <Compile Include="Relational\Query\Expressions\ConstantExpression.cs" />
+    <Compile Include="Relational\Query\Expressions\IExpressionVisitor.cs" />
+    <Compile Include="Relational\Query\IExpression.cs" />
+    <Compile Include="Relational\Query\ValueBinders\BaseValueBinder.cs" />
+    <Compile Include="Relational\Query\ValueBinders\EmptyValueBinder.cs" />
+    <Compile Include="Relational\Builder\RelationalBuilder.cs" />
+    <Compile Include="Relational\Query\ICalculusSource.cs" />
+    <Compile Include="Relational\Query\Sources\CalculusModel.cs" />
+    <Compile Include="Relational\Query\ICondition.cs" />
+    <Compile Include="Relational\Query\ICalculusVariable.cs" />
+    <Compile Include="Relational\Query\RelationalQuery.cs" />
+    <Compile Include="Relational\Query\IValueBinder.cs" />
+    <Compile Include="Relational\Query\Sources\ICalculusSourceVisitor.cs" />
+    <Compile Include="Relational\Query\Sources\SqlColumn.cs" />
+    <Compile Include="Relational\Query\Sources\SqlTable.cs" />
+    <Compile Include="Relational\Query\ValueBinders\IValueBinderVisitor.cs" />
+    <Compile Include="Relational\Query\ValueBinders\TemplateProcessor.cs" />
+    <Compile Include="Relational\Utils\BaseRelationalTransformer.cs" />
+    <Compile Include="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.cs">
+      <DependentUpon>BaseFilterConditionTransformerG.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.cs">
+      <DependentUpon>BaseAssignmentConditionTransformerG.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseSourceConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseExpressionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseSourceTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseSourceTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
+    <Compile Include="Sparql\Algebra\IModifier.cs" />
+    <Compile Include="Sparql\Algebra\ISparqlQuery.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\IModifierVisitor.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\SelectModifier.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\EmptyPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\FilterPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\GraphPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\IGraphPatternVisitor.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\JoinPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\LeftJoinPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\MinusPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\NotMatchingPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\TriplePattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\RestrictedTriplePattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
+    <Compile Include="Query\QueryContext.cs" />
+    <Compile Include="Sparql\Builder\SparqlBuilder.cs" />
+    <Compile Include="Sparql\Optimization\ISparqlOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\BaseSparqlOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizer.cs" />
+    <Compile Include="Sparql\Optimization\Optimizers\UnionJoinOptimizer.cs" />
+    <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseGraphPatternTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseModifierTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.cs">
+      <DependentUpon>BaseSparqlOptimizerImplementation.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Sparql\Utils\FixesExtension.cs" />
+    <Compile Include="Utils\IVisitable.cs" />
+    <Compile Include="Utils\IVisitor.cs" />
+    <Compile Include="Utils\UriExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="dotnetr2rmlstore.nuspec" />
+    <None Include="packages.config" />
+    <None Include="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseFilterConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseAssignmentConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSourceConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseExpressionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Relational\Utils\CodeGeneration\BaseSourceTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSourceTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseGraphPatternTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseModifierTransformerG.cs</LastGenOutput>
+    </None>
+    <None Include="Utils\CodeGeneration\BaseTransformerTemplate.tt">
+      <LastGenOutput>BaseTransformerTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+    </Content>
+    <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSparqlOptimizerImplementation.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

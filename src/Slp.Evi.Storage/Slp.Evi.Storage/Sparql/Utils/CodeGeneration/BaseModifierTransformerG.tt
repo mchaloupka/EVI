@@ -1,0 +1,11 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#@ include file="../../../Utils/CodeGeneration/BaseTransformerTemplate.tt"#>
+using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+
+<#
+    GenerateClass("Slp.Evi.Storage.Sparql.Utils.CodeGeneration", @"Sparql\Algebra\Modifiers\IModifierVisitor.cs", null);
+#>

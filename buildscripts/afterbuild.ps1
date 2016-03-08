@@ -45,8 +45,8 @@ if($nugetversion)
 	Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 	
 	Add-AppveyorMessage -Message 'Publishing bin folder of the build'	
-	$zipFolderName = ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION + '.Slp.r2rml4net.Storage.zip');
-	ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.r2rml4net.Storage\Slp.r2rml4net.Storage\bin\' + $env:CONFIGURATION)
+	$zipFolderName = ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.Evi.Storage\Slp.Evi.Storage\bin\' + $env:CONFIGURATION + '.Slp.Evi.Storage.zip');
+	ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.Evi.Storage\Slp.Evi.Storage\bin\' + $env:CONFIGURATION)
 	Push-AppveyorArtifact $zipFolderName
 }
 
