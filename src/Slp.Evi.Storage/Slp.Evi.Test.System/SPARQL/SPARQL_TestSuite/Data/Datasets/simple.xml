@@ -9,8 +9,10 @@
     <query>INSERT INTO simple_table VALUES('a','b','c')</query>
     <query>INSERT INTO simple_table VALUES('b','c','a')</query>
     <query>INSERT INTO simple_table VALUES('c','a','b')</query>
-    <query>INSERT INTO simple_table VALUES('a','b',NULL)</query>
-    <query>INSERT INTO simple_table VALUES(NULL,'c','b')</query>
+    <query>INSERT INTO simple_table VALUES('c','d',NULL)</query>
+    <query>INSERT INTO simple_table VALUES('a','d','e')</query>
+    <query>INSERT INTO simple_table VALUES('c','e','1')</query>
+    <query>INSERT INTO simple_table VALUES('a','e','1')</query>
   </sql>
   <mapping>
 <![CDATA[
