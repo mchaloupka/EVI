@@ -4,7 +4,8 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema#"
     xmlns="http://www.w3.org/2005/sparql-results#" >
   <head>
-    <variable name="x"/>
+    <variable name="s"/>
+    <variable name="d"/>
   </head>
   <results>
     <result>
@@ -12,7 +13,7 @@
         <uri>http://example.org/ns#a</uri>
       </binding>
       <binding name="d">
-        <uri>http://example.org/ns#1</uri>
+        <uri>http://example.org/ns#e</uri>
       </binding>
     </result>
     <result>

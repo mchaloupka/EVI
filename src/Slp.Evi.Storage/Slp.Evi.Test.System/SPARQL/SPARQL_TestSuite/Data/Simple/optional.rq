@@ -1,6 +1,6 @@
 PREFIX ex: <http://example.org/ns#>
 
-SELECT ?x ?d
+SELECT ?s ?d
 WHERE {
   ?s ex:e ex:1
   OPTIONAL {
