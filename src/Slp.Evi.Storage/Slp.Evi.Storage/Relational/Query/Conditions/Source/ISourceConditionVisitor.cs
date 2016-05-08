@@ -23,5 +23,13 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(UnionedSourcesCondition unionedSourcesCondition, object data);
+
+        /// <summary>
+        /// Visits <see cref="LeftJoinCondition"/>
+        /// </summary>
+        /// <param name="leftJoinCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(LeftJoinCondition leftJoinCondition, object data);
     }
 }

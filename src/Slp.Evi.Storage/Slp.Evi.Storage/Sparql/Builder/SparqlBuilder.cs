@@ -122,6 +122,14 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var right = (IGraphPattern)ProcessAlgebra(orUnion.Rhs, context);
                 return context.Optimizers.Optimize(new UnionPattern(new IGraphPattern[] { left, right }));
             }
+            else if (originalAlgebra is LeftJoin)
+            {
+                var leftJoin = (LeftJoin)originalAlgebra;
+                var left = (IGraphPattern)ProcessAlgebra(leftJoin.Lhs, context);
+                var right = (IGraphPattern) ProcessAlgebra(leftJoin.Rhs, context);
+
+                return context.Optimizers.Optimize(new LeftJoinPattern(left, right));
+            }
 
             throw new NotImplementedException();
 

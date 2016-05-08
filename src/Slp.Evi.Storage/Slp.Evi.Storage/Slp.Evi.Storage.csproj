@@ -126,6 +126,7 @@
     <Compile Include="Relational\Query\Conditions\Filter\IsNullCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\NegationCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\ISourceConditionVisitor.cs" />
+    <Compile Include="Relational\Query\Conditions\Source\LeftJoinCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\UninonedSourcesCondition.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />

@@ -378,6 +378,44 @@ namespace Slp.Evi.Storage.Relational.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="LeftJoinCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISourceCondition Transform(LeftJoinCondition toTransform, T data)
+        {
+            var newRight = TransformCalculusSource(toTransform.RightOperand, data);
+
+            bool changed = newRight != toTransform.RightOperand;
+
+            List<IFilterCondition> filterConditions = new List<IFilterCondition>();
+            foreach (var filterCondition in toTransform.JoinConditions)
+            {
+                var newFilterCondition = TransformFilterCondition(filterCondition, data);
+
+                if (newFilterCondition != filterCondition)
+                {
+                    filterConditions.Add(newFilterCondition);
+                    changed = true;
+                }
+                else
+                {
+                    filterConditions.Add(filterCondition);
+                }
+            }
+
+            if (changed)
+            {
+                return new LeftJoinCondition(newRight, filterConditions, toTransform.CalculusVariables);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
         /// Process the <see cref="ColumnExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

@@ -238,6 +238,21 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelp
         }
 
         /// <summary>
+        /// Process the <see cref="LeftJoinCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IsNullOptimizerAggregatedValues Transform(LeftJoinCondition toTransform, IsNullCalculatorParameter data)
+        {
+            var rightResult = new IsNullOptimizerAnalyzeResult(toTransform.RightOperand);
+            TransformCalculusSource(toTransform.RightOperand, new IsNullCalculatorParameter(rightResult, data.Context));
+            rightResult.CopyTo(data.Result);
+
+            return new IsNullOptimizerAggregatedValues();
+        }
+
+        /// <summary>
         /// Process the <see cref="AssignmentFromExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

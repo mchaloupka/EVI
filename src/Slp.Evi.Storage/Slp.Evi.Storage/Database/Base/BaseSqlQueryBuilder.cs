@@ -164,7 +164,7 @@ namespace Slp.Evi.Storage.Database.Base
 
             data.EnterCalculusModel(toTransform);
 
-            var sourceConditions = toTransform.SourceConditions.ToList();
+            var sourceConditions = toTransform.SourceConditions.Where(x => !(x is LeftJoinCondition)).ToList();
 
             if (sourceConditions.Count > 0)
             {
@@ -183,6 +183,13 @@ namespace Slp.Evi.Storage.Database.Base
                     data.StringBuilder.Append(" AS ");
                     data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                 }
+            }
+
+            var leftJoinConditions = toTransform.SourceConditions.Where(x => x is LeftJoinCondition).ToList();
+            foreach (var leftJoinCondition in leftJoinConditions)
+            {
+                data.StringBuilder.Append(" LEFT JOIN ");
+                throw new NotImplementedException();
             }
 
             var filterConditions = toTransform.FilterConditions.ToList();
@@ -433,6 +440,17 @@ namespace Slp.Evi.Storage.Database.Base
 
             data.StringBuilder.Append(")");
             return null;
+        }
+
+        /// <summary>
+        /// Process the <see cref="LeftJoinCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(LeftJoinCondition toTransform, VisitorContext data)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

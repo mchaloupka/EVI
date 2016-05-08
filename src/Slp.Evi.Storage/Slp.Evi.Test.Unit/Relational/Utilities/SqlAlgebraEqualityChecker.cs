@@ -125,6 +125,11 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        public object Visit(LeftJoinCondition leftJoinCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(ColumnExpression columnExpression, object data)
         {
             if (!(data is ColumnExpression))
