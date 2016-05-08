@@ -174,7 +174,49 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(LeftJoinPattern leftJoinPattern, object data)
         {
-            throw new NotImplementedException();
+            var leftQuery = (RelationalQuery)leftJoinPattern.LeftOperand.Accept(this, data);
+            var rightQuery = (RelationalQuery) leftJoinPattern.RightOperand.Accept(this, data);
+
+            List<ICondition> conditions = new List<ICondition>();
+
+            conditions.AddRange(leftQuery.Model.AssignmentConditions);
+            conditions.AddRange(leftQuery.Model.FilterConditions);
+            conditions.AddRange(leftQuery.Model.SourceConditions);
+
+            List<IFilterCondition> joinConditions = new List<IFilterCondition>();
+            // TODO: Process SPARQL join condition
+
+            Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
+            foreach (var valueBinder in leftQuery.ValueBinders)
+            {
+                valueBinders.Add(valueBinder.VariableName, valueBinder);
+            }
+
+            foreach (var valueBinder in rightQuery.ValueBinders)
+            {
+                if (valueBinders.ContainsKey(valueBinder.VariableName))
+                {
+                    var otherValueBinder = valueBinders[valueBinder.VariableName];
+                    joinConditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder,
+                        (QueryContext) data));
+
+                    valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
+                }
+                else
+                {
+                    valueBinders.Add(valueBinder.VariableName, valueBinder);
+                }
+            }
+
+            var leftJoinCondition = new LeftJoinCondition(rightQuery.Model, joinConditions, rightQuery.Model.Variables);
+            conditions.Add(leftJoinCondition);
+
+            List<ICalculusVariable> variables = new List<ICalculusVariable>();
+            variables.AddRange(leftQuery.Model.Variables);
+            variables.AddRange(rightQuery.Model.Variables);
+
+            var model = new CalculusModel(variables, conditions);
+            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(model, valueBinders.Values.ToList()));
         }
 
         /// <summary>

@@ -188,8 +188,7 @@ namespace Slp.Evi.Storage.Database.Base
             var leftJoinConditions = toTransform.SourceConditions.Where(x => x is LeftJoinCondition).ToList();
             foreach (var leftJoinCondition in leftJoinConditions)
             {
-                data.StringBuilder.Append(" LEFT JOIN ");
-                throw new NotImplementedException();
+                TransformSourceCondition(leftJoinCondition, data);
             }
 
             var filterConditions = toTransform.FilterConditions.ToList();
@@ -408,8 +407,30 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(TupleFromSourceCondition toTransform, VisitorContext data)
         {
-            TransformCalculusSource(toTransform.Source, data);
+            TransformNestedCalculusSource(toTransform.Source, data);
             return null;
+        }
+
+        /// <summary>
+        /// Transforms the nested calculus source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="data">The data.</param>
+        private void TransformNestedCalculusSource(ICalculusSource source, VisitorContext data)
+        {
+            bool needsEscaping = !(source is SqlTable);
+
+            if (needsEscaping)
+            {
+                data.StringBuilder.Append("(");
+            }
+
+            TransformCalculusSource(source, data);
+
+            if (needsEscaping)
+            {
+                data.StringBuilder.Append(")");
+            }
         }
 
         /// <summary>
@@ -450,7 +471,34 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(LeftJoinCondition toTransform, VisitorContext data)
         {
-            throw new NotImplementedException();
+            data.StringBuilder.Append(" LEFT JOIN ");
+            TransformNestedCalculusSource(toTransform.RightOperand, data);
+
+            data.StringBuilder.Append(" AS ");
+            data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetSourceConditionName(toTransform));
+
+            data.StringBuilder.Append(" ON ");
+
+            if (toTransform.JoinConditions.Length > 0)
+            {
+                for (int i = 0; i < toTransform.JoinConditions.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        data.StringBuilder.Append(" AND ");
+                    }
+
+                    var condition = toTransform.JoinConditions[i];
+                    TransformFilterCondition(condition, data);
+                }
+            }
+            else
+            {
+                data.StringBuilder.Append("1=1");
+            }
+
+            data.StringBuilder.Append(" ");
+            return null;
         }
 
         /// <summary>
