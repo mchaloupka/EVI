@@ -110,6 +110,12 @@
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\join.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\bound.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\bound.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\optional.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

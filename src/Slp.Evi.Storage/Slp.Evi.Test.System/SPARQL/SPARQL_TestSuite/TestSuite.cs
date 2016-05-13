@@ -83,6 +83,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
+        public void simple_bound()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\bound.rq";
+            var resultFile = @"Data\Simple\bound.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
         public void students_no_result()
         {
             var storage = GetStorage("students.xml");
