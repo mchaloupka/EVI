@@ -188,6 +188,8 @@
     </Compile>
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />
+    <Compile Include="Sparql\Algebra\ISparqlCondition.cs" />
+    <Compile Include="Sparql\Algebra\ISparqlExpression.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQuery.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\IModifierVisitor.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\SelectModifier.cs" />

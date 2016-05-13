@@ -7,6 +7,7 @@ using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.Evi.Storage.Sparql.Builder
@@ -130,6 +131,12 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 return context.Optimizers.Optimize(new LeftJoinPattern(left, right));
             }
+            else if (originalAlgebra is Filter)
+            {
+                var filter = (Filter) originalAlgebra;
+                var inner = (IGraphPattern) ProcessAlgebra(filter.InnerAlgebra, context);
+                var expression = ProcessFilter(filter.SparqlFilter, context);
+            }
 
             throw new NotImplementedException();
 
@@ -188,6 +195,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
             //ZeroLengthPath
             //ZeroOrMorePath
 
+        }
+
+        private ISparqlCondition ProcessFilter(ISparqlFilter sparqlFilter, QueryContext context)
+        {
+            throw new NotImplementedException();
         }
 
         private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
