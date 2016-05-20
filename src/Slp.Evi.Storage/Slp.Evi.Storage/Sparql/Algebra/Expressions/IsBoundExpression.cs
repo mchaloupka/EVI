@@ -13,6 +13,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
     public class IsBoundExpression
         : ISparqlCondition
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsBoundExpression"/> class.
+        /// </summary>
+        /// <param name="variable">The variable.</param>
         public IsBoundExpression(string variable)
         {
             this.Variable = variable;
