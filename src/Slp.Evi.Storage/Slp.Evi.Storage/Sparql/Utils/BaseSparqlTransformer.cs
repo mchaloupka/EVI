@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
@@ -12,12 +13,12 @@ namespace Slp.Evi.Storage.Sparql.Utils
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     public class BaseSparqlTransformer<T>
-        : BaseGraphPatternTransformerG<T, IGraphPattern, ISparqlQuery>
+        : BaseSparqlExpressionTransformerG<T, ISparqlExpression, IGraphPattern, ISparqlQuery>
     {
         /// <summary>
         /// Transforms the <see cref="ISparqlQuery" />.
         /// </summary>
-        /// <param name="instance">The instance to tranform.</param>
+        /// <param name="instance">The instance to transform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
         public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
@@ -34,6 +35,17 @@ namespace Slp.Evi.Storage.Sparql.Utils
             {
                 throw new ArgumentException("Unexpected type of parameter", nameof(instance));
             }
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="ISparqlCondition" />.
+        /// </summary>
+        /// <param name="condition">The condition to transform.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformed calculus source.</returns>
+        private ISparqlCondition TransformSparqlCondition(ISparqlCondition condition, T data)
+        {
+            return (ISparqlCondition) TransformSparqlExpression(condition, data);
         }
 
         /// <summary>
@@ -76,6 +88,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
         protected override IGraphPattern Transform(FilterPattern toTransform, T data)
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
+            var newCondition = TransformSparqlCondition(toTransform.Condition, data);
 
             if (newInner is NotMatchingPattern)
             {
@@ -83,7 +96,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
             }
             else if (newInner != toTransform.InnerPattern)
             {
-                return new FilterPattern(newInner);
+                return new FilterPattern(newInner, newCondition);
             }
             else
             {
@@ -107,7 +120,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
             }
             else if (newInner != toTransform.InnerPattern)
             {
-                return new FilterPattern(newInner);
+                return new GraphPattern(newInner);
             }
             else
             {
@@ -304,6 +317,17 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(RestrictedTriplePattern toTransform, T data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="IsBoundExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(IsBoundExpression toTransform, T data)
         {
             return toTransform;
         }

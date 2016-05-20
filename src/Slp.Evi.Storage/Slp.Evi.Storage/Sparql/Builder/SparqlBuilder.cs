@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
+using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
+using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -135,7 +139,9 @@ namespace Slp.Evi.Storage.Sparql.Builder
             {
                 var filter = (Filter) originalAlgebra;
                 var inner = (IGraphPattern) ProcessAlgebra(filter.InnerAlgebra, context);
-                var expression = ProcessFilter(filter.SparqlFilter, context);
+                var innerExpression = ProcessCondition(filter.SparqlFilter.Expression, context);
+
+                return context.Optimizers.Optimize(new FilterPattern(inner, innerExpression));
             }
 
             throw new NotImplementedException();
@@ -197,8 +203,19 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
         }
 
-        private ISparqlCondition ProcessFilter(ISparqlFilter sparqlFilter, QueryContext context)
+        private ISparqlCondition ProcessCondition(ISparqlExpression expression, QueryContext context)
         {
+            return (ISparqlCondition)ProcessExpression(expression, context);
+        }
+
+        private Sparql.Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, QueryContext context)
+        {
+            if (expression is BoundFunction)
+            {
+                var boundFunction = (BoundFunction) expression;
+                return new IsBoundExpression(boundFunction.Variables.Single());
+            }
+
             throw new NotImplementedException();
         }
 

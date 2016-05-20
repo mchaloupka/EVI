@@ -9,15 +9,15 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
     public class FilterPattern
         : IGraphPattern
     {
-        //TODO: Add missing parts
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterPattern"/> class.
         /// </summary>
         /// <param name="innerPattern">The inner pattern.</param>
-        public FilterPattern(IGraphPattern innerPattern)
+        /// <param name="condition">The condition</param>
+        public FilterPattern(IGraphPattern innerPattern, ISparqlCondition condition)
         {
             InnerPattern = innerPattern;
+            Condition = condition;
         }
 
         /// <summary>
@@ -25,6 +25,11 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// </summary>
         /// <value>The inner pattern.</value>
         public IGraphPattern InnerPattern { get; private set; }
+
+        /// <summary>
+        /// Gets the condition.
+        /// </summary>
+        public ISparqlCondition Condition { get; private set; }
 
         /// <summary>
         /// Gets the SPARQL variables.

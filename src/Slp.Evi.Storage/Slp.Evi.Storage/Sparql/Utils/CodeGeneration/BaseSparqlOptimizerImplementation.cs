@@ -4,6 +4,7 @@ using System;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
 
 namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
@@ -13,7 +14,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     public class BaseSparqlOptimizerImplementation<T>
-        : BaseGraphPatternTransformerG<BaseSparqlOptimizer<T>.OptimizationContext, IGraphPattern, ISparqlQuery>
+        : BaseSparqlExpressionTransformerG<BaseSparqlOptimizer<T>.OptimizationContext, ISparqlExpression, IGraphPattern, ISparqlQuery>
     {
         /// <summary>
         /// Process the <see cref="ISparqlQuery"/>
@@ -35,6 +36,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
             {
                 throw new ArgumentException("Unexpected type of parameter", nameof(toTransform));
             }
+        }
+
+        /// <summary>
+        /// Process the <see cref="IsBoundExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(IsBoundExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
         }
 
         /// <summary>

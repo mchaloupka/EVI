@@ -186,6 +186,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BaseSourceTransformerG.tt</DependentUpon>
     </Compile>
+    <Compile Include="Sparql\Algebra\Expressions\ISparqlExpressionVisitor.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\IsBoundExpression.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />
     <Compile Include="Sparql\Algebra\ISparqlCondition.cs" />
@@ -211,6 +213,11 @@
     <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\Optimization\Optimizers\UnionJoinOptimizer.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
+    <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseSparqlExpressionTransformerG.tt</DependentUpon>
+    </Compile>
     <Compile Include="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -274,6 +281,10 @@
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+    </Content>
+    <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSparqlExpressionTransformerG.cs</LastGenOutput>
     </Content>
     <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
