@@ -36,7 +36,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable&lt;ICondition&gt;.</returns>
-        public IFilterCondition CreateEqualsConditions(INode node, IValueBinder valueBinder, QueryContext context)
+        public IFilterCondition CreateEqualsCondition(INode node, IValueBinder valueBinder, QueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -60,7 +60,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateIsBoundConditions(IValueBinder valueBinder, QueryContext context)
+        public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, QueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -91,7 +91,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var coalesceValueBinder = (CoalesceValueBinder) valueBinder;
 
                 return new DisjunctionCondition(
-                    coalesceValueBinder.ValueBinders.Select(x => CreateIsBoundConditions(x, context)).ToList());
+                    coalesceValueBinder.ValueBinders.Select(x => CreateIsBoundCondition(x, context)).ToList());
             }
             else if (valueBinder is SwitchValueBinder)
             {
@@ -100,7 +100,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(x => new ConjunctionCondition(new IFilterCondition[]
                 {
                     new EqualExpressionCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(x.CaseValue, context)),
-                    CreateIsBoundConditions(x.ValueBinder, context)
+                    CreateIsBoundCondition(x.ValueBinder, context)
                 })));
             }
             else
@@ -115,7 +115,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The query context</param>
         /// <param name="conditions">The conditions, conjunction of every array member taken as the disjunction parameter</param>
         /// <returns></returns>
-        public IFilterCondition CreateDisjunctionConditions(QueryContext context,
+        public IFilterCondition CreateDisjunctionCondition(QueryContext context,
             params IFilterCondition[] conditions)
         {
             return new DisjunctionCondition(conditions);
@@ -139,7 +139,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="condition">The conditions</param>
         /// <param name="context">The query context.</param>
         /// <returns>The negation of the conditions.</returns>
-        public IFilterCondition CreateNegationConditions(IFilterCondition condition,
+        public IFilterCondition CreateNegationCondition(IFilterCondition condition,
             QueryContext context)
         {
             return new NegationCondition(condition);
@@ -151,11 +151,11 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="firstValueBinder">The first value binder.</param>
         /// <param name="secondValueBinder">The second value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateEqualsConditions(IValueBinder firstValueBinder, IValueBinder secondValueBinder, QueryContext context)
+        public IFilterCondition CreateEqualsCondition(IValueBinder firstValueBinder, IValueBinder secondValueBinder, QueryContext context)
         {
             if (firstValueBinder is EmptyValueBinder)
             {
-                return new NegationCondition(CreateIsBoundConditions(secondValueBinder, context));
+                return new NegationCondition(CreateIsBoundCondition(secondValueBinder, context));
             }
             else if (firstValueBinder is BaseValueBinder && secondValueBinder is BaseValueBinder)
             {
@@ -174,10 +174,10 @@ namespace Slp.Evi.Storage.Relational.Builder
 
                     for (int prevIndex = 0; prevIndex < curIndex; prevIndex++)
                     {
-                        conjunctionConditions.Add(new NegationCondition(CreateIsBoundConditions(binders[prevIndex], context)));
+                        conjunctionConditions.Add(new NegationCondition(CreateIsBoundCondition(binders[prevIndex], context)));
                     }
 
-                    conjunctionConditions.Add(CreateEqualsConditions(binders[curIndex], secondValueBinder, context));
+                    conjunctionConditions.Add(CreateEqualsCondition(binders[curIndex], secondValueBinder, context));
                     disjunctionConditions.Add(new DisjunctionCondition(conjunctionConditions));
                 }
 
@@ -185,7 +185,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             }
             else if (secondValueBinder is CoalesceValueBinder)
             {
-                return CreateEqualsConditions(secondValueBinder, firstValueBinder, context);
+                return CreateEqualsCondition(secondValueBinder, firstValueBinder, context);
             }
             else if (firstValueBinder is SwitchValueBinder)
             {
@@ -194,12 +194,12 @@ namespace Slp.Evi.Storage.Relational.Builder
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(curCase => new ConjunctionCondition(new IFilterCondition[]
                 {
                     new EqualExpressionCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context)),
-                    CreateEqualsConditions(curCase.ValueBinder, secondValueBinder, context)
+                    CreateEqualsCondition(curCase.ValueBinder, secondValueBinder, context)
                 })).ToList());
             }
             else if (secondValueBinder is SwitchValueBinder)
             {
-                return CreateEqualsConditions(secondValueBinder, firstValueBinder, context);
+                return CreateEqualsCondition(secondValueBinder, firstValueBinder, context);
             }
             else
             {
@@ -215,10 +215,10 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The query context</param>
         public IFilterCondition CreateJoinEqualCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, QueryContext context)
         {
-            return CreateDisjunctionConditions(context,
-                CreateNegationConditions(CreateIsBoundConditions(valueBinder, context), context),
-                CreateNegationConditions(CreateIsBoundConditions(otherValueBinder, context), context),
-                CreateEqualsConditions(valueBinder, otherValueBinder, context));
+            return CreateDisjunctionCondition(context,
+                CreateNegationCondition(CreateIsBoundCondition(valueBinder, context), context),
+                CreateNegationCondition(CreateIsBoundCondition(otherValueBinder, context), context),
+                CreateEqualsCondition(valueBinder, otherValueBinder, context));
         }
     }
 }

@@ -10,6 +10,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using TCode.r2rml4net.Mapping;
@@ -25,7 +26,7 @@ namespace Slp.Evi.Storage.Relational.Builder
     /// Relational builder
     /// </summary>
     public class RelationalBuilder
-        : IModifierVisitor, IGraphPatternVisitor
+        : IModifierVisitor, IGraphPatternVisitor, ISparqlExpressionVisitor
     {
         /// <summary>
         /// The condition builder
@@ -93,7 +94,19 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(FilterPattern filterPattern, object data)
         {
-            throw new NotImplementedException();
+            var inner = (RelationalQuery)filterPattern.InnerPattern.Accept(this, data);
+            var condition = (IFilterCondition)filterPattern.Condition.Accept(this, new ExpressionVisitParameter((QueryContext)data, inner.ValueBinders));
+
+            var conditions = new List<ICondition>();
+            conditions.AddRange(inner.Model.SourceConditions);
+            conditions.AddRange(inner.Model.AssignmentConditions);
+            conditions.AddRange(inner.Model.FilterConditions);
+            conditions.Add(condition);
+
+            var model = new CalculusModel(inner.Model.Variables, conditions);
+            var query = new RelationalQuery(model, inner.ValueBinders);
+
+            return ((QueryContext) data).Optimizers.Optimize(query);
         }
 
         /// <summary>
@@ -489,10 +502,10 @@ namespace Slp.Evi.Storage.Relational.Builder
         private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source);
-            var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
+            var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
             conditions.Add(notNullCondition);
 
-            var condition = _conditionBuilder.CreateEqualsConditions(node, valueBinder, context);
+            var condition = _conditionBuilder.CreateEqualsCondition(node, valueBinder, context);
             conditions.Add(condition);
         }
 
@@ -509,7 +522,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var valueBinder = new BaseValueBinder(variableName, termMap, source);
 
-            var notNullCondition = _conditionBuilder.CreateIsBoundConditions(valueBinder, context);
+            var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
             conditions.Add(notNullCondition);
 
             var sameVariableValueBinder = valueBinders.FirstOrDefault(x => x.VariableName == variableName);
@@ -520,7 +533,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             }
             else
             {
-                var condition = _conditionBuilder.CreateEqualsConditions(valueBinder, sameVariableValueBinder, context);
+                var condition = _conditionBuilder.CreateEqualsCondition(valueBinder, sameVariableValueBinder, context);
                 conditions.Add(condition);
             }
         }
@@ -563,6 +576,54 @@ namespace Slp.Evi.Storage.Relational.Builder
         private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, QueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
+        }
+
+        /// <summary>
+        /// Visits <see cref="IsBoundExpression"/>
+        /// </summary>
+        /// <param name="isBoundExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(IsBoundExpression isBoundExpression, object data)
+        {
+            var param = (ExpressionVisitParameter) data;
+
+            IValueBinder valueBinder;
+            if (param.ValueBinders.TryGetValue(isBoundExpression.Variable, out valueBinder))
+            {
+                return _conditionBuilder.CreateIsBoundCondition(valueBinder, param.QueryContext);
+            }
+            else
+            {
+                return new AlwaysFalseCondition();
+            }
+        }
+
+        /// <summary>
+        /// Parameter passed to <see cref="ISparqlExpressionVisitor"/> visit methods.
+        /// </summary>
+        public class ExpressionVisitParameter
+        {
+            /// <summary>
+            /// Gets the query context.
+            /// </summary>
+            public QueryContext QueryContext { get; private set; }
+
+            /// <summary>
+            /// Gets the available value binders.
+            /// </summary>
+            public Dictionary<string, IValueBinder> ValueBinders { get; private set; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ExpressionVisitParameter"/> class.
+            /// </summary>
+            /// <param name="queryContext">The query context.</param>
+            /// <param name="valueBinders">The value binders.</param>
+            public ExpressionVisitParameter(QueryContext queryContext, IEnumerable<IValueBinder> valueBinders)
+            {
+                QueryContext = queryContext;
+                ValueBinders = valueBinders.ToDictionary(x => x.VariableName);
+            }
         }
     }
 }
