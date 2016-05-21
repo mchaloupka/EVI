@@ -81,7 +81,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPARQL\BaseSPARQLTestSuite.cs" />
     <Compile Include="SPARQL\SPARQL_TestSuite\Db\MSSQLDb.cs" />
-    <Compile Include="SPARQL\SPARQL_TestSuite\TestSuite.cs" />
+    <Compile Include="SPARQL\SPARQL_TestSuite\TestSuite.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSuite.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj">
@@ -1710,8 +1714,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestSuite.cs</LastGenOutput>
+    </Content>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Datasets\simple.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -8,10 +8,8 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
     public abstract class TestSuite
         : BaseSPARQLTestSuite
     {
-        protected static readonly string[] StorageNames = { "simple.xml", "students.xml" };
-
         [TestMethod]
-        public void simple_single()
+        public void Simple_single() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\single.rq";
@@ -23,7 +21,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_join()
+        public void Simple_join() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\join.rq";
@@ -35,7 +33,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_union()
+        public void Simple_union() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\union.rq";
@@ -47,7 +45,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_empty()
+        public void Simple_empty() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\empty.rq";
@@ -59,7 +57,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_null()
+        public void Simple_null() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\null.rq";
@@ -71,7 +69,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_optional()
+        public void Simple_optional() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\optional.rq";
@@ -83,7 +81,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void simple_bound()
+        public void Simple_bound() 
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\bound.rq";
@@ -95,7 +93,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void students_no_result()
+        public void Students_no_result() 
         {
             var storage = GetStorage("students.xml");
             var queryFile = @"Data\Students\no_result.rq";
@@ -107,7 +105,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void students_student_names()
+        public void Students_student_names() 
         {
             var storage = GetStorage("students.xml");
             var queryFile = @"Data\Students\student_names.rq";
@@ -117,6 +115,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var expected = GetExpected(resultFile);
             AssertBagEqual(expected, result);
         }
+
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
@@ -138,5 +137,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
             return query;
         }
+
+        protected static readonly string[] StorageNames = { "simple.xml", "students.xml" };
     }
 }
