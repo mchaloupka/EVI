@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<storage>
+  <sql>
+    <table name="ProductFeature">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="label" type="nvarchar(max)" />
+      <column name="comment" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="ProductType">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="label" type="nvarchar(max)" />
+      <column name="comment" type="nvarchar(max)" />
+      <column name="parent" type="int" nullable="true" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="Producer">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="label" type="nvarchar(max)" />
+      <column name="comment" type="nvarchar(max)" />
+      <column name="homepage" type="nvarchar(max)" />
+      <column name="country" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="Product">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="label" type="nvarchar(max)" />
+      <column name="comment" type="nvarchar(max)" />
+      <column name="producer" type="int" />
+      <column name="propertyNum1" type="int" nullable="true"/>
+      <column name="propertyNum2" type="int" nullable="true"/>
+      <column name="propertyNum3" type="int" nullable="true"/>
+      <column name="propertyNum4" type="int" nullable="true"/>
+      <column name="propertyNum5" type="int" nullable="true"/>
+      <column name="propertyNum6" type="int" nullable="true"/>
+      <column name="propertyTex1" type="nvarchar(max)" nullable="true"/>
+      <column name="propertyTex2" type="nvarchar(max)" nullable="true"/>
+      <column name="propertyTex3" type="nvarchar(max)" nullable="true"/>
+      <column name="propertyTex4" type="nvarchar(max)" nullable="true"/>
+      <column name="propertyTex5" type="nvarchar(max)" nullable="true"/>
+      <column name="propertyTex6" type="nvarchar(max)" nullable="true"/>
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="ProductTypeProduct">
+      <column name="product" type="int" primary-key="true" />
+      <column name="productType" type="int" primary-key="true" />
+    </table>
+    <table name="ProductFeatureProduct">
+      <column name="product" type="int" primary-key="true" />
+      <column name="productFeature" type="int" primary-key="true" />
+    </table>
+    <table name="Vendor">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="label" type="nvarchar(max)" />
+      <column name="comment" type="nvarchar(max)" />
+      <column name="homepage" type="nvarchar(max)" />
+      <column name="country" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="Offer">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="product" type="int" />
+      <column name="producer" type="int" />
+      <column name="vendor" type="int" />
+      <column name="price" type="int" />
+      <column name="validFrom" type="datetime" />
+      <column name="validTo" type="datetime" />
+      <column name="deliveryDays" type="int" />
+      <column name="offerWebpage" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="Person">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="name" type="nvarchar(max)" />
+      <column name="mbox_sha1sum" type="nvarchar(max)" />
+      <column name="country" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+    <table name="Review">
+      <column name="nr" type="int" primary-key="true" />
+      <column name="product" type="int" />
+      <column name="producer" type="int" />
+      <column name="person" type="int" />
+      <column name="reviewDate" type="datetime" />
+      <column name="title" type="nvarchar(max)" />
+      <column name="text" type="nvarchar(max)" />
+      <column name="language" type="nvarchar(max)" />
+      <column name="rating1" type="nvarchar(max)" />
+      <column name="rating2" type="nvarchar(max)" />
+      <column name="rating3" type="nvarchar(max)" />
+      <column name="rating4" type="nvarchar(max)" />
+      <column name="publisher" type="nvarchar(max)" />
+      <column name="publishDate" type="datetime" />
+    </table>
+  </sql>
+  <mapping>
+<![CDATA[
+    
+]]>
+  </mapping>
+</storage>
