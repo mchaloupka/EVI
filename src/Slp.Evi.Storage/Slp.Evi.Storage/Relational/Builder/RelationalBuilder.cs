@@ -600,6 +600,18 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         /// <summary>
+        /// Visits <see cref="NegationExpression"/>
+        /// </summary>
+        /// <param name="negationExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(NegationExpression negationExpression, object data)
+        {
+            var inner = (IFilterCondition)negationExpression.InnerCondition.Accept(this, data);
+            return new NegationCondition(inner);
+        }
+
+        /// <summary>
         /// Parameter passed to <see cref="ISparqlExpressionVisitor"/> visit methods.
         /// </summary>
         public class ExpressionVisitParameter

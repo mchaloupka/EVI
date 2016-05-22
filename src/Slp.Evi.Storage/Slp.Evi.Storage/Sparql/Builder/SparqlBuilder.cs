@@ -8,6 +8,7 @@ using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
@@ -214,6 +215,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
             {
                 var boundFunction = (BoundFunction) expression;
                 return new IsBoundExpression(boundFunction.Variables.Single());
+            }
+            else if (expression is NotExpression)
+            {
+                var notExpression = (NotExpression) expression;
+                return new NegationExpression(ProcessCondition(notExpression.Arguments.Single(), context));
             }
 
             throw new NotImplementedException();

@@ -331,5 +331,17 @@ namespace Slp.Evi.Storage.Sparql.Utils
         {
             return toTransform;
         }
+
+        /// <summary>
+        /// Process the <see cref="NegationExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(NegationExpression toTransform, T data)
+        {
+            // TODO: Optimizations
+            return toTransform;
+        }
     }
 }

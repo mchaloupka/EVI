@@ -20,5 +20,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(IsBoundExpression isBoundExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="NegationExpression"/>
+        /// </summary>
+        /// <param name="negationExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(NegationExpression negationExpression, object data);
     }
 }
