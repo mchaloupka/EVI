@@ -1,1 +1,0 @@
-﻿Taken from: http://www.w3.org/2009/sparql/docs/tests/
