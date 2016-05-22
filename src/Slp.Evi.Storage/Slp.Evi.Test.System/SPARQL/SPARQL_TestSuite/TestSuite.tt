@@ -22,6 +22,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", "Simple", "null"); #>
 <# BagEqualTest("simple.xml", "Simple", "optional"); #>
 <# BagEqualTest("simple.xml", "Simple", "bound"); #>
+<# BagEqualTest("simple.xml", "Simple", "not_bound"); #>
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
 
