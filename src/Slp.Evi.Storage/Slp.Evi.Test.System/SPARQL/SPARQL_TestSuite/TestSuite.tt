@@ -1,0 +1,92 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO.IsolatedStorage" #>
+<#@ output extension=".cs" #>
+using System.IO;
+using System.Xml.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.Evi.Storage;
+
+namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
+{
+    public abstract class TestSuite
+        : BaseSPARQLTestSuite
+    {
+<# BagEqualTest("simple.xml", "Simple", "single"); #>
+<# BagEqualTest("simple.xml", "Simple", "join"); #>
+<# BagEqualTest("simple.xml", "Simple", "union"); #>
+<# BagEqualTest("simple.xml", "Simple", "empty"); #>
+<# BagEqualTest("simple.xml", "Simple", "null"); #>
+<# BagEqualTest("simple.xml", "Simple", "optional"); #>
+<# BagEqualTest("simple.xml", "Simple", "bound"); #>
+<# BagEqualTest("students.xml", "Students", "no_result"); #>
+<# BagEqualTest("students.xml", "Students", "student_names"); #>
+
+        protected abstract EviQueryableStorage GetStorage(string storageName);
+
+        private XDocument GetExpected(string resultFile)
+        {
+            var doc = XDocument.Load(GetPath(resultFile));
+            return doc;
+        }
+
+        private static string GetQuery(string queryFile)
+        {
+            var query = string.Empty;
+
+            using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
+            using (var sr = new StreamReader(fsr))
+            {
+                query = sr.ReadToEnd();
+            }
+
+            return query;
+        }
+
+        protected static readonly string[] StorageNames = {<#
+            bool firstDataSet = true;
+
+            foreach (var datasetName in datasetNames)
+            {
+                if (firstDataSet)
+                {
+                    firstDataSet = false;
+                }
+                else
+                {
+                    Write(",");
+                }
+
+                Write(" \"{0}\"", datasetName);
+            }#> };
+    }
+}
+<#+
+    List<string> datasetNames = new List<string>();
+
+    void BagEqualTest(string dataset, string folder, string name)
+    {
+        if (!datasetNames.Contains(dataset))
+        {
+            datasetNames.Add(dataset);
+        }
+
+#>
+        [TestMethod]
+        public void <#= folder #>_<#= name #>() 
+        {
+            var storage = GetStorage("<#= dataset #>");
+            var queryFile = @"Data\\<#= folder #>\\<#= name #>.rq";
+            var resultFile = @"Data\\<#= folder #>\\<#= name #>.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+<#+
+    }
+#>
