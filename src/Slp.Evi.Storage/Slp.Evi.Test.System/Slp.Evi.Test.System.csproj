@@ -1718,6 +1718,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SPARQL\SPARQL_TestSuite\Data\Datasets\berlin.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestSuite.cs</LastGenOutput>
