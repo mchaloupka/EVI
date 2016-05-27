@@ -80,6 +80,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+
         [TestMethod]
         public void Simple_Filter_bound()
         {
@@ -103,6 +104,19 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var expected = GetExpected(resultFile);
             AssertBagEqual(expected, result);
         }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_greater()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_greater.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_greater.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Students_no_result()
