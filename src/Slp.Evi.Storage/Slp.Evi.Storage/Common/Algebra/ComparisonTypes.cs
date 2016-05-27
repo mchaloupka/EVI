@@ -14,6 +14,26 @@ namespace Slp.Evi.Storage.Common.Algebra
         /// <summary>
         /// &gt;
         /// </summary>
-        GreaterThan
+        GreaterThan,
+        /// <summary>
+        /// &gt;=
+        /// </summary>
+        GreaterOrEqualThan,
+        /// <summary>
+        /// &lt;
+        /// </summary>
+        LessThan,
+        /// <summary>
+        /// &lt;=
+        /// </summary>
+        LessOrEqualThan,
+        /// <summary>
+        /// =
+        /// </summary>
+        EqualTo,
+        /// <summary>
+        /// !=
+        /// </summary>
+        NotEqualTo
     }
 }
