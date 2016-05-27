@@ -54,18 +54,20 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         {
             var columnName = context.QueryNamingHelpers.GetVariableName(null, CaseVariable);
             var column = rowData.GetColumn(columnName);
-            var value = (int) column.Value;
 
-            var selectedCase = Cases.FirstOrDefault(x => x.CaseValue == value);
+            if (column.Value != null)
+            {
+                var value = (int)column.Value;
 
-            if (selectedCase != null)
-            {
-                return selectedCase.ValueBinder.LoadNode(nodeFactory, rowData, context);
+                var selectedCase = Cases.FirstOrDefault(x => x.CaseValue == value);
+
+                if (selectedCase != null)
+                {
+                    return selectedCase.ValueBinder.LoadNode(nodeFactory, rowData, context);
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>

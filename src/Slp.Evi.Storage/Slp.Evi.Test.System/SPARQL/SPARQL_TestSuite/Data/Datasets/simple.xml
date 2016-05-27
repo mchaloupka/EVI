@@ -6,6 +6,11 @@
       <column name="predicate" type="nvarchar(max)" nullable="true" />
       <column name="object" type="nvarchar(max)" nullable="true" />
     </table>
+    <table name="int_table">
+      <column name="subject" type="nvarchar(max)" nullable="true" />
+      <column name="predicate" type="nvarchar(max)" nullable="true" />
+      <column name="object" type="int" nullable="true" />
+    </table>
     <query>INSERT INTO simple_table VALUES('a','b','c')</query>
     <query>INSERT INTO simple_table VALUES('b','c','a')</query>
     <query>INSERT INTO simple_table VALUES('c','a','b')</query>
@@ -13,16 +18,15 @@
     <query>INSERT INTO simple_table VALUES('a','d','e')</query>
     <query>INSERT INTO simple_table VALUES('c','e','1')</query>
     <query>INSERT INTO simple_table VALUES('a','e','1')</query>
-    <query>INSERT INTO simple_table VALUES('a','f','1')</query>
-    <query>INSERT INTO simple_table VALUES('b','f','2')</query>
-    <query>INSERT INTO simple_table VALUES('c','f','3')</query>
-    <query>INSERT INTO simple_table VALUES('d','f','4')</query>
+    <query>INSERT INTO int_table VALUES('a','f','1')</query>
+    <query>INSERT INTO int_table VALUES('b','f','2')</query>
+    <query>INSERT INTO int_table VALUES('c','f','3')</query>
+    <query>INSERT INTO int_table VALUES('d','f','4')</query>
   </sql>
   <mapping>
 <![CDATA[
     @base <http://example.com/base/> .
     @prefix rr: <http://www.w3.org/ns/r2rml#> .
-
     @prefix ex: <http://example.org/ns#> .
 
     <#Triples> a rr:TriplesMap;
@@ -33,6 +37,17 @@
       rr:predicateObjectMap [
         rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
         rr:objectMap [ rr:template "http://example.org/ns#{object}"; ];
+      ];
+    .
+
+     <#IntTriples> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "int_table" ];
+      rr:subjectMap [
+        rr:template "http://example.org/ns#{subject}";
+      ];
+      rr:predicateObjectMap [
+        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:objectMap [ rr:column "object"; ];
       ];
     .
 ]]>
