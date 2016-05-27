@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.Optimization.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -33,14 +34,14 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), 
+                ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -59,14 +60,13 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("12/s", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -86,14 +86,13 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12/s", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, true),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -116,20 +115,18 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12/s/14/e", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ConjunctionCondition(new List<IFilterCondition>()
             {
-                new EqualExpressionCondition(
+                new ComparisonCondition(
                     new ColumnExpression(queryContext, dummyColumn1, true),
-                    new ConstantExpression("12", queryContext)
-                ),
-                new EqualExpressionCondition(
+                    new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo),
+                new ComparisonCondition(
                     new ColumnExpression(queryContext, dummyColumn2, true),
-                    new ConstantExpression("14", queryContext)
-                )
+                    new ConstantExpression("14", queryContext), ComparisonTypes.EqualTo)
             });
 
             AssertFilterConditionsEqual(expected, result);
@@ -149,14 +146,13 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -175,14 +171,13 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("12/s", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -202,14 +197,13 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12/s", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = (new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ColumnExpression(queryContext, dummyColumn1, false),
-                new ConstantExpression("12", queryContext)
-                ));
+                new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }
@@ -232,19 +226,18 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
 
             var right = new ConstantExpression("http://s.com/12/s/14/e", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
-            var expected = new EqualExpressionCondition(
+            var expected = new ComparisonCondition(
                 new ConcatenationExpression(new List<IExpression>()
                 {
                     new ColumnExpression(queryContext, dummyColumn1, false),
                     new ConstantExpression("/s/", queryContext),
                     new ColumnExpression(queryContext, dummyColumn2, false)
                 }, queryContext.Db.SqlTypeForString),
-                new ConstantExpression("12/s/14", queryContext)
-            );
+                new ConstantExpression("12/s/14", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
         }

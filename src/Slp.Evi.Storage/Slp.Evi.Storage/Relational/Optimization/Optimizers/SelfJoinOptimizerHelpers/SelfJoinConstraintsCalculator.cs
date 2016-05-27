@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
@@ -113,52 +114,44 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
         /// <returns>The returned data</returns>
         public object Visit(ComparisonCondition comparisonCondition, object data)
         {
-            return data;
-        }
+            var satisfactionMap = (SatisfactionMap)data;
 
-        /// <summary>
-        /// Visits <see cref="EqualExpressionCondition"/>
-        /// </summary>
-        /// <param name="equalExpressionCondition">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(EqualExpressionCondition equalExpressionCondition, object data)
-        {
-            var satisfactionMap = (SatisfactionMap) data;
-
-            var leftOperand = equalExpressionCondition.LeftOperand;
-            var rightOperand = equalExpressionCondition.RightOperand;
-
-            if (leftOperand is ColumnExpression)
-            { }
-            else if (rightOperand is ColumnExpression)
+            if (comparisonCondition.ComparisonType == ComparisonTypes.EqualTo)
             {
-                leftOperand = rightOperand;
-                rightOperand = equalExpressionCondition.LeftOperand;
-            }
-            else
-            {
-                return satisfactionMap;
-            }
+                var leftOperand = comparisonCondition.LeftOperand;
+                var rightOperand = comparisonCondition.RightOperand;
 
-            var leftVariable = ((ColumnExpression)leftOperand).CalculusVariable as SqlColumn;
-
-            if (leftVariable != null)
-            {
-                foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(leftVariable.Table))
+                if (leftOperand is ColumnExpression)
+                { }
+                else if (rightOperand is ColumnExpression)
                 {
-                    if (satisfaction.IsSatisfied)
-                    {
-                        continue;
-                    }
-
-                    satisfaction.ProcessVariableEqualToVariablesCondition(leftVariable, rightOperand);
-
-                    if (satisfaction.IsSatisfied)
-                    {
-                        satisfactionMap.MarkAsSatisfied(satisfaction);
-                    }
+                    leftOperand = rightOperand;
+                    rightOperand = comparisonCondition.LeftOperand;
                 }
+                else
+                {
+                    return satisfactionMap;
+                }
+
+                var leftVariable = ((ColumnExpression)leftOperand).CalculusVariable as SqlColumn;
+
+                if (leftVariable != null)
+                {
+                    foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(leftVariable.Table))
+                    {
+                        if (satisfaction.IsSatisfied)
+                        {
+                            continue;
+                        }
+
+                        satisfaction.ProcessVariableEqualToVariablesCondition(leftVariable, rightOperand);
+
+                        if (satisfaction.IsSatisfied)
+                        {
+                            satisfactionMap.MarkAsSatisfied(satisfaction);
+                        }
+                    }
+                } 
             }
 
             return satisfactionMap;

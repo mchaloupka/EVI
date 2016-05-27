@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -35,7 +36,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var leftOperand = CreateExpression(context, valueBinder);
                 var rightOperand = CreateExpression(context, node);
 
-                return new EqualExpressionCondition(leftOperand, rightOperand);
+                return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
             }
             else
             {
@@ -87,7 +88,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(x => new ConjunctionCondition(new IFilterCondition[]
                 {
-                    new EqualExpressionCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(x.CaseValue, context)),
+                    new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(x.CaseValue, context), ComparisonTypes.EqualTo),
                     CreateIsBoundCondition(x.ValueBinder, context)
                 })));
             }
@@ -149,7 +150,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 var leftOperand = CreateExpression(context, firstValueBinder);
                 var rightOperand = CreateExpression(context, secondValueBinder);
-                return new EqualExpressionCondition(leftOperand, rightOperand);
+                return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
             }
             else if (firstValueBinder is CoalesceValueBinder)
             {
@@ -181,7 +182,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(curCase => new ConjunctionCondition(new IFilterCondition[]
                 {
-                    new EqualExpressionCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context)),
+                    new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
                     CreateEqualsCondition(curCase.ValueBinder, secondValueBinder, context)
                 })).ToList());
             }
@@ -244,7 +245,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 foreach (var @case in switchValueBinder.Cases)
                 {
                     var expression = CreateExpression(context, @case.ValueBinder);
-                    var condition = new EqualExpressionCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context));
+                    var condition = new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
                     statements.Add(new CaseExpression.Statement(condition, expression));
                 }
 

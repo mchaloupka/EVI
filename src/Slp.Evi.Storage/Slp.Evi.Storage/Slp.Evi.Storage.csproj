@@ -102,6 +102,7 @@
     <Compile Include="EviQueryableStorage.cs" />
     <Compile Include="Relational\Builder\ExpressionVisitParameter.cs" />
     <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\Optimization\Optimizers\CaseExpressionToConditionOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizer.cs" />
     <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullCalculator.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="Relational\Query\Conditions\Filter\AlwaysTrueCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\ConjunctionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\DisjunctionCondition.cs" />
-    <Compile Include="Relational\Query\Conditions\Filter\EqualExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\EqualVariablesCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\IFilterConditionVisitor.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\IsNullCondition.cs" />

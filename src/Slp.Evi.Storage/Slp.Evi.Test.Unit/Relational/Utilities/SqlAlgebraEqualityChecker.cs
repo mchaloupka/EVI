@@ -73,24 +73,26 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
 
         public object Visit(ComparisonCondition comparisonCondition, object data)
         {
-            throw new NotImplementedException();
-        }
-
-        public object Visit(EqualExpressionCondition equalExpressionCondition, object data)
-        {
-            if (!(data is EqualExpressionCondition))
+            if (!(data is ComparisonCondition))
                 return false;
 
-            var actual = (EqualExpressionCondition)data;
+            var actual = (ComparisonCondition)data;
 
-            var left1 = equalExpressionCondition.LeftOperand;
-            var right1 = equalExpressionCondition.RightOperand;
+            var left1 = comparisonCondition.LeftOperand;
+            var right1 = comparisonCondition.RightOperand;
 
             var left2 = actual.LeftOperand;
             var right2 = actual.RightOperand;
 
-            return ((bool)left1.Accept(this, left2) && (bool)right1.Accept(this, right2)) ||
-                   ((bool)left1.Accept(this, right2) && (bool)right1.Accept(this, left2));
+            if (comparisonCondition.ComparisonType == actual.ComparisonType)
+            {
+                return ((bool) left1.Accept(this, left2) && (bool) right1.Accept(this, right2)) ||
+                       ((bool) left1.Accept(this, right2) && (bool) right1.Accept(this, left2));
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public object Visit(EqualVariablesCondition equalVariablesCondition, object data)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.Optimization.Optimizers;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
@@ -25,7 +26,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
             var left = new ConstantExpression("http://s.com/", queryContext);
             var right = new ConstantExpression("http://s.com/", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
@@ -42,7 +43,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
             var left = new ConstantExpression("http://s.com/", queryContext);
             var right = new ConstantExpression("http://s.com/2", queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
@@ -59,7 +60,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
             var left = new ConstantExpression("2", queryContext);
             var right = new ConstantExpression(2, queryContext);
 
-            var condition = new EqualExpressionCondition(left, right);
+            var condition = new ComparisonCondition(left, right, ComparisonTypes.EqualTo);
 
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 

@@ -309,48 +309,9 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(ComparisonCondition toTransform, VisitorContext data)
         {
-            TransformExpression(toTransform.LeftOperand, data);
-
-            switch (toTransform.ComparisonType)
-            {
-                case ComparisonTypes.GreaterThan:
-                    data.StringBuilder.Append(">");
-                    break;
-                case ComparisonTypes.GreaterOrEqualThan:
-                    data.StringBuilder.Append(">=");
-                    break;
-                case ComparisonTypes.LessThan:
-                    data.StringBuilder.Append("<");
-                    break;
-                case ComparisonTypes.LessOrEqualThan:
-                    data.StringBuilder.Append("<=");
-                    break;
-                case ComparisonTypes.EqualTo:
-                    data.StringBuilder.Append("=");
-                    break;
-                case ComparisonTypes.NotEqualTo:
-                    data.StringBuilder.Append("<>");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            TransformExpression(toTransform.RightOperand, data);
-            return null;
-        }
-
-        /// <summary>
-        /// Process the <see cref="EqualExpressionCondition"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override object Transform(EqualExpressionCondition toTransform, VisitorContext data)
-        {
-            var leftExpr = toTransform.LeftOperand;
-            var rightExpr = toTransform.RightOperand;
-
-            TransformEqualCondition(() => TransformExpression(leftExpr, data), () => TransformExpression(rightExpr, data), x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType);
+            TransformComparisonCondition(() => TransformExpression(toTransform.LeftOperand, data),
+                () => TransformExpression(toTransform.RightOperand, data), x => data.StringBuilder.Append(x),
+                toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, toTransform.ComparisonType);
 
             return null;
         }
@@ -366,7 +327,9 @@ namespace Slp.Evi.Storage.Database.Base
             var leftExpr = toTransform.LeftVariable;
             var rightExpr = toTransform.RightVariable;
 
-            TransformEqualCondition(() => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data), () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data), x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType);
+            TransformComparisonCondition(() => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data),
+                () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data),
+                x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType, ComparisonTypes.EqualTo);
 
             return null;
         }
@@ -379,7 +342,8 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="writeText">The write text action.</param>
         /// <param name="leftDataType">Type of the left data.</param>
         /// <param name="rightDataType">Type of the right data.</param>
-        protected virtual void TransformEqualCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType)
+        /// <param name="comparisonType">Comparison type</param>
+        protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType)
         {
             if (leftDataType.TypeName == rightDataType.TypeName)
             {
@@ -393,7 +357,29 @@ namespace Slp.Evi.Storage.Database.Base
                 writeLeft();
                 writeText(" AS nvarchar(MAX))");
 
-                writeText("=");
+                switch (comparisonType)
+                {
+                    case ComparisonTypes.GreaterThan:
+                        writeText(">");
+                        break;
+                    case ComparisonTypes.GreaterOrEqualThan:
+                        writeText(">=");
+                        break;
+                    case ComparisonTypes.LessThan:
+                        writeText("<");
+                        break;
+                    case ComparisonTypes.LessOrEqualThan:
+                        writeText("<=");
+                        break;
+                    case ComparisonTypes.EqualTo:
+                        writeText("=");
+                        break;
+                    case ComparisonTypes.NotEqualTo:
+                        writeText("<>");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
                 writeText("CAST(");
                 writeRight();

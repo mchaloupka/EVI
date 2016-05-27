@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -43,25 +44,34 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
             }
 
             /// <summary>
-            /// Process the <see cref="EqualExpressionCondition"/>
+            /// Process the <see cref="ComparisonCondition"/>
             /// </summary>
             /// <param name="toTransform">The instance to process</param>
             /// <param name="data">The passed data</param>
             /// <returns>The transformation result</returns>
-            protected override IFilterCondition Transform(EqualExpressionCondition toTransform, OptimizationContext data)
+            protected override IFilterCondition Transform(ComparisonCondition toTransform, OptimizationContext data)
             {
-                var leftOperand = toTransform.LeftOperand;
-                var rightOperand = toTransform.RightOperand;
-
                 IFilterCondition result = null;
 
-                if (leftOperand is ConcatenationExpression)
+                if (toTransform.ComparisonType == ComparisonTypes.EqualTo ||
+                    toTransform.ComparisonType == ComparisonTypes.NotEqualTo)
                 {
-                    result = ExpandEquals((ConcatenationExpression)leftOperand, rightOperand, data);
-                }
-                else if (rightOperand is ConcatenationExpression)
-                {
-                    result = ExpandEquals((ConcatenationExpression)rightOperand, leftOperand, data);
+                    var leftOperand = toTransform.LeftOperand;
+                    var rightOperand = toTransform.RightOperand;
+
+                    if (leftOperand is ConcatenationExpression)
+                    {
+                        result = ExpandEquals((ConcatenationExpression)leftOperand, rightOperand, data);
+                    }
+                    else if (rightOperand is ConcatenationExpression)
+                    {
+                        result = ExpandEquals((ConcatenationExpression)rightOperand, leftOperand, data);
+                    }
+
+                    if (result != null && toTransform.ComparisonType == ComparisonTypes.NotEqualTo)
+                    {
+                        result = new NegationCondition(result);
+                    }
                 }
 
                 return result ?? toTransform;
@@ -165,7 +175,8 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
                 }
                 else
                 {
-                    return new EqualExpressionCondition(ConvertToExpression(matchCondition.LeftPattern, context), ConvertToExpression(matchCondition.RightPattern, context));
+                    return new ComparisonCondition(ConvertToExpression(matchCondition.LeftPattern, context),
+                        ConvertToExpression(matchCondition.RightPattern, context), ComparisonTypes.EqualTo);
                 }
             }
 

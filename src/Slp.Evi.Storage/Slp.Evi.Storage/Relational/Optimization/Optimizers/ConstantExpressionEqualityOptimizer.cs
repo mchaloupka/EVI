@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Relational.Query;
+﻿using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
@@ -26,7 +27,7 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
             : BaseRelationalOptimizerImplementation<object>
         {
             /// <summary>
-            /// Enumeration for the result of the <see cref="CheckEquality"/> method
+            /// Enumeration for the result of the <see cref="CheckComparison"/> method
             /// </summary>
             private enum EqualityResults
             {
@@ -45,17 +46,17 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
             }
 
             /// <summary>
-            /// Process the <see cref="EqualExpressionCondition"/>
+            /// Process the <see cref="ComparisonCondition"/>
             /// </summary>
             /// <param name="toTransform">The instance to process</param>
             /// <param name="data">The passed data</param>
             /// <returns>The transformation result</returns>
-            protected override IFilterCondition Transform(EqualExpressionCondition toTransform, OptimizationContext data)
+            protected override IFilterCondition Transform(ComparisonCondition toTransform, OptimizationContext data)
             {
                 var leftOperand = toTransform.LeftOperand;
                 var rightOperand = toTransform.RightOperand;
 
-                var compareResult = CheckEquality(leftOperand, rightOperand, data);
+                var compareResult = CheckComparison(leftOperand, rightOperand, toTransform.ComparisonType, data);
 
                 switch (compareResult)
                 {
@@ -73,19 +74,34 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
             /// </summary>
             /// <param name="leftOperand">The left operand.</param>
             /// <param name="rightOperand">The right operand.</param>
+            /// <param name="comparisonType">The comparison type</param>
             /// <param name="data">The passed data.</param>
             /// <returns>The <see cref="EqualityResults"/> of the check.</returns>
-            private EqualityResults CheckEquality(IExpression leftOperand, IExpression rightOperand, OptimizationContext data)
+            private EqualityResults CheckComparison(IExpression leftOperand, IExpression rightOperand, ComparisonTypes comparisonType, OptimizationContext data)
             {
-                if (leftOperand is ConstantExpression && rightOperand is ConstantExpression)
+                if (leftOperand is ConstantExpression && rightOperand is ConstantExpression && (comparisonType == ComparisonTypes.EqualTo || comparisonType == ComparisonTypes.NotEqualTo))
                 {
                     if (AreConstantExpressionsEqual((ConstantExpression) leftOperand, (ConstantExpression) rightOperand))
                     {
-                        return EqualityResults.Always;
+                        if (comparisonType == ComparisonTypes.EqualTo)
+                        {
+                            return EqualityResults.Always;
+                        }
+                        else
+                        {
+                            return EqualityResults.Never;
+                        }
                     }
                     else
                     {
-                        return EqualityResults.Never;
+                        if (comparisonType == ComparisonTypes.EqualTo)
+                        {
+                            return EqualityResults.Never;
+                        }
+                        else
+                        {
+                            return EqualityResults.Always;
+                        }
                     }
                 }
 

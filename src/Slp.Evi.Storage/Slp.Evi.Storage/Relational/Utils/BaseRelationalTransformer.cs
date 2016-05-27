@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -250,40 +251,23 @@ namespace Slp.Evi.Storage.Relational.Utils
         /// <returns>The transformation result</returns>
         protected override IFilterCondition Transform(ComparisonCondition toTransform, T data)
         {
-            var newLeft = TransformExpression(toTransform.LeftOperand, data);
-            var newRight = TransformExpression(toTransform.RightOperand, data);
-
-            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
-            {
-                return new ComparisonCondition(newLeft, newRight, toTransform.ComparisonType);
-            }
-            else
-            {
-                return toTransform;
-            }
-        }
-
-        /// <summary>
-        /// Process the <see cref="EqualExpressionCondition"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override IFilterCondition Transform(EqualExpressionCondition toTransform, T data)
-        {
             var newLeftOperand = TransformExpression(toTransform.LeftOperand, data);
             var newRightOperand = TransformExpression(toTransform.RightOperand, data);
 
             var leftColumnExpression = newLeftOperand as ColumnExpression;
             var rightColumnExpression = newRightOperand as ColumnExpression;
 
-            if (leftColumnExpression != null && rightColumnExpression != null)
+            if (leftColumnExpression != null && rightColumnExpression != null && toTransform.ComparisonType == ComparisonTypes.EqualTo)
             {
                 return new EqualVariablesCondition(leftColumnExpression.CalculusVariable, rightColumnExpression.CalculusVariable);
             }
+            else if(leftColumnExpression != null && rightColumnExpression != null && toTransform.ComparisonType == ComparisonTypes.NotEqualTo)
+            {
+                return new NegationCondition(new EqualVariablesCondition(leftColumnExpression.CalculusVariable, rightColumnExpression.CalculusVariable));
+            }
             else if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand)
             {
-                return new EqualExpressionCondition(newLeftOperand, newRightOperand);
+                return new ComparisonCondition(newLeftOperand, newRightOperand, toTransform.ComparisonType);
             }
             else
             {
