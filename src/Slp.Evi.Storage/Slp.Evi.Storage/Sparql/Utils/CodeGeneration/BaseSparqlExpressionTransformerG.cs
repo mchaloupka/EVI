@@ -204,5 +204,77 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
             return CommonFallbackTransform(toTransform, data);
         }
 
+        /// <summary>
+        /// Visits <see cref="ComparisonExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ComparisonExpression toVisit, object data)
+        {
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="ComparisonExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(ComparisonExpression toVisit, T data) 
+        {
+            if(ShouldTransform(toVisit, data))
+            {
+                var transformed = Transform(toVisit, data);
+                return PostTransform(transformed, toVisit, data);
+            }
+            else
+            {
+                return FallbackTransform(toVisit, data);
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="ComparisonExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(ComparisonExpression toTransform, T data);
+
+        /// <summary>
+        /// Pre-process for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed</param>
+        /// <param name="data">The passed data</param>
+        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
+        protected virtual bool ShouldTransform(ComparisonExpression toTransform, T data)
+        {
+            return CommonShouldTransform(toTransform, data);
+        }
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, ComparisonExpression toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Fallback variant for the transformation.
+        /// </summary>
+        /// <param name="toTransform">Instance to be transformed.</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The transformation result</returns>
+        protected virtual TR FallbackTransform(ComparisonExpression toTransform, T data)
+        {
+            return CommonFallbackTransform(toTransform, data);
+        }
+
     }
 }

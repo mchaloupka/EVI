@@ -612,6 +612,19 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         /// <summary>
+        /// Visits <see cref="ComparisonExpression"/>
+        /// </summary>
+        /// <param name="comparisonExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ComparisonExpression comparisonExpression, object data)
+        {
+            var left = (IExpression) comparisonExpression.LeftOperand.Accept(this, data);
+            var right = (IExpression) comparisonExpression.RightOperand.Accept(this, data);
+            return new ComparisonCondition(left, right);
+        }
+
+        /// <summary>
         /// Parameter passed to <see cref="ISparqlExpressionVisitor"/> visit methods.
         /// </summary>
         public class ExpressionVisitParameter

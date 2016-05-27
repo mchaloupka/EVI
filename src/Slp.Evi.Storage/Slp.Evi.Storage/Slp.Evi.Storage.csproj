@@ -74,6 +74,7 @@
     <Compile Include="Bootstrap\DefaultEviQueryableStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IEviQueryableStorageFactory.cs" />
+    <Compile Include="Common\Algebra\ComparisonTypes.cs" />
     <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
     <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
     <Compile Include="Common\Optimization\PatternMatching\Pattern.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Relational\Query\Conditions\Source\LeftJoinCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\TupleFromSourceCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Source\UninonedSourcesCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\ComparisonCondition.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
       <AutoGen>True</AutoGen>
@@ -186,6 +188,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BaseSourceTransformerG.tt</DependentUpon>
     </Compile>
+    <Compile Include="Sparql\Algebra\Expressions\ComparisonExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\ISparqlExpressionVisitor.cs" />
     <Compile Include="Sparql\Algebra\Expressions\IsBoundExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\NegationExpression.cs" />

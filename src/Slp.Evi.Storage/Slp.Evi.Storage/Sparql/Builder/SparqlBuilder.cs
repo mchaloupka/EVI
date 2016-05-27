@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
@@ -8,8 +9,10 @@ using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
@@ -220,6 +223,19 @@ namespace Slp.Evi.Storage.Sparql.Builder
             {
                 var notExpression = (NotExpression) expression;
                 return new NegationExpression(ProcessCondition(notExpression.Arguments.Single(), context));
+            }
+            else if (expression is GreaterThanExpression)
+            {
+                var comparison = (GreaterThanExpression) expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.GreaterThan);
+            }
+            else if (expression is VariableTerm)
+            {
+                var term = (VariableTerm) expression;
+                var variable = term.Variables.Single();
+
             }
 
             throw new NotImplementedException();
