@@ -156,6 +156,17 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelp
         }
 
         /// <summary>
+        /// Process the <see cref="ComparisonCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IsNullOptimizerAggregatedValues Transform(ComparisonCondition toTransform, IsNullCalculatorParameter data)
+        {
+            return new IsNullOptimizerAggregatedValues();
+        }
+
+        /// <summary>
         /// Process the <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

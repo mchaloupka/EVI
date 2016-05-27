@@ -243,6 +243,27 @@ namespace Slp.Evi.Storage.Relational.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="ComparisonCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IFilterCondition Transform(ComparisonCondition toTransform, T data)
+        {
+            var newLeft = TransformExpression(toTransform.LeftOperand, data);
+            var newRight = TransformExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new ComparisonCondition(newLeft, newRight, toTransform.ComparisonType);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
         /// Process the <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

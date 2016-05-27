@@ -40,6 +40,14 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         object Visit(DisjunctionCondition disjunctionCondition, object data);
 
         /// <summary>
+        /// Visits <see cref="ComparisonCondition"/>
+        /// </summary>
+        /// <param name="comparisonCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(ComparisonCondition comparisonCondition, object data);
+
+        /// <summary>
         /// Visits <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="equalExpressionCondition">The visited instance</param>

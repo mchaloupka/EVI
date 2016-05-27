@@ -106,6 +106,17 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
         }
 
         /// <summary>
+        /// Visits <see cref="ComparisonCondition"/>
+        /// </summary>
+        /// <param name="comparisonCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ComparisonCondition comparisonCondition, object data)
+        {
+            return data;
+        }
+
+        /// <summary>
         /// Visits <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="equalExpressionCondition">The visited instance</param>

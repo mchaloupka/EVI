@@ -634,7 +634,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var left = (IExpression) comparisonExpression.LeftOperand.Accept(this, data);
             var right = (IExpression) comparisonExpression.RightOperand.Accept(this, data);
-            return new ComparisonCondition(left, right);
+            return new ComparisonCondition(left, right, comparisonExpression.ComparisonType);
         }
 
         /// <summary>

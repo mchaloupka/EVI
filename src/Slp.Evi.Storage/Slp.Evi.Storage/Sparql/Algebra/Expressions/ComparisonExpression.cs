@@ -7,7 +7,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
     /// Representing comparison condition
     /// </summary>
     public class ComparisonExpression 
-        : ISparqlExpression
+        : ISparqlCondition
     {
         /// <summary>
         /// Gets the left operand.
