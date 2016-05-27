@@ -345,6 +345,17 @@ namespace Slp.Evi.Storage.Sparql.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="VariableExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(VariableExpression toTransform, T data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="ComparisonExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

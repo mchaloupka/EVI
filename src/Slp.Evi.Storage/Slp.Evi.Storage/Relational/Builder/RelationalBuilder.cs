@@ -612,6 +612,19 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         /// <summary>
+        /// Visits <see cref="VariableExpression"/>
+        /// </summary>
+        /// <param name="variableExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(VariableExpression variableExpression, object data)
+        {
+            var parameter = (ExpressionVisitParameter) data;
+            var valueBinder = parameter.ValueBinders[variableExpression.Variable];
+            return _expressionBuilder.CreateExpression(parameter.QueryContext, valueBinder);
+        }
+
+        /// <summary>
         /// Visits <see cref="ComparisonExpression"/>
         /// </summary>
         /// <param name="comparisonExpression">The visited instance</param>

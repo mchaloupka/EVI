@@ -192,6 +192,7 @@
     <Compile Include="Sparql\Algebra\Expressions\ISparqlExpressionVisitor.cs" />
     <Compile Include="Sparql\Algebra\Expressions\IsBoundExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\NegationExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\VariableExpression.cs" />
     <Compile Include="Sparql\Algebra\IGraphPattern.cs" />
     <Compile Include="Sparql\Algebra\IModifier.cs" />
     <Compile Include="Sparql\Algebra\ISparqlCondition.cs" />

@@ -235,7 +235,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             {
                 var term = (VariableTerm) expression;
                 var variable = term.Variables.Single();
-
+                return new VariableExpression(variable);
             }
 
             throw new NotImplementedException();

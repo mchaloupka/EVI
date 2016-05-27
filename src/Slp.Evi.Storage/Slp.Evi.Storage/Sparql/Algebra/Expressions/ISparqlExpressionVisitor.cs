@@ -30,6 +30,14 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         object Visit(NegationExpression negationExpression, object data);
 
         /// <summary>
+        /// Visits <see cref="VariableExpression"/>
+        /// </summary>
+        /// <param name="variableExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(VariableExpression variableExpression, object data);
+
+        /// <summary>
         /// Visits <see cref="ComparisonExpression"/>
         /// </summary>
         /// <param name="comparisonExpression">The visited instance</param>
