@@ -589,6 +589,52 @@ namespace Slp.Evi.Storage.Database.Base
         }
 
         /// <summary>
+        /// Process the <see cref="CaseExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(CaseExpression toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("CASE");
+
+            foreach (var statement in toTransform.Statements)
+            {
+                data.StringBuilder.Append(" WHEN ");
+                TransformFilterCondition(statement.Condition, data);
+                data.StringBuilder.Append(" THEN ");
+                TransformExpression(statement.Expression, data);
+            }
+
+            data.StringBuilder.Append(" END");
+            return null;
+        }
+
+        /// <summary>
+        /// Process the <see cref="CoalesceExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(CoalesceExpression toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("COALESCE(");
+
+            for (int i = 0; i < toTransform.InnerExpressions.Length; i++)
+            {
+                if (i > 0)
+                {
+                    data.StringBuilder.Append(", ");
+                }
+
+                TransformExpression(toTransform.InnerExpressions[i], data);
+            }
+
+            data.StringBuilder.Append(")");
+            return null;
+        }
+
+        /// <summary>
         /// Writes the calculus variable.
         /// </summary>
         /// <param name="variable">The variable.</param>

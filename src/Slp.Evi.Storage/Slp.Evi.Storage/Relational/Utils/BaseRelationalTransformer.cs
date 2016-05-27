@@ -492,6 +492,79 @@ namespace Slp.Evi.Storage.Relational.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="CaseExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IExpression Transform(CaseExpression toTransform, T data)
+        {
+            var newStatements = new List<CaseExpression.Statement>();
+            bool changed = false;
+
+            foreach (var statement in toTransform.Statements)
+            {
+                var newCondition = TransformFilterCondition(statement.Condition, data);
+                var newExpression = TransformExpression(statement.Expression, data);
+
+                if (newCondition != statement.Condition || newExpression != statement.Expression)
+                {
+                    changed = true;
+                    newStatements.Add(new CaseExpression.Statement(newCondition, newExpression));
+                }
+                else
+                {
+                    newStatements.Add(statement);
+                }
+            }
+
+            if (changed)
+            {
+                return new CaseExpression(newStatements);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="CoalesceExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IExpression Transform(CoalesceExpression toTransform, T data)
+        {
+            var newInnerExpressions = new List<IExpression>();
+            bool changed = false;
+
+            foreach (var innerExpression in toTransform.InnerExpressions)
+            {
+                var newExpression = TransformExpression(innerExpression, data);
+
+                if (newExpression != innerExpression)
+                {
+                    changed = true;
+                    newInnerExpressions.Add(newExpression);
+                }
+                else
+                {
+                    newInnerExpressions.Add(innerExpression);
+                }
+            }
+
+            if (changed)
+            {
+                return new CoalesceExpression(newInnerExpressions);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
         /// Process the <see cref="AssignmentFromExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

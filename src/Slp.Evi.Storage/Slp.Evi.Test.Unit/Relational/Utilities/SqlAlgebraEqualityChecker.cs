@@ -179,6 +179,16 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             return constantExpression.Value.Equals(actual.Value);
         }
 
+        public object Visit(CaseExpression caseExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Visit(CoalesceExpression coalesceExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
         {
             throw new NotImplementedException();

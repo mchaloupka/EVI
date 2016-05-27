@@ -306,5 +306,27 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.IsNullOptimizerHelp
         {
             return new IsNullOptimizerAggregatedValues();
         }
+
+        /// <summary>
+        /// Process the <see cref="CaseExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IsNullOptimizerAggregatedValues Transform(CaseExpression toTransform, IsNullCalculatorParameter data)
+        {
+            return new IsNullOptimizerAggregatedValues();
+        }
+
+        /// <summary>
+        /// Process the <see cref="CoalesceExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IsNullOptimizerAggregatedValues Transform(CoalesceExpression toTransform, IsNullCalculatorParameter data)
+        {
+            return new IsNullOptimizerAggregatedValues();
+        }
     }
 }
