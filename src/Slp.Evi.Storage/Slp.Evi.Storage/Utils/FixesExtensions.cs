@@ -2,12 +2,12 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace Slp.Evi.Storage.Sparql.Utils
+namespace Slp.Evi.Storage.Utils
 {
     /// <summary>
-    /// Fixes for SPARQL
+    /// Extension class to fix issues in the used libraries
     /// </summary>
-    public static class FixesExtension
+    public static class FixesExtensions
     {
         /// <summary>
         /// Gets the node for the specified term.

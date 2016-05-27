@@ -83,6 +83,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="NodeExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(NodeExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="EmptyPattern"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

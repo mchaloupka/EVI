@@ -7,6 +7,7 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Utils;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions.Comparison;
@@ -17,6 +18,7 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
+using Slp.Evi.Storage.Utils;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -236,6 +238,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var term = (VariableTerm) expression;
                 var variable = term.Variables.Single();
                 return new VariableExpression(variable);
+            }
+            else if (expression is ConstantTerm)
+            {
+                var term = (ConstantTerm) expression;
+                return new NodeExpression(term.Node());
             }
 
             throw new NotImplementedException();

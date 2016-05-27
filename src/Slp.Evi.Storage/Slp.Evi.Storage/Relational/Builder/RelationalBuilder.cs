@@ -638,6 +638,18 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         /// <summary>
+        /// Visits <see cref="NodeExpression"/>
+        /// </summary>
+        /// <param name="nodeExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(NodeExpression nodeExpression, object data)
+        {
+            var parameter = (ExpressionVisitParameter)data;
+            return _expressionBuilder.CreateExpression(parameter.QueryContext, nodeExpression.Node);
+        }
+
+        /// <summary>
         /// Parameter passed to <see cref="ISparqlExpressionVisitor"/> visit methods.
         /// </summary>
         public class ExpressionVisitParameter
