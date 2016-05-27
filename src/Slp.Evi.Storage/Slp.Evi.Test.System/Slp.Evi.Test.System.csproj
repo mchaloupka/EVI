@@ -96,10 +96,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\not_bound.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\not_bound.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\not_bound.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\not_bound.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\null.rq">
@@ -120,10 +120,10 @@
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\join.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\bound.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\bound.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\bound.srx">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\bound.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\optional.rq">

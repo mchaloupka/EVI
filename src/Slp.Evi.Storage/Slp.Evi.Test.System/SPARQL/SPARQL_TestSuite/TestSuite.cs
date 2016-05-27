@@ -9,7 +9,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         : BaseSPARQLTestSuite
     {
         [TestMethod]
-        public void Simple_single() 
+        public void Simple_single()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\single.rq";
@@ -21,7 +21,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_join() 
+        public void Simple_join()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\join.rq";
@@ -33,7 +33,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_union() 
+        public void Simple_union()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\union.rq";
@@ -45,7 +45,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_empty() 
+        public void Simple_empty()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\empty.rq";
@@ -57,7 +57,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_null() 
+        public void Simple_null()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\null.rq";
@@ -69,7 +69,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_optional() 
+        public void Simple_optional()
         {
             var storage = GetStorage("simple.xml");
             var queryFile = @"Data\Simple\optional.rq";
@@ -81,11 +81,11 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_bound() 
+        public void Simple_Filter_bound()
         {
             var storage = GetStorage("simple.xml");
-            var queryFile = @"Data\Simple\bound.rq";
-            var resultFile = @"Data\Simple\bound.srx";
+            var queryFile = @"Data\Simple\Filter\bound.rq";
+            var resultFile = @"Data\Simple\Filter\bound.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
@@ -93,11 +93,11 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_not_bound() 
+        public void Simple_Filter_not_bound()
         {
             var storage = GetStorage("simple.xml");
-            var queryFile = @"Data\Simple\not_bound.rq";
-            var resultFile = @"Data\Simple\not_bound.srx";
+            var queryFile = @"Data\Simple\Filter\not_bound.rq";
+            var resultFile = @"Data\Simple\Filter\not_bound.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
@@ -105,7 +105,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Students_no_result() 
+        public void Students_no_result()
         {
             var storage = GetStorage("students.xml");
             var queryFile = @"Data\Students\no_result.rq";
@@ -117,7 +117,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Students_student_names() 
+        public void Students_student_names()
         {
             var storage = GetStorage("students.xml");
             var queryFile = @"Data\Students\student_names.rq";

@@ -21,8 +21,8 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", "Simple", "empty"); #>
 <# BagEqualTest("simple.xml", "Simple", "null"); #>
 <# BagEqualTest("simple.xml", "Simple", "optional"); #>
-<# BagEqualTest("simple.xml", "Simple", "bound"); #>
-<# BagEqualTest("simple.xml", "Simple", "not_bound"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "bound"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "not_bound"); #>
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
 
@@ -77,7 +77,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
 #>
         [TestMethod]
-        public void <#= folder #>_<#= name #>() 
+        public void <#= GetTestName(folder, name) #>()
         {
             var storage = GetStorage("<#= dataset #>");
             var queryFile = @"Data\\<#= folder #>\\<#= name #>.rq";
@@ -89,5 +89,10 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 <#+
+    }
+
+    string GetTestName(string folder, string name)
+    {
+        return $"{folder.Replace("\\", "_")}_{name}";
     }
 #>
