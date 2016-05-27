@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
@@ -301,6 +302,44 @@ namespace Slp.Evi.Storage.Database.Base
         }
 
         /// <summary>
+        /// Process the <see cref="ComparisonCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(ComparisonCondition toTransform, VisitorContext data)
+        {
+            TransformExpression(toTransform.LeftOperand, data);
+
+            switch (toTransform.ComparisonType)
+            {
+                case ComparisonTypes.GreaterThan:
+                    data.StringBuilder.Append(">");
+                    break;
+                case ComparisonTypes.GreaterOrEqualThan:
+                    data.StringBuilder.Append(">=");
+                    break;
+                case ComparisonTypes.LessThan:
+                    data.StringBuilder.Append("<");
+                    break;
+                case ComparisonTypes.LessOrEqualThan:
+                    data.StringBuilder.Append("<=");
+                    break;
+                case ComparisonTypes.EqualTo:
+                    data.StringBuilder.Append("=");
+                    break;
+                case ComparisonTypes.NotEqualTo:
+                    data.StringBuilder.Append("<>");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            TransformExpression(toTransform.RightOperand, data);
+            return null;
+        }
+
+        /// <summary>
         /// Process the <see cref="EqualExpressionCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -311,12 +350,7 @@ namespace Slp.Evi.Storage.Database.Base
             var leftExpr = toTransform.LeftOperand;
             var rightExpr = toTransform.RightOperand;
 
-            TransformEqualCondition(
-                () => TransformExpression(leftExpr, data),
-                () => TransformExpression(rightExpr, data),
-                x => data.StringBuilder.Append(x),
-                leftExpr.SqlType,
-                rightExpr.SqlType);
+            TransformEqualCondition(() => TransformExpression(leftExpr, data), () => TransformExpression(rightExpr, data), x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType);
 
             return null;
         }
@@ -332,12 +366,7 @@ namespace Slp.Evi.Storage.Database.Base
             var leftExpr = toTransform.LeftVariable;
             var rightExpr = toTransform.RightVariable;
 
-            TransformEqualCondition(
-                () => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data),
-                () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data),
-                x => data.StringBuilder.Append(x),
-                leftExpr.SqlType,
-                rightExpr.SqlType);
+            TransformEqualCondition(() => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data), () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data), x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType);
 
             return null;
         }
@@ -350,8 +379,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="writeText">The write text action.</param>
         /// <param name="leftDataType">Type of the left data.</param>
         /// <param name="rightDataType">Type of the right data.</param>
-        protected virtual void TransformEqualCondition(Action writeLeft, Action writeRight, Action<string> writeText,
-            DataType leftDataType, DataType rightDataType)
+        protected virtual void TransformEqualCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType)
         {
             if (leftDataType.TypeName == rightDataType.TypeName)
             {
@@ -581,7 +609,7 @@ namespace Slp.Evi.Storage.Database.Base
             }
             else if (variableSource is ISourceCondition)
             {
-                var sourceCondition = (ISourceCondition)variableSource;
+                var sourceCondition = (ISourceCondition) variableSource;
 
                 stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                 stringBuilder.Append('.');
@@ -601,8 +629,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <summary>
         /// Visitor for writing the calculus variable comming from assignment condition
         /// </summary>
-        private class WriteCalculusVariable_Assignment_Visitor
-            : IAssignmentConditionVisitor
+        private class WriteCalculusVariable_Assignment_Visitor : IAssignmentConditionVisitor
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="WriteCalculusVariable_Assignment_Visitor"/> class.

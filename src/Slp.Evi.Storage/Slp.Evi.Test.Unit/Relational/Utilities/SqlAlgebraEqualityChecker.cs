@@ -71,6 +71,11 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        public object Visit(ComparisonCondition comparisonCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(EqualExpressionCondition equalExpressionCondition, object data)
         {
             if (!(data is EqualExpressionCondition))
