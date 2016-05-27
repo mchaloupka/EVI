@@ -143,7 +143,6 @@
     <Compile Include="Relational\Optimization\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
-    <Compile Include="Relational\Builder\ExpressionBuilder.cs" />
     <Compile Include="Relational\Query\Conditions\IConditionVisitor.cs" />
     <Compile Include="Relational\Query\Expressions\ColumnExpression.cs" />
     <Compile Include="Relational\Query\Expressions\ConcatenationExpression.cs" />

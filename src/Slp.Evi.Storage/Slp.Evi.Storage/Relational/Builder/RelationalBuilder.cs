@@ -34,17 +34,11 @@ namespace Slp.Evi.Storage.Relational.Builder
         private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
-        /// The expression builder
-        /// </summary>
-        private readonly ExpressionBuilder _expressionBuilder;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.
         /// </summary>
         public RelationalBuilder()
         {
-            _expressionBuilder = new ExpressionBuilder();
-            _conditionBuilder = new ConditionBuilder(_expressionBuilder);
+            _conditionBuilder = new ConditionBuilder();
         }
 
         /// <summary>
@@ -621,7 +615,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var parameter = (ExpressionVisitParameter) data;
             var valueBinder = parameter.ValueBinders[variableExpression.Variable];
-            return _expressionBuilder.CreateExpression(parameter.QueryContext, valueBinder);
+            return _conditionBuilder.CreateExpression(parameter.QueryContext, valueBinder);
         }
 
         /// <summary>
@@ -646,7 +640,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         public object Visit(NodeExpression nodeExpression, object data)
         {
             var parameter = (ExpressionVisitParameter)data;
-            return _expressionBuilder.CreateExpression(parameter.QueryContext, nodeExpression.Node);
+            return _conditionBuilder.CreateExpression(parameter.QueryContext, nodeExpression.Node);
         }
     }
 }
