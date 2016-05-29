@@ -177,6 +177,30 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_Filter_disjunction()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\disjunction.rq";
+            var resultFile = @"Data\Simple\Filter\disjunction.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_conjunction()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\conjunction.rq";
+            var resultFile = @"Data\Simple\Filter\conjunction.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Students_no_result()

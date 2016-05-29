@@ -30,6 +30,8 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_le"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_eq"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_neq"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "disjunction"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "conjunction"); #>
 
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
