@@ -189,7 +189,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BaseSourceTransformerG.tt</DependentUpon>
     </Compile>
+    <Compile Include="Sparql\Algebra\Expressions\BooleanFalseExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\BooleanTrueExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\ComparisonExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\ConjunctionExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\DisjunctionExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\ISparqlExpressionVisitor.cs" />
     <Compile Include="Sparql\Algebra\Expressions\IsBoundExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\NegationExpression.cs" />

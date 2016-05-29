@@ -221,6 +221,20 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var boundFunction = (BoundFunction) expression;
                 return new IsBoundExpression(boundFunction.Variables.Single());
             }
+            else if (expression is AndExpression)
+            {
+                var conjunction = (AndExpression)expression;
+                var left = ProcessCondition(conjunction.Arguments.ElementAt(0), context);
+                var right = ProcessCondition(conjunction.Arguments.ElementAt(1), context);
+                return new ConjunctionExpression(new ISparqlCondition[] {left, right});
+            }
+            else if (expression is OrExpression)
+            {
+                var conjunction = (OrExpression)expression;
+                var left = ProcessCondition(conjunction.Arguments.ElementAt(0), context);
+                var right = ProcessCondition(conjunction.Arguments.ElementAt(1), context);
+                return new DisjunctionExpression(new ISparqlCondition[] { left, right });
+            }
             else if (expression is NotExpression)
             {
                 var notExpression = (NotExpression) expression;

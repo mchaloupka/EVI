@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
@@ -333,6 +335,28 @@ namespace Slp.Evi.Storage.Sparql.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="BooleanTrueExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(BooleanTrueExpression toTransform, T data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="BooleanFalseExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(BooleanFalseExpression toTransform, T data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="NegationExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -340,8 +364,48 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override ISparqlExpression Transform(NegationExpression toTransform, T data)
         {
-            // TODO: Optimizations
-            return toTransform;
+            var newInner = TransformSparqlCondition(toTransform.InnerCondition, data);
+
+            if (newInner is BooleanTrueExpression)
+            {
+                return new BooleanFalseExpression();
+            }
+            else if (newInner is BooleanFalseExpression)
+            {
+                return new BooleanTrueExpression();
+            }
+            else if (newInner is ComparisonExpression)
+            {
+                var comparisonExpression = (ComparisonExpression) newInner;
+                var left = comparisonExpression.LeftOperand;
+                var right = comparisonExpression.RightOperand;
+
+                switch (comparisonExpression.ComparisonType)
+                {
+                    case ComparisonTypes.GreaterThan:
+                        return new ComparisonExpression(left, right, ComparisonTypes.LessOrEqualThan);
+                    case ComparisonTypes.GreaterOrEqualThan:
+                        return new ComparisonExpression(left, right, ComparisonTypes.LessThan);
+                    case ComparisonTypes.LessThan:
+                        return new ComparisonExpression(left, right, ComparisonTypes.GreaterOrEqualThan);
+                    case ComparisonTypes.LessOrEqualThan:
+                        return new ComparisonExpression(left, right, ComparisonTypes.GreaterThan);
+                    case ComparisonTypes.EqualTo:
+                        return new ComparisonExpression(left, right, ComparisonTypes.NotEqualTo);
+                    case ComparisonTypes.NotEqualTo:
+                        return new ComparisonExpression(left, right, ComparisonTypes.EqualTo);
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            else if (newInner != toTransform.InnerCondition)
+            {
+                return new NegationExpression(newInner);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
 
         /// <summary>
@@ -356,6 +420,58 @@ namespace Slp.Evi.Storage.Sparql.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="ConjunctionExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(ConjunctionExpression toTransform, T data)
+        {
+            var conditions = new List<ISparqlCondition>();
+            var changed = false;
+
+            foreach (var toTransformInner in toTransform.Operands)
+            {
+                var newInner = TransformSparqlCondition(toTransformInner, data);
+
+                if (newInner is BooleanTrueExpression)
+                {
+                    changed = true;
+                }
+                else if (newInner is BooleanFalseExpression)
+                {
+                    return newInner;
+                }
+                else if (newInner != toTransformInner)
+                {
+                    changed = true;
+                    conditions.Add(newInner);
+                }
+                else
+                {
+                    conditions.Add(toTransformInner);
+                }
+            }
+
+            if (conditions.Count == 0)
+            {
+                return new BooleanTrueExpression();
+            }
+            else if (conditions.Count == 1)
+            {
+                return conditions[0];
+            }
+            else if (changed)
+            {
+                return new ConjunctionExpression(conditions);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
         /// Process the <see cref="ComparisonExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -363,8 +479,17 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override ISparqlExpression Transform(ComparisonExpression toTransform, T data)
         {
-            // TODO: Optimizations
-            return toTransform;
+            var newLeft = TransformSparqlExpression(toTransform.LeftOperand, data);
+            var newRight = TransformSparqlExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new ComparisonExpression(newLeft, newRight, toTransform.ComparisonType);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
 
         /// <summary>
@@ -376,6 +501,58 @@ namespace Slp.Evi.Storage.Sparql.Utils
         protected override ISparqlExpression Transform(NodeExpression toTransform, T data)
         {
             return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="DisjunctionExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(DisjunctionExpression toTransform, T data)
+        {
+            var conditions = new List<ISparqlCondition>();
+            var changed = false;
+
+            foreach (var toTransformInner in toTransform.Operands)
+            {
+                var newInner = TransformSparqlCondition(toTransformInner, data);
+
+                if (newInner is BooleanFalseExpression)
+                {
+                    changed = true;
+                }
+                else if (newInner is BooleanTrueExpression)
+                {
+                    return newInner;
+                }
+                else if (newInner != toTransformInner)
+                {
+                    changed = true;
+                    conditions.Add(newInner);
+                }
+                else
+                {
+                    conditions.Add(toTransformInner);
+                }
+            }
+
+            if (conditions.Count == 0)
+            {
+                return new BooleanFalseExpression();
+            }
+            else if (conditions.Count == 1)
+            {
+                return conditions[0];
+            }
+            else if (changed)
+            {
+                return new DisjunctionExpression(conditions);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
     }
 }

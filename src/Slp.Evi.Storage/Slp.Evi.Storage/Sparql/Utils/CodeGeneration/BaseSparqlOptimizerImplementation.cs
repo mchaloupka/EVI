@@ -50,6 +50,28 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="BooleanTrueExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(BooleanTrueExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="BooleanFalseExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(BooleanFalseExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="NegationExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -72,6 +94,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="ConjunctionExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(ConjunctionExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="ComparisonExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -89,6 +122,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override ISparqlExpression Transform(NodeExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="DisjunctionExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(DisjunctionExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }
