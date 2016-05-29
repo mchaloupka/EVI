@@ -45,6 +45,9 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization
             var tableInfo = new DatabaseTable();
             tableInfo.AddColumn("col1", DbType.String);
             tableInfo.AddColumn("col2", DbType.String);
+            tableInfo.AddColumn("col3", DbType.String);
+            tableInfo.AddColumn("col4", DbType.String);
+            tableInfo.AddColumn("col5", DbType.String);
 
             schemaProvider.AddDatabaseTableInfo(DummyTableName, tableInfo);
             return schemaProvider;

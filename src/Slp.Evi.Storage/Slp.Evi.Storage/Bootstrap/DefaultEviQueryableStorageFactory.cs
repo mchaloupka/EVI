@@ -75,6 +75,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         public virtual IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
         {
+            yield return new CaseExpressionToConditionOptimizer();
             yield return new ConcatenationInEqualConditionOptimizer();
             yield return new ConstantExpressionEqualityOptimizer();
             yield return new IsNullOptimizer();

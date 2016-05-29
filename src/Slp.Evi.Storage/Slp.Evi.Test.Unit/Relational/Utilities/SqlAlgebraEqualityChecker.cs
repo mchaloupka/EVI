@@ -68,7 +68,45 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
 
         public object Visit(DisjunctionCondition condition, object data)
         {
-            throw new NotImplementedException();
+            if (!(data is DisjunctionCondition))
+            {
+                return false;
+            }
+
+            var actual = (DisjunctionCondition)data;
+
+            List<IFilterCondition> leftConditions = condition.InnerConditions.ToList();
+            List<IFilterCondition> rightConditions = actual.InnerConditions.ToList();
+
+            if (leftConditions.Count != rightConditions.Count)
+                return false;
+
+            int matched = 0;
+
+            for (int l = 0; l < leftConditions.Count; l++)
+            {
+                var lCond = leftConditions[l];
+
+                for (int r = 0; r < rightConditions.Count; r++)
+                {
+                    var rCond = rightConditions[r];
+
+                    if ((bool)lCond.Accept(this, rCond))
+                    {
+                        matched++;
+                        break;
+                    }
+                }
+            }
+
+            if (matched != leftConditions.Count)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public object Visit(ComparisonCondition comparisonCondition, object data)
