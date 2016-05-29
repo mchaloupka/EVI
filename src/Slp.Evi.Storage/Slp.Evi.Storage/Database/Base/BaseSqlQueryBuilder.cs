@@ -348,7 +348,7 @@ namespace Slp.Evi.Storage.Database.Base
             if (leftDataType.TypeName == rightDataType.TypeName)
             {
                 writeLeft();
-                writeText("=");
+                WriteComparisonOperator(writeText, comparisonType);
                 writeRight();
             }
             else
@@ -357,33 +357,43 @@ namespace Slp.Evi.Storage.Database.Base
                 writeLeft();
                 writeText(" AS nvarchar(MAX))");
 
-                switch (comparisonType)
-                {
-                    case ComparisonTypes.GreaterThan:
-                        writeText(">");
-                        break;
-                    case ComparisonTypes.GreaterOrEqualThan:
-                        writeText(">=");
-                        break;
-                    case ComparisonTypes.LessThan:
-                        writeText("<");
-                        break;
-                    case ComparisonTypes.LessOrEqualThan:
-                        writeText("<=");
-                        break;
-                    case ComparisonTypes.EqualTo:
-                        writeText("=");
-                        break;
-                    case ComparisonTypes.NotEqualTo:
-                        writeText("<>");
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                WriteComparisonOperator(writeText, comparisonType);
 
                 writeText("CAST(");
                 writeRight();
                 writeText(" AS nvarchar(MAX))");
+            }
+        }
+
+        /// <summary>
+        /// Writes the comparison operator.
+        /// </summary>
+        /// <param name="writeText">The write text action.</param>
+        /// <param name="comparisonType">Type of the comparison.</param>
+        protected virtual void WriteComparisonOperator(Action<string> writeText, ComparisonTypes comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case ComparisonTypes.GreaterThan:
+                    writeText(">");
+                    break;
+                case ComparisonTypes.GreaterOrEqualThan:
+                    writeText(">=");
+                    break;
+                case ComparisonTypes.LessThan:
+                    writeText("<");
+                    break;
+                case ComparisonTypes.LessOrEqualThan:
+                    writeText("<=");
+                    break;
+                case ComparisonTypes.EqualTo:
+                    writeText("=");
+                    break;
+                case ComparisonTypes.NotEqualTo:
+                    writeText("<>");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
