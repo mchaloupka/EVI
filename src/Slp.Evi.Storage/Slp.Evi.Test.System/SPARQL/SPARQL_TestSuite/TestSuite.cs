@@ -106,11 +106,71 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Simple_Filter_comparison_greater()
+        public void Simple_Filter_comparison_gt()
         {
             var storage = GetStorage("simple.xml");
-            var queryFile = @"Data\Simple\Filter\comparison_greater.rq";
-            var resultFile = @"Data\Simple\Filter\comparison_greater.srx";
+            var queryFile = @"Data\Simple\Filter\comparison_gt.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_gt.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_ge()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_ge.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_ge.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_lt()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_lt.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_lt.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_le()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_le.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_le.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_eq()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_eq.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_eq.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Filter_comparison_neq()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Filter\comparison_neq.rq";
+            var resultFile = @"Data\Simple\Filter\comparison_neq.srx";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);

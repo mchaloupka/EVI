@@ -24,7 +24,12 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
 <# BagEqualTest("simple.xml", @"Simple\Filter", "bound"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "not_bound"); #>
-<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_greater"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_gt"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_ge"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_lt"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_le"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_eq"); #>
+<# BagEqualTest("simple.xml", @"Simple\Filter", "comparison_neq"); #>
 
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
