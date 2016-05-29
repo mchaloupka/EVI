@@ -233,6 +233,41 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.GreaterThan);
             }
+            else if (expression is GreaterThanOrEqualToExpression)
+            {
+                var comparison = (GreaterThanOrEqualToExpression)expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.GreaterOrEqualThan);
+            }
+            else if (expression is LessThanExpression)
+            {
+                var comparison = (LessThanExpression)expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.LessThan);
+            }
+            else if (expression is LessThanOrEqualToExpression)
+            {
+                var comparison = (LessThanOrEqualToExpression)expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.LessOrEqualThan);
+            }
+            else if (expression is EqualsExpression)
+            {
+                var comparison = (EqualsExpression)expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.EqualTo);
+            }
+            else if (expression is NotEqualsExpression)
+            {
+                var comparison = (NotEqualsExpression)expression;
+                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                return new ComparisonExpression(left, right, ComparisonTypes.NotEqualTo);
+            }
             else if (expression is VariableTerm)
             {
                 var term = (VariableTerm) expression;
