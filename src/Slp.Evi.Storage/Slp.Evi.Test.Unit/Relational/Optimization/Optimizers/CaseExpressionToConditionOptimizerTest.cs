@@ -71,7 +71,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
                 }),
                 new ConjunctionCondition(new IFilterCondition[]
                 {
-                    cond1,
+                    cond2,
                     new ComparisonCondition(left2, right, condition.ComparisonType)
                 })
             });
@@ -113,7 +113,7 @@ namespace Slp.Evi.Test.Unit.Relational.Optimization.Optimizers
                 }),
                 new ConjunctionCondition(new IFilterCondition[]
                 {
-                    cond1,
+                    cond2,
                     new ComparisonCondition(left, right2, condition.ComparisonType)
                 })
             });
