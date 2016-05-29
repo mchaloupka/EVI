@@ -9,11 +9,6 @@
   <results>
     <result>
       <binding name="a">
-        <uri>http://example.org/ns#a</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name="a">
         <uri>http://example.org/ns#b</uri>
       </binding>
     </result>
