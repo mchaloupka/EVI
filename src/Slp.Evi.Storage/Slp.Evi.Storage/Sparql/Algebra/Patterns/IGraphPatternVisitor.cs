@@ -87,5 +87,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(RestrictedTriplePattern restrictedTriplePattern, object data);
+
+        /// <summary>
+        /// Visits <see cref="ExtendPattern"/>
+        /// </summary>
+        /// <param name="extendPattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(ExtendPattern extendPattern, object data);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
 
@@ -32,6 +33,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         {
             CalculusVariable = calculusVariable;
             IsUri = isUri;
+            UsedCalculusVariables = new[] {CalculusVariable};
         }
 
         /// <summary>
@@ -53,5 +55,11 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         {
             get { return CalculusVariable.SqlType; }
         }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

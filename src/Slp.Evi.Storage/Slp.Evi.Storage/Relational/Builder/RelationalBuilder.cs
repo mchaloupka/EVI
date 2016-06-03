@@ -355,6 +355,35 @@ namespace Slp.Evi.Storage.Relational.Builder
                     conditions),
                 valueBinders));
         }
+
+        /// <summary>
+        /// Visits <see cref="ExtendPattern"/>
+        /// </summary>
+        /// <param name="extendPattern">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ExtendPattern extendPattern, object data)
+        {
+            var context = (QueryContext)data;
+            var inner = Process(extendPattern.InnerAlgebra, context);
+            var model = inner.Model;
+            var valueBinders = inner.ValueBinders.ToList();
+
+            var expression = (IExpression)extendPattern.Expression.Accept(this, new ExpressionVisitParameter(context, valueBinders));
+
+            if (valueBinders.Any(x => x.VariableName == extendPattern.VariableName))
+            {
+                throw new InvalidOperationException("Tried to extend an already existing variable");
+            }
+            else
+            {
+                var newValueBinder = new ExpressionValueBinder(extendPattern.VariableName, expression);
+                valueBinders.Add(newValueBinder);
+
+                return ((QueryContext) data).Optimizers.Optimize(new RelationalQuery(model, valueBinders));
+            }
+        }
+
         #endregion
 
         #region ModifierVisitor

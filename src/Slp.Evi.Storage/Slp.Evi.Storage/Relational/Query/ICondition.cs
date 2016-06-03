@@ -42,6 +42,10 @@ namespace Slp.Evi.Storage.Relational.Query
     public interface IFilterCondition
         : ICondition, IVisitable<IFilterConditionVisitor>
     {
-        
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

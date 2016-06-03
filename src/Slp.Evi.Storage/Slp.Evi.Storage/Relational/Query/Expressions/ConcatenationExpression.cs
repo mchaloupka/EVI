@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.Evi.Storage.Relational.Query.Expressions
@@ -24,6 +25,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         {
             _expressions = innerExpressions;
             SqlType = sqlTypeForString;
+            UsedCalculusVariables = _expressions.SelectMany(x => x.UsedCalculusVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -50,5 +52,11 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; private set; }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

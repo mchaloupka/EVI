@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
@@ -85,6 +86,15 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         public object Accept(IExpressionVisitor visitor, object data)
         {
             return visitor.Visit(this, data);
+        }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables
+        {
+            get { yield break; }
         }
     }
 }

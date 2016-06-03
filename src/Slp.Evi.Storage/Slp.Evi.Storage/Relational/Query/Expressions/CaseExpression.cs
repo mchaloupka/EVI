@@ -20,15 +20,19 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="statements">The statements.</param>
         public CaseExpression(IEnumerable<Statement> statements)
         {
-            this.Statements = statements;
-            this.SqlType = statements.First().Expression.SqlType; // TODO: Better find SQL type
+            Statements = statements.ToArray();
+            SqlType = Statements.First().Expression.SqlType; // TODO: Better find SQL type
+            UsedCalculusVariables =
+                Statements.SelectMany(x => x.Expression.UsedCalculusVariables.Union(x.Condition.UsedCalculusVariables))
+                    .Distinct()
+                    .ToArray();
         }
 
         /// <summary>
         /// Gets the statements.
         /// </summary>
         /// <value>The statements.</value>
-        public IEnumerable<Statement> Statements { get; private set; }
+        public IEnumerable<Statement> Statements { get; }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -46,6 +50,12 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
 
         /// <summary>
         /// Statement in the case expression
@@ -67,13 +77,13 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
             /// Gets the condition.
             /// </summary>
             /// <value>The condition.</value>
-            public IFilterCondition Condition { get; private set; }
+            public IFilterCondition Condition { get; }
 
             /// <summary>
             /// Gets the expression.
             /// </summary>
             /// <value>The expression.</value>
-            public IExpression Expression { get; private set; }
+            public IExpression Expression { get; }
         }
     }
 }

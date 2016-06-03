@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
 {
@@ -15,7 +16,8 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// <param name="conditions">The inner conditions.</param>
         public ConjunctionCondition(IEnumerable<IFilterCondition> conditions)
         {
-            this.InnerConditions = conditions;
+            InnerConditions = conditions.ToArray();
+            UsedCalculusVariables = InnerConditions.SelectMany(x => x.UsedCalculusVariables).Distinct().ToList();
         }
 
         /// <summary>
@@ -35,5 +37,11 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// </summary>
         /// <value>The inner conditions.</value>
         public IEnumerable<IFilterCondition> InnerConditions { get; private set; }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

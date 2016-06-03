@@ -156,6 +156,11 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
             return true;
         }
 
+        protected override bool Transform(ExtendPattern toTransform, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         private bool BagCollectionEqual<T>(IEnumerable<T> leftItemsCollection, IEnumerable<T> rightItemsCollection, Func<T, T, bool> compareFunc)
         {
             var leftItems = leftItemsCollection.ToList();

@@ -149,6 +149,23 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 return context.Optimizers.Optimize(new FilterPattern(inner, innerExpression));
             }
+            else if (originalAlgebra is Join)
+            {
+                var join = (Join) originalAlgebra;
+                var left = (IGraphPattern) ProcessAlgebra(join.Lhs, context);
+                var right = (IGraphPattern) ProcessAlgebra(join.Rhs, context);
+
+                return context.Optimizers.Optimize(new JoinPattern(new IGraphPattern[] {left, right}));
+            }
+            else if (originalAlgebra is Extend)
+            {
+                var extend = (Extend) originalAlgebra;
+                var inner = (IGraphPattern) ProcessAlgebra(extend.InnerAlgebra, context);
+
+                var expression = ProcessExpression(extend.AssignExpression, context);
+
+                return context.Optimizers.Optimize(new ExtendPattern(inner, extend.VariableName, expression));
+            }
 
             throw new NotImplementedException();
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 
 namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
@@ -39,6 +41,8 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
             LeftOperand = leftOperand;
             RightOperand = rightOperand;
             ComparisonType = comparisonType;
+            UsedCalculusVariables =
+                leftOperand.UsedCalculusVariables.Union(rightOperand.UsedCalculusVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -52,5 +56,11 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

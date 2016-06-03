@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
 {
@@ -14,7 +15,8 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// <param name="calculusVariable">The calculus variable.</param>
         public IsNullCondition(ICalculusVariable calculusVariable)
         {
-            this.Variable = calculusVariable;
+            Variable = calculusVariable;
+            UsedCalculusVariables = new ICalculusVariable[] {Variable};
         }
 
         /// <summary>
@@ -34,5 +36,11 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }
