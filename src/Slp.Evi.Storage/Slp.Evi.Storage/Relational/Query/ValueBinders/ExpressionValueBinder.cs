@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query.Utils;
 using VDS.RDF;
 
 namespace Slp.Evi.Storage.Relational.Query.ValueBinders
@@ -49,7 +50,10 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="context">The context.</param>
         public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
         {
-            throw new NotImplementedException();
+            // TODO: Correct type
+            var staticEvaluator = new StaticEvaluator();
+            var result = staticEvaluator.Evaluate(Expression, rowData, context);
+            return nodeFactory.CreateLiteralNode(result.ToString());
         }
 
         /// <summary>

@@ -133,6 +133,7 @@
     <Compile Include="Relational\Query\Conditions\Filter\ComparisonCondition.cs" />
     <Compile Include="Relational\Query\Expressions\CaseExpression.cs" />
     <Compile Include="Relational\Query\Expressions\CoalesceExpression.cs" />
+    <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
     <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">

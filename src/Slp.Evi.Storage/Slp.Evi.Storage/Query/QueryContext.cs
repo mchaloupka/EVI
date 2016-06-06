@@ -30,11 +30,6 @@ namespace Slp.Evi.Storage.Query
         private readonly HashSet<string> _usedVariables;
 
         /// <summary>
-        /// The query naming helpers
-        /// </summary>
-        private readonly QueryNamingHelpers _queryNamingHelpers;
-
-        /// <summary>
         /// The optimizers
         /// </summary>
         private readonly Optimizers _optimizers;
@@ -59,7 +54,7 @@ namespace Slp.Evi.Storage.Query
             _blankNodesSubjects = new Dictionary<string, INode>();
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
-            _queryNamingHelpers = new QueryNamingHelpers(this);
+            QueryNamingHelpers = new QueryNamingHelpers(this);
             _optimizers = new Optimizers(factory, this);
         }
 
@@ -103,10 +98,7 @@ namespace Slp.Evi.Storage.Query
         /// Gets the query naming helpers.
         /// </summary>
         /// <value>The query naming helpers.</value>
-        public QueryNamingHelpers QueryNamingHelpers
-        {
-            get { return _queryNamingHelpers; }
-        }
+        public QueryNamingHelpers QueryNamingHelpers { get; }
 
         /// <summary>
         /// The optimizers
