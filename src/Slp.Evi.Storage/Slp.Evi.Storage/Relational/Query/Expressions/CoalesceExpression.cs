@@ -20,8 +20,9 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="innerExpressions">The inner expressions.</param>
         public CoalesceExpression(IEnumerable<IExpression> innerExpressions)
         {
-            this.InnerExpressions = innerExpressions.ToArray();
-            this.SqlType = innerExpressions.First().SqlType; // TODO: Better find SQL type
+            InnerExpressions = innerExpressions.ToArray();
+            SqlType = innerExpressions.First().SqlType; // TODO: Better find SQL type
+            UsedCalculusVariables = innerExpressions.SelectMany(x => x.UsedCalculusVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -46,5 +47,11 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; private set; }
+
+        /// <summary>
+        /// Gets the used calculus variables.
+        /// </summary>
+        /// <value>The used calculus variables.</value>
+        public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
     }
 }

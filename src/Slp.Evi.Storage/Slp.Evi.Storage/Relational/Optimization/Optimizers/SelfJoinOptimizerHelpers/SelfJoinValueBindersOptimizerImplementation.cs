@@ -2,6 +2,7 @@
 using System.Linq;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Relational.Utils.CodeGeneration;
 
 namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHelpers
 {
@@ -12,6 +13,20 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
         : IValueBinderVisitor
     {
         /// <summary>
+        /// The optimizer implementation
+        /// </summary>
+        private readonly BaseRelationalOptimizerImplementation<SelfJoinOptimizerData> _optimizerImplementation;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelfJoinValueBindersOptimizerImplementation"/> class.
+        /// </summary>
+        /// <param name="optimizerImplementation">The optimizer implementation.</param>
+        public SelfJoinValueBindersOptimizerImplementation(BaseRelationalOptimizerImplementation<SelfJoinOptimizerData> optimizerImplementation)
+        {
+            _optimizerImplementation = optimizerImplementation;
+        }
+
+        /// <summary>
         /// Visits <see cref="BaseValueBinder"/>
         /// </summary>
         /// <param name="baseValueBinder">The visited instance</param>
@@ -19,12 +34,12 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
         /// <returns>The returned data</returns>
         public object Visit(BaseValueBinder baseValueBinder, object data)
         {
-            var optimizerData = (SelfJoinOptimizerData) data;
+            var optimizerData = (BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext) data;
 
-            if (baseValueBinder.NeededCalculusVariables.Any(x => optimizerData.IsReplaced(x)))
+            if (baseValueBinder.NeededCalculusVariables.Any(x => optimizerData.Data.IsReplaced(x)))
             {
                 return new BaseValueBinder(baseValueBinder, 
-                    (x) => optimizerData.IsReplaced(x) ? optimizerData.GetReplacingVariable(x) : x);
+                    (x) => optimizerData.Data.IsReplaced(x) ? optimizerData.Data.GetReplacingVariable(x) : x);
             }
             else
             {
@@ -86,12 +101,12 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
         public object Visit(SwitchValueBinder switchValueBinder, object data)
         {
             var changed = false;
-            var optimizerData = (SelfJoinOptimizerData)data;
+            var optimizerData = (BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext)data;
 
             var caseVariable = switchValueBinder.CaseVariable;
-            if (optimizerData.IsReplaced(caseVariable))
+            if (optimizerData.Data.IsReplaced(caseVariable))
             {
-                caseVariable = optimizerData.GetReplacingVariable(caseVariable);
+                caseVariable = optimizerData.Data.GetReplacingVariable(caseVariable);
                 changed = true;
             }
 
@@ -116,6 +131,27 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers.SelfJoinOptimizerHe
             else
             {
                 return switchValueBinder;
+            }
+        }
+
+        /// <summary>
+        /// Visits <see cref="ExpressionValueBinder"/>
+        /// </summary>
+        /// <param name="expressionValueBinder">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(ExpressionValueBinder expressionValueBinder, object data)
+        {
+            var newExpression = _optimizerImplementation.TransformExpression(expressionValueBinder.Expression,
+                (BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext)data);
+
+            if (newExpression != expressionValueBinder.Expression)
+            {
+                return new ExpressionValueBinder(expressionValueBinder.VariableName, newExpression);
+            }
+            else
+            {
+                return expressionValueBinder;
             }
         }
     }

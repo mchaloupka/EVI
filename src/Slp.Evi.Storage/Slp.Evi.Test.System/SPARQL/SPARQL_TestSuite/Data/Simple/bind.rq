@@ -1,0 +1,7 @@
+PREFIX ex: <http://example.org/ns#>
+
+SELECT ?x ?y
+WHERE {
+  ex:a ?x ex:c .
+  BIND ("test" AS ?y)
+}

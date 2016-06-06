@@ -27,7 +27,7 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
             : base(new SelfJoinOptimizerImplementation())
         {
             _selfJoinConstraintsCalculator = new SelfJoinConstraintsCalculator();
-            _selfJoinValueBinderOptimizerImplementation = new SelfJoinValueBindersOptimizerImplementation();
+            _selfJoinValueBinderOptimizerImplementation = new SelfJoinValueBindersOptimizerImplementation(OptimizerImplementation);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Slp.Evi.Storage.Relational.Optimization.Optimizers
 
             foreach (var valueBinder in relationalQuery.ValueBinders)
             {
-                var transformed = (IValueBinder)valueBinder.Accept(_selfJoinValueBinderOptimizerImplementation, optimizationContext.Data);
+                var transformed = (IValueBinder)valueBinder.Accept(_selfJoinValueBinderOptimizerImplementation, optimizationContext);
 
                 if(transformed != valueBinder)
                 {

@@ -248,6 +248,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="ExtendPattern"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IGraphPattern Transform(ExtendPattern toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="SelectModifier"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

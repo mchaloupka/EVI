@@ -133,6 +133,8 @@
     <Compile Include="Relational\Query\Conditions\Filter\ComparisonCondition.cs" />
     <Compile Include="Relational\Query\Expressions\CaseExpression.cs" />
     <Compile Include="Relational\Query\Expressions\CoalesceExpression.cs" />
+    <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
+    <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
       <AutoGen>True</AutoGen>
@@ -207,6 +209,7 @@
     <Compile Include="Sparql\Algebra\Modifiers\IModifierVisitor.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\SelectModifier.cs" />
     <Compile Include="Sparql\Algebra\Patterns\EmptyPattern.cs" />
+    <Compile Include="Sparql\Algebra\Patterns\ExtendPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\FilterPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\GraphPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\IGraphPatternVisitor.cs" />
