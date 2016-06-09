@@ -1,5 +1,6 @@
 ﻿using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping
@@ -7,7 +8,7 @@ namespace Slp.Evi.Storage.Mapping
     /// <summary>
     /// Processor for R2RML mapping
     /// </summary>
-    public class MappingProcessor
+    public class MappingProcessor : IMappingProcessor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingProcessor"/> class.
@@ -32,15 +33,11 @@ namespace Slp.Evi.Storage.Mapping
         public R2RMLCache Cache { get; private set; }
 
         /// <summary>
-        /// Processes the SPARQL algebra.
+        /// Gets the mapping transformer.
         /// </summary>
-        /// <param name="graphPattern">The SPARQL algebra.</param>
-        /// <param name="context">The query context.</param>
-        /// <returns>The processed SPARQL algebra.</returns>
-        public IGraphPattern ProcessPattern(IGraphPattern graphPattern, QueryContext context)
+        public ISparqlPostProcess GetMappingTransformer()
         {
-            var transformer = new MappingTransformer(this);
-            return transformer.TransformGraphPattern(graphPattern, context);
+            return new MappingTransformer(this);
         }
     }
 }

@@ -114,24 +114,24 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 if (!orSel.IsSelectAll)
                 {
-                    return context.Optimizers.Optimize(new SelectModifier(innerAlgebra, orSel.SparqlVariables.Select(x => x.Name).ToList()));
+                    return new SelectModifier(innerAlgebra, orSel.SparqlVariables.Select(x => x.Name).ToList());
                 }
                 else
                 {
-                    return context.Optimizers.Optimize(new SelectModifier(innerAlgebra, innerAlgebra.Variables));
+                    return new SelectModifier(innerAlgebra, innerAlgebra.Variables);
                 }
             }
             else if (originalAlgebra is IBgp)
             {
                 var orBgp = (IBgp)originalAlgebra;
-                return context.Optimizers.Optimize(ProcessTriplePatterns(orBgp.TriplePatterns, context));
+                return ProcessTriplePatterns(orBgp.TriplePatterns, context);
             }
             else if (originalAlgebra is Union)
             {
                 var orUnion = (Union)originalAlgebra;
                 var left = (IGraphPattern)ProcessAlgebra(orUnion.Lhs, context);
                 var right = (IGraphPattern)ProcessAlgebra(orUnion.Rhs, context);
-                return context.Optimizers.Optimize(new UnionPattern(new IGraphPattern[] { left, right }));
+                return new UnionPattern(new IGraphPattern[] { left, right });
             }
             else if (originalAlgebra is LeftJoin)
             {
@@ -139,7 +139,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var left = (IGraphPattern)ProcessAlgebra(leftJoin.Lhs, context);
                 var right = (IGraphPattern) ProcessAlgebra(leftJoin.Rhs, context);
 
-                return context.Optimizers.Optimize(new LeftJoinPattern(left, right));
+                return new LeftJoinPattern(left, right);
             }
             else if (originalAlgebra is Filter)
             {
@@ -147,7 +147,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var inner = (IGraphPattern) ProcessAlgebra(filter.InnerAlgebra, context);
                 var innerExpression = ProcessCondition(filter.SparqlFilter.Expression, context);
 
-                return context.Optimizers.Optimize(new FilterPattern(inner, innerExpression));
+                return new FilterPattern(inner, innerExpression);
             }
             else if (originalAlgebra is Join)
             {
@@ -155,7 +155,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var left = (IGraphPattern) ProcessAlgebra(join.Lhs, context);
                 var right = (IGraphPattern) ProcessAlgebra(join.Rhs, context);
 
-                return context.Optimizers.Optimize(new JoinPattern(new IGraphPattern[] {left, right}));
+                return new JoinPattern(new IGraphPattern[] {left, right});
             }
             else if (originalAlgebra is Extend)
             {
@@ -164,7 +164,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 var expression = ProcessExpression(extend.AssignExpression, context);
 
-                return context.Optimizers.Optimize(new ExtendPattern(inner, extend.VariableName, expression));
+                return new ExtendPattern(inner, extend.VariableName, expression);
             }
 
             throw new NotImplementedException();
@@ -349,7 +349,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             //    //SubQueryPattern
             //    //TriplePattern
 
-            return context.Mapping.ProcessPattern(currentQuery, context);
+            return currentQuery;
         }
     }
 }

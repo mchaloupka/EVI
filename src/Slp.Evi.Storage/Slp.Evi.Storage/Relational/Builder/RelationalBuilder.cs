@@ -73,7 +73,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(EmptyPattern emptyPattern, object data)
         {
-            return ((QueryContext) data).Optimizers.Optimize(new RelationalQuery(
+            return ((QueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] {},
                     new ICondition[] {}),
@@ -100,7 +100,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             var model = new CalculusModel(inner.Model.Variables, conditions);
             var query = new RelationalQuery(model, inner.ValueBinders);
 
-            return ((QueryContext) data).Optimizers.Optimize(query);
+            return ((QueryContext) data).QueryPostProcesses.PostProcess(query);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(NotMatchingPattern notMatchingPattern, object data)
         {
-            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(
+            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] { },
                     new ICondition[] { new AlwaysFalseCondition() }),
@@ -170,7 +170,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
             var calculusModel = new CalculusModel(neededVariables, conditions);
 
-            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(calculusModel, finalValueBinders));
+            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(calculusModel, finalValueBinders));
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             variables.AddRange(rightQuery.Model.Variables);
 
             var model = new CalculusModel(variables, conditions);
-            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(model, valueBinders.Values.ToList()));
+            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders.Values.ToList()));
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             conditions.Add(new TupleFromSourceCondition(source.Variables, source));
 
-            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(
+            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     valueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct(),
                     conditions),
@@ -380,7 +380,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var newValueBinder = new ExpressionValueBinder(extendPattern.VariableName, expression);
                 valueBinders.Add(newValueBinder);
 
-                return ((QueryContext) data).Optimizers.Optimize(new RelationalQuery(model, valueBinders));
+                return ((QueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders));
             }
         }
 
@@ -410,7 +410,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                     : new EmptyValueBinder(variable));
             }
 
-            return ((QueryContext)data).Optimizers.Optimize(new RelationalQuery(inner.Model, valueBinders));
+            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(inner.Model, valueBinders));
         }
         #endregion
 

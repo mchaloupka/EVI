@@ -4,9 +4,9 @@ using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder;
-using Slp.Evi.Storage.Relational.Optimization;
+using Slp.Evi.Storage.Relational.PostProcess;
 using Slp.Evi.Storage.Sparql.Builder;
-using Slp.Evi.Storage.Sparql.Optimization;
+using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -29,7 +29,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// Creates the mapping processor.
         /// </summary>
         /// <param name="mapping">The R2MRML mapping.</param>
-        MappingProcessor CreateMappingProcessor(IR2RML mapping);
+        IMappingProcessor CreateMappingProcessor(IR2RML mapping);
 
         /// <summary>
         /// Creates the sparql algebra builder.
@@ -44,7 +44,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory);
+        QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory);
 
         /// <summary>
         /// Creates the relational builder.
@@ -53,13 +53,14 @@ namespace Slp.Evi.Storage.Bootstrap
         RelationalBuilder CreateRelationalBuilder();
 
         /// <summary>
-        /// Gets the relational optimizers.
+        /// Gets the relational post processes.
         /// </summary>
-        IEnumerable<IRelationalOptimizer> GetRelationalOptimizers();
+        IEnumerable<IRelationalPostProcess> GetRelationalPostProcesses();
 
         /// <summary>
-        /// Gets the SPARQL optimizers.
+        /// Gets the SPARQL post processes.
         /// </summary>
-        IEnumerable<ISparqlOptimizer> GetSparqlOptimizers();
+        /// <param name="mapping">Used mapping processor</param>
+        IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping);
     }
 }

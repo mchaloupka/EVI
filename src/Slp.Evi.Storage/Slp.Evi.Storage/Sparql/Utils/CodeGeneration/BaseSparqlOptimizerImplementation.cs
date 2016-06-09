@@ -5,7 +5,7 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
-using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 
 namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
 {

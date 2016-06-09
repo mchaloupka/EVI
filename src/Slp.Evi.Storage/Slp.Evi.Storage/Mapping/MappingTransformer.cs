@@ -3,6 +3,7 @@ using System.Linq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.PostProcess;
 using Slp.Evi.Storage.Sparql.Utils;
 using TCode.r2rml4net.Mapping;
 
@@ -12,8 +13,18 @@ namespace Slp.Evi.Storage.Mapping
     /// Mapping transformer
     /// </summary>
     public class MappingTransformer
-        : BaseSparqlTransformer<QueryContext>
+        : BaseSparqlTransformer<QueryContext>, ISparqlPostProcess
     {
+        /// <summary>
+        /// Processes the specified query.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <param name="context">The context.</param>
+        public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
+        {
+            return TransformSparqlQuery(query, context);
+        }
+
         /// <summary>
         /// The mapping processor
         /// </summary>

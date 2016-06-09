@@ -92,29 +92,30 @@
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
     <Compile Include="Mapping\ClassPredicateMap.cs" />
+    <Compile Include="Mapping\IMappingProcessor.cs" />
     <Compile Include="Mapping\MappingProcessor.cs" />
     <Compile Include="Mapping\MappingTransformer.cs" />
     <Compile Include="Mapping\R2RMLCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\Optimizers.cs" />
+    <Compile Include="Query\QueryPostProcesses.cs" />
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="EviQueryableStorage.cs" />
     <Compile Include="Relational\Builder\ExpressionVisitParameter.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\BaseRelationalOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\CaseExpressionToConditionOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullCalculator.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAggregatedValues.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAnalyzeResult.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SatisfactionMap.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsCalculator.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsSatisfaction.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinOptimizerData.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\SelfJoinValueBindersOptimizerImplementation.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\SelfJoinOptimizerHelpers\UniqueConstraint.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\BaseRelationalOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\CaseExpressionToConditionOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\IsNullOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\IsNullOptimizerHelpers\IsNullCalculator.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAggregatedValues.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\IsNullOptimizerHelpers\IsNullOptimizerAnalyzeResult.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\SatisfactionMap.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsCalculator.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\SelfJoinConstraintsSatisfaction.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\SelfJoinOptimizerData.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\SelfJoinValueBindersOptimizerImplementation.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\SelfJoinOptimizerHelpers\UniqueConstraint.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignedVariable.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\AssignmentFromExpressionCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Assignment\IAssignmentConditionVisitor.cs" />
@@ -141,8 +142,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
     </Compile>
-    <Compile Include="Relational\Optimization\IRelationalOptimizer.cs" />
-    <Compile Include="Relational\Optimization\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
+    <Compile Include="Relational\PostProcess\IRelationalPostProcess.cs" />
+    <Compile Include="Relational\PostProcess\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
     <Compile Include="Relational\Builder\ConditionBuilder.cs" />
     <Compile Include="Relational\Query\Conditions\IConditionVisitor.cs" />
@@ -222,11 +223,11 @@
     <Compile Include="Sparql\Algebra\Patterns\UnionPattern.cs" />
     <Compile Include="Query\QueryContext.cs" />
     <Compile Include="Sparql\Builder\SparqlBuilder.cs" />
-    <Compile Include="Sparql\Optimization\ISparqlOptimizer.cs" />
-    <Compile Include="Sparql\Optimization\Optimizers\BaseSparqlOptimizer.cs" />
-    <Compile Include="Sparql\Optimization\Optimizers\TriplePatternOptimizer.cs" />
-    <Compile Include="Sparql\Optimization\Optimizers\UnionJoinOptimizer.cs" />
-    <Compile Include="Sparql\SafeAlgebra\RemoveNestedOptionals.cs" />
+    <Compile Include="Sparql\PostProcess\ISparqlPostProcess.cs" />
+    <Compile Include="Sparql\PostProcess\Optimizers\BaseSparqlOptimizer.cs" />
+    <Compile Include="Sparql\PostProcess\Optimizers\TriplePatternOptimizer.cs" />
+    <Compile Include="Sparql\PostProcess\Optimizers\UnionJoinOptimizer.cs" />
+    <Compile Include="Sparql\PostProcess\SafeAlgebra\RemoveNestedOptionals.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
       <AutoGen>True</AutoGen>
@@ -295,7 +296,7 @@
   <ItemGroup>
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+      <LastGenOutput>BaseRelationalOptimizerImplementation1.cs</LastGenOutput>
     </Content>
     <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -306,9 +307,7 @@
       <LastGenOutput>BaseSparqlOptimizerImplementation.cs</LastGenOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mapping\Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

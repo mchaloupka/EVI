@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 

@@ -30,9 +30,9 @@ namespace Slp.Evi.Storage.Query
         private readonly HashSet<string> _usedVariables;
 
         /// <summary>
-        /// The optimizers
+        /// The post processes
         /// </summary>
-        private readonly Optimizers _optimizers;
+        private readonly QueryPostProcesses _queryPostProcesses;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext" /> class.
@@ -43,7 +43,7 @@ namespace Slp.Evi.Storage.Query
         /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="factory">The storage factory</param>
-        public QueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory)
+        public QueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory)
         {
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();
@@ -55,7 +55,7 @@ namespace Slp.Evi.Storage.Query
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
-            _optimizers = new Optimizers(factory, this);
+            _queryPostProcesses = new QueryPostProcesses(factory, this);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Slp.Evi.Storage.Query
         /// Gets the mapping.
         /// </summary>
         /// <value>The mapping.</value>
-        public MappingProcessor Mapping { get; private set; }
+        public IMappingProcessor Mapping { get; private set; }
 
         /// <summary>
         /// Gets the node factory.
@@ -103,9 +103,9 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The optimizers
         /// </summary>
-        public Optimizers Optimizers
+        public QueryPostProcesses QueryPostProcesses
         {
-            get { return _optimizers; }
+            get { return _queryPostProcesses; }
         }
 
         /// <summary>

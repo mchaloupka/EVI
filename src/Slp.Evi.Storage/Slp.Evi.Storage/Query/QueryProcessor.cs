@@ -25,7 +25,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The mapping processor
         /// </summary>
-        private readonly MappingProcessor _mapping;
+        private readonly IMappingProcessor _mapping;
 
         /// <summary>
         /// The database
@@ -384,24 +384,13 @@ namespace Slp.Evi.Storage.Query
         /// <returns>The SQL algebra.</returns>
         private RelationalQuery GenerateSqlAlgebra(QueryContext context)
         {
+            // Generate initial algebra
             var algebra = _sparqlBuilder.Process(context);
 
-            // TODO: Transform graph and from statements
-
-            // TODO: Convert to safe form
+            // The SPARQL is not processed on the fly, it is processed as whole on the end
+            algebra = context.QueryPostProcesses.PostProcess(algebra);
 
             var relationalAlgebra = _relationalBuilder.Process(algebra, context);
-
-            //// Transform to SQL algebra
-            //var sqlAlgebra = _sqlAlgebraBuilder.Process(algebra, context);
-
-            //// Optimize sql algebra
-            //foreach (var optimizer in _sqlOptimizers)
-            //{
-            //    sqlAlgebra = optimizer.ProcessAlgebra(sqlAlgebra, context);
-            //}
-
-            //return sqlAlgebra;
 
             return relationalAlgebra;
         }

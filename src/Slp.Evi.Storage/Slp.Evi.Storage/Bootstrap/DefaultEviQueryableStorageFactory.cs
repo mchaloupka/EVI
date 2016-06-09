@@ -4,11 +4,11 @@ using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder;
-using Slp.Evi.Storage.Relational.Optimization;
-using Slp.Evi.Storage.Relational.Optimization.Optimizers;
+using Slp.Evi.Storage.Relational.PostProcess;
+using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Sparql.Builder;
-using Slp.Evi.Storage.Sparql.Optimization;
-using Slp.Evi.Storage.Sparql.Optimization.Optimizers;
+using Slp.Evi.Storage.Sparql.PostProcess;
+using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -35,7 +35,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// Creates the mapping processor.
         /// </summary>
         /// <param name="mapping">The mapping.</param>
-        public virtual MappingProcessor CreateMappingProcessor(IR2RML mapping)
+        public virtual IMappingProcessor CreateMappingProcessor(IR2RML mapping)
         {
             return new MappingProcessor(mapping);
         }
@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, MappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
+        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
         {
             return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this);
         }
@@ -73,7 +73,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <summary>
         /// Gets the relational optimizers.
         /// </summary>
-        public virtual IEnumerable<IRelationalOptimizer> GetRelationalOptimizers()
+        public virtual IEnumerable<IRelationalPostProcess> GetRelationalPostProcesses()
         {
             yield return new CaseExpressionToConditionOptimizer();
             yield return new ConcatenationInEqualConditionOptimizer();
@@ -85,8 +85,10 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <summary>
         /// Gets the SPARQL optimizers.
         /// </summary>
-        public IEnumerable<ISparqlOptimizer> GetSparqlOptimizers()
+        /// <param name="mapping">Used mapping processor</param>
+        public IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping)
         {
+            yield return mapping.GetMappingTransformer();
             yield return new TriplePatternOptimizer();
             yield return new UnionJoinOptimizer();
         }
