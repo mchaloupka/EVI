@@ -108,6 +108,12 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             }
         }
 
+        /// <summary>
+        /// Process the <see cref="LeftJoinPattern"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(LeftJoinPattern toTransform, bool data)
         {
             if (data)
@@ -130,16 +136,34 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             }
         }
 
+        /// <summary>
+        /// Process the <see cref="ExtendPattern"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(ExtendPattern toTransform, bool data)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Process the <see cref="MinusPattern"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(MinusPattern toTransform, bool data)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Process the <see cref="UnionPattern"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(UnionPattern toTransform, bool data)
         {
             throw new NotImplementedException();
