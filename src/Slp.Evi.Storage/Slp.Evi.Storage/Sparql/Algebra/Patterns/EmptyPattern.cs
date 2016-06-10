@@ -13,10 +13,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables
-        {
-            get { return new string[] { }; }
-        }
+        public IEnumerable<string> Variables => new string[] { };
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -29,5 +26,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        public IEnumerable<string> AlwaysBoundVariables => new string[] { };
     }
 }

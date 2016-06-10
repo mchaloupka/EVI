@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
@@ -13,7 +14,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get { return new string[] { }; } }
+        public IEnumerable<string> Variables => new string[] { };
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -26,5 +27,11 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        /// <value>The always bound variables.</value>
+        public IEnumerable<string> AlwaysBoundVariables => new string[] { };
     }
 }

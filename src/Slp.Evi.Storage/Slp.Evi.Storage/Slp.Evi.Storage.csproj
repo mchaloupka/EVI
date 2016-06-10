@@ -137,11 +137,6 @@
     <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
     <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
-    <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
-    </Compile>
     <Compile Include="Relational\PostProcess\IRelationalPostProcess.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
     <Compile Include="Relational\Query\ValueBinders\CoalesceValueBinder.cs" />
@@ -176,6 +171,11 @@
       <DependentUpon>BaseAssignmentConditionTransformerG.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
     </Compile>
     <Compile Include="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.cs">
       <AutoGen>True</AutoGen>
@@ -296,7 +296,7 @@
   <ItemGroup>
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BaseRelationalOptimizerImplementation1.cs</LastGenOutput>
+      <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
     </Content>
     <Content Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

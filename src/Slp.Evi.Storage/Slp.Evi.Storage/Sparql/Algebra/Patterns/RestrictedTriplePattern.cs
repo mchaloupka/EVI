@@ -102,7 +102,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -120,18 +120,23 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the subject pattern.
         /// </summary>
         /// <value>The subject pattern.</value>
-        public PatternItem SubjectPattern { get; private set; }
+        public PatternItem SubjectPattern { get; }
 
         /// <summary>
         /// Gets the predicate pattern.
         /// </summary>
         /// <value>The predicate pattern.</value>
-        public PatternItem PredicatePattern { get; private set; }
+        public PatternItem PredicatePattern { get; }
 
         /// <summary>
         /// Gets the object pattern.
         /// </summary>
         /// <value>The object pattern.</value>
-        public PatternItem ObjectPattern { get; private set; }
+        public PatternItem ObjectPattern { get; }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        public IEnumerable<string> AlwaysBoundVariables => Variables;
     }
 }

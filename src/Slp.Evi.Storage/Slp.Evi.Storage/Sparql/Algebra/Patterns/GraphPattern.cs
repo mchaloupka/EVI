@@ -46,5 +46,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        public IEnumerable<string> AlwaysBoundVariables => InnerPattern.AlwaysBoundVariables;
     }
 }

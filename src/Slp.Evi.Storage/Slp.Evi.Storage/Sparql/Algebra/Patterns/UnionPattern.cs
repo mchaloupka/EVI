@@ -16,22 +16,36 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="unionedGraphPatterns">The unioned graph patterns.</param>
         public UnionPattern(IEnumerable<IGraphPattern> unionedGraphPatterns)
         {
-            UnionedGraphPatterns = unionedGraphPatterns;
+            UnionedGraphPatterns = unionedGraphPatterns.ToArray();
             Variables = UnionedGraphPatterns.SelectMany(x => x.Variables)
                 .Distinct().ToList();
+
+            HashSet<string> stringSet = null;
+            foreach (var unionedGraphPattern in UnionedGraphPatterns)
+            {
+                if (stringSet == null)
+                {
+                    stringSet = new HashSet<string>(unionedGraphPattern.AlwaysBoundVariables);
+                }
+                else
+                {
+                    stringSet.IntersectWith(unionedGraphPattern.AlwaysBoundVariables);
+                }
+            }
+            AlwaysBoundVariables = (stringSet ?? new HashSet<string>()).ToArray();
         }
 
         /// <summary>
         /// Gets the unioned graph patterns.
         /// </summary>
         /// <value>The unioned graph patterns.</value>
-        public IEnumerable<IGraphPattern> UnionedGraphPatterns { get; private set; }
+        public IEnumerable<IGraphPattern> UnionedGraphPatterns { get; }
 
         /// <summary>
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -44,5 +58,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        public IEnumerable<string> AlwaysBoundVariables { get; }
     }
 }

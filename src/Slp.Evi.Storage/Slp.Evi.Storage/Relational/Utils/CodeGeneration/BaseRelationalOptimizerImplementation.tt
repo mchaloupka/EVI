@@ -17,7 +17,7 @@
 <#@ output extension=".cs" #>
 // Generated code, do not edit!!!
 
-using Slp.Evi.Storage.Relational.Optimization.Optimizers;
+using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -32,7 +32,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
     /// </summary>
     /// <typeparam name="T">Type of parameter passed to process</typeparam>
     public class BaseRelationalOptimizerImplementation<T>
-        : BaseExpressionTransformerG<BaseRelationalPostProcess<T>.OptimizationContext, IExpression, IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
+        : BaseExpressionTransformerG<BaseRelationalOptimizer<T>.OptimizationContext, IExpression, IAssignmentCondition, ISourceCondition, IFilterCondition, ICalculusSource>
     {
 <#
     var classDeclarations = new Dictionary<string, ClassDeclarationSyntax>();
@@ -108,7 +108,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
 
                     if(type == "T") 
                     {
-                        type = "BaseRelationalPostProcess<T>.OptimizationContext";
+                        type = "BaseRelationalOptimizer<T>.OptimizationContext";
                     }
 
                     if(first) 

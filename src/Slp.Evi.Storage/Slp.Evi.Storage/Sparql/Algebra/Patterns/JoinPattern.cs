@@ -16,9 +16,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="joinedGraphPatterns">The joined graph patterns.</param>
         public JoinPattern(IEnumerable<IGraphPattern> joinedGraphPatterns)
         {
-            JoinedGraphPatterns = joinedGraphPatterns;
+            JoinedGraphPatterns = joinedGraphPatterns.ToArray();
             Variables = JoinedGraphPatterns.SelectMany(x => x.Variables)
-                .Distinct().ToList();
+                .Distinct().ToArray();
+            AlwaysBoundVariables = JoinedGraphPatterns.SelectMany(x => x.AlwaysBoundVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -44,5 +45,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the set of always bound variables.
+        /// </summary>
+        public IEnumerable<string> AlwaysBoundVariables { get; }
     }
 }
