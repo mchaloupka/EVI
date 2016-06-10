@@ -9,6 +9,7 @@ using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Sparql.Builder;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
+using Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -88,6 +89,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="mapping">Used mapping processor</param>
         public IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping)
         {
+            yield return new AscendFilterPattern();
             yield return mapping.GetMappingTransformer();
             yield return new TriplePatternOptimizer();
             yield return new UnionJoinOptimizer();
