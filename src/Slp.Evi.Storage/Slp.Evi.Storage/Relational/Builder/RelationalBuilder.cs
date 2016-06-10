@@ -191,9 +191,8 @@ namespace Slp.Evi.Storage.Relational.Builder
             conditions.AddRange(leftQuery.Model.SourceConditions);
 
             List<IFilterCondition> joinConditions = new List<IFilterCondition>();
-            // TODO: Process SPARQL join condition
-
             Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
+
             foreach (var valueBinder in leftQuery.ValueBinders)
             {
                 valueBinders.Add(valueBinder.VariableName, valueBinder);
@@ -214,6 +213,8 @@ namespace Slp.Evi.Storage.Relational.Builder
                     valueBinders.Add(valueBinder.VariableName, valueBinder);
                 }
             }
+
+            joinConditions.Add((IFilterCondition)leftJoinPattern.Condition.Accept(this, new ExpressionVisitParameter((QueryContext)data, valueBinders.Values)));
 
             var leftJoinCondition = new LeftJoinCondition(rightQuery.Model, joinConditions, rightQuery.Model.Variables);
             conditions.Add(leftJoinCondition);

@@ -10,17 +10,17 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
     public class LeftJoinPattern
         : IGraphPattern
     {
-        // TODO: Add missing parts
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LeftJoinPattern"/> class.
         /// </summary>
         /// <param name="leftOperand">The left operand.</param>
         /// <param name="rightOperand">The right operand.</param>
-        public LeftJoinPattern(IGraphPattern leftOperand, IGraphPattern rightOperand)
+        /// <param name="condition">The condition</param>
+        public LeftJoinPattern(IGraphPattern leftOperand, IGraphPattern rightOperand, ISparqlCondition condition)
         {
             LeftOperand = leftOperand;
             RightOperand = rightOperand;
+            Condition = condition;
 
             Variables = LeftOperand.Variables
                 .Union(RightOperand.Variables).Distinct().ToList();
@@ -30,19 +30,25 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the right operand.
         /// </summary>
         /// <value>The right operand.</value>
-        public IGraphPattern RightOperand { get; private set; }
+        public IGraphPattern RightOperand { get; }
+
+        /// <summary>
+        /// Gets the condition.
+        /// </summary>
+        /// <value>The condition.</value>
+        public ISparqlCondition Condition { get; }
 
         /// <summary>
         /// Gets the left operand.
         /// </summary>
         /// <value>The left operand.</value>
-        public IGraphPattern LeftOperand { get; private set; }
+        public IGraphPattern LeftOperand { get; }
 
         /// <summary>
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

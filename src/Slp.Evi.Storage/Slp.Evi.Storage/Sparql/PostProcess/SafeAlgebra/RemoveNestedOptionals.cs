@@ -39,7 +39,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
 
                 return new LeftJoinPattern(
                         new FilterPattern(innerLeftJoin.LeftOperand, toTransform.Condition),
-                        innerLeftJoin.RightOperand);
+                        innerLeftJoin.RightOperand, innerLeftJoin.Condition);
             }
             else if (newInner != toTransform.InnerPattern)
             {
@@ -100,7 +100,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
 
                 return new LeftJoinPattern(
                     new JoinPattern(newInnerPatterns),
-                    innerLeftJoin.RightOperand);
+                    innerLeftJoin.RightOperand, innerLeftJoin.Condition);
             }
             else if (changed)
             {

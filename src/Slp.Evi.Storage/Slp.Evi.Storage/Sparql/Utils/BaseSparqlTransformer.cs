@@ -192,8 +192,13 @@ namespace Slp.Evi.Storage.Sparql.Utils
         {
             var newLeftOperand = TransformGraphPattern(toTransform.LeftOperand, data);
             var newRightOperand = TransformGraphPattern(toTransform.RightOperand, data);
+            var newCondition = TransformSparqlCondition(toTransform.Condition, data);
 
             if (newLeftOperand is NotMatchingPattern)
+            {
+                return newLeftOperand;
+            }
+            else if (newCondition is BooleanFalseExpression)
             {
                 return newLeftOperand;
             }
@@ -202,9 +207,9 @@ namespace Slp.Evi.Storage.Sparql.Utils
                 return newLeftOperand;
             }
 
-            if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand)
+            if (newLeftOperand != toTransform.LeftOperand || newRightOperand != toTransform.RightOperand || newCondition != toTransform.Condition)
             {
-                return new LeftJoinPattern(newLeftOperand, newRightOperand);
+                return new LeftJoinPattern(newLeftOperand, newRightOperand, newCondition);
             }
             else
             {

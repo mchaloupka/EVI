@@ -139,7 +139,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 var left = (IGraphPattern)ProcessAlgebra(leftJoin.Lhs, context);
                 var right = (IGraphPattern) ProcessAlgebra(leftJoin.Rhs, context);
 
-                return new LeftJoinPattern(left, right);
+                return new LeftJoinPattern(left, right, new BooleanTrueExpression());
             }
             else if (originalAlgebra is Filter)
             {
