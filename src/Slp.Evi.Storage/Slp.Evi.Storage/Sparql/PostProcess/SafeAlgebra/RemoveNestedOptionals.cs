@@ -31,15 +31,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(FilterPattern toTransform, bool data)
         {
-            var newInner = TransformGraphPattern(toTransform, data);
+            var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (data && (newInner is LeftJoinPattern))
+            if (data)
             {
-                var innerLeftJoin = (LeftJoinPattern) newInner;
-
-                return new LeftJoinPattern(
-                        new FilterPattern(innerLeftJoin.LeftOperand, toTransform.Condition),
-                        innerLeftJoin.RightOperand, innerLeftJoin.Condition);
+                throw new InvalidOperationException("Should never happen, the filter pattern should not be inside of left join pattern anymore");
             }
             else if (newInner != toTransform.InnerPattern)
             {
