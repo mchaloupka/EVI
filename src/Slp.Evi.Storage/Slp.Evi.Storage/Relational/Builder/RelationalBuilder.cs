@@ -366,7 +366,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         public object Visit(ExtendPattern extendPattern, object data)
         {
             var context = (QueryContext)data;
-            var inner = Process(extendPattern.InnerAlgebra, context);
+            var inner = Process(extendPattern.InnerPattern, context);
             var model = inner.Model;
             var valueBinders = inner.ValueBinders.ToList();
 

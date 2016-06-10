@@ -18,16 +18,16 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtendPattern"/> class.
         /// </summary>
-        /// <param name="innerAlgebra">The inner algebra.</param>
+        /// <param name="innerPattern">The inner pattern.</param>
         /// <param name="variableName">Name of the variable.</param>
         /// <param name="expression">The expression.</param>
-        public ExtendPattern(IGraphPattern innerAlgebra, string variableName, ISparqlExpression expression)
+        public ExtendPattern(IGraphPattern innerPattern, string variableName, ISparqlExpression expression)
         {
-            InnerAlgebra = innerAlgebra;
+            InnerPattern = innerPattern;
             VariableName = variableName;
             Expression = expression;
 
-            List<string> variables = new List<string>(innerAlgebra.Variables);
+            List<string> variables = new List<string>(innerPattern.Variables);
 
             if (!variables.Contains(variableName))
             {
@@ -44,10 +44,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         public IEnumerable<string> Variables => _variables;
 
         /// <summary>
-        /// Gets the inner algebra.
+        /// Gets the inner pattern.
         /// </summary>
-        /// <value>The inner algebra.</value>
-        public IGraphPattern InnerAlgebra { get; }
+        /// <value>The inner pattern.</value>
+        public IGraphPattern InnerPattern { get; }
 
         /// <summary>
         /// Gets the name of the variable.
@@ -75,6 +75,6 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <summary>
         /// Gets the set of always bound variables.
         /// </summary>
-        public IEnumerable<string> AlwaysBoundVariables => InnerAlgebra.AlwaysBoundVariables;
+        public IEnumerable<string> AlwaysBoundVariables => InnerPattern.AlwaysBoundVariables;
     }
 }

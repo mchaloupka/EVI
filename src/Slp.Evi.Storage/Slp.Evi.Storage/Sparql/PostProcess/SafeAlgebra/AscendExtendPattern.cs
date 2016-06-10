@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
@@ -9,9 +10,9 @@ using Slp.Evi.Storage.Sparql.Utils;
 namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
 {
     /// <summary>
-    /// Class providing the ability to ascend filter pattern into LEFT JOIN
+    /// Class providing the ability to ascend extend pattern over LEFT JOIN
     /// </summary>
-    public class AscendFilterPattern
+    public class AscendExtendPattern
         : BaseSparqlTransformer<bool>, ISparqlPostProcess
     {
         /// <summary>
@@ -34,6 +35,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
+            if (data)
+            {
+                throw new InvalidOperationException(
+                    "Should never happen, the filter pattern should not be inside of left join pattern anymore");
+            }
             if (newInner != toTransform.InnerPattern)
             {
                 return new FilterPattern(newInner, toTransform.Condition);
@@ -65,16 +71,16 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         {
             bool changed = false;
             List<IGraphPattern> newInnerPatterns = new List<IGraphPattern>();
-            FilterPattern innerFilter = null;
+            ExtendPattern innerExtendPattern = null;
 
             foreach (var joinedGraphPattern in toTransform.JoinedGraphPatterns)
             {
                 var newInner = TransformGraphPattern(joinedGraphPattern, data);
 
-                if (data && innerFilter == null && newInner is FilterPattern)
+                if (data && innerExtendPattern == null && newInner is ExtendPattern)
                 {
                     changed = true;
-                    innerFilter = (FilterPattern)newInner;
+                    innerExtendPattern = (ExtendPattern)newInner;
                 }
                 if (newInner != joinedGraphPattern)
                 {
@@ -87,11 +93,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 }
             }
 
-            if (data && innerFilter != null)
+            if (data && innerExtendPattern != null)
             {
-                newInnerPatterns.Add(innerFilter.InnerPattern);
+                newInnerPatterns.Add(innerExtendPattern.InnerPattern);
 
-                return new FilterPattern(new JoinPattern(newInnerPatterns), innerFilter.Condition);
+                return new ExtendPattern(new JoinPattern(newInnerPatterns), innerExtendPattern.VariableName, innerExtendPattern.Expression);
             }
             else if (changed)
             {
@@ -114,46 +120,37 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             var transformedLeft = TransformGraphPattern(toTransform.LeftOperand, data);
             var transformedRight = TransformGraphPattern(toTransform.RightOperand, true);
 
-            if (transformedLeft is FilterPattern || transformedRight is FilterPattern)
+            if (data && transformedLeft is ExtendPattern)
             {
-                ISparqlCondition condition;
-                IGraphPattern newRight;
-
-                if (transformedRight is FilterPattern)
-                {
-                    condition =
-                        new ConjunctionExpression(new ISparqlCondition[]
-                        {toTransform.Condition, ((FilterPattern) transformedRight).Condition});
-                    newRight = ((FilterPattern) transformedRight).InnerPattern;
-                }
-                else
-                {
-                    condition = toTransform.Condition;
-                    newRight = transformedRight;
-                }
-
-                IGraphPattern result;
-                if (transformedLeft is FilterPattern)
-                {
-                    var leftFilter = (FilterPattern) transformedLeft;
-
-                    result = new FilterPattern(new LeftJoinPattern(leftFilter.InnerPattern, newRight, condition),
-                        leftFilter.Condition);
-                }
-                else
-                {
-                    result = new LeftJoinPattern(transformedLeft, newRight, condition);
-                }
+                var leftExtend = (ExtendPattern) transformedLeft;
+                var result =
+                    new ExtendPattern(
+                        new LeftJoinPattern(leftExtend.InnerPattern, transformedRight,
+                            ReplaceVariableInExpression(toTransform.Condition, leftExtend.VariableName,
+                                leftExtend.Expression)), leftExtend.VariableName, leftExtend.Expression);
 
                 return TransformGraphPattern(result, data);
             }
-            else if (transformedLeft != toTransform.LeftOperand || transformedRight != toTransform.RightOperand)
+            else if (transformedRight is ExtendPattern)
             {
-                return new LeftJoinPattern(transformedLeft, transformedRight, toTransform.Condition);
+                var rightExtend = (ExtendPattern) transformedRight;
+
+                var providedVariables =
+                    new HashSet<string>(toTransform.AlwaysBoundVariables);
+                providedVariables.IntersectWith(rightExtend.Expression.NeededVariables);
+
+                if (providedVariables.Count < rightExtend.Expression.NeededVariables.Count())
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
             else
             {
-                return toTransform;
+                throw new NotImplementedException();
             }
         }
 
@@ -167,10 +164,25 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (newInner is FilterPattern)
+            if (data)
             {
-                var newFilter = (FilterPattern) newInner;
-                return new FilterPattern(new ExtendPattern(newFilter.InnerPattern, toTransform.VariableName, toTransform.Expression), newFilter.Condition);
+                var providedVariables =
+                    new HashSet<string>(toTransform.AlwaysBoundVariables);
+                providedVariables.IntersectWith(toTransform.Expression.NeededVariables);
+
+                if (providedVariables.Count >= toTransform.Expression.NeededVariables.Count() && newInner is ExtendPattern)
+                {
+                    var innerExtend = (ExtendPattern) newInner;
+                    return new ExtendPattern(new ExtendPattern(innerExtend.InnerPattern, toTransform.VariableName, toTransform.Expression), innerExtend.VariableName, innerExtend.Expression);
+                }
+                else if (newInner != toTransform.InnerPattern)
+                {
+                    return new ExtendPattern(newInner, toTransform.VariableName, toTransform.Expression);
+                }
+                else
+                {
+                    return toTransform;
+                }
             }
             else if (newInner != toTransform.InnerPattern)
             {
@@ -202,6 +214,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         protected override IGraphPattern Transform(UnionPattern toTransform, bool data)
         {
             return base.Transform(toTransform, false);
+        }
+
+        private ISparqlCondition ReplaceVariableInExpression(ISparqlCondition condition, string variableName, ISparqlExpression expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -227,6 +227,7 @@
     <Compile Include="Sparql\PostProcess\Optimizers\BaseSparqlOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\Optimizers\UnionJoinOptimizer.cs" />
+    <Compile Include="Sparql\PostProcess\SafeAlgebra\AscendExtendPattern.cs" />
     <Compile Include="Sparql\PostProcess\SafeAlgebra\AscendFilterPattern.cs" />
     <Compile Include="Sparql\PostProcess\SafeAlgebra\RemoveNestedOptionals.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />

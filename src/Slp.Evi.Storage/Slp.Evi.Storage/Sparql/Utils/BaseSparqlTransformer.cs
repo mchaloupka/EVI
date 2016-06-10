@@ -336,14 +336,14 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <returns>The transformation result</returns>
         protected override IGraphPattern Transform(ExtendPattern toTransform, T data)
         {
-            var newInner = TransformGraphPattern(toTransform.InnerAlgebra, data);
+            var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
             var newExpression = TransformSparqlExpression(toTransform.Expression, data);
 
             if (newInner is NotMatchingPattern)
             {
                 return newInner;
             }
-            else if (newInner != toTransform.InnerAlgebra || newExpression != toTransform.Expression)
+            else if (newInner != toTransform.InnerPattern || newExpression != toTransform.Expression)
             {
                 return new ExtendPattern(newInner, toTransform.VariableName, newExpression);
             }
