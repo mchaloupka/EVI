@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
@@ -38,6 +40,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
             LeftOperand = leftOperand;
             RightOperand = rightOperand;
             ComparisonType = comparisonType;
+            NeededVariables = LeftOperand.NeededVariables.Union(RightOperand.NeededVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -51,5 +54,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the needed variables to evaluate the expression.
+        /// </summary>
+        public IEnumerable<string> NeededVariables { get; }
     }
 }

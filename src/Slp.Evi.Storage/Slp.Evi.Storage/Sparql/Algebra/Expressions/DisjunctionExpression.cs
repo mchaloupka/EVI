@@ -27,6 +27,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         public DisjunctionExpression(IEnumerable<ISparqlCondition> operands)
         {
             Operands = operands.ToArray();
+            NeededVariables = Operands.SelectMany(x => x.NeededVariables).Distinct().ToArray();
         }
 
         /// <summary>
@@ -40,5 +41,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the needed variables to evaluate the expression.
+        /// </summary>
+        public IEnumerable<string> NeededVariables { get; }
     }
 }

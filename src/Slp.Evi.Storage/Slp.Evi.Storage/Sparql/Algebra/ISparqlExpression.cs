@@ -10,6 +10,9 @@ namespace Slp.Evi.Storage.Sparql.Algebra
     public interface ISparqlExpression
         : IVisitable<ISparqlExpressionVisitor>
     {
+        /// <summary>
+        /// Gets the needed variables to evaluate the expression.
+        /// </summary>
         IEnumerable<string> NeededVariables { get; }
     }
 }

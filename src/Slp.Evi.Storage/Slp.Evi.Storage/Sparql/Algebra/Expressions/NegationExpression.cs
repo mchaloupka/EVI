@@ -39,5 +39,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         {
             return visitor.Visit(this, data);
         }
+
+        /// <summary>
+        /// Gets the needed variables to evaluate the expression.
+        /// </summary>
+        public IEnumerable<string> NeededVariables => InnerCondition.NeededVariables;
     }
 }
