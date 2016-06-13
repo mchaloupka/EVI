@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Utils;
 
@@ -40,6 +39,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 throw new InvalidOperationException(
                     "Should never happen, the filter pattern should not be inside of left join pattern anymore");
             }
+
             if (newInner != toTransform.InnerPattern)
             {
                 return new FilterPattern(newInner, toTransform.Condition);
@@ -79,9 +79,16 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
 
                 if (data && innerExtendPattern == null && newInner is ExtendPattern)
                 {
-                    changed = true;
-                    innerExtendPattern = (ExtendPattern)newInner;
+                    var innerExtend = (ExtendPattern) newInner;
+
+                    if (IsOutOfScope(innerExtend.Expression, innerExtend.InnerPattern.AlwaysBoundVariables))
+                    {
+                        changed = true;
+                        innerExtendPattern = (ExtendPattern)newInner;
+                        continue;
+                    }
                 }
+
                 if (newInner != joinedGraphPattern)
                 {
                     changed = true;
@@ -166,25 +173,36 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
 
             if (data)
             {
-                var providedVariables =
-                    new HashSet<string>(toTransform.AlwaysBoundVariables);
-                providedVariables.IntersectWith(toTransform.Expression.NeededVariables);
+                if (!IsOutOfScope(toTransform.Expression, toTransform.InnerPattern.AlwaysBoundVariables))
+                {
+                    if (newInner is ExtendPattern)
+                    {
+                        var innerExtend = (ExtendPattern) newInner;
 
-                if (providedVariables.Count >= toTransform.Expression.NeededVariables.Count() && newInner is ExtendPattern)
-                {
-                    var innerExtend = (ExtendPattern) newInner;
-                    return new ExtendPattern(new ExtendPattern(innerExtend.InnerPattern, toTransform.VariableName, toTransform.Expression), innerExtend.VariableName, innerExtend.Expression);
-                }
-                else if (newInner != toTransform.InnerPattern)
-                {
-                    return new ExtendPattern(newInner, toTransform.VariableName, toTransform.Expression);
-                }
-                else
-                {
-                    return toTransform;
+                        if (IsOutOfScope(innerExtend.Expression, innerExtend.InnerPattern.AlwaysBoundVariables))
+                        {
+                            return
+                                new ExtendPattern(
+                                    new ExtendPattern(innerExtend.InnerPattern, toTransform.VariableName,
+                                        toTransform.Expression), innerExtend.VariableName, innerExtend.Expression);
+                        }
+                    }
+                    else if (newInner is LeftJoinPattern)
+                    {
+                        var innerLeftJoin = (LeftJoinPattern) newInner;
+
+                        if (!IsOutOfScope(toTransform.Expression, innerLeftJoin.LeftOperand.AlwaysBoundVariables))
+                        {
+                            return
+                                new LeftJoinPattern(
+                                    new ExtendPattern(innerLeftJoin.LeftOperand, toTransform.VariableName,
+                                        toTransform.Expression), innerLeftJoin.RightOperand, innerLeftJoin.Condition);
+                        }
+                    }
                 }
             }
-            else if (newInner != toTransform.InnerPattern)
+
+            if (newInner != toTransform.InnerPattern)
             {
                 return new ExtendPattern(newInner, toTransform.VariableName, toTransform.Expression);
             }
@@ -219,6 +237,18 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         private ISparqlCondition ReplaceVariableInExpression(ISparqlCondition condition, string variableName, ISparqlExpression expression)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Determines whether <paramref name="expression"/> may be out of scope regarding to the always bound variables <paramref name="alwaysBoundVariables"/>.
+        /// </summary>
+        private bool IsOutOfScope(ISparqlExpression expression, IEnumerable<string> alwaysBoundVariables)
+        {
+            var providedVariables =
+                    new HashSet<string>(alwaysBoundVariables);
+            providedVariables.IntersectWith(expression.NeededVariables);
+
+            return providedVariables.Count < expression.NeededVariables.Count();
         }
     }
 }
