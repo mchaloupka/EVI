@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
@@ -127,37 +128,47 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             var transformedLeft = TransformGraphPattern(toTransform.LeftOperand, data);
             var transformedRight = TransformGraphPattern(toTransform.RightOperand, true);
 
-            if (data && transformedLeft is ExtendPattern)
+            if (data)
             {
-                var leftExtend = (ExtendPattern) transformedLeft;
-                var result =
-                    new ExtendPattern(
-                        new LeftJoinPattern(leftExtend.InnerPattern, transformedRight,
-                            ReplaceVariableInExpression(toTransform.Condition, leftExtend.VariableName,
-                                leftExtend.Expression)), leftExtend.VariableName, leftExtend.Expression);
+                if (transformedLeft is ExtendPattern)
+                {
+                    var leftExtend = (ExtendPattern) transformedLeft;
 
-                return TransformGraphPattern(result, data);
+                    if (IsOutOfScope(leftExtend.Expression, leftExtend.InnerPattern.AlwaysBoundVariables))
+                    {
+                        return
+                            new ExtendPattern(
+                                new LeftJoinPattern(leftExtend.InnerPattern, transformedRight,
+                                    ReplaceVariableInExpression(toTransform.Condition, leftExtend.VariableName,
+                                        leftExtend.Expression)), leftExtend.VariableName, leftExtend.Expression);
+                    }
+                }
             }
-            else if (transformedRight is ExtendPattern)
+
+            if (transformedRight is ExtendPattern)
             {
                 var rightExtend = (ExtendPattern) transformedRight;
 
-                var providedVariables =
-                    new HashSet<string>(toTransform.AlwaysBoundVariables);
-                providedVariables.IntersectWith(rightExtend.Expression.NeededVariables);
+                if (IsOutOfScope(rightExtend.Expression, rightExtend.InnerPattern.AlwaysBoundVariables))
+                {
+                    // TODO: Handle the scenario when the bound variable causes that the optional should not apply
+                    // It should be handled by additional join condition detecting that the variable is bound to correct value or not bound from the extend at all
 
-                if (providedVariables.Count < rightExtend.Expression.NeededVariables.Count())
-                {
-                    throw new NotImplementedException();
+                    return 
+                        new ExtendPattern(
+                            new LeftJoinPattern(transformedLeft, rightExtend.InnerPattern,
+                                ReplaceVariableInExpression(toTransform.Condition, rightExtend.VariableName, 
+                                rightExtend.Expression)), rightExtend.VariableName, rightExtend.Expression);
                 }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+            }
+
+            if (transformedLeft != toTransform.LeftOperand || transformedRight != toTransform.RightOperand)
+            {
+                return new LeftJoinPattern(transformedLeft, transformedRight, toTransform.Condition);
             }
             else
             {
-                throw new NotImplementedException();
+                return toTransform;
             }
         }
 
