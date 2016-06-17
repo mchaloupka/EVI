@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Sparql.Algebra;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -18,6 +20,17 @@ namespace Slp.Evi.Storage.Relational.Builder
     /// </summary>
     public class ConditionBuilder
     {
+        private readonly ValueBinder_CreateIsBoundCondition _valueBinderCreateIsBoundCondition;
+        private readonly ValueBinder_CreateExpression _valueBinderCreateExpression;
+        private readonly SparqlExpression_CreateExpression _sparqlExpressionCreateExpression;
+
+        public ConditionBuilder()
+        {
+            _valueBinderCreateIsBoundCondition = new ValueBinder_CreateIsBoundCondition(this);
+            _valueBinderCreateExpression = new ValueBinder_CreateExpression(this);
+            _sparqlExpressionCreateExpression = new SparqlExpression_CreateExpression(this);
+        }
+
         /// <summary>
         /// Creates the equals conditions.
         /// </summary>
@@ -51,87 +64,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, QueryContext context)
         {
-            if (valueBinder is EmptyValueBinder)
-            {
-                return new AlwaysFalseCondition();
-            }
-            else if (valueBinder is BaseValueBinder)
-            {
-                var needed = valueBinder.NeededCalculusVariables;
-
-                if (needed.Count() > 0)
-                {
-                    List<IFilterCondition> conditions = new List<IFilterCondition>();
-
-                    foreach (var calculusVariable in needed)
-                    {
-                        conditions.Add(new NegationCondition(new IsNullCondition(calculusVariable)));
-                    }
-
-                    return new ConjunctionCondition(conditions);
-                }
-                else
-                {
-                    return new AlwaysTrueCondition();
-                }
-            }
-            else if (valueBinder is CoalesceValueBinder)
-            {
-                var coalesceValueBinder = (CoalesceValueBinder) valueBinder;
-
-                return new DisjunctionCondition(
-                    coalesceValueBinder.ValueBinders.Select(x => CreateIsBoundCondition(x, context)).ToList());
-            }
-            else if (valueBinder is SwitchValueBinder)
-            {
-                var switchValueBinder = (SwitchValueBinder) valueBinder;
-
-                return new DisjunctionCondition(switchValueBinder.Cases.Select(x => new ConjunctionCondition(new IFilterCondition[]
-                {
-                    new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(x.CaseValue, context), ComparisonTypes.EqualTo),
-                    CreateIsBoundCondition(x.ValueBinder, context)
-                })));
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
-        /// Creates the disjunction of the conditions
-        /// </summary>
-        /// <param name="context">The query context</param>
-        /// <param name="conditions">The conditions, conjunction of every array member taken as the disjunction parameter</param>
-        /// <returns></returns>
-        public IFilterCondition CreateDisjunctionCondition(QueryContext context,
-            params IFilterCondition[] conditions)
-        {
-            return new DisjunctionCondition(conditions);
-        }
-
-        /// <summary>
-        /// Creates the conjunction of the conditions.
-        /// </summary>
-        /// <param name="conditions">The conditions.</param>
-        /// <param name="context">The query context.</param>
-        /// <returns></returns>
-        public IFilterCondition CreateConjunctionCondition(IEnumerable<IFilterCondition> conditions,
-            QueryContext context)
-        {
-            return new ConjunctionCondition(conditions);
-        }
-
-        /// <summary>
-        /// Create negation conditions
-        /// </summary>
-        /// <param name="condition">The conditions</param>
-        /// <param name="context">The query context.</param>
-        /// <returns>The negation of the conditions.</returns>
-        public IFilterCondition CreateNegationCondition(IFilterCondition condition,
-            QueryContext context)
-        {
-            return new NegationCondition(condition);
+            return _valueBinderCreateIsBoundCondition.CreateIsBoundCondition(valueBinder, context);
         }
 
         /// <summary>
@@ -204,10 +137,12 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The query context</param>
         public IFilterCondition CreateJoinEqualCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, QueryContext context)
         {
-            return CreateDisjunctionCondition(context,
-                CreateNegationCondition(CreateIsBoundCondition(valueBinder, context), context),
-                CreateNegationCondition(CreateIsBoundCondition(otherValueBinder, context), context),
-                CreateEqualsCondition(valueBinder, otherValueBinder, context));
+            return new DisjunctionCondition(new IFilterCondition[]
+            {
+                new NegationCondition(CreateIsBoundCondition(valueBinder, context)),
+                new NegationCondition(CreateIsBoundCondition(otherValueBinder, context)),
+                CreateEqualsCondition(valueBinder, otherValueBinder, context)
+            });
         }
 
         /// <summary>
@@ -217,138 +152,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinder">The value binder.</param>
         public IExpression CreateExpression(QueryContext context, IValueBinder valueBinder)
         {
-            if (valueBinder is EmptyValueBinder)
-            {
-                throw new ArgumentException();
-            }
-            else if (valueBinder is BaseValueBinder)
-            {
-                return CreateBaseValueBinderExpression(context, (BaseValueBinder)valueBinder);
-            }
-            else if (valueBinder is CoalesceValueBinder)
-            {
-                var coalesceValueBinder = (CoalesceValueBinder)valueBinder;
-                List<IExpression> expressions = new List<IExpression>();
-
-                foreach (var binder in coalesceValueBinder.ValueBinders)
-                {
-                    expressions.Add(CreateExpression(context, binder));
-                }
-
-                return new CoalesceExpression(expressions);
-            }
-            else if (valueBinder is SwitchValueBinder)
-            {
-                var switchValueBinder = (SwitchValueBinder)valueBinder;
-                var statements = new List<CaseExpression.Statement>();
-
-                foreach (var @case in switchValueBinder.Cases)
-                {
-                    var expression = CreateExpression(context, @case.ValueBinder);
-                    var condition = new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
-                    statements.Add(new CaseExpression.Statement(condition, expression));
-                }
-
-                return new CaseExpression(statements);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
-        /// Creates the base value binder expression.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="valueBinder">The value binder.</param>
-        /// <returns>IExpression.</returns>
-        private IExpression CreateBaseValueBinderExpression(QueryContext context, BaseValueBinder valueBinder)
-        {
-            var map = valueBinder.TermMap;
-
-            if (map.IsConstantValued)
-            {
-                if (map is IUriValuedTermMap)
-                {
-                    return new ConstantExpression(((IUriValuedTermMap)map).URI, context);
-                }
-                else if (map is IObjectMap)
-                {
-                    var objectMap = (IObjectMap)map;
-
-                    if (objectMap.URI != null)
-                    {
-                        return new ConstantExpression(objectMap.URI, context);
-                    }
-                    else if (objectMap.Literal != null)
-                    {
-                        // TODO: Rework - better node creation - ideally implemented in R2RML4NET
-
-                        if (objectMap.Literal.Contains("^^"))
-                        {
-                            var split = objectMap.Literal.Split(new[] { "^^" }, 2, StringSplitOptions.None);
-                            var node = context.NodeFactory.CreateLiteralNode(split[0], UriFactory.Create(split[1]));
-                            return CreateExpression(context, node);
-                        }
-                        else
-                        {
-                            var node = context.NodeFactory.CreateLiteralNode(objectMap.Literal);
-                            return CreateExpression(context, node);
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Object map's value must be IRI or literal.");
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unknonwn constant valued term map");
-                }
-            }
-            else if (map.IsColumnValued)
-            {
-                return new ColumnExpression(context, valueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
-            }
-            else if (map.IsTemplateValued)
-            {
-                List<IExpression> parts = new List<IExpression>();
-
-                foreach (var templatePart in valueBinder.TemplateParts)
-                {
-                    if (templatePart.IsColumn)
-                    {
-                        parts.Add(new ColumnExpression(context, valueBinder.GetCalculusVariable(templatePart.Column),
-                            map.TermType.IsURI));
-                    }
-                    else if (templatePart.IsText)
-                    {
-                        parts.Add(new ConstantExpression(templatePart.Text, context));
-                    }
-                    else
-                    {
-                        throw new Exception("Must be column or constant");
-                    }
-                }
-
-                if (parts.Count == 0)
-                {
-                    return new ConstantExpression(string.Empty, context);
-                }
-                else if (parts.Count == 1)
-                {
-                    return parts[0];
-                }
-                else
-                {
-                    return new ConcatenationExpression(parts, context.Db.SqlTypeForString);
-                }
-            }
-            else
-            {
-                throw new Exception("Mapping can be only constant, column or template valued");
-            }
+            return _valueBinderCreateExpression.CreateExpression(context, valueBinder);
         }
 
         /// <summary>
@@ -441,6 +245,30 @@ namespace Slp.Evi.Storage.Relational.Builder
                 //XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
             }
 
+        }
+
+        /// <summary>
+        /// Creates the condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="context">The query context.</param>
+        /// <param name="valueBinders">The used value binders.</param>
+        public IFilterCondition CreateCondition(ISparqlCondition condition, QueryContext context, IEnumerable<IValueBinder> valueBinders)
+        {
+            return _sparqlExpressionCreateExpression.CreateCondition(condition, context, valueBinders);
+        }
+
+        /// <summary>
+        /// Creates the expression.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="expression">The expression.</param>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <returns>IExpression.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public IExpression CreateExpression(QueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
+        {
+            return _sparqlExpressionCreateExpression.CreateExpression(expression, context, valueBinders);
         }
     }
 }

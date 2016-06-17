@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -26,7 +27,7 @@ namespace Slp.Evi.Storage.Relational.Builder
     /// Relational builder
     /// </summary>
     public class RelationalBuilder
-        : IModifierVisitor, IGraphPatternVisitor, ISparqlExpressionVisitor
+        : IModifierVisitor, IGraphPatternVisitor
     {
         /// <summary>
         /// The condition builder
@@ -89,7 +90,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         public object Visit(FilterPattern filterPattern, object data)
         {
             var inner = (RelationalQuery)filterPattern.InnerPattern.Accept(this, data);
-            var condition = (IFilterCondition)filterPattern.Condition.Accept(this, new ExpressionVisitParameter((QueryContext)data, inner.ValueBinders));
+            var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, (QueryContext)data, inner.ValueBinders);
 
             var conditions = new List<ICondition>();
             conditions.AddRange(inner.Model.SourceConditions);
@@ -214,7 +215,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 }
             }
 
-            joinConditions.Add((IFilterCondition)leftJoinPattern.Condition.Accept(this, new ExpressionVisitParameter((QueryContext)data, valueBinders.Values)));
+            joinConditions.Add(_conditionBuilder.CreateCondition(leftJoinPattern.Condition, (QueryContext)data, valueBinders.Values));
 
             var leftJoinCondition = new LeftJoinCondition(rightQuery.Model, joinConditions, rightQuery.Model.Variables);
             conditions.Add(leftJoinCondition);
@@ -370,7 +371,8 @@ namespace Slp.Evi.Storage.Relational.Builder
             var model = inner.Model;
             var valueBinders = inner.ValueBinders.ToList();
 
-            var expression = (IExpression)extendPattern.Expression.Accept(this, new ExpressionVisitParameter(context, valueBinders));
+            var expression = _conditionBuilder.CreateExpression(context, extendPattern.Expression, valueBinders);
+                //(IExpression)_extendPattern.Expression.Accept(this, new ExpressionVisitParameter(context, valueBinders));
 
             if (valueBinders.Any(x => x.VariableName == extendPattern.VariableName))
             {
@@ -600,127 +602,6 @@ namespace Slp.Evi.Storage.Relational.Builder
         private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, QueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
-        }
-
-        /// <summary>
-        /// Visits <see cref="IsBoundExpression"/>
-        /// </summary>
-        /// <param name="isBoundExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(IsBoundExpression isBoundExpression, object data)
-        {
-            var param = (ExpressionVisitParameter) data;
-
-            IValueBinder valueBinder;
-            if (param.ValueBinders.TryGetValue(isBoundExpression.Variable, out valueBinder))
-            {
-                return _conditionBuilder.CreateIsBoundCondition(valueBinder, param.QueryContext);
-            }
-            else
-            {
-                return new AlwaysFalseCondition();
-            }
-        }
-
-        /// <summary>
-        /// Visits <see cref="BooleanTrueExpression"/>
-        /// </summary>
-        /// <param name="booleanTrueExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(BooleanTrueExpression booleanTrueExpression, object data)
-        {
-            return new AlwaysTrueCondition();
-        }
-
-        /// <summary>
-        /// Visits <see cref="BooleanFalseExpression" />
-        /// </summary>
-        /// <param name="booleanFalseExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(BooleanFalseExpression booleanFalseExpression, object data)
-        {
-            return new AlwaysFalseCondition();
-        }
-
-        /// <summary>
-        /// Visits <see cref="NegationExpression"/>
-        /// </summary>
-        /// <param name="negationExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(NegationExpression negationExpression, object data)
-        {
-            var inner = (IFilterCondition)negationExpression.InnerCondition.Accept(this, data);
-            return new NegationCondition(inner);
-        }
-
-        /// <summary>
-        /// Visits <see cref="VariableExpression"/>
-        /// </summary>
-        /// <param name="variableExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(VariableExpression variableExpression, object data)
-        {
-            var parameter = (ExpressionVisitParameter) data;
-            var valueBinder = parameter.ValueBinders[variableExpression.Variable];
-            return _conditionBuilder.CreateExpression(parameter.QueryContext, valueBinder);
-        }
-
-        /// <summary>
-        /// Visits <see cref="ConjunctionExpression"/>
-        /// </summary>
-        /// <param name="conjunctionExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(ConjunctionExpression conjunctionExpression, object data)
-        {
-            var innerConditions =
-                conjunctionExpression.Operands.Select(x => x.Accept(this, data)).OfType<IFilterCondition>();
-
-            return new ConjunctionCondition(innerConditions);
-        }
-
-        /// <summary>
-        /// Visits <see cref="ComparisonExpression"/>
-        /// </summary>
-        /// <param name="comparisonExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(ComparisonExpression comparisonExpression, object data)
-        {
-            var left = (IExpression) comparisonExpression.LeftOperand.Accept(this, data);
-            var right = (IExpression) comparisonExpression.RightOperand.Accept(this, data);
-            return new ComparisonCondition(left, right, comparisonExpression.ComparisonType);
-        }
-
-        /// <summary>
-        /// Visits <see cref="NodeExpression"/>
-        /// </summary>
-        /// <param name="nodeExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(NodeExpression nodeExpression, object data)
-        {
-            var parameter = (ExpressionVisitParameter)data;
-            return _conditionBuilder.CreateExpression(parameter.QueryContext, nodeExpression.Node);
-        }
-
-        /// <summary>
-        /// Visits <see cref="DisjunctionExpression"/>
-        /// </summary>
-        /// <param name="disjunctionExpression">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(DisjunctionExpression disjunctionExpression, object data)
-        {
-            var innerConditions =
-                disjunctionExpression.Operands.Select(x => x.Accept(this, data)).OfType<IFilterCondition>();
-
-            return new DisjunctionCondition(innerConditions);
         }
     }
 }

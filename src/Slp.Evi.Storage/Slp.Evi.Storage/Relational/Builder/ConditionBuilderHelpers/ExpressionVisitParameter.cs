@@ -4,7 +4,7 @@ using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 
-namespace Slp.Evi.Storage.Relational.Builder
+namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
     /// <summary>
     /// Parameter passed to <see cref="ISparqlExpressionVisitor"/> visit methods.

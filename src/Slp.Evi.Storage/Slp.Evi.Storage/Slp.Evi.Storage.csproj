@@ -101,7 +101,10 @@
     <Compile Include="Query\QueryNamingHelpers.cs" />
     <Compile Include="Query\QueryProcessor.cs" />
     <Compile Include="EviQueryableStorage.cs" />
-    <Compile Include="Relational\Builder\ExpressionVisitParameter.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\ExpressionVisitParameter.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\ValueBinder_CreateIsBoundCondition.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\ValueBinder_CreateExpression.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\SparqlExpression_CreateExpression.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\BaseRelationalOptimizer.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\CaseExpressionToConditionOptimizer.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\ConstantExpressionEqualityOptimizer.cs" />
