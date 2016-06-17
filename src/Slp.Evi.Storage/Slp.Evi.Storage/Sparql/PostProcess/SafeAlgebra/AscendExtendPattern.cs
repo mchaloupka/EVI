@@ -73,6 +73,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             bool changed = false;
             List<IGraphPattern> newInnerPatterns = new List<IGraphPattern>();
             ExtendPattern innerExtendPattern = null;
+            LeftJoinPattern innerLeftJoinPattern = null;
 
             foreach (var joinedGraphPattern in toTransform.JoinedGraphPatterns)
             {
@@ -88,6 +89,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                         innerExtendPattern = (ExtendPattern)newInner;
                         continue;
                     }
+                }
+                else if (data && innerLeftJoinPattern == null && newInner is LeftJoinPattern)
+                {
+                    innerLeftJoinPattern = (LeftJoinPattern) newInner;
+                    changed = true;
                 }
 
                 if (newInner != joinedGraphPattern)
@@ -105,7 +111,20 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             {
                 newInnerPatterns.Add(innerExtendPattern.InnerPattern);
 
-                return new ExtendPattern(new JoinPattern(newInnerPatterns), innerExtendPattern.VariableName, innerExtendPattern.Expression);
+                if (innerLeftJoinPattern != null)
+                {
+                    newInnerPatterns.Add(innerLeftJoinPattern);
+                }
+
+                return new ExtendPattern(new JoinPattern(newInnerPatterns), innerExtendPattern.VariableName,
+                    innerExtendPattern.Expression);
+            }
+            else if (data && innerLeftJoinPattern != null)
+            {
+                newInnerPatterns.Add(innerLeftJoinPattern.LeftOperand);
+
+                return new LeftJoinPattern(new JoinPattern(newInnerPatterns), innerLeftJoinPattern.RightOperand,
+                    innerLeftJoinPattern.Condition);
             }
             else if (changed)
             {
@@ -139,7 +158,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                         return
                             new ExtendPattern(
                                 new LeftJoinPattern(leftExtend.InnerPattern, transformedRight,
-                                    ReplaceVariableInExpression(toTransform.Condition, leftExtend.VariableName,
+                                    ReplaceVariableInCondition(toTransform.Condition, leftExtend.VariableName,
                                         leftExtend.Expression)), leftExtend.VariableName, leftExtend.Expression);
                     }
                 }
@@ -157,7 +176,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                     return 
                         new ExtendPattern(
                             new LeftJoinPattern(transformedLeft, rightExtend.InnerPattern,
-                                ReplaceVariableInExpression(toTransform.Condition, rightExtend.VariableName, 
+                                ReplaceVariableInCondition(toTransform.Condition, rightExtend.VariableName, 
                                 rightExtend.Expression)), rightExtend.VariableName, rightExtend.Expression);
                 }
             }
@@ -245,7 +264,13 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             return base.Transform(toTransform, false);
         }
 
-        private ISparqlCondition ReplaceVariableInExpression(ISparqlCondition condition, string variableName, ISparqlExpression expression)
+        /// <summary>
+        /// Replaces the variable in condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="variableName">Name of the variable.</param>
+        /// <param name="expression">The expression which will replace the variable with <paramref name="variableName"/>.</param>
+        private ISparqlCondition ReplaceVariableInCondition(ISparqlCondition condition, string variableName, ISparqlExpression expression)
         {
             throw new NotImplementedException();
         }
