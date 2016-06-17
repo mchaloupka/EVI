@@ -102,7 +102,202 @@
   </sql>
   <mapping>
 <![CDATA[
+    @base <http://example.com/base/> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix dc: <http://purl.org/dc/elements/1.1/> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    @prefix rev: <http://purl.org/stuff/rev#> .
+    @prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> .
+    @prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/> .
     
+  <#ProductFeature> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "ProductFeature" ];
+    rr:subjectMap [
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature{nr}";
+      rr:class bsbm:ProductFeature;
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:label;
+      rr:objectMap [ rr:column "label"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:comment;
+      rr:objectMap [ rr:column "comment"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:publisher;
+      rr:objectMap [ 
+        rr:column "publisher";
+        rr:termType rr:IRI;
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:date;
+      rr:objectMap [ rr:column "publishDate"; ];
+    ];
+  .
+
+  <#ProductType> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "ProductType" ];
+    rr:subjectMap [
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType{nr}";
+      rr:class bsbm:ProductType;
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:label;
+      rr:objectMap [ rr:column "label"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:comment;
+      rr:objectMap [ rr:column "comment"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:subClassOf;
+      rr:refObjectMap [
+        rr:parentTriplesMap <#ProductType>;
+        rr:joinCondition [
+          rr:child "parent";
+          rr:parent "nr";
+        ];
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:publisher;
+      rr:objectMap [ 
+        rr:column "publisher";
+        rr:termType rr:IRI;
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:date;
+      rr:objectMap [ rr:column "publishDate"; ];
+    ];
+  .
+
+  <#Producer> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "Producer" ];
+    rr:subjectMap [
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer{nr}";
+      rr:class bsbm:Producer;
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:label;
+      rr:objectMap [ rr:column "label"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:comment;
+      rr:objectMap [ rr:column "comment"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate foaf:homepage;
+      rr:objectMap [ 
+        rr:column "homepage"; 
+        rr:termType rr:IRI;
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:country;
+      rr:objectMap [ rr:template "http://downlode.org/rdf/iso-3166/countries{country}"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:publisher;
+      rr:objectMap [ 
+        rr:column "publisher";
+        rr:termType rr:IRI;
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:date;
+      rr:objectMap [ rr:column "publishDate"; ];
+    ];
+  .
+
+  <#Product> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "Product" ];
+    rr:subjectMap [
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product{nr}";
+      rr:class bsbm:Product;
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:label;
+      rr:objectMap [ rr:column "label"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate rdfs:comment;
+      rr:objectMap [ rr:column "comment"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:producer;
+      rr:refObjectMap [
+        rr:parentTriplesMap <#Producer>;
+        rr:joinCondition [
+          rr:child "producer";
+          rr:parent "nr";
+        ];
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual1;
+      rr:objectMap [ rr:column "propertyNum1"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual2;
+      rr:objectMap [ rr:column "propertyNum2"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual3;
+      rr:objectMap [ rr:column "propertyNum3"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual4;
+      rr:objectMap [ rr:column "propertyNum4"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual5;
+      rr:objectMap [ rr:column "propertyNum5"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual6;
+      rr:objectMap [ rr:column "propertyNum6"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual1;
+      rr:objectMap [ rr:column "propertyTex1"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual2;
+      rr:objectMap [ rr:column "propertyTex2"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual3;
+      rr:objectMap [ rr:column "propertyTex3"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual4;
+      rr:objectMap [ rr:column "propertyTex4"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual5;
+      rr:objectMap [ rr:column "propertyTex5"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate bsbm:productPropertyTextual6;
+      rr:objectMap [ rr:column "propertyTex6"; ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:publisher;
+      rr:objectMap [ 
+        rr:column "publisher";
+        rr:termType rr:IRI;
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:date;
+      rr:objectMap [ rr:column "publishDate"; ];
+    ];
+  .
 ]]>
   </mapping>
 </storage>
