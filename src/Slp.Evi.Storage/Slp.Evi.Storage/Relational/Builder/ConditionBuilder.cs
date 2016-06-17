@@ -23,12 +23,17 @@ namespace Slp.Evi.Storage.Relational.Builder
         private readonly ValueBinder_CreateIsBoundCondition _valueBinderCreateIsBoundCondition;
         private readonly ValueBinder_CreateExpression _valueBinderCreateExpression;
         private readonly SparqlExpression_CreateExpression _sparqlExpressionCreateExpression;
+        private readonly Expression_IsBoundCondition _expressionIsBoundCondition;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConditionBuilder"/> class.
+        /// </summary>
         public ConditionBuilder()
         {
             _valueBinderCreateIsBoundCondition = new ValueBinder_CreateIsBoundCondition(this);
             _valueBinderCreateExpression = new ValueBinder_CreateExpression(this);
             _sparqlExpressionCreateExpression = new SparqlExpression_CreateExpression(this);
+            _expressionIsBoundCondition = new Expression_IsBoundCondition(this);
         }
 
         /// <summary>
@@ -269,6 +274,16 @@ namespace Slp.Evi.Storage.Relational.Builder
         public IExpression CreateExpression(QueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
         {
             return _sparqlExpressionCreateExpression.CreateExpression(expression, context, valueBinders);
+        }
+
+        /// <summary>
+        /// Creates the is bound condition.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="context">The context.</param>
+        public IFilterCondition CreateIsBoundCondition(IExpression expression, QueryContext context)
+        {
+            return _expressionIsBoundCondition.CreateIsBoundCondition(expression, context);
         }
     }
 }

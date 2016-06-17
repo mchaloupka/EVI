@@ -11,7 +11,7 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
     /// <summary>
-    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition"/>.
+    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition(Slp.Evi.Storage.Relational.Query.IValueBinder,Slp.Evi.Storage.Query.QueryContext)"/>.
     /// </summary>
     public class ValueBinder_CreateIsBoundCondition
         : IValueBinderVisitor
@@ -115,7 +115,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ExpressionValueBinder expressionValueBinder, object data)
         {
-            throw new NotImplementedException();
+            return _conditionBuilder.CreateIsBoundCondition(expressionValueBinder.Expression, (QueryContext) data);
         }
     }
 }
