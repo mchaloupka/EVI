@@ -13,7 +13,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
     /// Class providing the ability to ascend extend pattern over LEFT JOIN
     /// </summary>
     public class AscendExtendPattern
-        : BaseSparqlTransformer<bool>, ISparqlPostProcess
+        : BaseSparqlTransformer<SafeAlgebraParameter>, ISparqlPostProcess
     {
         /// <summary>
         /// Optimizes the specified query.
@@ -22,7 +22,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="context">The context.</param>
         public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
         {
-            return TransformSparqlQuery(query, false);
+            return TransformSparqlQuery(query, new SafeAlgebraParameter(context, false));
         }
 
         /// <summary>
@@ -31,11 +31,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(FilterPattern toTransform, bool data)
+        protected override IGraphPattern Transform(FilterPattern toTransform, SafeAlgebraParameter data)
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (data)
+            if (data.IsNestedInLeftJoin)
             {
                 throw new InvalidOperationException(
                     "Should never happen, the filter pattern should not be inside of left join pattern anymore");
@@ -57,7 +57,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(GraphPattern toTransform, bool data)
+        protected override IGraphPattern Transform(GraphPattern toTransform, SafeAlgebraParameter data)
         {
             throw new NotImplementedException();
         }
@@ -68,7 +68,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(JoinPattern toTransform, bool data)
+        protected override IGraphPattern Transform(JoinPattern toTransform, SafeAlgebraParameter data)
         {
             bool changed = false;
             List<IGraphPattern> newInnerPatterns = new List<IGraphPattern>();
@@ -79,7 +79,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             {
                 var newInner = TransformGraphPattern(joinedGraphPattern, data);
 
-                if (data && innerExtendPattern == null && newInner is ExtendPattern)
+                if (data.IsNestedInLeftJoin && innerExtendPattern == null && newInner is ExtendPattern)
                 {
                     var innerExtend = (ExtendPattern) newInner;
 
@@ -90,7 +90,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                         continue;
                     }
                 }
-                else if (data && innerLeftJoinPattern == null && newInner is LeftJoinPattern)
+                else if (data.IsNestedInLeftJoin && innerLeftJoinPattern == null && newInner is LeftJoinPattern)
                 {
                     innerLeftJoinPattern = (LeftJoinPattern) newInner;
                     changed = true;
@@ -107,7 +107,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 }
             }
 
-            if (data && innerExtendPattern != null)
+            if (data.IsNestedInLeftJoin && innerExtendPattern != null)
             {
                 newInnerPatterns.Add(innerExtendPattern.InnerPattern);
 
@@ -119,7 +119,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 return new ExtendPattern(new JoinPattern(newInnerPatterns), innerExtendPattern.VariableName,
                     innerExtendPattern.Expression);
             }
-            else if (data && innerLeftJoinPattern != null)
+            else if (data.IsNestedInLeftJoin && innerLeftJoinPattern != null)
             {
                 newInnerPatterns.Add(innerLeftJoinPattern.LeftOperand);
 
@@ -142,12 +142,12 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(LeftJoinPattern toTransform, bool data)
+        protected override IGraphPattern Transform(LeftJoinPattern toTransform, SafeAlgebraParameter data)
         {
             var transformedLeft = TransformGraphPattern(toTransform.LeftOperand, data);
-            var transformedRight = TransformGraphPattern(toTransform.RightOperand, true);
+            var transformedRight = TransformGraphPattern(toTransform.RightOperand, data.Create(true));
 
-            if (data)
+            if (data.IsNestedInLeftJoin)
             {
                 if (transformedLeft is ExtendPattern)
                 {
@@ -197,11 +197,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(ExtendPattern toTransform, bool data)
+        protected override IGraphPattern Transform(ExtendPattern toTransform, SafeAlgebraParameter data)
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (data)
+            if (data.IsNestedInLeftJoin)
             {
                 if (!IsOutOfScope(toTransform.Expression, toTransform.InnerPattern.AlwaysBoundVariables))
                 {
@@ -248,7 +248,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(MinusPattern toTransform, bool data)
+        protected override IGraphPattern Transform(MinusPattern toTransform, SafeAlgebraParameter data)
         {
             throw new NotImplementedException();
         }
@@ -259,9 +259,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(UnionPattern toTransform, bool data)
+        protected override IGraphPattern Transform(UnionPattern toTransform, SafeAlgebraParameter data)
         {
-            return base.Transform(toTransform, false);
+            return base.Transform(toTransform, data.Create(false));
         }
 
         /// <summary>
