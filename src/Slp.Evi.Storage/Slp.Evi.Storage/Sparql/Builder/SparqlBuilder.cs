@@ -258,7 +258,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             throw new ArgumentException("The expression needs to be convertible to condition", nameof(expression));
         }
 
-        private Sparql.Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, QueryContext context)
+        private Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, QueryContext context)
         {
             if (expression is BoundFunction)
             {

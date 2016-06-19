@@ -19,7 +19,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <param name="variable">The variable.</param>
         public IsBoundExpression(string variable)
         {
-            this.Variable = variable;
+            Variable = variable;
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
         [TestInitialize]
         public void TestInitialization()
         {
-            this._optimizer = new CaseExpressionToConditionOptimizer();
+            _optimizer = new CaseExpressionToConditionOptimizer();
         }
 
         [TestMethod]
