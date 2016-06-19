@@ -59,7 +59,7 @@ namespace Slp.Evi.Storage.Query
         {
             if (!_sourceConditionNames.ContainsKey(sourceCondition))
             {
-                _sourceConditionNames.Add(sourceCondition, string.Format("s{0}", _sourceConditionNameCounter++));
+                _sourceConditionNames.Add(sourceCondition, $"s{_sourceConditionNameCounter++}");
             }
 
             return _sourceConditionNames[sourceCondition];
@@ -184,7 +184,7 @@ namespace Slp.Evi.Storage.Query
             {
                 if (_canGenerateNewNames && !_columnNames.ContainsKey(variable))
                 {
-                    _columnNames.Add(variable, string.Format("c{0}", _counter++));
+                    _columnNames.Add(variable, $"c{_counter++}");
                 }
 
                 return _columnNames[variable];

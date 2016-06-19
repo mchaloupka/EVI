@@ -459,7 +459,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             catch (Exception)
             {
-                throw new Exception(string.Format("Value {0} is invalid uri", value));
+                throw new Exception($"Value {value} is invalid uri");
             }
         }
 
@@ -500,7 +500,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 }
             }
 
-            var joinedChars = string.Join(",", disallowedChars.Select(c => string.Format("'{0}'", c)));
+            var joinedChars = string.Join(",", disallowedChars.Select(c => $"'{c}'"));
             if (joinedChars.Any())
             {
                 const string format = "Column value is not escaped and thus cannot contain these disallowed characters: {0}";

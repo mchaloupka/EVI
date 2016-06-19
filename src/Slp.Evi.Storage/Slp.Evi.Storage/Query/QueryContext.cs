@@ -147,7 +147,7 @@ namespace Slp.Evi.Storage.Query
 
             do
             {
-                varName = string.Format("_:context-autos{0}", counter++);
+                varName = $"_:context-autos{counter++}";
             } while (_usedVariables.Contains(varName));
 
             _usedVariables.Add(varName);
