@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Query;

@@ -1,6 +1,4 @@
-﻿using Slp.Evi.Storage.Query;
-using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.PostProcess;
+﻿using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping

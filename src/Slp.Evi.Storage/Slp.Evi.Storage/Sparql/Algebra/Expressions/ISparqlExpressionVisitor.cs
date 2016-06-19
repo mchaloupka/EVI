@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.Evi.Storage.Utils;
+﻿using Slp.Evi.Storage.Utils;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
 {

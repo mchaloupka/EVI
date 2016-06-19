@@ -7,19 +7,16 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using Slp.Evi.Storage.Sparql.Utils;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
-using VDS.RDF;
 using VDS.RDF.Parsing;
 
 namespace Slp.Evi.Storage.Sparql.Builder
