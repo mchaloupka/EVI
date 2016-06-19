@@ -90,8 +90,8 @@ namespace Slp.Evi.Storage.Bootstrap
         public IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping)
         {
             yield return new AscendFilterPattern();
-            yield return new AscendExtendPattern();
-            yield return new RemoveNestedOptionals();
+            //yield return new AscendExtendPattern();
+            //yield return new RemoveNestedOptionals();
             yield return mapping.GetMappingTransformer();
             yield return new TriplePatternOptimizer();
             yield return new UnionJoinOptimizer();

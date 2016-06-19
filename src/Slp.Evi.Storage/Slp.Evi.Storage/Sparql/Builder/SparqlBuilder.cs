@@ -19,6 +19,8 @@ using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
+using VDS.RDF;
+using VDS.RDF.Parsing;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -137,9 +139,10 @@ namespace Slp.Evi.Storage.Sparql.Builder
             {
                 var leftJoin = (LeftJoin)originalAlgebra;
                 var left = (IGraphPattern)ProcessAlgebra(leftJoin.Lhs, context);
-                var right = (IGraphPattern) ProcessAlgebra(leftJoin.Rhs, context);
+                var right = (IGraphPattern)ProcessAlgebra(leftJoin.Rhs, context);
+                var condition = ProcessCondition(leftJoin.Filter.Expression, context);
 
-                return new LeftJoinPattern(left, right, new BooleanTrueExpression());
+                return new LeftJoinPattern(left, right, condition);
             }
             else if (originalAlgebra is Filter)
             {
@@ -228,7 +231,31 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
         private ISparqlCondition ProcessCondition(ISparqlExpression expression, QueryContext context)
         {
-            return (ISparqlCondition)ProcessExpression(expression, context);
+            var processed = ProcessExpression(expression, context);
+
+            if (processed is ISparqlCondition)
+            {
+                return (ISparqlCondition)processed;
+            }
+            else if (processed is NodeExpression)
+            {
+                var nodeExpression = (NodeExpression)processed;
+                var node = nodeExpression.Node;
+
+                if (node.EffectiveType == XmlSpecsHelper.XmlSchemaDataTypeBoolean)
+                {
+                    if (node.AsBoolean())
+                    {
+                        return new BooleanTrueExpression();
+                    }
+                    else
+                    {
+                        return new BooleanFalseExpression();
+                    }
+                }
+            }
+
+            throw new ArgumentException("The expression needs to be convertible to condition", nameof(expression));
         }
 
         private Sparql.Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, QueryContext context)

@@ -34,7 +34,17 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (newInner != toTransform.InnerPattern)
+            if (newInner is FilterPattern)
+            {
+                var innerFilterPattern = (FilterPattern) newInner;
+
+                return new FilterPattern(innerFilterPattern.InnerPattern, new ConjunctionExpression(new ISparqlCondition[]
+                {
+                    innerFilterPattern.Condition,
+                    toTransform.Condition
+                }));
+            }
+            else if (newInner != toTransform.InnerPattern)
             {
                 return new FilterPattern(newInner, toTransform.Condition);
             }
@@ -42,17 +52,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             {
                 return toTransform;
             }
-        }
-
-        /// <summary>
-        /// Process the <see cref="GraphPattern"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(GraphPattern toTransform, SafeAlgebraParameter data)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -71,7 +70,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             {
                 var newInner = TransformGraphPattern(joinedGraphPattern, data);
 
-                if (data.IsNestedInLeftJoin && innerFilter == null && newInner is FilterPattern)
+                if (innerFilter == null && newInner is FilterPattern)
                 {
                     changed = true;
                     innerFilter = (FilterPattern)newInner;
@@ -87,7 +86,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 }
             }
 
-            if (data.IsNestedInLeftJoin && innerFilter != null)
+            if (innerFilter != null)
             {
                 newInnerPatterns.Add(innerFilter.InnerPattern);
 
@@ -155,53 +154,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
             {
                 return toTransform;
             }
-        }
-
-        /// <summary>
-        /// Process the <see cref="ExtendPattern"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(ExtendPattern toTransform, SafeAlgebraParameter data)
-        {
-            var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
-
-            if (newInner is FilterPattern)
-            {
-                var newFilter = (FilterPattern) newInner;
-                return new FilterPattern(new ExtendPattern(newFilter.InnerPattern, toTransform.VariableName, toTransform.Expression), newFilter.Condition);
-            }
-            else if (newInner != toTransform.InnerPattern)
-            {
-                return new ExtendPattern(newInner, toTransform.VariableName, toTransform.Expression);
-            }
-            else
-            {
-                return toTransform;
-            }
-        }
-
-        /// <summary>
-        /// Process the <see cref="MinusPattern"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(MinusPattern toTransform, SafeAlgebraParameter data)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Process the <see cref="UnionPattern"/>
-        /// </summary>
-        /// <param name="toTransform">The instance to process</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(UnionPattern toTransform, SafeAlgebraParameter data)
-        {
-            return base.Transform(toTransform, data.Create(false));
         }
     }
 }
