@@ -200,7 +200,6 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
                     }
                     else
                     {
-                        foundUnallowed = true;
                         break;
                     }
                 }

@@ -369,7 +369,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             else
             {
-                throw new Exception(string.Format("Unhandled term type"));
+                throw new Exception("Unhandled term type");
             }
 
             expressions.Add(Expression.Label(endLabel, nodeVar));
