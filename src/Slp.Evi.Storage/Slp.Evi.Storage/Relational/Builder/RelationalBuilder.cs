@@ -398,8 +398,6 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var inner = Process(selectModifier.InnerQuery, (QueryContext) data);
 
-            var requestedVariables = selectModifier.Variables.ToList();
-
             Dictionary<string, IValueBinder> providedValueBinders = inner.ValueBinders.ToDictionary(valueBinder => valueBinder.VariableName);
 
             var valueBinders = new List<IValueBinder>();
