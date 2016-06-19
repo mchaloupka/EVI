@@ -23,7 +23,7 @@ namespace Slp.Evi.Storage.Mapping
         /// Get the URI
         /// </summary>
         /// <value>The URI.</value>
-        public Uri URI { get; private set; }
+        public Uri URI { get; }
 
         /// <summary>
         /// Gets column or null if not set
@@ -106,7 +106,7 @@ namespace Slp.Evi.Storage.Mapping
         /// Base mapping URI. It will be used to resolve relative values when generating terms
         /// </summary>
         /// <value>The base URI.</value>
-        public Uri BaseUri { get; private set; }
+        public Uri BaseUri { get; }
 
         /// <summary>
         /// The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase" />

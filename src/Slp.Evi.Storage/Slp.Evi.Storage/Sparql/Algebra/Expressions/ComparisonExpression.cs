@@ -15,13 +15,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the left operand.
         /// </summary>
         /// <value>The left operand.</value>
-        public ISparqlExpression LeftOperand { get; private set; }
+        public ISparqlExpression LeftOperand { get; }
 
         /// <summary>
         /// Gets the right operand.
         /// </summary>
         /// <value>The right operand.</value>
-        public ISparqlExpression RightOperand { get; private set; }
+        public ISparqlExpression RightOperand { get; }
 
         /// <summary>
         /// Gets the type of the comparison.

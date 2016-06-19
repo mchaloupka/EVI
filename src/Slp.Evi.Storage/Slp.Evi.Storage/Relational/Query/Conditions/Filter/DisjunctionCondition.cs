@@ -36,7 +36,7 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// Gets the inner conditions.
         /// </summary>
         /// <value>The inner conditions.</value>
-        public IEnumerable<IFilterCondition> InnerConditions { get; private set; }
+        public IEnumerable<IFilterCondition> InnerConditions { get; }
 
         /// <summary>
         /// Gets the used calculus variables.

@@ -25,7 +25,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <summary>
         /// Gets the variables.
         /// </summary>
-        public string Variable { get; private set; }
+        public string Variable { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

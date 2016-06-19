@@ -30,19 +30,19 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the right operand.
         /// </summary>
         /// <value>The right operand.</value>
-        public IGraphPattern RightOperand { get; private set; }
+        public IGraphPattern RightOperand { get; }
 
         /// <summary>
         /// Gets the left operand.
         /// </summary>
         /// <value>The left operand.</value>
-        public IGraphPattern LeftOperand { get; private set; }
+        public IGraphPattern LeftOperand { get; }
 
         /// <summary>
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

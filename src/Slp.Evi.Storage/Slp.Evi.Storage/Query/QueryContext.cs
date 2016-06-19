@@ -86,7 +86,7 @@ namespace Slp.Evi.Storage.Query
         /// Gets the original algebra.
         /// </summary>
         /// <value>The original algebra.</value>
-        public ISparqlAlgebra OriginalAlgebra { get; private set; }
+        public ISparqlAlgebra OriginalAlgebra { get; }
 
         /// <summary>
         /// Gets the database.

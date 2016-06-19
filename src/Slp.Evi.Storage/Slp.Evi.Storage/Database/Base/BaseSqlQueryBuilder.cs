@@ -57,19 +57,19 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets the string builder.
             /// </summary>
             /// <value>The string builder.</value>
-            public StringBuilder StringBuilder { get; private set; }
+            public StringBuilder StringBuilder { get; }
 
             /// <summary>
             /// Gets the context.
             /// </summary>
             /// <value>The context.</value>
-            public QueryContext Context { get; private set; }
+            public QueryContext Context { get; }
 
             /// <summary>
             /// Gets the relational query.
             /// </summary>
             /// <value>The relational query.</value>
-            public RelationalQuery RelationalQuery { get; private set; }
+            public RelationalQuery RelationalQuery { get; }
 
             /// <summary>
             /// Gets the current calculus model.
@@ -698,7 +698,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets or sets the query builder.
             /// </summary>
             /// <value>The query builder.</value>
-            public BaseSqlQueryBuilder QueryBuilder { get; private set; }
+            public BaseSqlQueryBuilder QueryBuilder { get; }
         }
 
         /// <summary>

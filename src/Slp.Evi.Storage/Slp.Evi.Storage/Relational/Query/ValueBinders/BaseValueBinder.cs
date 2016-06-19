@@ -93,13 +93,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the term map.
         /// </summary>
         /// <value>The term map.</value>
-        public ITermMap TermMap { get; private set; }
+        public ITermMap TermMap { get; }
 
         /// <summary>
         /// Gets the name of the variable.
         /// </summary>
         /// <value>The name of the variable.</value>
-        public string VariableName { get; private set; }
+        public string VariableName { get; }
 
         /// <summary>
         /// Gets the needed calculus variables to calculate the value.
@@ -111,7 +111,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the template parts.
         /// </summary>
         /// <value>The template parts.</value>
-        public IEnumerable<ITemplatePart> TemplateParts { get; private set; } 
+        public IEnumerable<ITemplatePart> TemplateParts { get; } 
 
         /// <summary>
         /// Gets the calculus variable.

@@ -17,7 +17,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the operands.
         /// </summary>
         /// <value>The operands.</value>
-        public ISparqlCondition[] Operands { get; private set; }
+        public ISparqlCondition[] Operands { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConjunctionExpression"/> class.

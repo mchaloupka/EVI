@@ -50,6 +50,6 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
         /// <summary>
         /// Gets the calculus variables.
         /// </summary>
-        public IEnumerable<ICalculusVariable> CalculusVariables { get; private set; }
+        public IEnumerable<ICalculusVariable> CalculusVariables { get; }
     }
 }

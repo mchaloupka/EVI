@@ -52,13 +52,13 @@ namespace Slp.Evi.Storage.Database.Base
         /// Gets the connection string.
         /// </summary>
         /// <value>The connection string.</value>
-        public string ConnectionString { get; private set; }
+        public string ConnectionString { get; }
 
         /// <summary>
         /// Gets the type of the SQL connection.
         /// </summary>
         /// <value>The type of the SQL.</value>
-        public SqlType SqlType { get; private set; }
+        public SqlType SqlType { get; }
 
         /// <summary>
         /// Gets the unquoted table name.

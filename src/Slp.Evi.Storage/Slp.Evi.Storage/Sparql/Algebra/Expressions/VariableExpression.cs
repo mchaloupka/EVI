@@ -18,7 +18,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the variable.
         /// </summary>
         /// <value>The variable.</value>
-        public string Variable { get; private set; }
+        public string Variable { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VariableExpression"/> class.

@@ -26,13 +26,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the joined graph patterns.
         /// </summary>
         /// <value>The joined graph patterns.</value>
-        public IEnumerable<IGraphPattern> JoinedGraphPatterns { get; private set; }
+        public IEnumerable<IGraphPattern> JoinedGraphPatterns { get; }
 
         /// <summary>
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

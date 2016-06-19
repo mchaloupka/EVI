@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Mapping
         /// Gets constant object URI or null if absent
         /// </summary>
         /// <value>The URI.</value>
-        public Uri URI { get; private set; }
+        public Uri URI { get; }
 
         /// <summary>
         /// Gets the datatype URI of the RDF term generated from this term map
@@ -135,7 +135,7 @@ namespace Slp.Evi.Storage.Mapping
         /// Base mapping URI. It will be used to resolve relative values when generating terms
         /// </summary>
         /// <value>The base URI.</value>
-        public Uri BaseUri { get; private set; }
+        public Uri BaseUri { get; }
 
         /// <summary>
         /// The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase" />

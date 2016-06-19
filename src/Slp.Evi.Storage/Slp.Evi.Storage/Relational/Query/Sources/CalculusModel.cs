@@ -63,7 +63,7 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// Gets the variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<ICalculusVariable> Variables { get; private set; }
+        public IEnumerable<ICalculusVariable> Variables { get; }
 
         /// <summary>
         /// Gets the source conditions.

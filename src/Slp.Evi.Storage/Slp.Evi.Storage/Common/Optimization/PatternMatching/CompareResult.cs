@@ -23,7 +23,7 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
         /// Gets the conditions.
         /// </summary>
         /// <value>The conditions.</value>
-        public MatchCondition[] Conditions { get; private set; }
+        public MatchCondition[] Conditions { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance never matches.

@@ -17,7 +17,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the inner condition.
         /// </summary>
         /// <value>The inner condition.</value>
-        public ISparqlCondition InnerCondition { get; private set; }
+        public ISparqlCondition InnerCondition { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NegationExpression"/> class.

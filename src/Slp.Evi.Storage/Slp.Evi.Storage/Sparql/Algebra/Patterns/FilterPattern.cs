@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the inner pattern.
         /// </summary>
         /// <value>The inner pattern.</value>
-        public IGraphPattern InnerPattern { get; private set; }
+        public IGraphPattern InnerPattern { get; }
 
         /// <summary>
         /// Gets the condition.
