@@ -13,9 +13,6 @@
       <binding name="s">
         <uri>http://example.org/ns#a</uri>
       </binding>
-      <binding name="d">
-        <uri>http://example.org/ns#e</uri>
-      </binding>
       <binding name="c">
         <uri>http://example.org/ns#c</uri>
       </binding>
