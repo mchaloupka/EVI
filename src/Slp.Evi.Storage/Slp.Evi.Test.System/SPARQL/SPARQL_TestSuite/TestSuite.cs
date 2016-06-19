@@ -273,7 +273,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
         private static string GetQuery(string queryFile)
         {
-            var query = string.Empty;
+            string query;
 
             using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
             using (var sr = new StreamReader(fsr))
