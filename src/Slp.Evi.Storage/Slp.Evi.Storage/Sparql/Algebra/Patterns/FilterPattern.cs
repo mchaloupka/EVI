@@ -35,10 +35,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables
-        {
-            get { return InnerPattern.Variables; }
-        }
+        public IEnumerable<string> Variables => InnerPattern.Variables;
 
         /// <summary>
         /// Accepts the specified visitor.

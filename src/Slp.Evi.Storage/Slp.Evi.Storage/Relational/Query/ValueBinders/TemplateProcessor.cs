@@ -78,19 +78,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// Gets a value indicating whether this instance is column.
             /// </summary>
             /// <value><c>true</c> if this instance is column; otherwise, <c>false</c>.</value>
-            public bool IsColumn
-            {
-                get { return true; }
-            }
+            public bool IsColumn => true;
 
             /// <summary>
             /// Gets a value indicating whether this instance is text.
             /// </summary>
             /// <value><c>true</c> if this instance is text; otherwise, <c>false</c>.</value>
-            public bool IsText
-            {
-                get { return false; }
-            }
+            public bool IsText => false;
 
             /// <summary>
             /// Gets the text.
@@ -127,19 +121,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// Gets a value indicating whether this instance is column.
             /// </summary>
             /// <value><c>true</c> if this instance is column; otherwise, <c>false</c>.</value>
-            public bool IsColumn
-            {
-                get { return false; }
-            }
+            public bool IsColumn => false;
 
             /// <summary>
             /// Gets a value indicating whether this instance is text.
             /// </summary>
             /// <value><c>true</c> if this instance is text; otherwise, <c>false</c>.</value>
-            public bool IsText
-            {
-                get { return true; }
-            }
+            public bool IsText => true;
 
             /// <summary>
             /// Gets the column.

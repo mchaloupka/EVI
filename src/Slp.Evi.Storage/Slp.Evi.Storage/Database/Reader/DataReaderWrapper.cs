@@ -93,7 +93,7 @@ namespace Slp.Evi.Storage.Database.Reader
         /// Gets a value indicating whether this instance has next row.
         /// </summary>
         /// <value><c>true</c> if this instance has next row; otherwise, <c>false</c>.</value>
-        public bool HasNextRow { get { return _currentRow != null; } }
+        public bool HasNextRow => _currentRow != null;
 
         /// <summary>
         /// Reads the current row and moves to next one.
@@ -220,7 +220,7 @@ namespace Slp.Evi.Storage.Database.Reader
             /// Gets the value.
             /// </summary>
             /// <value>The value.</value>
-            public object Value { get { return _value; } }
+            public object Value => _value;
 
             /// <summary>
             /// Gets the boolean value.

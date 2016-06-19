@@ -46,10 +46,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// The coalesced value binders
         /// </summary>
-        public IValueBinder[] ValueBinders
-        {
-            get { return _valueBinders; }
-        }
+        public IValueBinder[] ValueBinders => _valueBinders;
 
         /// <summary>
         /// Accepts the specified visitor.

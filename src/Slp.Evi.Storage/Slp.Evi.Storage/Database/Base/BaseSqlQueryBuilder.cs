@@ -75,7 +75,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets the current calculus model.
             /// </summary>
             /// <value>The current calculus model (<c>null</c> if you are topmost).</value>
-            public CalculusModel CurrentCalculusModel { get { return (modelsStack.Count > 0) ? modelsStack.Peek() : null; } }
+            public CalculusModel CurrentCalculusModel => (modelsStack.Count > 0) ? modelsStack.Peek() : null;
 
             /// <summary>
             /// Enters the calculus model.

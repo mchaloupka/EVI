@@ -50,46 +50,31 @@ namespace Slp.Evi.Storage.Mapping
         /// Gets value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> is <a href="http://www.w3.org/TR/r2rml/#from-column">column valued</a>
         /// </summary>
         /// <value><c>true</c> if this instance is column valued; otherwise, <c>false</c>.</value>
-        public bool IsColumnValued
-        {
-            get { return false; }
-        }
+        public bool IsColumnValued => false;
 
         /// <summary>
         /// Gets value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> is <a href="http://www.w3.org/TR/r2rml/#constant">constant valued</a>
         /// </summary>
         /// <value><c>true</c> if this instance is constant valued; otherwise, <c>false</c>.</value>
-        public bool IsConstantValued
-        {
-            get { return true; }
-        }
+        public bool IsConstantValued => true;
 
         /// <summary>
         /// Gets value indicating whether <a href="http://www.w3.org/TR/r2rml/#term-map">term map</a> is <a href="http://www.w3.org/TR/r2rml/#from-template">template valued</a>
         /// </summary>
         /// <value><c>true</c> if this instance is template valued; otherwise, <c>false</c>.</value>
-        public bool IsTemplateValued
-        {
-            get { return false; }
-        }
+        public bool IsTemplateValued => false;
 
         /// <summary>
         /// Gets template or null if absent
         /// </summary>
         /// <value>The template.</value>
-        public string Template
-        {
-            get { return null; }
-        }
+        public string Template => null;
 
         /// <summary>
         /// Gets <a href="http://www.w3.org/TR/r2rml/#term-map">term map's</a><a href="http://www.w3.org/TR/r2rml/#termtype">term type</a>
         /// </summary>
         /// <value>The type of the term.</value>
-        public ITermType TermType
-        {
-            get { return new ClassPredicateMapTermType(); }
-        }
+        public ITermType TermType => new ClassPredicateMapTermType();
 
         /// <summary>
         /// Returns term type set with configuration
@@ -97,10 +82,7 @@ namespace Slp.Evi.Storage.Mapping
         /// </summary>
         /// <value>The term type URI.</value>
         /// <remarks>Default value is described on http://www.w3.org/TR/r2rml/#dfn-term-type</remarks>
-        public Uri TermTypeURI
-        {
-            get { return UriFactory.Create("http://www.w3.org/ns/r2rml#IRI"); }
-        }
+        public Uri TermTypeURI => UriFactory.Create("http://www.w3.org/ns/r2rml#IRI");
 
         /// <summary>
         /// Base mapping URI. It will be used to resolve relative values when generating terms
@@ -112,10 +94,7 @@ namespace Slp.Evi.Storage.Mapping
         /// The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase" />
         /// </summary>
         /// <value>The node.</value>
-        public INode Node
-        {
-            get { return null; }
-        }
+        public INode Node => null;
 
         /// <summary>
         /// Term type for class predicate term
@@ -126,28 +105,19 @@ namespace Slp.Evi.Storage.Mapping
             /// Gets value indicating whether the term map's term type is rr:BlankNode
             /// </summary>
             /// <value><c>true</c> if this instance is blank node; otherwise, <c>false</c>.</value>
-            public bool IsBlankNode
-            {
-                get { return false; }
-            }
+            public bool IsBlankNode => false;
 
             /// <summary>
             /// Gets value indicating whether the term map's term type is rr:Literal
             /// </summary>
             /// <value><c>true</c> if this instance is literal; otherwise, <c>false</c>.</value>
-            public bool IsLiteral
-            {
-                get { return false; }
-            }
+            public bool IsLiteral => false;
 
             /// <summary>
             /// Gets value indicating whether the term map's term type is rr:IRI
             /// </summary>
             /// <value><c>true</c> if this instance is URI; otherwise, <c>false</c>.</value>
-            public bool IsURI
-            {
-                get { return true; }
-            }
+            public bool IsURI => true;
         }
 
     }

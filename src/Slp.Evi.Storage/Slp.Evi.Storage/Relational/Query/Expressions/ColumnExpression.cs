@@ -51,10 +51,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The SQL type of the expression.
         /// </summary>
-        public DataType SqlType
-        {
-            get { return CalculusVariable.SqlType; }
-        }
+        public DataType SqlType => CalculusVariable.SqlType;
 
         /// <summary>
         /// Gets the used calculus variables.

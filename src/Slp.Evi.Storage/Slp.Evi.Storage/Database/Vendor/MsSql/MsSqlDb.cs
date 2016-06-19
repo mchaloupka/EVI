@@ -113,18 +113,12 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// Gets the SQL type for string.
         /// </summary>
         /// <value>The SQL type for string.</value>
-        public override DataType SqlTypeForString
-        {
-            get { return new DataType("nvarchar(max)", "System.String"); }
-        }
+        public override DataType SqlTypeForString => new DataType("nvarchar(max)", "System.String");
 
         /// <summary>
         /// Gets the SQL type for int.
         /// </summary>
         /// <value>The SQL type for int.</value>
-        public override DataType SqlTypeForInt
-        {
-            get { return new DataType("int", "System.Int32"); }
-        }
+        public override DataType SqlTypeForInt => new DataType("int", "System.Int32");
     }
 }
