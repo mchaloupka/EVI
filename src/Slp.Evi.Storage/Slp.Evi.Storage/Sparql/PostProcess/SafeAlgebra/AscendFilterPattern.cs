@@ -12,7 +12,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
     /// Class providing the ability to ascend filter pattern into LEFT JOIN
     /// </summary>
     public class AscendFilterPattern
-        : BaseSparqlTransformer<SafeAlgebraParameter>, ISparqlPostProcess
+        : BaseSparqlTransformer<object>, ISparqlPostProcess
     {
         /// <summary>
         /// Optimizes the specified query.
@@ -21,7 +21,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="context">The context.</param>
         public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
         {
-            return TransformSparqlQuery(query, new SafeAlgebraParameter(context, false));
+            return TransformSparqlQuery(query, null);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(FilterPattern toTransform, SafeAlgebraParameter data)
+        protected override IGraphPattern Transform(FilterPattern toTransform, object data)
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
@@ -60,7 +60,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(JoinPattern toTransform, SafeAlgebraParameter data)
+        protected override IGraphPattern Transform(JoinPattern toTransform, object data)
         {
             bool changed = false;
             List<IGraphPattern> newInnerPatterns = new List<IGraphPattern>();
@@ -108,10 +108,10 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(LeftJoinPattern toTransform, SafeAlgebraParameter data)
+        protected override IGraphPattern Transform(LeftJoinPattern toTransform, object data)
         {
             var transformedLeft = TransformGraphPattern(toTransform.LeftOperand, data);
-            var transformedRight = TransformGraphPattern(toTransform.RightOperand, data.Create(true));
+            var transformedRight = TransformGraphPattern(toTransform.RightOperand, data);
 
             if (transformedLeft is FilterPattern || transformedRight is FilterPattern)
             {
