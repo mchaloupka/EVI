@@ -79,7 +79,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
     }
 }
 <#+
-    List<string> datasetNames = new List<string>();
+    readonly List<string> datasetNames = new List<string>();
 
     void BagEqualTest(string dataset, string folder, string name)
     {

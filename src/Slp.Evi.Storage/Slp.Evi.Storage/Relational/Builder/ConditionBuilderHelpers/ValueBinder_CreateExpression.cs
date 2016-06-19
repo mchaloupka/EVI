@@ -20,7 +20,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <summary>
         /// The condition builder
         /// </summary>
-        private ConditionBuilder _conditionBuilder;
+        private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueBinder_CreateExpression"/> class.
