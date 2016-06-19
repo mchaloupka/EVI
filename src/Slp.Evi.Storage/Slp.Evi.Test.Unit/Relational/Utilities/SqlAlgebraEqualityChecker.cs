@@ -40,14 +40,10 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
 
             int matched = 0;
 
-            for (int l = 0; l < leftConditions.Count; l++)
+            foreach (var lCond in leftConditions)
             {
-                var lCond = leftConditions[l];
-
-                for (int r = 0; r < rightConditions.Count; r++)
+                foreach (var rCond in rightConditions)
                 {
-                    var rCond = rightConditions[r];
-
                     if ((bool)lCond.Accept(this, rCond))
                     {
                         matched++;
@@ -83,14 +79,10 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
 
             int matched = 0;
 
-            for (int l = 0; l < leftConditions.Count; l++)
+            foreach (var lCond in leftConditions)
             {
-                var lCond = leftConditions[l];
-
-                for (int r = 0; r < rightConditions.Count; r++)
+                foreach (var rCond in rightConditions)
                 {
-                    var rCond = rightConditions[r];
-
                     if ((bool)lCond.Accept(this, rCond))
                     {
                         matched++;

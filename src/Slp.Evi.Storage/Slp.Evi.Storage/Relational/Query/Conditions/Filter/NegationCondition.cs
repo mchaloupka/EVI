@@ -22,7 +22,7 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// Gets the inner condition.
         /// </summary>
         /// <value>The inner condition.</value>
-        public IFilterCondition InnerCondition { get; private set; }
+        public IFilterCondition InnerCondition { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

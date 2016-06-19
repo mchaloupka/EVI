@@ -15,8 +15,8 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Assignment
         /// <param name="expression">The expression.</param>
         public AssignmentFromExpressionCondition(ICalculusVariable variable, IExpression expression)
         {
-            this.Variable = variable;
-            this.Expression = expression;
+            Variable = variable;
+            Expression = expression;
         }
 
         /// <summary>

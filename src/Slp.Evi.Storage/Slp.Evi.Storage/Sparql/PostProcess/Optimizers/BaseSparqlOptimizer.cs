@@ -30,13 +30,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// Gets the optimizer implementation.
         /// </summary>
         /// <value>The optimizer implementation.</value>
-        protected BaseSparqlOptimizerImplementation<T> OptimizerImplementation
-        {
-            get
-            {
-                return _optimizerImplementation;
-            }
-        }
+        protected BaseSparqlOptimizerImplementation<T> OptimizerImplementation => _optimizerImplementation;
 
         /// <summary>
         /// The optimization context

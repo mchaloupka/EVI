@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 
 namespace Slp.Evi.Storage.Relational.Query.Expressions
@@ -46,7 +43,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The SQL type of the expression.
         /// </summary>
-        public DataType SqlType { get; private set; }
+        public DataType SqlType { get; }
 
         /// <summary>
         /// Gets the used calculus variables.

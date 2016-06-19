@@ -63,34 +63,25 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// Gets the variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<ICalculusVariable> Variables { get; private set; }
+        public IEnumerable<ICalculusVariable> Variables { get; }
 
         /// <summary>
         /// Gets the source conditions.
         /// </summary>
         /// <value>The source conditions.</value>
-        public IEnumerable<ISourceCondition> SourceConditions
-        {
-            get { return _sourceConditions; }
-        }
+        public IEnumerable<ISourceCondition> SourceConditions => _sourceConditions;
 
         /// <summary>
         /// Gets the filter conditions.
         /// </summary>
         /// <value>The filter conditions.</value>
-        public IEnumerable<IFilterCondition> FilterConditions
-        {
-            get { return _filterConditions; }
-        }
+        public IEnumerable<IFilterCondition> FilterConditions => _filterConditions;
 
         /// <summary>
         /// Gets the assignment conditions.
         /// </summary>
         /// <value>The assignment conditions.</value>
-        public IEnumerable<IAssignmentCondition> AssignmentConditions
-        {
-            get { return _assignmentConditions; }
-        }
+        public IEnumerable<IAssignmentCondition> AssignmentConditions => _assignmentConditions;
 
         /// <summary>
         /// Accepts the specified visitor.

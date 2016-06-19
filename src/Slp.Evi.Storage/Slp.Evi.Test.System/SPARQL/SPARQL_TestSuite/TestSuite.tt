@@ -1,9 +1,6 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="System.IO.IsolatedStorage" #>
 <#@ output extension=".cs" #>
 using System.IO;
 using System.Xml.Linq;
@@ -23,6 +20,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", "Simple", "optional"); #>
 <# BagEqualTest("simple.xml", "Simple", "bind"); #>
 <# BagEqualTest("simple.xml", "Simple", "nested_optional"); #>
+<# BagEqualTest("simple.xml", "Simple", "nested_filter"); #>
 
 <# BagEqualTest("simple.xml", @"Simple\Filter", "bound"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "not_bound"); #>
@@ -78,7 +76,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
     }
 }
 <#+
-    List<string> datasetNames = new List<string>();
+    readonly List<string> datasetNames = new List<string>();
 
     void BagEqualTest(string dataset, string folder, string name)
     {

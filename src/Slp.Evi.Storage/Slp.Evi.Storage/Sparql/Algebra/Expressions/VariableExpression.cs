@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
 {
@@ -18,7 +14,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the variable.
         /// </summary>
         /// <value>The variable.</value>
-        public string Variable { get; private set; }
+        public string Variable { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VariableExpression"/> class.

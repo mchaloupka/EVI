@@ -228,7 +228,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// Gets the queries.
                 /// </summary>
                 /// <value>The queries.</value>
-                public List<IGraphPattern> Queries { get; private set; }
+                public List<IGraphPattern> Queries { get; }
 
                 /// <summary>
                 /// Adds the information from the passed <see cref="RestrictedTriplePattern"/> to the <see cref="CartesianResult"/>

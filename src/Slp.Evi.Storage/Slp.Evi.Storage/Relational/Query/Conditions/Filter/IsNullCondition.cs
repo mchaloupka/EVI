@@ -23,7 +23,7 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// Gets the variable.
         /// </summary>
         /// <value>The variable.</value>
-        public ICalculusVariable Variable { get; private set; }
+        public ICalculusVariable Variable { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

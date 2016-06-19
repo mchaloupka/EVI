@@ -17,7 +17,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
         [TestInitialize]
         public void TestInitialization()
         {
-            this._optimizer = new ConcatenationInEqualConditionOptimizer();
+            _optimizer = new ConcatenationInEqualConditionOptimizer();
         }
             
         [TestMethod]

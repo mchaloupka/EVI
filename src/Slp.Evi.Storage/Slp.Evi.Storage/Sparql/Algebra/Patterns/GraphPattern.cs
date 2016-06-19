@@ -24,16 +24,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables
-        {
-            get { return InnerPattern.Variables; }
-        }
+        public IEnumerable<string> Variables => InnerPattern.Variables;
 
         /// <summary>
         /// Gets the inner pattern.
         /// </summary>
         /// <value>The inner pattern.</value>
-        public IGraphPattern InnerPattern { get; private set; }
+        public IGraphPattern InnerPattern { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

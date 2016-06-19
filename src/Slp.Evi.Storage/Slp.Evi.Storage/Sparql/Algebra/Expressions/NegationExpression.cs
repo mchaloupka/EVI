@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
 {
@@ -17,7 +13,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// Gets the inner condition.
         /// </summary>
         /// <value>The inner condition.</value>
-        public ISparqlCondition InnerCondition { get; private set; }
+        public ISparqlCondition InnerCondition { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NegationExpression"/> class.

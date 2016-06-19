@@ -13,13 +13,13 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// Gets the left variable.
         /// </summary>
         /// <value>The left variable.</value>
-        public ICalculusVariable LeftVariable { get; private set; }
+        public ICalculusVariable LeftVariable { get; }
 
         /// <summary>
         /// Gets the right variable.
         /// </summary>
         /// <value>The right variable.</value>
-        public ICalculusVariable RightVariable { get; private set; }
+        public ICalculusVariable RightVariable { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EqualVariablesCondition"/> class.

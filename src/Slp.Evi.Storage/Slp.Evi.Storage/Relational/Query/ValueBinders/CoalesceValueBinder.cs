@@ -41,15 +41,12 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the name of the variable.
         /// </summary>
         /// <value>The name of the variable.</value>
-        public string VariableName { get; private set; }
+        public string VariableName { get; }
 
         /// <summary>
         /// The coalesced value binders
         /// </summary>
-        public IValueBinder[] ValueBinders
-        {
-            get { return _valueBinders; }
-        }
+        public IValueBinder[] ValueBinders => _valueBinders;
 
         /// <summary>
         /// Accepts the specified visitor.

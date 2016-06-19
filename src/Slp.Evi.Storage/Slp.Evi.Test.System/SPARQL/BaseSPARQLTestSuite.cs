@@ -18,7 +18,7 @@ namespace Slp.Evi.Test.System.SPARQL
     {
         protected static string GetPath(string dataFile)
         {
-            var path = string.Format(".\\SPARQL\\SPARQL_TestSuite\\{0}", dataFile);
+            var path = $".\\SPARQL\\SPARQL_TestSuite\\{dataFile}";
             return path;
         }
 

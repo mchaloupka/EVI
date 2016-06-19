@@ -104,6 +104,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_nested_filter()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\nested_filter.rq";
+            var resultFile = @"Data\Simple\nested_filter.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Simple_Filter_bound()
@@ -261,7 +273,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
         private static string GetQuery(string queryFile)
         {
-            var query = string.Empty;
+            string query;
 
             using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
             using (var sr = new StreamReader(fsr))

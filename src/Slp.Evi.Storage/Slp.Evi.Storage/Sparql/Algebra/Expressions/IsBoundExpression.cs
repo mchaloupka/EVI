@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
 {
@@ -19,13 +15,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <param name="variable">The variable.</param>
         public IsBoundExpression(string variable)
         {
-            this.Variable = variable;
+            Variable = variable;
         }
 
         /// <summary>
         /// Gets the variables.
         /// </summary>
-        public string Variable { get; private set; }
+        public string Variable { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

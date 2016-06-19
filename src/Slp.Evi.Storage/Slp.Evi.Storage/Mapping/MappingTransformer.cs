@@ -28,13 +28,13 @@ namespace Slp.Evi.Storage.Mapping
         /// <summary>
         /// The mapping processor
         /// </summary>
-        private readonly MappingProcessor _mappingProcessor;
+        private readonly IMappingProcessor _mappingProcessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingTransformer"/> class.
         /// </summary>
         /// <param name="mappingProcessor">The mapping processor.</param>
-        public MappingTransformer(MappingProcessor mappingProcessor)
+        public MappingTransformer(IMappingProcessor mappingProcessor)
         {
             _mappingProcessor = mappingProcessor;
         }

@@ -287,10 +287,7 @@ namespace Slp.Evi.Storage
         /// </summary>
         /// <value><c>true</c> if [delete supported]; otherwise, <c>false</c>.</value>
         /// <remarks>Some Stores do not support the deletion of Graphs and may as designated in the interface definition throw a <see cref="T:System.NotSupportedException">NotSupportedException</see> if the <strong>DeleteGraph()</strong> method is called.  This property allows for calling code to check in advance whether Deletion of Graphs is supported.</remarks>
-        public bool DeleteSupported
-        {
-            get { return false; }
-        }
+        public bool DeleteSupported => false;
 
         /// <summary>
         /// Gets the Save Behaviour the Store uses
@@ -307,10 +304,7 @@ namespace Slp.Evi.Storage
         /// </summary>
         /// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
         /// <remarks>Any Manager which indicates it is read-only should also return false for the <see cref="P:VDS.RDF.Storage.IStorageCapabilities.UpdateSupported">UpdatedSupported</see> property and should throw a <see cref="T:VDS.RDF.Storage.RdfStorageException">RdfStorageException</see> if the <strong>SaveGraph()</strong> or <strong>UpdateGraph()</strong> methods are called</remarks>
-        public bool IsReadOnly
-        {
-            get { return true; }
-        }
+        public bool IsReadOnly => true;
 
         /// <summary>
         /// Gets whether the connection with the underlying Store is ready for use
@@ -326,20 +320,14 @@ namespace Slp.Evi.Storage
         /// Gets whether the Store supports Listing Graphs
         /// </summary>
         /// <value><c>true</c> if [list graphs supported]; otherwise, <c>false</c>.</value>
-        public bool ListGraphsSupported
-        {
-            get { return true; }
-        }
+        public bool ListGraphsSupported => true;
 
         /// <summary>
         /// Gets whether the triple level updates are supported
         /// </summary>
         /// <value><c>true</c> if [update supported]; otherwise, <c>false</c>.</value>
         /// <remarks>Some Stores do not support updates at the Triple level and may as designated in the interface definition throw a <see cref="T:System.NotSupportedException">NotSupportedException</see> if the <strong>UpdateGraph()</strong> method is called.  This property allows for calling code to check in advance whether Updates are supported</remarks>
-        public bool UpdateSupported
-        {
-            get { return false; }
-        }
+        public bool UpdateSupported => false;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

@@ -7,10 +7,7 @@
 <#@ assembly name="$(SolutionDir)/roslyn/Microsoft.CodeAnalysis.CSharp.dll" #>
 <#@ assembly name="$(SolutionDir)/roslyn/System.Collections.Immutable.dll" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
-<#@ import namespace="Microsoft.CodeAnalysis" #>
 <#@ import namespace="Microsoft.CodeAnalysis.CSharp" #>
 <#@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #>
 // This is generated code, do not edit!!!

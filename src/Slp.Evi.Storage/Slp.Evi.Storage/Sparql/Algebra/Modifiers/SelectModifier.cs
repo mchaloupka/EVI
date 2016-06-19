@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Modifiers
         /// Gets the SPARQL variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<string> Variables { get; private set; }
+        public IEnumerable<string> Variables { get; }
 
         /// <summary>
         /// Gets the inner query.

@@ -13,7 +13,7 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
         /// Gets the calculus variables.
         /// </summary>
         /// <value>The calculus variables.</value>
-        public IEnumerable<ICalculusVariable> CalculusVariables { get; private set; }
+        public IEnumerable<ICalculusVariable> CalculusVariables { get; }
 
         /// <summary>
         /// Gets the source.

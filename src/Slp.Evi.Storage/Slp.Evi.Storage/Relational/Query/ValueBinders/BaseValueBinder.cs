@@ -93,13 +93,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the term map.
         /// </summary>
         /// <value>The term map.</value>
-        public ITermMap TermMap { get; private set; }
+        public ITermMap TermMap { get; }
 
         /// <summary>
         /// Gets the name of the variable.
         /// </summary>
         /// <value>The name of the variable.</value>
-        public string VariableName { get; private set; }
+        public string VariableName { get; }
 
         /// <summary>
         /// Gets the needed calculus variables to calculate the value.
@@ -111,7 +111,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the template parts.
         /// </summary>
         /// <value>The template parts.</value>
-        public IEnumerable<ITemplatePart> TemplateParts { get; private set; } 
+        public IEnumerable<ITemplatePart> TemplateParts { get; } 
 
         /// <summary>
         /// Gets the calculus variable.
@@ -369,7 +369,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             else
             {
-                throw new Exception(string.Format("Unhandled term type"));
+                throw new Exception("Unhandled term type");
             }
 
             expressions.Add(Expression.Label(endLabel, nodeVar));
@@ -459,7 +459,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             catch (Exception)
             {
-                throw new Exception(string.Format("Value {0} is invalid uri", value));
+                throw new Exception($"Value {value} is invalid uri");
             }
         }
 
@@ -500,7 +500,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 }
             }
 
-            var joinedChars = string.Join(",", disallowedChars.Select(c => string.Format("'{0}'", c)));
+            var joinedChars = string.Join(",", disallowedChars.Select(c => $"'{c}'"));
             if (joinedChars.Any())
             {
                 const string format = "Column value is not escaped and thus cannot contain these disallowed characters: {0}";

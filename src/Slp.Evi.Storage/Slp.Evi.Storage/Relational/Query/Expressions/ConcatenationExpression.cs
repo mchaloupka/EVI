@@ -31,10 +31,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The concatenated expressions
         /// </summary>
-        public IEnumerable<IExpression> InnerExpressions
-        {
-            get { return _expressions; }
-        }
+        public IEnumerable<IExpression> InnerExpressions => _expressions;
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -51,7 +48,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The SQL type of the expression.
         /// </summary>
-        public DataType SqlType { get; private set; }
+        public DataType SqlType { get; }
 
         /// <summary>
         /// Gets the used calculus variables.

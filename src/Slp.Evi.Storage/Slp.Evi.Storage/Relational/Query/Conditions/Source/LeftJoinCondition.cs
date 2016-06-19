@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
 {
@@ -50,6 +47,6 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Source
         /// <summary>
         /// Gets the calculus variables.
         /// </summary>
-        public IEnumerable<ICalculusVariable> CalculusVariables { get; private set; }
+        public IEnumerable<ICalculusVariable> CalculusVariables { get; }
     }
 }

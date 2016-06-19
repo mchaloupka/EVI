@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the cases.
         /// </summary>
         /// <value>The cases.</value>
-        public IEnumerable<Case> Cases { get; private set; }
+        public IEnumerable<Case> Cases { get; }
 
         /// <summary>
         /// Accepts the specified visitor.
@@ -74,13 +74,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the case variable.
         /// </summary>
         /// <value>The case variable.</value>
-        public ICalculusVariable CaseVariable { get; private set; }
+        public ICalculusVariable CaseVariable { get; }
 
         /// <summary>
         /// Gets the name of the variable.
         /// </summary>
         /// <value>The name of the variable.</value>
-        public string VariableName { get; private set; }
+        public string VariableName { get; }
 
         /// <summary>
         /// Gets the needed calculus variables to calculate the value.
@@ -126,13 +126,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// Gets the case value.
             /// </summary>
             /// <value>The case value.</value>
-            public int CaseValue { get; private set; }
+            public int CaseValue { get; }
 
             /// <summary>
             /// Gets the value binder.
             /// </summary>
             /// <value>The value binder.</value>
-            public IValueBinder ValueBinder { get; private set; }
+            public IValueBinder ValueBinder { get; }
         }
     }
 }

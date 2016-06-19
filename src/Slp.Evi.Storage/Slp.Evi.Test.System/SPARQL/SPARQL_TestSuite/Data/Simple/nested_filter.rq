@@ -1,0 +1,11 @@
+PREFIX ex: <http://example.org/ns#>
+
+SELECT ?s ?d ?c
+WHERE {
+  ?s ex:e ex:1;
+    ex:b ?c.
+  OPTIONAL {
+    ?s ex:d ?d
+    FILTER (?c = 2)
+  }
+}

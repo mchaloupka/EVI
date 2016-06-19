@@ -15,7 +15,7 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// Gets the provided variables.
         /// </summary>
         /// <value>The variables.</value>
-        public IEnumerable<ICalculusVariable> Variables { get { return _variables.Values; } }
+        public IEnumerable<ICalculusVariable> Variables => _variables.Values;
 
         /// <summary>
         /// Gets the name of the table.

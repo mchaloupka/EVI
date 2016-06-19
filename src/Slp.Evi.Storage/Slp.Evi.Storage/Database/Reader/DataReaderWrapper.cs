@@ -93,7 +93,7 @@ namespace Slp.Evi.Storage.Database.Reader
         /// Gets a value indicating whether this instance has next row.
         /// </summary>
         /// <value><c>true</c> if this instance has next row; otherwise, <c>false</c>.</value>
-        public bool HasNextRow { get { return _currentRow != null; } }
+        public bool HasNextRow => _currentRow != null;
 
         /// <summary>
         /// Reads the current row and moves to next one.
@@ -191,11 +191,6 @@ namespace Slp.Evi.Storage.Database.Reader
         private class DataReaderColumn : IQueryResultColumn
         {
             /// <summary>
-            /// The name
-            /// </summary>
-            private readonly string _name;
-
-            /// <summary>
             /// The value
             /// </summary>
             private readonly object _value;
@@ -207,7 +202,7 @@ namespace Slp.Evi.Storage.Database.Reader
             /// <param name="value">The value.</param>
             public DataReaderColumn(string name, object value)
             {
-                _name = name;
+                Name = name;
 
                 if (value is DBNull)
                     _value = null;
@@ -219,13 +214,13 @@ namespace Slp.Evi.Storage.Database.Reader
             /// Gets the name.
             /// </summary>
             /// <value>The name.</value>
-            public string Name { get { return _name; } }
+            public string Name { get; }
 
             /// <summary>
             /// Gets the value.
             /// </summary>
             /// <value>The value.</value>
-            public object Value { get { return _value; } }
+            public object Value => _value;
 
             /// <summary>
             /// Gets the boolean value.

@@ -39,7 +39,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="context">Query context</param>
         public ConstantExpression(Uri uri, QueryContext context)
         {
-            SqlString = string.Format("\'{0}\'", uri.AbsoluteUri);
+            SqlString = $"\'{uri.AbsoluteUri}\'";
             Value = uri.AbsoluteUri;
             _context = context;
             SqlType = context.Db.SqlTypeForString;
@@ -52,7 +52,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// /// <param name="context">Query context</param>
         public ConstantExpression(string text, QueryContext context)
         {
-            SqlString = string.Format("\'{0}\'", text);
+            SqlString = $"\'{text}\'";
             Value = text;
             _context = context;
             SqlType = context.Db.SqlTypeForString;
@@ -74,7 +74,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The SQL type of the expression.
         /// </summary>
-        public DataType SqlType { get; private set; }
+        public DataType SqlType { get; }
 
         /// <summary>
         /// Accepts the specified visitor.

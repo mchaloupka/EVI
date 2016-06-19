@@ -30,11 +30,6 @@ namespace Slp.Evi.Storage.Query
         private readonly HashSet<string> _usedVariables;
 
         /// <summary>
-        /// The post processes
-        /// </summary>
-        private readonly QueryPostProcesses _queryPostProcesses;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="QueryContext" /> class.
         /// </summary>
         /// <param name="originalQuery">The original query.</param>
@@ -55,7 +50,7 @@ namespace Slp.Evi.Storage.Query
             _blankNodesObjects = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
-            _queryPostProcesses = new QueryPostProcesses(factory, this);
+            QueryPostProcesses = new QueryPostProcesses(factory, this);
         }
 
         /// <summary>
@@ -86,7 +81,7 @@ namespace Slp.Evi.Storage.Query
         /// Gets the original algebra.
         /// </summary>
         /// <value>The original algebra.</value>
-        public ISparqlAlgebra OriginalAlgebra { get; private set; }
+        public ISparqlAlgebra OriginalAlgebra { get; }
 
         /// <summary>
         /// Gets the database.
@@ -103,10 +98,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The optimizers
         /// </summary>
-        public QueryPostProcesses QueryPostProcesses
-        {
-            get { return _queryPostProcesses; }
-        }
+        public QueryPostProcesses QueryPostProcesses { get; }
 
         /// <summary>
         /// Gets the blank node subject for value.
@@ -155,7 +147,7 @@ namespace Slp.Evi.Storage.Query
 
             do
             {
-                varName = string.Format("_:context-autos{0}", counter++);
+                varName = $"_:context-autos{counter++}";
             } while (_usedVariables.Contains(varName));
 
             _usedVariables.Add(varName);

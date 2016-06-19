@@ -108,47 +108,47 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
                 return false;
             }
 
-            if (!object.Equals(toTransform.GraphMap, other.GraphMap))
+            if (!Equals(toTransform.GraphMap, other.GraphMap))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.PredicateMap, other.PredicateMap))
+            if (!Equals(toTransform.PredicateMap, other.PredicateMap))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.PredicatePattern, other.PredicatePattern))
+            if (!Equals(toTransform.PredicatePattern, other.PredicatePattern))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.RefObjectMap, other.RefObjectMap))
+            if (!Equals(toTransform.RefObjectMap, other.RefObjectMap))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.ObjectMap, other.ObjectMap))
+            if (!Equals(toTransform.ObjectMap, other.ObjectMap))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.ObjectPattern, other.ObjectPattern))
+            if (!Equals(toTransform.ObjectPattern, other.ObjectPattern))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.SubjectMap, other.SubjectMap))
+            if (!Equals(toTransform.SubjectMap, other.SubjectMap))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.SubjectPattern, other.SubjectPattern))
+            if (!Equals(toTransform.SubjectPattern, other.SubjectPattern))
             {
                 return false;
             }
 
-            if (!object.Equals(toTransform.TripleMap, other.TripleMap))
+            if (!Equals(toTransform.TripleMap, other.TripleMap))
             {
                 return false;
             }

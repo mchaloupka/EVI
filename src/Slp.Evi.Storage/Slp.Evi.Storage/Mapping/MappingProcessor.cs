@@ -1,6 +1,4 @@
-﻿using Slp.Evi.Storage.Query;
-using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.PostProcess;
+﻿using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping
@@ -24,13 +22,13 @@ namespace Slp.Evi.Storage.Mapping
         /// Gets the R2RML mapping.
         /// </summary>
         /// <value>The R2RML mapping.</value>
-        public IR2RML Mapping { get; private set; }
+        public IR2RML Mapping { get; }
 
         /// <summary>
         /// Gets the R2RML cache.
         /// </summary>
         /// <value>The R2RML cache.</value>
-        public R2RMLCache Cache { get; private set; }
+        public R2RMLCache Cache { get; }
 
         /// <summary>
         /// Gets the mapping transformer.

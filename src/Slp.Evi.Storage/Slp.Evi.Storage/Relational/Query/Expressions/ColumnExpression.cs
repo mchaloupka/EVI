@@ -15,7 +15,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// Gets the calculus variable.
         /// </summary>
         /// <value>The calculus variable.</value>
-        public ICalculusVariable CalculusVariable { get; private set; }
+        public ICalculusVariable CalculusVariable { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is URI.
@@ -51,10 +51,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The SQL type of the expression.
         /// </summary>
-        public DataType SqlType
-        {
-            get { return CalculusVariable.SqlType; }
-        }
+        public DataType SqlType => CalculusVariable.SqlType;
 
         /// <summary>
         /// Gets the used calculus variables.
