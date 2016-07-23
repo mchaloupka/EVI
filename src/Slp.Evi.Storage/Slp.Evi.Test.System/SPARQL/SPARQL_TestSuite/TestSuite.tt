@@ -35,11 +35,11 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
-<# BagEqualTest("students.xml", "Students", "student_names_order"); #>
-<# BagEqualTest("students.xml", "Students", "student_names_order_desc"); #>
-<# BagEqualTest("students.xml", "Students", "student_names_order_limit"); #>
-<# BagEqualTest("students.xml", "Students", "student_names_order_offset"); #>
-<# BagEqualTest("students.xml", "Students", "student_names_order_offset_limit"); #>
+<# EqualTest("students.xml", "Students", "student_names_order"); #>
+<# EqualTest("students.xml", "Students", "student_names_order_desc"); #>
+<# EqualTest("students.xml", "Students", "student_names_order_limit"); #>
+<# EqualTest("students.xml", "Students", "student_names_order_offset"); #>
+<# EqualTest("students.xml", "Students", "student_names_order_offset_limit"); #>
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
@@ -101,6 +101,29 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
             AssertBagEqual(expected, result);
+        }
+
+<#+
+    }
+
+    void EqualTest(string dataset, string folder, string name)
+    {
+        if (!datasetNames.Contains(dataset))
+        {
+            datasetNames.Add(dataset);
+        }
+
+#>
+        [TestMethod]
+        public void <#= GetTestName(folder, name) #>()
+        {
+            var storage = GetStorage("<#= dataset #>");
+            var queryFile = @"Data\\<#= folder #>\\<#= name #>.rq";
+            var resultFile = @"Data\\<#= folder #>\\<#= name #>.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
         }
 
 <#+

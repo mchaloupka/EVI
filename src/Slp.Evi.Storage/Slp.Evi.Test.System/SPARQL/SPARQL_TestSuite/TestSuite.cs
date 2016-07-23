@@ -271,7 +271,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
+            AssertEqual(expected, result);
         }
 
         [TestMethod]
@@ -283,7 +283,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
+            AssertEqual(expected, result);
         }
 
         [TestMethod]
@@ -295,7 +295,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
+            AssertEqual(expected, result);
         }
 
         [TestMethod]
@@ -307,7 +307,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
+            AssertEqual(expected, result);
         }
 
         [TestMethod]
@@ -319,7 +319,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
+            AssertEqual(expected, result);
         }
 
 
