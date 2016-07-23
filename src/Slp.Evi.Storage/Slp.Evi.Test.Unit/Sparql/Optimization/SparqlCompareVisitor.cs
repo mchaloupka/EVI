@@ -15,6 +15,16 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
             throw new NotImplementedException();
         }
 
+        protected override bool Transform(OrderByModifier toTransform, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool Transform(SliceModifier toTransform, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override bool Transform(EmptyPattern toTransform, object data)
         {
             throw new NotImplementedException();

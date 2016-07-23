@@ -411,6 +411,29 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(inner.Model, valueBinders));
         }
+
+        /// <summary>
+        /// Visits <see cref="OrderByModifier"/>
+        /// </summary>
+        /// <param name="orderByModifier">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(OrderByModifier orderByModifier, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Visits <see cref="SliceModifier"/>
+        /// </summary>
+        /// <param name="sliceModifier">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(SliceModifier sliceModifier, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         /// <summary>

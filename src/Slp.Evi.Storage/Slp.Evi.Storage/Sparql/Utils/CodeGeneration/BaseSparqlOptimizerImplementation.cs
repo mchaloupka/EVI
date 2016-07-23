@@ -268,5 +268,27 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         {
             return toTransform;
         }
+
+        /// <summary>
+        /// Process the <see cref="OrderByModifier"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlQuery Transform(OrderByModifier toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="SliceModifier"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlQuery Transform(SliceModifier toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
@@ -46,7 +47,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <returns>The transformed calculus source.</returns>
         private ISparqlCondition TransformSparqlCondition(ISparqlCondition condition, T data)
         {
-            return (ISparqlCondition) TransformSparqlExpression(condition, data);
+            return (ISparqlCondition)TransformSparqlExpression(condition, data);
         }
 
         /// <summary>
@@ -66,6 +67,107 @@ namespace Slp.Evi.Storage.Sparql.Utils
             else
             {
                 return toTransform;
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="OrderByModifier"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlQuery Transform(OrderByModifier toTransform, T data)
+        {
+            var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
+
+            if (newInner is OrderByModifier)
+            {
+                var innerOrderBy = (OrderByModifier)newInner;
+
+                return new OrderByModifier(innerOrderBy.InnerQuery, innerOrderBy.InnerQuery.Variables, toTransform.Ordering.Union(innerOrderBy.Ordering).ToArray());
+            }
+            else if (newInner != toTransform.InnerQuery)
+            {
+                return new OrderByModifier(newInner, newInner.Variables, toTransform.Ordering);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
+        /// Process the <see cref="SliceModifier"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlQuery Transform(SliceModifier toTransform, T data)
+        {
+            var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
+
+            if (newInner is SliceModifier)
+            {
+                var innerSlice = (SliceModifier)newInner;
+
+                int? limit = innerSlice.Limit;
+                int? offset = innerSlice.Offset;
+
+                if (toTransform.Offset.HasValue)
+                {
+                    if (offset.HasValue)
+                    {
+                        offset = offset.Value + toTransform.Offset.Value;
+                    }
+                    else
+                    {
+                        offset = toTransform.Offset;
+                    }
+                }
+
+                if (toTransform.Limit.HasValue)
+                {
+                    if (limit.HasValue)
+                    {
+                        limit = Math.Min(toTransform.Limit.Value, limit.Value);
+                    }
+                    else
+                    {
+                        limit = toTransform.Limit;
+                    }
+                }
+
+                if (offset.HasValue && offset.Value == 0)
+                {
+                    offset = null;
+                }
+
+                return new SliceModifier(innerSlice.InnerQuery, innerSlice.InnerQuery.Variables, limit, offset);
+            }
+            else
+            {
+                int? limit = toTransform.Limit;
+                int? offset = toTransform.Offset;
+
+                bool changed = false;
+                if (offset.HasValue && offset.Value == 0)
+                {
+                    offset = null;
+                    changed = true;
+                }
+
+                if (!offset.HasValue && !limit.HasValue)
+                {
+                    return newInner;
+                }
+                else if (changed || newInner != toTransform.InnerQuery)
+                {
+                    return new SliceModifier(newInner, newInner.Variables, limit, offset);
+                }
+                else
+                {
+                    return toTransform;
+                }
             }
         }
 
@@ -405,7 +507,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
             }
             else if (newInner is ComparisonExpression)
             {
-                var comparisonExpression = (ComparisonExpression) newInner;
+                var comparisonExpression = (ComparisonExpression)newInner;
                 var left = comparisonExpression.LeftOperand;
                 var right = comparisonExpression.RightOperand;
 

@@ -18,6 +18,7 @@ using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Ordering;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -166,6 +167,23 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 return new ExtendPattern(inner, extend.VariableName, expression);
             }
+            else if (originalAlgebra is OrderBy)
+            {
+                var orderby = (OrderBy) originalAlgebra;
+                var inner = ProcessAlgebra(orderby.InnerAlgebra, context);
+
+                return CreateOrderBy(inner, orderby.Ordering, context);
+            }
+            else if (originalAlgebra is Slice)
+            {
+                var slice = (Slice) originalAlgebra;
+                var inner = ProcessAlgebra(slice.InnerAlgebra, context);
+
+                int? limit = (slice.Limit != -1) ? (int?)slice.Limit : null;
+                int? offset = (slice.Offset != 0) ? (int?) slice.Offset : null;
+
+                return new SliceModifier(inner, inner.Variables, limit, offset);
+            }
 
             throw new NotImplementedException();
 
@@ -224,6 +242,30 @@ namespace Slp.Evi.Storage.Sparql.Builder
             //ZeroLengthPath
             //ZeroOrMorePath
 
+        }
+
+        private OrderByModifier CreateOrderBy(ISparqlQuery inner, ISparqlOrderBy ordering, QueryContext context)
+        {
+            List<OrderByModifier.OrderingPart> parts = new List<OrderByModifier.OrderingPart>();
+
+            var current = ordering;
+
+            while (current != null)
+            {
+                if (!current.IsSimple)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    var variable = ((VariableExpression) ProcessExpression(current.Expression, context)).Variable;
+                    parts.Add(new OrderByModifier.OrderingPart(variable, current.Descending));
+                }
+
+                current = current.Child;
+            }
+
+            return new OrderByModifier(inner, inner.Variables, parts);
         }
 
         private ISparqlCondition ProcessCondition(ISparqlExpression expression, QueryContext context)
