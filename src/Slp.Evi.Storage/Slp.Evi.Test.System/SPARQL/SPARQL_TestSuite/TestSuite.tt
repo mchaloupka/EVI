@@ -35,6 +35,11 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
+<# BagEqualTest("students.xml", "Students", "student_names_order"); #>
+<# BagEqualTest("students.xml", "Students", "student_names_order_desc"); #>
+<# BagEqualTest("students.xml", "Students", "student_names_order_limit"); #>
+<# BagEqualTest("students.xml", "Students", "student_names_order_offset"); #>
+<# BagEqualTest("students.xml", "Students", "student_names_order_offset_limit"); #>
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
