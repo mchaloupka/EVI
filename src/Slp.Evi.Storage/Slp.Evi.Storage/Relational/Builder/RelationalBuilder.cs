@@ -481,7 +481,11 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>List&lt;ModifiedCalculusModel.OrderingPart&gt;.</returns>
         private List<ModifiedCalculusModel.OrderingPart> ProcessOrdering(IEnumerable<IValueBinder> valueBinders, IEnumerable<OrderByModifier.OrderingPart> ordering, QueryContext data)
         {
-            throw new NotImplementedException();
+            List<ModifiedCalculusModel.OrderingPart> result = new List<ModifiedCalculusModel.OrderingPart>();
+
+
+
+            return result;
         }
 
         /// <summary>
