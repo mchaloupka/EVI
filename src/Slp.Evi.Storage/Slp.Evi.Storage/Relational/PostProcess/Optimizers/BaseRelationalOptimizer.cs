@@ -58,7 +58,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         public virtual RelationalQuery Process(RelationalQuery query, QueryContext context)
         {
             var optimizationContext = CreateInitialContext(query, context);
-            var modifiedModel = (CalculusModel)Visit(query.Model, optimizationContext);
+            var modifiedModel = (ICalculusSource) query.Model.Accept(this, optimizationContext);
 
             if (modifiedModel != query.Model)
             {

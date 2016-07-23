@@ -13,7 +13,7 @@ namespace Slp.Evi.Storage.Relational.Query
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="valueBinders">The value binders.</param>
-        public RelationalQuery(CalculusModel model, IEnumerable<IValueBinder> valueBinders)
+        public RelationalQuery(ICalculusSource model, IEnumerable<IValueBinder> valueBinders)
         {
             Model = model;
             ValueBinders = valueBinders;
@@ -23,12 +23,12 @@ namespace Slp.Evi.Storage.Relational.Query
         /// Gets the model.
         /// </summary>
         /// <value>The model.</value>
-        public CalculusModel Model { get; private set; }
+        public ICalculusSource Model { get; }
 
         /// <summary>
         /// Gets the value binders.
         /// </summary>
         /// <value>The value binders.</value>
-        public IEnumerable<IValueBinder> ValueBinders { get; private set; }
+        public IEnumerable<IValueBinder> ValueBinders { get; }
     }
 }

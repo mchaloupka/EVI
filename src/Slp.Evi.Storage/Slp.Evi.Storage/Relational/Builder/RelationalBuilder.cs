@@ -88,15 +88,22 @@ namespace Slp.Evi.Storage.Relational.Builder
         public object Visit(FilterPattern filterPattern, object data)
         {
             var inner = (RelationalQuery)filterPattern.InnerPattern.Accept(this, data);
+            var innerModel = inner.Model as CalculusModel;
+
+            if (innerModel == null)
+            {
+                throw new Exception($"Only {nameof(CalculusModel)} is expected");
+            }
+
             var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, (QueryContext)data, inner.ValueBinders);
 
             var conditions = new List<ICondition>();
-            conditions.AddRange(inner.Model.SourceConditions);
-            conditions.AddRange(inner.Model.AssignmentConditions);
-            conditions.AddRange(inner.Model.FilterConditions);
+            conditions.AddRange(innerModel.SourceConditions);
+            conditions.AddRange(innerModel.AssignmentConditions);
+            conditions.AddRange(innerModel.FilterConditions);
             conditions.Add(condition);
 
-            var model = new CalculusModel(inner.Model.Variables, conditions);
+            var model = new CalculusModel(innerModel.Variables, conditions);
             var query = new RelationalQuery(model, inner.ValueBinders);
 
             return ((QueryContext) data).QueryPostProcesses.PostProcess(query);
@@ -143,7 +150,12 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             foreach (var relationalQuery in relationalQueries)
             {
-                var model = relationalQuery.Model;
+                var model = relationalQuery.Model as CalculusModel;
+
+                if (model == null)
+                {
+                    throw new Exception($"Only {nameof(CalculusModel)} is expected");
+                }
 
                 conditions.AddRange(model.AssignmentConditions);
                 conditions.AddRange(model.FilterConditions);
@@ -183,11 +195,18 @@ namespace Slp.Evi.Storage.Relational.Builder
             var leftQuery = (RelationalQuery)leftJoinPattern.LeftOperand.Accept(this, data);
             var rightQuery = (RelationalQuery) leftJoinPattern.RightOperand.Accept(this, data);
 
+            var leftQueryModel = leftQuery.Model as CalculusModel;
+
+            if (leftQueryModel == null)
+            {
+                throw new Exception($"Only {nameof(CalculusModel)} is expected");
+            }
+
             List<ICondition> conditions = new List<ICondition>();
 
-            conditions.AddRange(leftQuery.Model.AssignmentConditions);
-            conditions.AddRange(leftQuery.Model.FilterConditions);
-            conditions.AddRange(leftQuery.Model.SourceConditions);
+            conditions.AddRange(leftQueryModel.AssignmentConditions);
+            conditions.AddRange(leftQueryModel.FilterConditions);
+            conditions.AddRange(leftQueryModel.SourceConditions);
 
             List<IFilterCondition> joinConditions = new List<IFilterCondition>();
             Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
@@ -271,7 +290,13 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             foreach (var relationalQuery in relationalQueries)
             {
-                var oldModel = relationalQuery.Model;
+                var oldModel = relationalQuery.Model as CalculusModel;
+
+                if (oldModel == null)
+                {
+                    throw new Exception($"Only {nameof(CalculusModel)} is expected");
+                }
+
                 variables.AddRange(oldModel.Variables);
 
                 var newConditions = new List<ICondition>();
@@ -420,6 +445,42 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(OrderByModifier orderByModifier, object data)
         {
+            var inner = Process(orderByModifier.InnerQuery, (QueryContext)data);
+            var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, (QueryContext) data);
+
+            if (inner.Model is ModifiedCalculusModel)
+            {
+                var modifiedCalculusModel = (ModifiedCalculusModel)inner.Model;
+
+                orderings.AddRange(modifiedCalculusModel.Ordering);
+                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, orderings, modifiedCalculusModel.Limit, modifiedCalculusModel.Offset);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else if (inner.Model is CalculusModel)
+            {
+                var calculusModel = (CalculusModel)inner.Model;
+
+                var newModel = new ModifiedCalculusModel(calculusModel, orderings,
+                    null, null);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else
+            {
+                throw new Exception($"Expected {nameof(ModifiedCalculusModel)} or {nameof(CalculusModel)}");
+            }
+        }
+
+        /// <summary>
+        /// Processes the ordering.
+        /// </summary>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <param name="ordering">The ordering.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>List&lt;ModifiedCalculusModel.OrderingPart&gt;.</returns>
+        private List<ModifiedCalculusModel.OrderingPart> ProcessOrdering(IEnumerable<IValueBinder> valueBinders, IEnumerable<OrderByModifier.OrderingPart> ordering, QueryContext data)
+        {
             throw new NotImplementedException();
         }
 
@@ -431,7 +492,56 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(SliceModifier sliceModifier, object data)
         {
-            throw new NotImplementedException();
+            var inner = Process(sliceModifier.InnerQuery, (QueryContext) data);
+
+            if (inner.Model is ModifiedCalculusModel)
+            {
+                var modifiedCalculusModel = (ModifiedCalculusModel) inner.Model;
+
+                int? limit = modifiedCalculusModel.Limit;
+                int? offset = modifiedCalculusModel.Offset;
+
+                if (sliceModifier.Limit.HasValue)
+                {
+                    if (limit.HasValue)
+                    {
+                        limit = Math.Min(limit.Value, sliceModifier.Limit.Value);
+                    }
+                    else
+                    {
+                        limit = sliceModifier.Limit.Value;
+                    }
+                }
+
+                if (sliceModifier.Offset.HasValue)
+                {
+                    if (offset.HasValue)
+                    {
+                        offset = offset.Value + sliceModifier.Offset.Value;
+                    }
+                    else
+                    {
+                        offset = sliceModifier.Offset.Value;
+                    }
+                }
+
+                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, modifiedCalculusModel.Ordering, limit, offset);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else if (inner.Model is CalculusModel)
+            {
+                var calculusModel = (CalculusModel) inner.Model;
+
+                var newModel = new ModifiedCalculusModel(calculusModel, new List<ModifiedCalculusModel.OrderingPart>(),
+                    sliceModifier.Limit, sliceModifier.Offset);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else
+            {
+                throw new Exception($"Expected {nameof(ModifiedCalculusModel)} or {nameof(CalculusModel)}");
+            }
         }
 
         #endregion

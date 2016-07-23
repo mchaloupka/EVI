@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Database.Base
         public string GenerateQuery(RelationalQuery relationalQuery, QueryContext context)
         {
             var visitorContext = new VisitorContext(new StringBuilder(), context, relationalQuery);
-            Transform(relationalQuery.Model, visitorContext);
+            TransformCalculusSource(relationalQuery.Model, visitorContext);
             return visitorContext.StringBuilder.ToString();
         }
 
