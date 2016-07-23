@@ -719,28 +719,35 @@ namespace Slp.Evi.Storage.Database.Base
             var stringBuilder = data.StringBuilder;
             var context = data.Context;
 
-            var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
-
-            if (variableSource == null)
+            if (currentModel == null)
             {
-                stringBuilder.Append("NULL");
-            }
-            else if (variableSource is ISourceCondition)
-            {
-                var sourceCondition = (ISourceCondition) variableSource;
-
-                stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
-                stringBuilder.Append('.');
-                stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(sourceCondition, variable));
-            }
-            else if (variableSource is IAssignmentCondition)
-            {
-                var assignmentCondition = (IAssignmentCondition) variableSource;
-                assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
+                stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(null, variable));
             }
             else
             {
-                throw new ArgumentException("Unexpected variable source", nameof(variable));
+                var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
+
+                if (variableSource == null)
+                {
+                    stringBuilder.Append("NULL");
+                }
+                else if (variableSource is ISourceCondition)
+                {
+                    var sourceCondition = (ISourceCondition)variableSource;
+
+                    stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
+                    stringBuilder.Append('.');
+                    stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(sourceCondition, variable));
+                }
+                else if (variableSource is IAssignmentCondition)
+                {
+                    var assignmentCondition = (IAssignmentCondition)variableSource;
+                    assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
+                }
+                else
+                {
+                    throw new ArgumentException("Unexpected variable source", nameof(variable));
+                }
             }
         }
 

@@ -118,9 +118,26 @@ namespace Slp.Evi.Storage.Relational.Utils
         {
             var newInner = (CalculusModel)Transform(toTransform.InnerModel, data);
 
-            if (newInner != toTransform.InnerModel)
+            bool changed = false;
+            var ordering = new List<ModifiedCalculusModel.OrderingPart>();
+            foreach (var orderingPart in toTransform.Ordering)
             {
-                return new ModifiedCalculusModel(newInner, toTransform.Ordering, toTransform.Limit, toTransform.Offset);
+                var newExpression = TransformExpression(orderingPart.Expression, data);
+
+                if (newExpression != orderingPart.Expression)
+                {
+                    ordering.Add(new ModifiedCalculusModel.OrderingPart(newExpression, orderingPart.IsDescending));
+                    changed = true;
+                }
+                else
+                {
+                    ordering.Add(orderingPart);
+                }
+            }
+
+            if (changed || newInner != toTransform.InnerModel)
+            {
+                return new ModifiedCalculusModel(newInner, ordering, toTransform.Limit, toTransform.Offset);
             }
             else
             {

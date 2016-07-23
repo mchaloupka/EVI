@@ -483,7 +483,15 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             List<ModifiedCalculusModel.OrderingPart> result = new List<ModifiedCalculusModel.OrderingPart>();
 
+            foreach (var orderingPart in ordering)
+            {
+                var transformed = _conditionBuilder.CreateOrderByExpression(orderingPart.Variable, valueBinders, data);
 
+                foreach (var expression in transformed)
+                {
+                    result.Add(new ModifiedCalculusModel.OrderingPart(expression, orderingPart.IsDescending));
+                }
+            }
 
             return result;
         }
