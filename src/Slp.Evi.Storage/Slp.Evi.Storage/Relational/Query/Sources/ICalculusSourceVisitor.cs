@@ -22,5 +22,13 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(SqlTable sqlTable, object data);
+
+        /// <summary>
+        /// Visits <see cref="ModifiedCalculusModel"/>
+        /// </summary>
+        /// <param name="calculusModel">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(ModifiedCalculusModel calculusModel, object data);
     }
 }

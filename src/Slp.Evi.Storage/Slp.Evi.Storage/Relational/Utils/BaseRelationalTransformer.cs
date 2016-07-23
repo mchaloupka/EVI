@@ -108,6 +108,27 @@ namespace Slp.Evi.Storage.Relational.Utils
         }
 
         /// <summary>
+        /// Process the <see cref="T:Slp.Evi.Storage.Relational.Query.Sources.ModifiedCalculusModel" />
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override ICalculusSource Transform(ModifiedCalculusModel toTransform, T data)
+        {
+            var newInner = (CalculusModel)Transform(toTransform.InnerModel, data);
+
+            if (newInner != toTransform.InnerModel)
+            {
+                return new ModifiedCalculusModel(newInner, toTransform.Ordering, toTransform.Limit, toTransform.Offset);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <summary>
         /// Process the <see cref="AlwaysFalseCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

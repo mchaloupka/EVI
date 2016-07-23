@@ -98,6 +98,17 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpe
         }
 
         /// <summary>
+        /// Process the <see cref="ModifiedCalculusModel"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IsNullOptimizerAggregatedValues Transform(ModifiedCalculusModel toTransform, IsNullCalculatorParameter data)
+        {
+            return TransformCalculusSource(toTransform.InnerModel, data);
+        }
+
+        /// <summary>
         /// Process the <see cref="AlwaysFalseCondition"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
