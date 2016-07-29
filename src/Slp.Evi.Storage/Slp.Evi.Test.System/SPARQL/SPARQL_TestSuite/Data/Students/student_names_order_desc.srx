@@ -1,0 +1,51 @@
+﻿<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="name"/>
+  </head>
+  <results>
+    <result>
+      <binding name="name">
+        <string>Scarlet</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>Peter</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>Kali</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>John</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>James</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>Isabella</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>Chase</string>
+      </binding>
+    </result>
+    <result>
+      <binding name="name">
+        <string>Catherine</string>
+      </binding>
+    </result>
+  </results>
+</sparql>

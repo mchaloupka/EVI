@@ -1,0 +1,10 @@
+﻿PREFIX ex: <http://example.org/>
+
+SELECT ?name
+WHERE {
+  [] a ex:students;
+    ex:name ?name.
+}
+ORDER BY ?name
+LIMIT 5
+OFFSET 2

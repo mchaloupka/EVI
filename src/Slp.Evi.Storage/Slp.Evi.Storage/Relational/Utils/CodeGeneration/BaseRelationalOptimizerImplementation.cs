@@ -226,5 +226,16 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         {
             return toTransform;
         }
+
+        /// <summary>
+        /// Process the <see cref="ModifiedCalculusModel"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ICalculusSource Transform(ModifiedCalculusModel toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
     }
 }

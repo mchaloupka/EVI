@@ -171,6 +171,19 @@ namespace Slp.Evi.Test.System.SPARQL
             CollectionAssert.AreEquivalent(expectedSet.Results, resultSet.Results);
         }
 
+        protected void AssertEqual(XDocument expected, object result)
+        {
+            var expectedSet = ParseSparqlResultSetXmlResultFile(expected);
+
+            Assert.IsTrue(result is SparqlResultSet);
+
+            var resultSet = (SparqlResultSet)result;
+
+            CollectionAssert.AreEqual(expectedSet.Variables.ToArray(), resultSet.Variables.ToArray());
+
+            CollectionAssert.AreEqual(expectedSet.Results, resultSet.Results);
+        }
+
         private SparqlResultSet ParseSparqlResultSetXmlResultFile(XDocument expected)
         {
             XNamespace ns = "http://www.w3.org/2005/sparql-results#";

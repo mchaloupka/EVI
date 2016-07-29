@@ -1,0 +1,8 @@
+﻿PREFIX ex: <http://example.org/>
+
+SELECT ?name
+WHERE {
+  [] a ex:students;
+    ex:name ?name.
+}
+ORDER BY DESC(?name)

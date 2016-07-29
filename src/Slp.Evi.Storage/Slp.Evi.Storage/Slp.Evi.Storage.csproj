@@ -138,6 +138,7 @@
     <Compile Include="Relational\Query\Conditions\Filter\ComparisonCondition.cs" />
     <Compile Include="Relational\Query\Expressions\CaseExpression.cs" />
     <Compile Include="Relational\Query\Expressions\CoalesceExpression.cs" />
+    <Compile Include="Relational\Query\Sources\ModifiedCalculusModel.cs" />
     <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
     <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
@@ -212,6 +213,8 @@
     <Compile Include="Sparql\Algebra\ISparqlExpression.cs" />
     <Compile Include="Sparql\Algebra\ISparqlQuery.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\IModifierVisitor.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\SliceModifier.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\OrderByModifier.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\SelectModifier.cs" />
     <Compile Include="Sparql\Algebra\Patterns\EmptyPattern.cs" />
     <Compile Include="Sparql\Algebra\Patterns\ExtendPattern.cs" />

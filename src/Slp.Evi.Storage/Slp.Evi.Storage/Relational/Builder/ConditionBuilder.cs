@@ -284,5 +284,27 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             return _expressionIsBoundCondition.CreateIsBoundCondition(expression, context);
         }
+
+        /// <summary>
+        /// Creates the order by expression.
+        /// </summary>
+        /// <param name="variable">The variable.</param>
+        /// <param name="valueBinders">The value binders.</param>
+        /// <param name="data">The data.</param>
+        /// <returns>IEnumerable&lt;IExpression&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public IEnumerable<IExpression> CreateOrderByExpression(string variable, IEnumerable<IValueBinder> valueBinders, QueryContext data)
+        {
+            // TODO: Handle order specifics
+            // http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#modOrderBy
+
+            foreach (var valueBinder in valueBinders)
+            {
+                if (valueBinder.VariableName == variable)
+                {
+                    yield return CreateExpression(data, valueBinder);
+                }
+            }
+        }
     }
 }

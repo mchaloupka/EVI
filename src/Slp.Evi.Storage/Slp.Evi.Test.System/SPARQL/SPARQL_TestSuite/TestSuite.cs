@@ -262,6 +262,66 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Students_student_names_order()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names_order.rq";
+            var resultFile = @"Data\Students\student_names_order.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Students_student_names_order_desc()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names_order_desc.rq";
+            var resultFile = @"Data\Students\student_names_order_desc.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Students_student_names_order_limit()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names_order_limit.rq";
+            var resultFile = @"Data\Students\student_names_order_limit.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Students_student_names_order_offset()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names_order_offset.rq";
+            var resultFile = @"Data\Students\student_names_order_offset.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Students_student_names_order_offset_limit()
+        {
+            var storage = GetStorage("students.xml");
+            var queryFile = @"Data\Students\student_names_order_offset_limit.rq";
+            var resultFile = @"Data\Students\student_names_order_offset_limit.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
@@ -273,7 +333,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
         private static string GetQuery(string queryFile)
         {
-            string query;
+            var query = string.Empty;
 
             using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
             using (var sr = new StreamReader(fsr))

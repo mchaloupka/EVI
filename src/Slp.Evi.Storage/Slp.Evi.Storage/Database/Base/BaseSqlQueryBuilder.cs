@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Database.Base
         public string GenerateQuery(RelationalQuery relationalQuery, QueryContext context)
         {
             var visitorContext = new VisitorContext(new StringBuilder(), context, relationalQuery);
-            Transform(relationalQuery.Model, visitorContext);
+            TransformCalculusSource(relationalQuery.Model, visitorContext);
             return visitorContext.StringBuilder.ToString();
         }
 
@@ -101,12 +101,38 @@ namespace Slp.Evi.Storage.Database.Base
         }
 
         /// <summary>
+        /// Process the <see cref="ModifiedCalculusModel"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override object Transform(ModifiedCalculusModel toTransform, VisitorContext data)
+        {
+            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering, toTransform.Limit, toTransform.Offset);
+            return null;
+        }
+
+        /// <summary>
         /// Process the <see cref="CalculusModel"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override object Transform(CalculusModel toTransform, VisitorContext data)
+        {
+            WriteCalculusModel(toTransform, data);
+            return null;
+        }
+
+        /// <summary>
+        /// Writes the calculus model.
+        /// </summary>
+        /// <param name="toTransform">To transform.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="ordering">The ordering.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="offset">The offset.</param>
+        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, IEnumerable<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset)
         {
             foreach (var sourceCondition in toTransform.SourceConditions)
             {
@@ -132,6 +158,12 @@ namespace Slp.Evi.Storage.Database.Base
             }
 
             data.StringBuilder.Append("SELECT");
+
+            if (limit.HasValue && !offset.HasValue)
+            {
+                data.StringBuilder.Append(" TOP ");
+                data.StringBuilder.Append(limit.Value);
+            }
 
             if (neededVariables.Count > 0)
             {
@@ -210,7 +242,51 @@ namespace Slp.Evi.Storage.Database.Base
             }
 
             data.LeaveCalculusModel();
-            return null;
+
+            bool firstOrderBy = true;
+            foreach (var orderingPart in ordering)
+            {
+                if (firstOrderBy)
+                {
+                    data.StringBuilder.Append(" ORDER BY ");
+                    firstOrderBy = false;
+                }
+                else
+                {
+                    data.StringBuilder.Append(", ");
+                }
+
+                TransformExpression(orderingPart.Expression, data);
+
+                if (orderingPart.IsDescending)
+                {
+                    data.StringBuilder.Append(" DESC");
+                }
+            }
+
+            if (offset.HasValue)
+            {
+                if (firstOrderBy)
+                {
+                    throw new Exception("To enable offset, it is needed to use also order by clause");
+                }
+
+                data.StringBuilder.Append(" OFFSET ");
+                data.StringBuilder.Append(offset.Value);
+                data.StringBuilder.Append(" ROWS");
+
+                if (limit.HasValue)
+                {
+                    data.StringBuilder.Append(" FETCH NEXT ");
+                    data.StringBuilder.Append(limit.Value);
+                    data.StringBuilder.Append(" ROWS ONLY");
+                }
+            }
+        }
+
+        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data)
+        {
+            WriteCalculusModel(toTransform, data, new List<ModifiedCalculusModel.OrderingPart>(), null, null);
         }
 
         /// <summary>
@@ -643,28 +719,35 @@ namespace Slp.Evi.Storage.Database.Base
             var stringBuilder = data.StringBuilder;
             var context = data.Context;
 
-            var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
-
-            if (variableSource == null)
+            if (currentModel == null)
             {
-                stringBuilder.Append("NULL");
-            }
-            else if (variableSource is ISourceCondition)
-            {
-                var sourceCondition = (ISourceCondition) variableSource;
-
-                stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
-                stringBuilder.Append('.');
-                stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(sourceCondition, variable));
-            }
-            else if (variableSource is IAssignmentCondition)
-            {
-                var assignmentCondition = (IAssignmentCondition) variableSource;
-                assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
+                stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(null, variable));
             }
             else
             {
-                throw new ArgumentException("Unexpected variable source", nameof(variable));
+                var variableSource = context.QueryNamingHelpers.GetSourceOfVariable(variable, currentModel);
+
+                if (variableSource == null)
+                {
+                    stringBuilder.Append("NULL");
+                }
+                else if (variableSource is ISourceCondition)
+                {
+                    var sourceCondition = (ISourceCondition)variableSource;
+
+                    stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
+                    stringBuilder.Append('.');
+                    stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(sourceCondition, variable));
+                }
+                else if (variableSource is IAssignmentCondition)
+                {
+                    var assignmentCondition = (IAssignmentCondition)variableSource;
+                    assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
+                }
+                else
+                {
+                    throw new ArgumentException("Unexpected variable source", nameof(variable));
+                }
             }
         }
 
