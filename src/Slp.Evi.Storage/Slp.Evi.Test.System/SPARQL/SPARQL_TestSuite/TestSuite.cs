@@ -323,6 +323,19 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
+        [TestMethod]
+        public void Bsbm_ProductType_OrderBy()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\ProductType_OrderBy.rq";
+            var resultFile = @"Data\Bsbm\ProductType_OrderBy.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
         private XDocument GetExpected(string resultFile)
