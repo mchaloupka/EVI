@@ -257,9 +257,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SPARQL\SPARQL_TestSuite\Data\Datasets\berlin.xml">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Datasets\bsbm.xml">
       <SubType>Designer</SubType>
-    </Content>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestSuite.cs</LastGenOutput>

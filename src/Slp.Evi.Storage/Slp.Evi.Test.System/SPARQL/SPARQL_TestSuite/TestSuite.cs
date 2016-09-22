@@ -344,6 +344,6 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             return query;
         }
 
-        protected static readonly string[] StorageNames = { "simple.xml", "students.xml" };
+        protected static readonly string[] StorageNames = { "simple.xml", "students.xml", "bsbm.xml" };
     }
 }
