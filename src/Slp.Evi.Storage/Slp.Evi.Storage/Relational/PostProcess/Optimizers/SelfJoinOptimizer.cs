@@ -317,6 +317,45 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
 
                 return base.Transform(toTransform, data);
             }
+
+            /// <summary>
+            /// Process the <see cref="ModifiedCalculusModel"/>
+            /// </summary>
+            /// <param name="toTransform">The instance to process</param>
+            /// <param name="data">The passed data</param>
+            /// <returns>The transformation result</returns>
+            protected override ICalculusSource Transform(ModifiedCalculusModel toTransform, OptimizationContext data)
+            {
+                var changed = false;
+
+                var newOrderingParts = new List<ModifiedCalculusModel.OrderingPart>();
+                foreach (var orderingPart in toTransform.Ordering)
+                {
+                    var transformedExpression = TransformExpression(orderingPart.Expression, data);
+                    if (transformedExpression != orderingPart.Expression)
+                    {
+                        var newOrderingPart = new ModifiedCalculusModel.OrderingPart(transformedExpression,
+                            orderingPart.IsDescending);
+
+                        newOrderingParts.Add(newOrderingPart);
+                        changed = true;
+                    }
+                    else
+                    {
+                        newOrderingParts.Add(orderingPart);
+                    }
+                }
+
+                if (changed)
+                {
+                    return new ModifiedCalculusModel(toTransform.InnerModel, newOrderingParts, toTransform.Limit,
+                        toTransform.Offset);
+                }
+                else
+                {
+                    return toTransform;
+                }
+            }
         }
     }
 }

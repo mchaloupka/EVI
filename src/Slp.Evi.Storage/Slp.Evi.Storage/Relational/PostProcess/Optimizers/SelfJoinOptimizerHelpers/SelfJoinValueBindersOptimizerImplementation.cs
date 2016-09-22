@@ -72,14 +72,14 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
 
             foreach (var valueBinder in coalesceValueBinder.ValueBinders)
             {
-                var transformed = valueBinder.Accept(this, data);
+                var transformed = (IValueBinder)valueBinder.Accept(this, data);
 
                 if (transformed != valueBinder)
                 {
                     changed = true;
                 }
 
-                valueBinders.Add(valueBinder);
+                valueBinders.Add(transformed);
             }
 
             if (changed)
