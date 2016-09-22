@@ -96,6 +96,17 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_12.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_11.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_10.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_9.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_8.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_7.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_6.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_5.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_4.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_3.rq" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_2.rq" />
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\conjunction.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -261,6 +272,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_1.rq" />
     <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TestSuite.cs</LastGenOutput>
