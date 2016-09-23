@@ -8,5 +8,13 @@
     <variable name="label"/>
   </head>
   <results>
+    <result>
+      <binding name="productType">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2</uri>
+      </binding>
+      <binding name="label">
+        <string>amour dupable</string>
+      </binding>
+    </result>
   </results>
 </sparql>
