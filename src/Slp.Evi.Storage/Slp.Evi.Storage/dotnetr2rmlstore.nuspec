@@ -13,9 +13,9 @@
     <tags>rdb2rdf rdf r2rml sparql</tags>
   <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
   <dependencies>
-    <dependency id="dotNetRDF" version="1.0.9.3683" />
+    <dependency id="dotNetRDF" version="1.0.12" />
     <dependency id="r2rml4net" version="0.4.0.0-pre01" />
-    <dependency id="DatabaseSchemaReader" version="1.4.4.0" />
+    <dependency id="DatabaseSchemaReader" version="2.1.0" />
   </dependencies>
   </metadata>
   <files>
