@@ -316,7 +316,7 @@
   <#ProductTypeProduct> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "producttypeproduct" ];
     rr:subjectMap [
-      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer{product}";
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product{product}";
     ];
     rr:predicateObjectMap [
       rr:predicate rdf:type;
@@ -333,7 +333,7 @@
   <#ProductFeatureProduct> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "productfeatureproduct" ];
     rr:subjectMap [
-      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer{product}";
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product{product}";
     ];
     rr:predicateObjectMap [
       rr:predicate rdf:type;
