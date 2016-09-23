@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Slp.Evi.Storage.Sparql.Algebra;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
@@ -80,7 +81,22 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 
                     if (leftIriEscapedPrefix.Count > 0 || rightIriEscapedPrefix.Count > 0)
                     {
-                        conditions.Add(CreateConditionFromIriEscapedPrefixes(leftIriEscapedPrefix, rightIriEscapedPrefix));
+                        MatchCondition createdCondition;
+                        if (CreateConditionFromIriEscapedPrefixes(leftIriEscapedPrefix, rightIriEscapedPrefix,
+                            out createdCondition))
+                        {
+                            if (createdCondition != null)
+                            {
+                                conditions.Add(createdCondition);
+                            }
+                        }
+                        else
+                        {
+                            conditions.Clear();
+                            conditions.Add(MatchCondition.CreateAlwaysFalseCondition());
+                            break;
+                        }
+
                         performedAction = true;
                     }
                 }
@@ -98,7 +114,7 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
             return new CompareResult(conditions);
         }
 
-        private MatchCondition CreateConditionFromIriEscapedPrefixes(List<PatternItem> leftIriEscapedPrefix, List<PatternItem> rightIriEscapedPrefix)
+        private bool CreateConditionFromIriEscapedPrefixes(List<PatternItem> leftIriEscapedPrefix, List<PatternItem> rightIriEscapedPrefix, out MatchCondition createdCondition)
         {
             if (leftIriEscapedPrefix.Count == 0)
             {
@@ -113,7 +129,27 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
             var leftPattern = new Pattern(true, leftIriEscapedPrefix);
             var rightPattern = new Pattern(true, rightIriEscapedPrefix);
 
-            return MatchCondition.CreateCondition(leftPattern, rightPattern);
+            if (leftPattern.PatternItems.Length == 1 &&
+                rightPattern.PatternItems.Length == 1 &&
+                leftPattern.PatternItems[0].IsConstant &&
+                rightPattern.PatternItems[0].IsConstant)
+            {
+                if (leftPattern.PatternItems[0].Text == rightPattern.PatternItems[0].Text)
+                {
+                    createdCondition = null;
+                    return true;
+                }
+                else
+                {
+                    createdCondition = null;
+                    return false;
+                }
+            }
+            else
+            {
+                createdCondition = MatchCondition.CreateCondition(leftPattern, rightPattern);
+                return true;
+            }
         }
 
         /// <summary>

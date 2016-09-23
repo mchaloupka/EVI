@@ -34,6 +34,21 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             Assert.IsTrue(_optimizerImplementation.CanMatch(node.Object, map.Object));
         }
 
+        [TestMethod]
+        public void MatchConstantMap_Uri_NoMatch_DifferentSuffix()
+        {
+            var node = new Mock<IUriNode>();
+            node.Setup(x => x.NodeType).Returns(NodeType.Uri);
+            node.Setup(x => x.Uri).Returns(new Uri("http://test.com/Product"));
+
+            var map = new Mock<IUriValuedTermMap>();
+            map.Setup(x => x.URI).Returns(new Uri("http://test.com/ProductType"));
+            map.Setup(x => x.IsConstantValued).Returns(true);
+            map.Setup(x => x.TermType).Returns(GetUriType().Object);
+
+            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object));
+        }
+
         private static Mock<ITermType> GetUriType()
         {
             var uriType = new Mock<ITermType>();
