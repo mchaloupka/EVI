@@ -18,10 +18,10 @@
     <query>INSERT INTO simple_table VALUES('a','d','e')</query>
     <query>INSERT INTO simple_table VALUES('c','e','1')</query>
     <query>INSERT INTO simple_table VALUES('a','e','1')</query>
-    <query>INSERT INTO int_table VALUES('a','int','1')</query>
-    <query>INSERT INTO int_table VALUES('b','int','2')</query>
-    <query>INSERT INTO int_table VALUES('c','int','3')</query>
-    <query>INSERT INTO int_table VALUES('d','int','4')</query>
+    <query>INSERT INTO int_table VALUES('a','int',1)</query>
+    <query>INSERT INTO int_table VALUES('b','int',2)</query>
+    <query>INSERT INTO int_table VALUES('c','int',3)</query>
+    <query>INSERT INTO int_table VALUES('d','int',4)</query>
   </sql>
   <mapping>
 <![CDATA[
