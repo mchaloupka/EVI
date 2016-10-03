@@ -13,7 +13,7 @@
         <uri>http://example.org/ns#b</uri>
       </binding>
       <binding name="y">
-        <string>test</string>
+        <literal>test</literal>
       </binding>
     </result>
   </results>

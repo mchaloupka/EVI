@@ -239,6 +239,19 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
 
         [TestMethod]
+        public void Simple_Type_int()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\int.rq";
+            var resultFile = @"Data\Simple\Type\int.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+
+        [TestMethod]
         public void Students_no_result()
         {
             var storage = GetStorage("students.xml");
@@ -261,6 +274,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var expected = GetExpected(resultFile);
             AssertBagEqual(expected, result);
         }
+
 
         [TestMethod]
         public void Students_student_names_order()

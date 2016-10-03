@@ -253,10 +253,30 @@ namespace Slp.Evi.Test.System.SPARQL
                     string uri = element.Value;
                     return resultSetHandler.CreateUriNode(new Uri(uri));
                 }
-                else if (element.Name.LocalName == "string")
+                else if (element.Name.LocalName == "literal")
                 {
                     string value = element.Value;
-                    return resultSetHandler.CreateLiteralNode(value);
+
+                    if (element.Attribute("type") != null)
+                    {
+                        var type = element.Attribute("type").Value;
+                        if (type.StartsWith("xsd:"))
+                        {
+                            type = "http://www.w3.org/2001/XMLSchema#" + type.Substring(4);
+                        }
+
+                        var uriType = new Uri(type);
+                        return resultSetHandler.CreateLiteralNode(value, uriType);
+                    }
+                    else if (element.Attribute("lang") != null)
+                    {
+                        var lang = element.Attribute("lang").Value;
+                        return resultSetHandler.CreateLiteralNode(value, lang);
+                    }
+                    else
+                    {
+                        return resultSetHandler.CreateLiteralNode(value);
+                    }
                 }
                 else if (element.Name.LocalName == "unbound")
                 {

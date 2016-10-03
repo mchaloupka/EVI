@@ -9,42 +9,42 @@
   <results>
     <result>
       <binding name="name">
-        <string>Catherine</string>
+        <literal>Catherine</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>Chase</string>
+        <literal>Chase</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>Isabella</string>
+        <literal>Isabella</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>James</string>
+        <literal>James</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>John</string>
+        <literal>John</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>Kali</string>
+        <literal>Kali</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>Peter</string>
+        <literal>Peter</literal>
       </binding>
     </result>
     <result>
       <binding name="name">
-        <string>Scarlet</string>
+        <literal>Scarlet</literal>
       </binding>
     </result>
   </results>
