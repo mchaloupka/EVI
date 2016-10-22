@@ -1,5 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using TCode.r2rml4net.Extensions;
+using TCode.r2rml4net.Mapping;
+using TCode.r2rml4net.Mapping.Fluent;
+using VDS.RDF;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace Slp.Evi.Storage.Utils
@@ -19,5 +28,65 @@ namespace Slp.Evi.Storage.Utils
             var property = typeof(ConstantTerm).GetProperty("Node", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
             return (IValuedNode)property.GetValue(term);
         }
+
+        /// <summary>
+        /// Gets the specified literal term map (parsed).
+        /// </summary>
+        public static ParsedLiteralParts Parsed(this ILiteralTermMap literalTermMap)
+        {
+            var literalNode = literalTermMap.Node.GetObjects("rr:constant").FirstOrDefault() as ILiteralNode;
+
+            if (literalNode != null)
+            {
+                return new ParsedLiteralParts(literalNode.Value, literalNode.DataType, literalNode.Language);
+            }
+            else
+            {
+                throw new Exception("Cannot get the constant");
+            }
+        }
+
+        public static ITriplesMapConfiguration GetTriplesMapConfiguration(this IMapBase mapBase)
+        {
+            var property = typeof(BaseConfiguration).GetProperty("TriplesMap", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
+            return (ITriplesMapConfiguration)property.GetValue(mapBase);
+        }
+    }
+
+    /// <summary>
+    /// Parsed literal parts.
+    /// </summary>
+    public class ParsedLiteralParts
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParsedLiteralParts"/> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="languageTag">The language tag.</param>
+        public ParsedLiteralParts(string value, Uri type, string languageTag)
+        {
+            LanguageTag = languageTag;
+            Type = type;
+            Value = value;
+        }
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public string Value { get; private set; }
+
+        /// <summary>
+        /// Gets the type.
+        /// </summary>
+        /// <value>The type.</value>
+        public Uri Type { get; private set; }
+
+        /// <summary>
+        /// Gets the language tag.
+        /// </summary>
+        /// <value>The language tag.</value>
+        public string LanguageTag { get; private set; }
     }
 }

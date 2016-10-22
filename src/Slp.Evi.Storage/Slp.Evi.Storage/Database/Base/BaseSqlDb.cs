@@ -1,4 +1,5 @@
-﻿using DatabaseSchemaReader.DataSchema;
+﻿using System;
+using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -92,5 +93,10 @@ namespace Slp.Evi.Storage.Database.Base
         /// </summary>
         /// <value>The SQL type for int.</value>
         public abstract DataType SqlTypeForInt { get; }
+
+        /// <summary>
+        /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
+        /// </summary>
+        public abstract Uri GetNaturalRdfType(string dbType);
     }
 }

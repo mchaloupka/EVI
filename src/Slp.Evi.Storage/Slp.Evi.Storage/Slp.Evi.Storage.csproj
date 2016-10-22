@@ -90,6 +90,7 @@
     <Compile Include="Database\Vendor\MsSql\MsSqlDbFactory.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
+    <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
     <Compile Include="Mapping\ClassPredicateMap.cs" />
     <Compile Include="Mapping\IMappingProcessor.cs" />
@@ -235,6 +236,11 @@
     <Compile Include="Sparql\PostProcess\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\Optimizers\UnionJoinOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\SafeAlgebra\AscendFilterPattern.cs" />
+    <Compile Include="Sparql\Types\BlankValueType.cs" />
+    <Compile Include="Sparql\Types\IRIValueType.cs" />
+    <Compile Include="Sparql\Types\IValueType.cs" />
+    <Compile Include="Sparql\Types\LiteralValueType.cs" />
+    <Compile Include="Sparql\Types\TypeCache.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
       <AutoGen>True</AutoGen>

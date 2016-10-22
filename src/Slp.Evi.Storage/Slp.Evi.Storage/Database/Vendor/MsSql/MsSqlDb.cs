@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -120,5 +121,13 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         /// <value>The SQL type for int.</value>
         public override DataType SqlTypeForInt => new DataType("int", "System.Int32");
+
+        /// <summary>
+        /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
+        /// </summary>
+        public override Uri GetNaturalRdfType(string dbType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

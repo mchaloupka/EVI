@@ -6,6 +6,7 @@ using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
@@ -68,17 +69,21 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                     }
                     else if (objectMap.Literal != null)
                     {
-                        // TODO: Rework - better node creation - ideally implemented in R2RML4NET
+                        var parsed = objectMap.Parsed();
 
-                        if (objectMap.Literal.Contains("^^"))
+                        if (parsed.Type != null)
                         {
-                            var split = objectMap.Literal.Split(new[] { "^^" }, 2, StringSplitOptions.None);
-                            var node = context.NodeFactory.CreateLiteralNode(split[0], UriFactory.Create(split[1]));
+                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value, parsed.Type);
+                            return _conditionBuilder.CreateExpression(context, node);
+                        }
+                        else if (parsed.LanguageTag != null)
+                        {
+                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value, parsed.LanguageTag);
                             return _conditionBuilder.CreateExpression(context, node);
                         }
                         else
                         {
-                            var node = context.NodeFactory.CreateLiteralNode(objectMap.Literal);
+                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value);
                             return _conditionBuilder.CreateExpression(context, node);
                         }
                     }
