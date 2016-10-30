@@ -9,6 +9,8 @@ using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database.Base;
 using Slp.Evi.Storage.Database.Reader;
+using Slp.Evi.Storage.Utils;
+using TCode.r2rml4net.RDF;
 
 namespace Slp.Evi.Storage.Database.Vendor.MsSql
 {
@@ -142,27 +144,27 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
                 case "int":
                 case "smallint":
                 case "tinyint":
-                    return null;
+                    return EviConstants.XsdInteger;
                 case "smallmoney":
                 case "decimal":
                 case "money":
                 case "numeric":
-                    return null;
+                    return EviConstants.XsdDecimal;
                 case "bit":
-                    return null;
+                    return EviConstants.XsdBoolean;
                 case "float":
                 case "real":
-                    return null;
+                    return EviConstants.XsdDouble;
                 case "date":
-                    return null;
+                    return EviConstants.XsdDate;
                 case "time":
-                    return null;
+                    return EviConstants.XsdTime;
                 case "dateTime":
-                    return null;
+                    return EviConstants.XsdDateTime;
                 case "binary":
                 case "varbinary":
                 case "image":
-                    return null;
+                    return EviConstants.XsdHexBinary;
                 default:
                     throw new NotImplementedException();
             }

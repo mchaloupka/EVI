@@ -262,6 +262,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Utils\EviConstants.cs" />
     <Compile Include="Utils\FixesExtensions.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
