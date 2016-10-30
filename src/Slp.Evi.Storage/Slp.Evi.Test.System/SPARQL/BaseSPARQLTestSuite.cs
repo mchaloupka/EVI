@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping.Fluent;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
@@ -262,7 +263,7 @@ namespace Slp.Evi.Test.System.SPARQL
                         var type = element.Attribute("type").Value;
                         if (type.StartsWith("xsd:"))
                         {
-                            type = "http://www.w3.org/2001/XMLSchema#" + type.Substring(4);
+                            type = EviConstants.BaseXsdNamespace + type.Substring(4);
                         }
 
                         var uriType = new Uri(type);
