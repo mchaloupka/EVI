@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
 
 namespace Slp.Evi.Storage.Sparql.Types
 {
@@ -18,7 +19,7 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// </summary>
         /// <param name="literalType">Type of the literal (<c>null</c> for plain literal).</param>
         /// <param name="languageTag">The language tag (<c>null</c> for no language tag).</param>
-        public LiteralValueType(string literalType, string languageTag)
+        public LiteralValueType(Uri literalType, string languageTag)
         {
             LiteralType = literalType;
             LanguageTag = languageTag;
@@ -46,12 +47,37 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// Gets the type of the literal.
         /// </summary>
         /// <value>The type of the literal.</value>
-        public string LiteralType { get; private set; }
+        public Uri LiteralType { get; private set; }
 
         /// <summary>
         /// Gets the language tag.
         /// </summary>
         /// <value>The language tag.</value>
         public string LanguageTag { get; private set; }
+
+        /// <summary>
+        /// Creates the literal node.
+        /// </summary>
+        /// <param name="factory">The factory to be used.</param>
+        /// <param name="value">The value.</param>
+        public INode CreateLiteralNode(INodeFactory factory, string value)
+        {
+            if (LanguageTag != null && LiteralType != null)
+            {
+                throw new Exception("Literal term map cannot have both language tag and datatype set");
+            }
+            else if (LanguageTag != null)
+            {
+                return factory.CreateLiteralNode(value, LanguageTag);
+            }
+            else if (LiteralType != null)
+            {
+                return factory.CreateLiteralNode(value, LiteralType);
+            }
+            else
+            {
+                return factory.CreateLiteralNode(value);
+            }
+        }
     }
 }

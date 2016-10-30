@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS.RDF;
 
 namespace Slp.Evi.Storage.Sparql.Types
 {
@@ -40,12 +41,19 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// Gets the type of the literal.
         /// </summary>
         /// <value>The type of the literal.</value>
-        string LiteralType { get; }
+        Uri LiteralType { get; }
 
         /// <summary>
         /// Gets the language tag.
         /// </summary>
         /// <value>The language tag.</value>
         string LanguageTag { get; }
+
+        /// <summary>
+        /// Creates the literal node.
+        /// </summary>
+        /// <param name="fact">The factory to be used.</param>
+        /// <param name="value">The value.</param>
+        INode CreateLiteralNode(INodeFactory fact, string value);
     }
 }

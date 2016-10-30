@@ -18,7 +18,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
         protected virtual QueryContext GenerateQueryContext()
         {
             var factory = new DefaultEviQueryableStorageFactory();
-            return factory.CreateQueryContext(GenerateSparqlQuery(), null, null, null, null);
+            return factory.CreateQueryContext(GenerateSparqlQuery(), null, null, null, null, null);
         }
 
         protected void AssertPatternsEqual(IGraphPattern expected, IGraphPattern result)

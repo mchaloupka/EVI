@@ -668,7 +668,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
-            var valueBinder = new BaseValueBinder(null, termMap, source);
+            var valueBinder = new BaseValueBinder(null, termMap, source, context.TypeCache);
             var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
             conditions.Add(notNullCondition);
 
@@ -687,7 +687,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         private void ProcessTriplePatternVariable(string variableName, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
         {
-            var valueBinder = new BaseValueBinder(variableName, termMap, source);
+            var valueBinder = new BaseValueBinder(variableName, termMap, source, context.TypeCache);
 
             var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
             conditions.Add(notNullCondition);

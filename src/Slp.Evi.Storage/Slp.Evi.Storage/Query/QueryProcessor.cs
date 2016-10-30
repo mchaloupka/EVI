@@ -7,6 +7,7 @@ using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Relational.Builder;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Sparql.Builder;
+using Slp.Evi.Storage.Sparql.Types;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -52,6 +53,10 @@ namespace Slp.Evi.Storage.Query
         /// </summary>
         private readonly RelationalBuilder _relationalBuilder;
 
+        /// <summary>
+        /// The type cache
+        /// </summary>
+        private readonly TypeCache _typeCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryProcessor" /> class.
@@ -68,6 +73,8 @@ namespace Slp.Evi.Storage.Query
             _mapping = factory.CreateMappingProcessor(mapping);
             _sparqlBuilder = factory.CreateSparqlBuilder();
             _relationalBuilder = factory.CreateRelationalBuilder();
+
+            _typeCache = new TypeCache(_schemaProvider, db);
         }
 
         /// <summary>
@@ -129,7 +136,7 @@ namespace Slp.Evi.Storage.Query
             }
 
             // Convert to algebra
-            var context = _factory.CreateQueryContext(originalQuery, _mapping, _db, _schemaProvider, nodeFactory);
+            var context = _factory.CreateQueryContext(originalQuery, _mapping, _db, _schemaProvider, nodeFactory, _typeCache);
 
             // Generate SQL algebra
             var sqlAlgebra = GenerateSqlAlgebra(context);

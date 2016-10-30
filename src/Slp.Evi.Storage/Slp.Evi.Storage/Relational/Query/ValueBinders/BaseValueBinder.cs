@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Extensions;
 using TCode.r2rml4net.Mapping;
@@ -35,12 +38,14 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="variableName">Name of the variable.</param>
         /// <param name="termMap">The term map.</param>
         /// <param name="source">The source.</param>
-        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source)
+        /// <param name="typeCache">The type cache.</param>
+        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source, TypeCache typeCache)
         {
             VariableName = variableName;
             TermMap = termMap;
             _variables = new Dictionary<string, ICalculusVariable>();
             _loadNodeFunc = null;
+            Type = typeCache.GetValueType(termMap);
             
             if (termMap.IsConstantValued)
             {
@@ -79,6 +84,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             VariableName = baseValueBinder.VariableName;
             TermMap = baseValueBinder.TermMap;
             TemplateParts = baseValueBinder.TemplateParts;
+            Type = baseValueBinder.Type;
 
             _variables = new Dictionary<string, ICalculusVariable>();
             _loadNodeFunc = null;
@@ -111,7 +117,12 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the template parts.
         /// </summary>
         /// <value>The template parts.</value>
-        public IEnumerable<ITemplatePart> TemplateParts { get; } 
+        public IEnumerable<ITemplatePart> TemplateParts { get; }
+
+        /// <summary>
+        /// The type
+        /// </summary>
+        public IValueType Type { get; }
 
         /// <summary>
         /// Gets the calculus variable.
@@ -320,7 +331,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 if (objectMap.URI != null)
                     return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
                 else if (objectMap.Literal != null)
-                    return (fact, row, context) => fact.CreateLiteralNode(objectMap.Literal);
+                {
+                    var parsedParts = objectMap.Parsed();
+                    var value = parsedParts.Value;
+                    return (fact, row, context) => ((ILiteralValueType)Type).CreateLiteralNode(fact, value);
+                }
                 else
                     throw new Exception("Object map's value must be IRI or literal.");
             }
@@ -353,7 +368,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             if (termType.IsURI)
             {
                 expressions.Add(Expression.Assign(nodeVar,
-                    Expression.Call(typeof(BaseValueBinder), "GenerateUriTermForValue", new Type[0],
+                    Expression.Call(typeof(BaseValueBinder), nameof(GenerateUriTermForValue), new Type[0],
                         Expression.Call(value, "ToString", new Type[0]),
                         factory,
                         context,
@@ -407,22 +422,12 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             if (value == null)
                 return null;
 
-            if (!(TermMap is ILiteralTermMap))
-                throw new Exception("Term map cannot be of term type literal");
+            if (!(Type is ILiteralValueType))
+                throw new InvalidOperationException("It is not possible to generate literal for non literal type");
 
-            var literalTermMap = (ILiteralTermMap)TermMap;
-            Uri datatypeUri = literalTermMap.DataTypeURI;
-            string language = literalTermMap.Language;
+            var literalValueType = (ILiteralValueType) Type;
 
-            if (language != null && datatypeUri != null)
-                throw new Exception("Literal term map cannot have both language tag and datatype set");
-
-            if (language != null)
-                return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]), Expression.Constant(language, typeof(string)));
-            if (datatypeUri != null)
-                return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]), Expression.Constant(datatypeUri, typeof(Uri)));
-
-            return Expression.Call(factory, "CreateLiteralNode", new Type[0], Expression.Call(value, "ToString", new Type[0]));
+            return Expression.Call(Expression.Constant(literalValueType, typeof(ILiteralValueType)), "CreateLiteralNode", new Type[0], factory, Expression.Call(value, "ToString", new Type[0]));
         }
 
         /// <summary>

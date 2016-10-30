@@ -7,6 +7,7 @@ using Slp.Evi.Storage.Relational.Builder;
 using Slp.Evi.Storage.Relational.PostProcess;
 using Slp.Evi.Storage.Sparql.Builder;
 using Slp.Evi.Storage.Sparql.PostProcess;
+using Slp.Evi.Storage.Sparql.Types;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -44,7 +45,8 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory);
+        /// <param name="typeCache">The type cache.</param>
+        QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, TypeCache typeCache);
 
         /// <summary>
         /// Creates the relational builder.

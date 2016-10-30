@@ -10,6 +10,7 @@ using Slp.Evi.Storage.Sparql.Builder;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra;
+using Slp.Evi.Storage.Sparql.Types;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -57,9 +58,10 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="db">The database.</param>
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
-        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory)
+        /// <param name="typeCache">The type cache.</param>
+        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, TypeCache typeCache)
         {
-            return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this);
+            return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this, typeCache);
         }
 
         /// <summary>

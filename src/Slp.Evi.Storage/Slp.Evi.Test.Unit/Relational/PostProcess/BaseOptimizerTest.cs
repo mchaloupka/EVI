@@ -61,7 +61,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
             mappingMock.Setup(x => x.GetMappingTransformer()).Returns(() => null);
 
             var factory = new DefaultEviQueryableStorageFactory();
-            return factory.CreateQueryContext(GenerateSparqlQuery(), mappingMock.Object, GetDb(), GetSchemaProvider(), null);
+            return factory.CreateQueryContext(GenerateSparqlQuery(), mappingMock.Object, GetDb(), GetSchemaProvider(), null, null);
         }
 
         protected virtual SqlTable GetDummyTable(QueryContext queryContext)

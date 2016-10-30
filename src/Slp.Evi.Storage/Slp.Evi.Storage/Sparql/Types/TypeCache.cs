@@ -248,7 +248,7 @@ namespace Slp.Evi.Storage.Sparql.Types
                 int foundIndex;
                 if (!dictionary.TryGetValue(dataTypeFullUri, out foundIndex))
                 {
-                    var type = new LiteralValueType(dataTypeFullUri, languageTag);
+                    var type = new LiteralValueType(dataType, languageTag);
                     _typesIndexDictionary.Add(_index, type);
                     _typeIndexesDictionary.Add(type, _index);
                     dictionary.Add(dataTypeFullUri, _index);

@@ -3,6 +3,7 @@ using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
+using Slp.Evi.Storage.Sparql.Types;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -38,8 +39,10 @@ namespace Slp.Evi.Storage.Query
         /// <param name="schemaProvider">The schema provider.</param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="factory">The storage factory</param>
-        public QueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory)
+        /// <param name="typeCache"></param>
+        public QueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory, TypeCache typeCache)
         {
+            TypeCache = typeCache;
             OriginalQuery = originalQuery;
             OriginalAlgebra = originalQuery.ToAlgebra();
             NodeFactory = nodeFactory;
@@ -99,6 +102,11 @@ namespace Slp.Evi.Storage.Query
         /// The optimizers
         /// </summary>
         public QueryPostProcesses QueryPostProcesses { get; }
+
+        /// <summary>
+        /// The type cache
+        /// </summary>
+        public TypeCache TypeCache { get; }
 
         /// <summary>
         /// Gets the blank node subject for value.

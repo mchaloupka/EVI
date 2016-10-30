@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using DatabaseSchemaReader.DataSchema;
@@ -127,7 +129,43 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         public override Uri GetNaturalRdfType(string dbType)
         {
-            throw new NotImplementedException();
+            switch (dbType.ToLower(CultureInfo.InvariantCulture))
+            {
+                case "nvarchar":
+                case "varchar":
+                case "nchar":
+                case "char":
+                case "text":
+                case "ntext":
+                    return null;
+                case "bigint":
+                case "int":
+                case "smallint":
+                case "tinyint":
+                    return null;
+                case "smallmoney":
+                case "decimal":
+                case "money":
+                case "numeric":
+                    return null;
+                case "bit":
+                    return null;
+                case "float":
+                case "real":
+                    return null;
+                case "date":
+                    return null;
+                case "time":
+                    return null;
+                case "dateTime":
+                    return null;
+                case "binary":
+                case "varbinary":
+                case "image":
+                    return null;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
