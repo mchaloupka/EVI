@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 
 namespace Slp.Evi.Storage.Database.Reader
@@ -217,10 +218,27 @@ namespace Slp.Evi.Storage.Database.Reader
             public string Name { get; }
 
             /// <summary>
-            /// Gets the value.
+            /// Gets the value converted to string.
             /// </summary>
             /// <value>The value.</value>
-            public object Value => _value;
+            public string StringValue
+            {
+                get
+                {
+                    if (_value == null)
+                    {
+                        return null;
+                    }
+                    else if (_value is double)
+                    {
+                        return ((double) _value).ToString(CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        return _value.ToString();
+                    }
+                }
+            }
 
             /// <summary>
             /// Gets the boolean value.
@@ -241,6 +259,14 @@ namespace Slp.Evi.Storage.Database.Reader
                 {
                     throw new Exception("Cannot convert value to boolean");
                 }
+            }
+
+            /// <summary>
+            /// Gets the integer value.
+            /// </summary>
+            public int? GetIntegerValue()
+            {
+                return _value as int?;
             }
         }
     }

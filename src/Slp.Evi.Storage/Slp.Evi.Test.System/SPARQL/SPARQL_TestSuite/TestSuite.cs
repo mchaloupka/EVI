@@ -250,6 +250,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_Type_double()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\double.rq";
+            var resultFile = @"Data\Simple\Type\double.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Students_no_result()

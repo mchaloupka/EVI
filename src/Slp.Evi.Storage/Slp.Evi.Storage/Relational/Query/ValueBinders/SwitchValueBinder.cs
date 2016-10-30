@@ -55,9 +55,9 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             var columnName = context.QueryNamingHelpers.GetVariableName(null, CaseVariable);
             var column = rowData.GetColumn(columnName);
 
-            if (column.Value != null)
+            if (column.GetIntegerValue().HasValue)
             {
-                var value = (int)column.Value;
+                var value = column.GetIntegerValue().Value;
 
                 var selectedCase = Cases.FirstOrDefault(x => x.CaseValue == value);
 
