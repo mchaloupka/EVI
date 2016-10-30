@@ -66,7 +66,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var param = (StaticEvaluatorParameter) data;
             var columnName = param.Context.QueryNamingHelpers.GetVariableName(null, columnExpression.CalculusVariable);
             var column = param.RowData.GetColumn(columnName);
-            return column.Value;
+            return column.StringValue;
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var rightColumnName = param.Context.QueryNamingHelpers.GetVariableName(null, equalVariablesCondition.RightVariable);
             var rightColumn = param.RowData.GetColumn(rightColumnName);
 
-            return leftColumn.Value.Equals(rightColumn.Value);
+            return leftColumn.StringValue.Equals(rightColumn.StringValue);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var param = (StaticEvaluatorParameter)data;
             var columnName = param.Context.QueryNamingHelpers.GetVariableName(null, isNullCondition.Variable);
             var column = param.RowData.GetColumn(columnName);
-            return column.Value == null;
+            return column.StringValue == null;
         }
 
         /// <summary>

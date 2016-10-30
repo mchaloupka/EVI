@@ -285,8 +285,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ICalculusVariable column, bool escape, QueryContext queryContext)
         {
             var dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
-            var valueVar = Expression.Parameter(typeof(object), "value");
-            var sValVar = Expression.Parameter(typeof(string), "sVal");
+            var valueVar = Expression.Parameter(typeof(string), "value");
             var endLabel = Expression.Label(typeof(string), "returnLabel");
 
             var columnName = queryContext.QueryNamingHelpers.GetVariableName(null, column);
@@ -295,18 +294,17 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             {
                 Expression.Assign(dbColVar,
                     Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(columnName))),
-                Expression.Assign(valueVar, Expression.Property(dbColVar, "Value")),
-                Expression.IfThen(Expression.Equal(valueVar, Expression.Constant(null, typeof (object))),
+                Expression.Assign(valueVar, Expression.Property(dbColVar, "StringValue")),
+                Expression.IfThen(Expression.Equal(valueVar, Expression.Constant(null, typeof (string))),
                     Expression.Return(endLabel, Expression.Constant(null, typeof (string)))),
-                Expression.Assign(sValVar, Expression.Call(valueVar, "ToString", new Type[0])),
                 escape
                     ? Expression.Label(endLabel,
-                        Expression.Call(typeof (MappingHelper), "UrlEncode", new Type[0], sValVar))
-                    : Expression.Label(endLabel, sValVar)
+                        Expression.Call(typeof (MappingHelper), "UrlEncode", new Type[0], valueVar))
+                    : Expression.Label(endLabel, valueVar)
             };
 
 
-            return Expression.Block(typeof(string), new[] { dbColVar, valueVar, sValVar }, expressions);
+            return Expression.Block(typeof(string), new[] { dbColVar, valueVar }, expressions);
         }
 
         /// <summary>
@@ -369,7 +367,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             {
                 expressions.Add(Expression.Assign(nodeVar,
                     Expression.Call(typeof(BaseValueBinder), nameof(GenerateUriTermForValue), new Type[0],
-                        Expression.Call(value, "ToString", new Type[0]),
+                        value,
                         factory,
                         context,
                         Expression.Constant(TermMap.BaseUri, typeof(Uri)))));
@@ -427,7 +425,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 
             var literalValueType = (ILiteralValueType) Type;
 
-            return Expression.Call(Expression.Constant(literalValueType, typeof(ILiteralValueType)), "CreateLiteralNode", new Type[0], factory, Expression.Call(value, "ToString", new Type[0]));
+            return Expression.Call(Expression.Constant(literalValueType, typeof(ILiteralValueType)), "CreateLiteralNode", new Type[0], factory, value);
         }
 
         /// <summary>
@@ -528,13 +526,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             var columnName = queryContext.QueryNamingHelpers.GetVariableName(null, column);
 
             ParameterExpression dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
-            ParameterExpression valVar = Expression.Parameter(typeof(object), "value");
+            ParameterExpression valVar = Expression.Parameter(typeof(string), "value");
 
             List<Expression> expressions = new List<Expression>
             {
                 Expression.Assign(dbColVar,
                     Expression.Call(row, "GetColumn", new Type[0], Expression.Constant(columnName, typeof (string)))),
-                Expression.Assign(valVar, Expression.Property(dbColVar, "Value"))
+                Expression.Assign(valVar, Expression.Property(dbColVar, "StringValue"))
             };
 
             if (TermMap.TermType.IsLiteral)
@@ -545,7 +543,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             {
                 expressions.Add(Expression.Call(typeof(BaseValueBinder), "AssertNoIllegalCharacters", new Type[0],
                     Expression.New(typeof(Uri).GetConstructor(new[] { typeof(string), typeof(UriKind) }),
-                        Expression.Call(valVar, "ToString", new Type[0]),
+                        valVar,
                         Expression.Constant(UriKind.RelativeOrAbsolute, typeof(UriKind)))));
                 expressions.Add(GenerateTermForValueFunc(nodeFactory, valVar, context));
             }

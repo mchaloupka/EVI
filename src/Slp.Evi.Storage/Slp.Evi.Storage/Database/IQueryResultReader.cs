@@ -57,12 +57,17 @@ namespace Slp.Evi.Storage.Database
         /// Gets the value.
         /// </summary>
         /// <value>The value.</value>
-        object Value { get; }
+        string StringValue { get; }
 
         /// <summary>
         /// Gets the boolean value.
         /// </summary>
         /// <returns><c>true</c> if the value is true, <c>false</c> otherwise.</returns>
         bool GetBooleanValue();
+
+        /// <summary>
+        /// Gets the integer value.
+        /// </summary>
+        int? GetIntegerValue();
     }
 }
