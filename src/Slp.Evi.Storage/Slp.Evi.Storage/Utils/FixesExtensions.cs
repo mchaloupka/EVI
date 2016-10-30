@@ -46,6 +46,11 @@ namespace Slp.Evi.Storage.Utils
             }
         }
 
+        /// <summary>
+        /// Gets the triples map configuration.
+        /// </summary>
+        /// <param name="mapBase">The map base.</param>
+        /// <returns>ITriplesMapConfiguration.</returns>
         public static ITriplesMapConfiguration GetTriplesMapConfiguration(this IMapBase mapBase)
         {
             var property = typeof(BaseConfiguration).GetProperty("TriplesMap", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
