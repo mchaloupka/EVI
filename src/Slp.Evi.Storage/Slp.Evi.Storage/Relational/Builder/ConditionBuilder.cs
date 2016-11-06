@@ -87,7 +87,18 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 var leftOperand = CreateExpression(context, firstValueBinder);
                 var rightOperand = CreateExpression(context, secondValueBinder);
-                return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
+
+                var leftType = ((BaseValueBinder) firstValueBinder).Type;
+                var rightType = ((BaseValueBinder) secondValueBinder).Type;
+
+                if (leftType == rightType)
+                {
+                    return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
+                }
+                else
+                {
+                    return new AlwaysFalseCondition();
+                }
             }
             else if (firstValueBinder is CoalesceValueBinder)
             {
