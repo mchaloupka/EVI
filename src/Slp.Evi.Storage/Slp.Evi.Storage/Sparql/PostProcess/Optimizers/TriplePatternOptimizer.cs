@@ -4,6 +4,7 @@ using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Types;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Extensions;
@@ -82,7 +83,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern) pattern;
 
-                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache);
                 }
                 return true;
             }
@@ -100,7 +101,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern)pattern;
 
-                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache);
                 }
                 return true;
             }
@@ -131,7 +132,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 if (pattern is NodeMatchPattern)
                 {
-                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef);
+                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef, data.Context.TypeCache);
                 }
 
                 return true;
@@ -142,7 +143,58 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// </summary>
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
-            public bool CanMatch(INode node, ITermMap termMap)
+            /// <param name="typeCache">The type cache</param>
+            public bool CanMatch(INode node, ITermMap termMap, TypeCache typeCache)
+            {
+                var type = typeCache.GetValueType(termMap);
+
+                if (type.IsLiteral)
+                {
+                    if (node.NodeType != NodeType.Literal)
+                    {
+                        return false;
+                    }
+
+                    var literalType = (LiteralValueType) type;
+                    var literalNode = (ILiteralNode) node;
+
+                    var nodeType = literalNode.DataType;
+                    var nodeLang = string.IsNullOrEmpty(literalNode.Language) ? null : literalNode.Language;
+
+                    if (!((literalType.LanguageTag == nodeLang) &&
+                        literalType.LiteralType.IsCompleteUriEqualTo(nodeType)))
+                    {
+                        return false;
+                    }
+                }
+                else if (type.IsBlank)
+                {
+                    if (node.NodeType != NodeType.Blank)
+                    {
+                        return false;
+                    }
+                }
+                else if (type.IsIRI)
+                {
+                    if (node.NodeType != NodeType.Uri)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Type has to be one of literal, blank or iri.");
+                }
+
+                return CanMatchValue(node, termMap);
+            }
+
+            /// <summary>
+            /// Determines whether the node can match the mapping according to the value.
+            /// </summary>
+            /// <param name="node">The match pattern node.</param>
+            /// <param name="termMap">The mapping.</param>
+            private bool CanMatchValue(INode node, ITermMap termMap)
             {
                 if (node.NodeType == NodeType.Uri)
                 {
@@ -160,10 +212,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     {
                         return false;
                     }
-                    // TODO: Add type/lang comparison if available
-                    var literal = node.GetLiteral();
 
-                    var pattern = new Pattern(false, new[] {new PatternItem(literal)});
+                    var literalNode = (ILiteralNode) node;
+                    var pattern = new Pattern(false, new[] { new PatternItem(literalNode.Value) });
                     return CanMatch(pattern, termMap);
                 }
                 else

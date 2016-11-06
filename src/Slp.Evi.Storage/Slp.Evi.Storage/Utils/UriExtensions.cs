@@ -25,5 +25,26 @@ namespace Slp.Evi.Storage.Utils
         {
             return $"{uri}{uri.Fragment}";
         }
+
+        /// <summary>
+        /// Determines whether two URIs are equal (including fragment)
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="other">The other URI.</param>
+        public static bool IsCompleteUriEqualTo(this Uri uri, Uri other)
+        {
+            if (uri == null)
+            {
+                return other == null;
+            }
+            else if (other == null)
+            {
+                return false;
+            }
+            else
+            {
+                return (uri == other) && (uri.Fragment == other.Fragment);
+            }
+        }
     }
 }

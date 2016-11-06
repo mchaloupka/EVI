@@ -5,6 +5,7 @@ using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+using Slp.Evi.Storage.Sparql.Types;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
@@ -295,19 +296,19 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 public bool VerifyTriplePattern(RestrictedTriplePattern triplePattern, OptimizationContext data)
                 {
                     bool ok =
-                        VerifyPatternInfo(triplePattern.SubjectPattern, triplePattern.SubjectMap)
-                        && VerifyPatternInfo(triplePattern.PredicatePattern, triplePattern.PredicateMap);
+                        VerifyPatternInfo(triplePattern.SubjectPattern, triplePattern.SubjectMap, data.Context.TypeCache)
+                        && VerifyPatternInfo(triplePattern.PredicatePattern, triplePattern.PredicateMap, data.Context.TypeCache);
 
                     if (ok)
                     {
                         if (triplePattern.ObjectMap != null)
                         {
-                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, triplePattern.ObjectMap);
+                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, triplePattern.ObjectMap, data.Context.TypeCache);
                         }
                         else if (triplePattern.RefObjectMap != null)
                         {
                             var parentMap = triplePattern.RefObjectMap.ParentTriplesMap;
-                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, parentMap.SubjectMap);
+                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, parentMap.SubjectMap, data.Context.TypeCache);
                         }
                         else
                         {
@@ -323,15 +324,16 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="pattern">The pattern</param>
                 /// <param name="termMap">The mapping for the pattern</param>
-                private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap)
+                /// <param name="typeCache">The type cache</param>
+                private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap, TypeCache typeCache)
                 {
                     if (pattern is VariablePattern)
                     {
-                        return VerifyVariableInfo(((VariablePattern)pattern).VariableName, termMap);
+                        return VerifyVariableInfo(((VariablePattern)pattern).VariableName, termMap, typeCache);
                     }
                     else if (pattern is BlankNodePattern)
                     {
-                        return VerifyVariableInfo(((BlankNodePattern) pattern).ID, termMap);
+                        return VerifyVariableInfo(((BlankNodePattern) pattern).ID, termMap, typeCache);
                     }
                     else
                     {
@@ -344,7 +346,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="variableName">The variable name</param>
                 /// <param name="termMap">The mapping for the variable</param>
-                private bool VerifyVariableInfo(string variableName, ITermMap termMap)
+                /// <param name="typeCache">The type cache</param>
+                private bool VerifyVariableInfo(string variableName, ITermMap termMap, TypeCache typeCache)
                 {
                     if (_variables.ContainsKey(variableName))
                     {
@@ -352,7 +355,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                         foreach (var storedTermMap in storedTermMaps)
                         {
-                            if (!CanMatch(termMap, storedTermMap))
+                            if (!CanMatch(termMap, storedTermMap, typeCache))
                             {
                                 return false;
                             }
@@ -374,9 +377,18 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="first">The first mapping.</param>
                 /// <param name="second">The second mapping.</param>
+                /// <param name="typeCache">The type cache</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(ITermMap first, ITermMap second)
+                private bool CanMatch(ITermMap first, ITermMap second, TypeCache typeCache)
                 {
+                    //var firstType = typeCache.GetValueType(first);
+                    //var secondType = typeCache.GetValueType(second);
+
+                    //if (firstType != secondType)
+                    //{
+                    //    return false;
+                    //}
+
                     var result = CanMatchFunction(first,
                             constantUriFunc: x => CanMatch(x, second),
                             constantLiteralFunc: x => CanMatch(x, second),
