@@ -10,7 +10,7 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
     /// <summary>
-    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition(Slp.Evi.Storage.Relational.Query.IValueBinder,Slp.Evi.Storage.Query.QueryContext)"/>.
+    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition(Slp.Evi.Storage.Relational.Query.IValueBinder,Slp.Evi.Storage.Query.IQueryContext)"/>.
     /// </summary>
     public class ValueBinder_CreateIsBoundCondition
         : IValueBinderVisitor

@@ -13,7 +13,7 @@ using VDS.RDF;
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
     /// <summary>
-    /// Helper for <see cref="ConditionBuilder.CreateExpression(Slp.Evi.Storage.Query.QueryContext,Slp.Evi.Storage.Relational.Query.IValueBinder)"/>.
+    /// Helper for <see cref="ConditionBuilder.CreateExpression(Slp.Evi.Storage.Query.IQueryContext,Slp.Evi.Storage.Relational.Query.IValueBinder)"/>.
     /// </summary>
     public class ValueBinder_CreateExpression
         : IValueBinderVisitor
