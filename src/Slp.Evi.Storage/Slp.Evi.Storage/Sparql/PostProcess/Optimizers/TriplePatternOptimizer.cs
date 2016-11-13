@@ -83,7 +83,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern) pattern;
 
-                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache.GetValueType(toTransform.SubjectMap));
                 }
                 return true;
             }
@@ -101,7 +101,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     var nodeMatchPattern = (NodeMatchPattern)pattern;
 
-                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache);
+                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache.GetValueType(toTransform.PredicateMap));
                 }
                 return true;
             }
@@ -132,7 +132,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 if (pattern is NodeMatchPattern)
                 {
-                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef, data.Context.TypeCache);
+                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef, data.Context.TypeCache.GetValueType(r2RmlDef));
                 }
 
                 return true;
@@ -143,11 +143,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// </summary>
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
-            /// <param name="typeCache">The type cache</param>
-            public bool CanMatch(INode node, ITermMap termMap, TypeCache typeCache)
+            /// <param name="type">The type of <paramref name="termMap"/></param>
+            public bool CanMatch(INode node, ITermMap termMap, IValueType type)
             {
-                var type = typeCache.GetValueType(termMap);
-
                 if (type.IsLiteral)
                 {
                     if (node.NodeType != NodeType.Literal)
