@@ -325,7 +325,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="pattern">The pattern</param>
                 /// <param name="termMap">The mapping for the pattern</param>
                 /// <param name="typeCache">The type cache</param>
-                private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap, TypeCache typeCache)
+                private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap, ITypeCache typeCache)
                 {
                     if (pattern is VariablePattern)
                     {
@@ -347,7 +347,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="variableName">The variable name</param>
                 /// <param name="termMap">The mapping for the variable</param>
                 /// <param name="typeCache">The type cache</param>
-                private bool VerifyVariableInfo(string variableName, ITermMap termMap, TypeCache typeCache)
+                private bool VerifyVariableInfo(string variableName, ITermMap termMap, ITypeCache typeCache)
                 {
                     if (_variables.ContainsKey(variableName))
                     {
@@ -379,7 +379,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="typeCache">The type cache</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(ITermMap first, ITermMap second, TypeCache typeCache)
+                private bool CanMatch(ITermMap first, ITermMap second, ITypeCache typeCache)
                 {
                     //var firstType = typeCache.GetValueType(first);
                     //var secondType = typeCache.GetValueType(second);

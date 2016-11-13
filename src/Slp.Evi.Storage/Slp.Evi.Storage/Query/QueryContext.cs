@@ -40,7 +40,7 @@ namespace Slp.Evi.Storage.Query
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="factory">The storage factory</param>
         /// <param name="typeCache"></param>
-        public QueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory, TypeCache typeCache)
+        public QueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, IEviQueryableStorageFactory factory, ITypeCache typeCache)
         {
             TypeCache = typeCache;
             OriginalQuery = originalQuery;
@@ -106,7 +106,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The type cache
         /// </summary>
-        public TypeCache TypeCache { get; }
+        public ITypeCache TypeCache { get; }
 
         /// <summary>
         /// Gets the blank node subject for value.

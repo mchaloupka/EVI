@@ -39,7 +39,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="termMap">The term map.</param>
         /// <param name="source">The source.</param>
         /// <param name="typeCache">The type cache.</param>
-        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source, TypeCache typeCache)
+        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source, ITypeCache typeCache)
         {
             VariableName = variableName;
             TermMap = termMap;

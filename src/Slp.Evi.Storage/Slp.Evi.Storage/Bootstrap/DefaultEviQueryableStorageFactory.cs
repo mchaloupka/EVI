@@ -59,7 +59,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="typeCache">The type cache.</param>
-        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, TypeCache typeCache)
+        public virtual QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ITypeCache typeCache)
         {
             return new QueryContext(originalQuery, mapping, db, schemaProvider, nodeFactory, this, typeCache);
         }

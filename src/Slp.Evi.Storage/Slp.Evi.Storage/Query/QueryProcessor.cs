@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The type cache
         /// </summary>
-        private readonly TypeCache _typeCache;
+        private readonly ITypeCache _typeCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryProcessor" /> class.

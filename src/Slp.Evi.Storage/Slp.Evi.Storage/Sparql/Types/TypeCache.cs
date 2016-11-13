@@ -16,7 +16,7 @@ namespace Slp.Evi.Storage.Sparql.Types
     /// <summary>
     /// The type cache.
     /// </summary>
-    public class TypeCache
+    public class TypeCache : ITypeCache
     {
         /// <summary>
         /// The database schema provider
