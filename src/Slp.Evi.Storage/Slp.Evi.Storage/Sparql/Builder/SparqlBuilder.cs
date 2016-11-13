@@ -33,7 +33,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
         /// <exception cref="System.Exception">Cannot handle unknown query type</exception>
-        public ISparqlQuery Process(QueryContext context)
+        public ISparqlQuery Process(IQueryContext context)
         {
             switch (context.OriginalQuery.QueryType)
             {
@@ -62,7 +62,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        private ISparqlQuery ProcessAsk(QueryContext context)
+        private ISparqlQuery ProcessAsk(IQueryContext context)
         {
             throw new NotImplementedException();
         }
@@ -72,7 +72,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// </summary>
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
-        private ISparqlQuery ProcessConstruct(QueryContext context)
+        private ISparqlQuery ProcessConstruct(IQueryContext context)
         {
             return ProcessAlgebra(context.OriginalAlgebra, context);
         }
@@ -83,7 +83,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        private ISparqlQuery ProcessDescribe(QueryContext context)
+        private ISparqlQuery ProcessDescribe(IQueryContext context)
         {
             throw new NotImplementedException();
         }
@@ -93,7 +93,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// </summary>
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
-        private ISparqlQuery ProcessSelect(QueryContext context)
+        private ISparqlQuery ProcessSelect(IQueryContext context)
         {
             return ProcessAlgebra(context.OriginalAlgebra, context);
         }
@@ -105,7 +105,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <param name="context">The query context.</param>
         /// <returns>The SPARQL query.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, QueryContext context)
+        private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, IQueryContext context)
         {
             if (originalAlgebra is Select)
             {
@@ -244,7 +244,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
         }
 
-        private OrderByModifier CreateOrderBy(ISparqlQuery inner, ISparqlOrderBy ordering, QueryContext context)
+        private OrderByModifier CreateOrderBy(ISparqlQuery inner, ISparqlOrderBy ordering, IQueryContext context)
         {
             List<OrderByModifier.OrderingPart> parts = new List<OrderByModifier.OrderingPart>();
 
@@ -268,7 +268,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             return new OrderByModifier(inner, inner.Variables, parts);
         }
 
-        private ISparqlCondition ProcessCondition(ISparqlExpression expression, QueryContext context)
+        private ISparqlCondition ProcessCondition(ISparqlExpression expression, IQueryContext context)
         {
             var processed = ProcessExpression(expression, context);
 
@@ -297,7 +297,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             throw new ArgumentException("The expression needs to be convertible to condition", nameof(expression));
         }
 
-        private Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, QueryContext context)
+        private Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, IQueryContext context)
         {
             if (expression is BoundFunction)
             {
@@ -380,7 +380,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             throw new NotImplementedException();
         }
 
-        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, QueryContext context)
+        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, IQueryContext context)
         {
             List<IGraphPattern> joinedQueries = new List<IGraphPattern>();
 

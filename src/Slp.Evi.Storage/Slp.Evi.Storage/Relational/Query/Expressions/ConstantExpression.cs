@@ -15,7 +15,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The context
         /// </summary>
-        private QueryContext _context;
+        private IQueryContext _context;
 
         // TODO: Value escaping
         // TODO: Connect with current db vendor
@@ -37,7 +37,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// </summary>
         /// <param name="uri">The URI.</param>
         /// <param name="context">Query context</param>
-        public ConstantExpression(Uri uri, QueryContext context)
+        public ConstantExpression(Uri uri, IQueryContext context)
         {
             SqlString = $"\'{uri.AbsoluteUri}\'";
             Value = uri.AbsoluteUri;
@@ -50,7 +50,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// </summary>
         /// <param name="text">The text.</param>
         /// /// <param name="context">Query context</param>
-        public ConstantExpression(string text, QueryContext context)
+        public ConstantExpression(string text, IQueryContext context)
         {
             SqlString = $"\'{text}\'";
             Value = text;
@@ -63,7 +63,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// </summary>
         /// <param name="number">The number.</param>
         /// /// <param name="context">Query context</param>
-        public ConstantExpression(int number, QueryContext context)
+        public ConstantExpression(int number, IQueryContext context)
         {
             Value = number;
             SqlString = number.ToString();

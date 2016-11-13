@@ -36,7 +36,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IExpression.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public IExpression CreateExpression(ISparqlExpression expression, QueryContext context, List<IValueBinder> valueBinders)
+        public IExpression CreateExpression(ISparqlExpression expression, IQueryContext context, List<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
             return (IExpression)expression.Accept(this, parameter);
@@ -50,7 +50,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IFilterCondition.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public IFilterCondition CreateCondition(ISparqlCondition condition, QueryContext context, IEnumerable<IValueBinder> valueBinders)
+        public IFilterCondition CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
             return (IFilterCondition) condition.Accept(this, parameter);

@@ -42,7 +42,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
         /// <returns>IEnumerable&lt;ICondition&gt;.</returns>
-        public IFilterCondition CreateEqualsCondition(INode node, IValueBinder valueBinder, QueryContext context)
+        public IFilterCondition CreateEqualsCondition(INode node, IValueBinder valueBinder, IQueryContext context)
         {
             if (valueBinder is EmptyValueBinder)
             {
@@ -66,7 +66,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, QueryContext context)
+        public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, IQueryContext context)
         {
             return _valueBinderCreateIsBoundCondition.CreateIsBoundCondition(valueBinder, context);
         }
@@ -77,7 +77,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="firstValueBinder">The first value binder.</param>
         /// <param name="secondValueBinder">The second value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateEqualsCondition(IValueBinder firstValueBinder, IValueBinder secondValueBinder, QueryContext context)
+        public IFilterCondition CreateEqualsCondition(IValueBinder firstValueBinder, IValueBinder secondValueBinder, IQueryContext context)
         {
             if (firstValueBinder is EmptyValueBinder)
             {
@@ -150,7 +150,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinder">First value binder</param>
         /// <param name="otherValueBinder">Other value binder</param>
         /// <param name="context">The query context</param>
-        public IFilterCondition CreateJoinEqualCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, QueryContext context)
+        public IFilterCondition CreateJoinEqualCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, IQueryContext context)
         {
             return new DisjunctionCondition(new IFilterCondition[]
             {
@@ -165,7 +165,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="valueBinder">The value binder.</param>
-        public IExpression CreateExpression(QueryContext context, IValueBinder valueBinder)
+        public IExpression CreateExpression(IQueryContext context, IValueBinder valueBinder)
         {
             return _valueBinderCreateExpression.CreateExpression(context, valueBinder);
         }
@@ -175,7 +175,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="node">The node.</param>
-        public IExpression CreateExpression(QueryContext context, INode node)
+        public IExpression CreateExpression(IQueryContext context, INode node)
         {
             if (node is UriNode)
             {
@@ -214,7 +214,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="node">The node.</param>
-        private IExpression CreateLiteralExpression(QueryContext context, LiteralNode node)
+        private IExpression CreateLiteralExpression(IQueryContext context, LiteralNode node)
         {
             if (node.DataType == null)
             {
@@ -268,7 +268,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="condition">The condition.</param>
         /// <param name="context">The query context.</param>
         /// <param name="valueBinders">The used value binders.</param>
-        public IFilterCondition CreateCondition(ISparqlCondition condition, QueryContext context, IEnumerable<IValueBinder> valueBinders)
+        public IFilterCondition CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
         {
             return _sparqlExpressionCreateExpression.CreateCondition(condition, context, valueBinders);
         }
@@ -281,7 +281,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IExpression.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public IExpression CreateExpression(QueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
+        public IExpression CreateExpression(IQueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
         {
             return _sparqlExpressionCreateExpression.CreateExpression(expression, context, valueBinders);
         }
@@ -291,7 +291,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateIsBoundCondition(IExpression expression, QueryContext context)
+        public IFilterCondition CreateIsBoundCondition(IExpression expression, IQueryContext context)
         {
             return _expressionIsBoundCondition.CreateIsBoundCondition(expression, context);
         }
@@ -304,7 +304,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="data">The data.</param>
         /// <returns>IEnumerable&lt;IExpression&gt;.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<IExpression> CreateOrderByExpression(string variable, IEnumerable<IValueBinder> valueBinders, QueryContext data)
+        public IEnumerable<IExpression> CreateOrderByExpression(string variable, IEnumerable<IValueBinder> valueBinders, IQueryContext data)
         {
             // TODO: Handle order specifics
             // http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#modOrderBy

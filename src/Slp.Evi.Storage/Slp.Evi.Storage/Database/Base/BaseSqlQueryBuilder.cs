@@ -27,7 +27,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="relationalQuery">The relational query.</param>
         /// <param name="context">The context.</param>
         /// <returns>The query string.</returns>
-        public string GenerateQuery(RelationalQuery relationalQuery, QueryContext context)
+        public string GenerateQuery(RelationalQuery relationalQuery, IQueryContext context)
         {
             var visitorContext = new VisitorContext(new StringBuilder(), context, relationalQuery);
             TransformCalculusSource(relationalQuery.Model, visitorContext);
@@ -45,7 +45,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// <param name="stringBuilder">The string builder.</param>
             /// <param name="context">The context.</param>
             /// <param name="relationalQuery">The relational query</param>
-            public VisitorContext(StringBuilder stringBuilder, QueryContext context, RelationalQuery relationalQuery)
+            public VisitorContext(StringBuilder stringBuilder, IQueryContext context, RelationalQuery relationalQuery)
             {
                 StringBuilder = stringBuilder;
                 Context = context;
@@ -63,7 +63,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets the context.
             /// </summary>
             /// <value>The context.</value>
-            public QueryContext Context { get; }
+            public IQueryContext Context { get; }
 
             /// <summary>
             /// Gets the relational query.

@@ -19,7 +19,7 @@ namespace Slp.Evi.Storage.Relational.Query
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="rowData">The row data.</param>
         /// <param name="context">The context.</param>
-        INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context);
+        INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, IQueryContext context);
 
         /// <summary>
         /// Gets the name of the variable.

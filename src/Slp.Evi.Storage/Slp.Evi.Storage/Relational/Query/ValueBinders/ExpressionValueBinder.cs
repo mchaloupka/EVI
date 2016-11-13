@@ -44,7 +44,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="rowData">The row data.</param>
         /// <param name="context">The context.</param>
-        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
+        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, IQueryContext context)
         {
             // TODO: Correct type
             var staticEvaluator = new StaticEvaluator();

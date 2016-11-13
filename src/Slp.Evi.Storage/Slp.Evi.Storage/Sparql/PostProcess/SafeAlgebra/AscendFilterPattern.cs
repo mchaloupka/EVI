@@ -18,7 +18,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
+        public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
             return TransformSparqlQuery(query, null);
         }

@@ -40,7 +40,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <summary>
             /// Gets or sets the query context.
             /// </summary>
-            public QueryContext Context { get; set; }
+            public IQueryContext Context { get; set; }
 
             /// <summary>
             /// Gets or sets the data.
@@ -53,7 +53,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
+        public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
             return TransformSparqlQuery(query, new OptimizationContext()
             {

@@ -47,7 +47,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         /// <returns>RelationalQuery.</returns>
         /// <exception cref="System.ArgumentException">Unexpected type;algebra</exception>
-        public RelationalQuery Process(ISparqlQuery algebra, QueryContext context)
+        public RelationalQuery Process(ISparqlQuery algebra, IQueryContext context)
         {
             if (algebra is IModifier)
             {
@@ -72,7 +72,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(EmptyPattern emptyPattern, object data)
         {
-            return ((QueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return ((IQueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] {},
                     new ICondition[] {}),
@@ -95,7 +95,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 throw new Exception($"Only {nameof(CalculusModel)} is expected");
             }
 
-            var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, (QueryContext)data, inner.ValueBinders);
+            var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, (IQueryContext)data, inner.ValueBinders);
 
             var conditions = new List<ICondition>();
             conditions.AddRange(innerModel.SourceConditions);
@@ -106,7 +106,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             var model = new CalculusModel(innerModel.Variables, conditions);
             var query = new RelationalQuery(model, inner.ValueBinders);
 
-            return ((QueryContext) data).QueryPostProcesses.PostProcess(query);
+            return ((IQueryContext) data).QueryPostProcesses.PostProcess(query);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(NotMatchingPattern notMatchingPattern, object data)
         {
-            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] { },
                     new ICondition[] { new AlwaysFalseCondition() }),
@@ -166,7 +166,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                     if (valueBinders.ContainsKey(valueBinder.VariableName))
                     {
                         var otherValueBinder = valueBinders[valueBinder.VariableName];
-                        conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (QueryContext) data));
+                        conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (IQueryContext) data));
 
                         valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                     }
@@ -181,7 +181,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
             var calculusModel = new CalculusModel(neededVariables, conditions);
 
-            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(calculusModel, finalValueBinders));
+            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(calculusModel, finalValueBinders));
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 {
                     var otherValueBinder = valueBinders[valueBinder.VariableName];
                     joinConditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder,
-                        (QueryContext) data));
+                        (IQueryContext) data));
 
                     valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                 }
@@ -232,7 +232,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 }
             }
 
-            joinConditions.Add(_conditionBuilder.CreateCondition(leftJoinPattern.Condition, (QueryContext)data, valueBinders.Values));
+            joinConditions.Add(_conditionBuilder.CreateCondition(leftJoinPattern.Condition, (IQueryContext)data, valueBinders.Values));
 
             var leftJoinCondition = new LeftJoinCondition(rightQuery.Model, joinConditions, rightQuery.Model.Variables);
             conditions.Add(leftJoinCondition);
@@ -242,7 +242,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             variables.AddRange(rightQuery.Model.Variables);
 
             var model = new CalculusModel(variables, conditions);
-            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders.Values.ToList()));
+            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders.Values.ToList()));
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(UnionPattern unionPattern, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
             var relationalQueries = unionPattern.UnionedGraphPatterns.Select(x => x.Accept(this, data)).Cast<RelationalQuery>().ToList();
 
             List<ICalculusSource> sources = new List<ICalculusSource>();
@@ -350,7 +350,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(RestrictedTriplePattern restrictedTriplePattern, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
             List<ICondition> conditions = new List<ICondition>();
             List<IValueBinder> valueBinders = new List<IValueBinder>();
 
@@ -374,7 +374,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             conditions.Add(new TupleFromSourceCondition(source.Variables, source));
 
-            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
                 new CalculusModel(
                     valueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct(),
                     conditions),
@@ -389,7 +389,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(ExtendPattern extendPattern, object data)
         {
-            var context = (QueryContext)data;
+            var context = (IQueryContext)data;
             var inner = Process(extendPattern.InnerPattern, context);
             var model = inner.Model;
             var valueBinders = inner.ValueBinders.ToList();
@@ -406,7 +406,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var newValueBinder = new ExpressionValueBinder(extendPattern.VariableName, expression);
                 valueBinders.Add(newValueBinder);
 
-                return ((QueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders));
+                return ((IQueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders));
             }
         }
 
@@ -421,7 +421,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(SelectModifier selectModifier, object data)
         {
-            var inner = Process(selectModifier.InnerQuery, (QueryContext) data);
+            var inner = Process(selectModifier.InnerQuery, (IQueryContext) data);
 
             Dictionary<string, IValueBinder> providedValueBinders = inner.ValueBinders.ToDictionary(valueBinder => valueBinder.VariableName);
 
@@ -434,7 +434,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                     : new EmptyValueBinder(variable));
             }
 
-            return ((QueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(inner.Model, valueBinders));
+            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(inner.Model, valueBinders));
         }
 
         /// <summary>
@@ -445,8 +445,8 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(OrderByModifier orderByModifier, object data)
         {
-            var inner = Process(orderByModifier.InnerQuery, (QueryContext)data);
-            var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, (QueryContext) data);
+            var inner = Process(orderByModifier.InnerQuery, (IQueryContext)data);
+            var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, (IQueryContext) data);
 
             if (inner.Model is ModifiedCalculusModel)
             {
@@ -479,7 +479,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="ordering">The ordering.</param>
         /// <param name="data">The data.</param>
         /// <returns>List&lt;ModifiedCalculusModel.OrderingPart&gt;.</returns>
-        private List<ModifiedCalculusModel.OrderingPart> ProcessOrdering(IEnumerable<IValueBinder> valueBinders, IEnumerable<OrderByModifier.OrderingPart> ordering, QueryContext data)
+        private List<ModifiedCalculusModel.OrderingPart> ProcessOrdering(IEnumerable<IValueBinder> valueBinders, IEnumerable<OrderByModifier.OrderingPart> ordering, IQueryContext data)
         {
             List<ModifiedCalculusModel.OrderingPart> result = new List<ModifiedCalculusModel.OrderingPart>();
 
@@ -504,7 +504,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <returns>The returned data</returns>
         public object Visit(SliceModifier sliceModifier, object data)
         {
-            var inner = Process(sliceModifier.InnerQuery, (QueryContext) data);
+            var inner = Process(sliceModifier.InnerQuery, (IQueryContext) data);
 
             if (inner.Model is ModifiedCalculusModel)
             {
@@ -566,7 +566,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="source">The source.</param>
         /// <param name="refSource">The reference source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternSource(RestrictedTriplePattern triplePattern, List<ICondition> conditions, out ISqlCalculusSource source, out ISqlCalculusSource refSource, QueryContext context)
+        private void ProcessTriplePatternSource(RestrictedTriplePattern triplePattern, List<ICondition> conditions, out ISqlCalculusSource source, out ISqlCalculusSource refSource, IQueryContext context)
         {
             refSource = null;
 
@@ -593,7 +593,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         /// <returns>ISqlCalculusSource.</returns>
         /// <exception cref="System.ArgumentException">Unknown source;tripleMap</exception>
-        private static ISqlCalculusSource GetTripleMapSource(ITriplesMap tripleMap, QueryContext context)
+        private static ISqlCalculusSource GetTripleMapSource(ITriplesMap tripleMap, IQueryContext context)
         {
             var sqlTableName = context.Mapping.Cache.GetSqlTable(tripleMap);
             var sqlStatement = context.Mapping.Cache.GetSqlStatement(tripleMap);
@@ -620,7 +620,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternPredicate(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternPredicate(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.PredicatePattern, triplePattern.PredicateMap, conditions, valueBinders, source, context);
         }
@@ -634,7 +634,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternItem(PatternItem pattern, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternItem(PatternItem pattern, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             if (pattern is VariablePattern)
             {
@@ -666,7 +666,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source, context.TypeCache);
             var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
@@ -685,7 +685,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternVariable(string variableName, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternVariable(string variableName, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             var valueBinder = new BaseValueBinder(variableName, termMap, source, context.TypeCache);
 
@@ -713,7 +713,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternSubject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternSubject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.SubjectPattern, triplePattern.SubjectMap, conditions, valueBinders, source, context);
         }
@@ -726,7 +726,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, QueryContext context)
+        private void ProcessTriplePatternObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.ObjectMap, conditions, valueBinders, source, context);
         }
@@ -740,7 +740,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="source">The source.</param>
         /// <param name="refSource">The reference source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, QueryContext context)
+        private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, IQueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
         }

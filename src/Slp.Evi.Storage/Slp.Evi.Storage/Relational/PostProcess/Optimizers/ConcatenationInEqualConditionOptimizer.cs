@@ -167,7 +167,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// </summary>
             /// <param name="matchCondition">The match condition to convert.</param>
             /// <param name="context">The context.</param>
-            private IFilterCondition ConvertToCondition(MatchCondition matchCondition, QueryContext context)
+            private IFilterCondition ConvertToCondition(MatchCondition matchCondition, IQueryContext context)
             {
                 if (matchCondition.IsAlwaysFalse)
                 {
@@ -185,7 +185,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// </summary>
             /// <param name="pattern">The pattern to convert.</param>
             /// <param name="context">The context.</param>
-            private IExpression ConvertToExpression(Pattern pattern, QueryContext context)
+            private IExpression ConvertToExpression(Pattern pattern, IQueryContext context)
             {
                 bool isIri = pattern.IsIriEscaped;
 
@@ -210,7 +210,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <param name="isIriEscaped">if set to <c>true</c> the value is iri escaped.</param>
             /// <param name="context">The context.</param>
             /// <returns>IExpression.</returns>
-            private IExpression ConvertToExpression(PatternItem patternItem, bool isIriEscaped, QueryContext context)
+            private IExpression ConvertToExpression(PatternItem patternItem, bool isIriEscaped, IQueryContext context)
             {
                 if (patternItem.IsConstant)
                 {

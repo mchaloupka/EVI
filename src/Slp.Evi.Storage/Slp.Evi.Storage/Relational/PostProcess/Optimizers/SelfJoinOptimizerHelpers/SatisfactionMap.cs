@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <summary>
         /// The context
         /// </summary>
-        private readonly QueryContext _context;
+        private readonly IQueryContext _context;
 
         /// <summary>
         /// The satisfied satisfactions
@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <summary>
         /// Prevents a default instance of the <see cref="SatisfactionMap"/> class from being created.
         /// </summary>
-        private SatisfactionMap(List<SqlTable> presentTables, QueryContext context)
+        private SatisfactionMap(List<SqlTable> presentTables, IQueryContext context)
         {
             _presentTables = presentTables;
             _context = context;
@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <param name="presentTables">Tables present in the model</param>
         /// <param name="context">The query context</param>
         /// <returns></returns>
-        public static SatisfactionMap CreateInitialSatisfactionMap(List<SqlTable> presentTables, QueryContext context)
+        public static SatisfactionMap CreateInitialSatisfactionMap(List<SqlTable> presentTables, IQueryContext context)
         {
             var firstTableOccurrence = new Dictionary<string, SqlTable>();
             var result = new SatisfactionMap(presentTables, context);
@@ -87,7 +87,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <param name="sqlTable">The SQL table</param>
         /// <param name="replaceByTable">The table that will be used to replace the <paramref name="sqlTable"/></param>
         /// <param name="context">The query context</param>
-        private static SelfJoinConstraintsSatisfaction GetSelfJoinConstraints(SqlTable sqlTable, SqlTable replaceByTable, QueryContext context)
+        private static SelfJoinConstraintsSatisfaction GetSelfJoinConstraints(SqlTable sqlTable, SqlTable replaceByTable, IQueryContext context)
         {
             var tableName = sqlTable.TableName;
             var tableInfo = context.SchemaProvider.GetTableInfo(tableName);

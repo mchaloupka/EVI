@@ -42,7 +42,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <summary>
             /// Gets or sets the query context.
             /// </summary>
-            public QueryContext Context { get; set; }
+            public IQueryContext Context { get; set; }
 
             /// <summary>
             /// Gets or sets the data.
@@ -55,7 +55,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        public virtual RelationalQuery Process(RelationalQuery query, QueryContext context)
+        public virtual RelationalQuery Process(RelationalQuery query, IQueryContext context)
         {
             var optimizationContext = CreateInitialContext(query, context);
             var modifiedModel = (ICalculusSource) query.Model.Accept(this, optimizationContext);
@@ -86,7 +86,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <param name="query">The query</param>
         /// <param name="context">The context</param>
         /// <returns></returns>
-        private OptimizationContext CreateInitialContext(RelationalQuery query, QueryContext context)
+        private OptimizationContext CreateInitialContext(RelationalQuery query, IQueryContext context)
         {
             return new OptimizationContext()
             {
@@ -100,7 +100,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// </summary>
         /// <param name="query">The query</param>
         /// <param name="context">The context</param>
-        protected virtual T CreateInitialData(RelationalQuery query, QueryContext context)
+        protected virtual T CreateInitialData(RelationalQuery query, IQueryContext context)
         {
             return default(T);
         }

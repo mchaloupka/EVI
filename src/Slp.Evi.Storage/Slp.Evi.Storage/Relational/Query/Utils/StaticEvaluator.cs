@@ -20,7 +20,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         /// <param name="expression">The expression.</param>
         /// <param name="rowData">The row data.</param>
         /// <param name="context">The context.</param>
-        public object Evaluate(IExpression expression, IQueryResultRow rowData, QueryContext context)
+        public object Evaluate(IExpression expression, IQueryResultRow rowData, IQueryContext context)
         {
             return expression.Accept(this, new StaticEvaluatorParameter(rowData, context));
         }
@@ -35,7 +35,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             /// </summary>
             /// <param name="rowData">The row data.</param>
             /// <param name="context">The context.</param>
-            public StaticEvaluatorParameter(IQueryResultRow rowData, QueryContext context)
+            public StaticEvaluatorParameter(IQueryResultRow rowData, IQueryContext context)
             {
                 RowData = rowData;
                 Context = context;
@@ -51,7 +51,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             /// Gets the context.
             /// </summary>
             /// <value>The context.</value>
-            public QueryContext Context { get; }
+            public IQueryContext Context { get; }
         }
 
         /// <summary>

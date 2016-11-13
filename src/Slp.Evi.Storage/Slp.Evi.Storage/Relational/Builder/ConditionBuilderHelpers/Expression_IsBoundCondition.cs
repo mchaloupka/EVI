@@ -7,7 +7,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
     /// <summary>
-    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition(IExpression, QueryContext)"/>.
+    /// Helper for <see cref="ConditionBuilder.CreateIsBoundCondition(IExpression, IQueryContext)"/>.
     /// </summary>
     public class Expression_IsBoundCondition
         : IExpressionVisitor
@@ -31,7 +31,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateIsBoundCondition(IExpression expression, QueryContext context)
+        public IFilterCondition CreateIsBoundCondition(IExpression expression, IQueryContext context)
         {
             return (IFilterCondition) expression.Accept(this, context);
         }

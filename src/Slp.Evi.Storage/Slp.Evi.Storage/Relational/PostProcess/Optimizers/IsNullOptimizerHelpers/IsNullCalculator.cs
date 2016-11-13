@@ -28,14 +28,14 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpe
             /// <summary>
             /// Gets the query context.
             /// </summary>
-            public QueryContext Context { get; }
+            public IQueryContext Context { get; }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="IsNullCalculatorParameter"/> class.
             /// </summary>
             /// <param name="result">The analysis result.</param>
             /// <param name="context">The query context.</param>
-            public IsNullCalculatorParameter(IsNullOptimizerAnalyzeResult result, QueryContext context)
+            public IsNullCalculatorParameter(IsNullOptimizerAnalyzeResult result, IQueryContext context)
             {
                 Result = result;
                 Context = context;

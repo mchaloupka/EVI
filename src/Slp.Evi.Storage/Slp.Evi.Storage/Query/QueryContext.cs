@@ -13,7 +13,7 @@ namespace Slp.Evi.Storage.Query
     /// <summary>
     /// The query context.
     /// </summary>
-    public class QueryContext
+    public class QueryContext : IQueryContext
     {
         /// <summary>
         /// The blank nodes subjects.

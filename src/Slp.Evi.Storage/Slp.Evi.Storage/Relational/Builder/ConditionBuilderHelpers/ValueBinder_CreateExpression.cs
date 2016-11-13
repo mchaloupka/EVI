@@ -37,7 +37,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="valueBinder">The value binder.</param>
-        public IExpression CreateExpression(QueryContext context, IValueBinder valueBinder)
+        public IExpression CreateExpression(IQueryContext context, IValueBinder valueBinder)
         {
             return (IExpression) valueBinder.Accept(this, context);
         }
@@ -50,7 +50,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(BaseValueBinder valueBinder, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
             var map = valueBinder.TermMap;
 
             if (map.IsConstantValued)
@@ -160,7 +160,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(CoalesceValueBinder coalesceValueBinder, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
             List<IExpression> expressions = new List<IExpression>();
 
             foreach (var binder in coalesceValueBinder.ValueBinders)
@@ -179,7 +179,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(SwitchValueBinder switchValueBinder, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
             var statements = new List<CaseExpression.Statement>();
 
             foreach (var @case in switchValueBinder.Cases)

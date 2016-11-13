@@ -13,14 +13,14 @@ namespace Slp.Evi.Storage.Mapping
     /// Mapping transformer
     /// </summary>
     public class MappingTransformer
-        : BaseSparqlTransformer<QueryContext>, ISparqlPostProcess
+        : BaseSparqlTransformer<IQueryContext>, ISparqlPostProcess
     {
         /// <summary>
         /// Processes the specified query.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        public ISparqlQuery Process(ISparqlQuery query, QueryContext context)
+        public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
             return TransformSparqlQuery(query, context);
         }
@@ -45,7 +45,7 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="triplePattern">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override IGraphPattern Transform(TriplePattern triplePattern, QueryContext data)
+        protected override IGraphPattern Transform(TriplePattern triplePattern, IQueryContext data)
         {
             List<RestrictedTriplePattern> patterns = new List<RestrictedTriplePattern>();
 

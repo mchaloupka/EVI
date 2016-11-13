@@ -14,7 +14,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <summary>
         /// Gets the query context.
         /// </summary>
-        public QueryContext QueryContext { get; private set; }
+        public IQueryContext QueryContext { get; private set; }
 
         /// <summary>
         /// Gets the available value binders.
@@ -26,7 +26,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="queryContext">The query context.</param>
         /// <param name="valueBinders">The value binders.</param>
-        public ExpressionVisitParameter(QueryContext queryContext, IEnumerable<IValueBinder> valueBinders)
+        public ExpressionVisitParameter(IQueryContext queryContext, IEnumerable<IValueBinder> valueBinders)
         {
             QueryContext = queryContext;
             ValueBinders = valueBinders.ToDictionary(x => x.VariableName);

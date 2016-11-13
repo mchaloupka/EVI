@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="valueBinder">The value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, QueryContext context)
+        public IFilterCondition CreateIsBoundCondition(IValueBinder valueBinder, IQueryContext context)
         {
             return (IFilterCondition) valueBinder.Accept(this, context);
         }
@@ -97,7 +97,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(SwitchValueBinder switchValueBinder, object data)
         {
-            var context = (QueryContext) data;
+            var context = (IQueryContext) data;
 
             return new DisjunctionCondition(switchValueBinder.Cases.Select(x => new ConjunctionCondition(new IFilterCondition[]
             {
@@ -114,7 +114,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ExpressionValueBinder expressionValueBinder, object data)
         {
-            return _conditionBuilder.CreateIsBoundCondition(expressionValueBinder.Expression, (QueryContext) data);
+            return _conditionBuilder.CreateIsBoundCondition(expressionValueBinder.Expression, (IQueryContext) data);
         }
     }
 }

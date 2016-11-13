@@ -46,7 +46,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="schemaProvider"></param>
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="typeCache">The type cache.</param>
-        QueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ITypeCache typeCache);
+        IQueryContext CreateQueryContext(SparqlQuery originalQuery, IMappingProcessor mapping, ISqlDatabase db, IDbSchemaProvider schemaProvider, INodeFactory nodeFactory, ITypeCache typeCache);
 
         /// <summary>
         /// Creates the relational builder.

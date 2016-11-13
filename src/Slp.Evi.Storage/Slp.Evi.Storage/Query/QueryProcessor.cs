@@ -198,7 +198,7 @@ namespace Slp.Evi.Storage.Query
         /// or
         /// Unable to process the results of an Unknown query type
         /// </exception>
-        private static void ProcessResult(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery originalQuery, QueryContext context, RelationalQuery sqlAlgebra, IQueryResultReader result)
+        private static void ProcessResult(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery originalQuery, IQueryContext context, RelationalQuery sqlAlgebra, IQueryResultReader result)
         {
             switch (originalQuery.QueryType)
             {
@@ -353,7 +353,7 @@ namespace Slp.Evi.Storage.Query
         /// <param name="sqlAlgebra">The SQL algebra.</param>
         /// <param name="context">The query context.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, RelationalQuery sqlAlgebra, QueryContext context)
+        private static void ProcessConstructTemplate(IRdfHandler rdfHandler, IQueryResultRow row, GraphPattern template, RelationalQuery sqlAlgebra, IQueryContext context)
         {
             var s = new Set();
 
@@ -389,7 +389,7 @@ namespace Slp.Evi.Storage.Query
         /// </summary>
         /// <param name="context">The query context.</param>
         /// <returns>The SQL algebra.</returns>
-        private RelationalQuery GenerateSqlAlgebra(QueryContext context)
+        private RelationalQuery GenerateSqlAlgebra(IQueryContext context)
         {
             // Generate initial algebra
             var algebra = _sparqlBuilder.Process(context);

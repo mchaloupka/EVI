@@ -37,7 +37,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="relationalQuery">The relational model.</param>
         /// <param name="context">The query context.</param>
         /// <returns>The SQL query</returns>
-        public string GenerateQuery(RelationalQuery relationalQuery, QueryContext context)
+        public string GenerateQuery(RelationalQuery relationalQuery, IQueryContext context)
         {
             return _queryBuilder.GenerateQuery(relationalQuery, context);
         }

@@ -29,7 +29,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="context">The context.</param>
         /// <param name="calculusVariable">The calculus variable.</param>
         /// <param name="isUri">if set to <c>true</c> [is URI].</param>
-        public ColumnExpression(QueryContext context, ICalculusVariable calculusVariable, bool isUri)
+        public ColumnExpression(IQueryContext context, ICalculusVariable calculusVariable, bool isUri)
         {
             CalculusVariable = calculusVariable;
             IsUri = isUri;

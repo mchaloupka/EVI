@@ -123,7 +123,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// </summary>
         /// <param name="query">The query</param>
         /// <param name="context">The context</param>
-        protected override SelfJoinOptimizerData CreateInitialData(RelationalQuery query, QueryContext context)
+        protected override SelfJoinOptimizerData CreateInitialData(RelationalQuery query, IQueryContext context)
         {
             return new SelfJoinOptimizerData();
         }

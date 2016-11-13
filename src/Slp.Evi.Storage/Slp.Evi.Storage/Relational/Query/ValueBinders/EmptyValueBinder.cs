@@ -28,7 +28,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="rowData">The row data.</param>
         /// <param name="context">The context.</param>
         /// <returns>INode.</returns>
-        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
+        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, IQueryContext context)
         {
             return null;
         }

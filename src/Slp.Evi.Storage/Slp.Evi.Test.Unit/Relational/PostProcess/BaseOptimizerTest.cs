@@ -55,7 +55,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
             return schemaProvider;
         }
 
-        protected virtual QueryContext GenerateQueryContext()
+        protected virtual IQueryContext GenerateQueryContext()
         {
             var mappingMock = new Mock<IMappingProcessor>();
             mappingMock.Setup(x => x.GetMappingTransformer()).Returns(() => null);
@@ -64,13 +64,13 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
             return factory.CreateQueryContext(GenerateSparqlQuery(), mappingMock.Object, GetDb(), GetSchemaProvider(), null, null);
         }
 
-        protected virtual SqlTable GetDummyTable(QueryContext queryContext)
+        protected virtual SqlTable GetDummyTable(IQueryContext queryContext)
         {
             var dummyTable = new SqlTable(queryContext.SchemaProvider.GetTableInfo(DummyTableName));
             return dummyTable;
         }
 
-        protected BaseRelationalOptimizer<T>.OptimizationContext GetContext(QueryContext queryContext)
+        protected BaseRelationalOptimizer<T>.OptimizationContext GetContext(IQueryContext queryContext)
         {
             return new BaseRelationalOptimizer<T>.OptimizationContext()
             {

@@ -13,6 +13,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        ISparqlQuery Process(ISparqlQuery query, QueryContext context);
+        ISparqlQuery Process(ISparqlQuery query, IQueryContext context);
     }
 }

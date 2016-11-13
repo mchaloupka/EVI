@@ -15,12 +15,6 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
             return parser.ParseFromString("SELECT * WHERE { }");
         }
 
-        protected virtual QueryContext GenerateQueryContext()
-        {
-            var factory = new DefaultEviQueryableStorageFactory();
-            return factory.CreateQueryContext(GenerateSparqlQuery(), null, null, null, null, null);
-        }
-
         protected void AssertPatternsEqual(IGraphPattern expected, IGraphPattern result)
         {
             Assert.IsTrue(ArePattersEqual(expected, result));

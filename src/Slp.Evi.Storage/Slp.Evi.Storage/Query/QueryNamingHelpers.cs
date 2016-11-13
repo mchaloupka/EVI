@@ -12,7 +12,7 @@ namespace Slp.Evi.Storage.Query
     /// </summary>
     public class QueryNamingHelpers
     {
-        private readonly QueryContext _context;
+        private readonly IQueryContext _context;
 
         private readonly Dictionary<CalculusModel, CalculusModelSpecificData> _calculusModelSpecificDatas;
 
@@ -29,7 +29,7 @@ namespace Slp.Evi.Storage.Query
         /// Initializes a new instance of the <see cref="QueryNamingHelpers"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public QueryNamingHelpers(QueryContext context)
+        public QueryNamingHelpers(IQueryContext context)
         {
             _context = context;
             _calculusModelSpecificDatas = new Dictionary<CalculusModel, CalculusModelSpecificData>();

@@ -14,6 +14,6 @@ namespace Slp.Evi.Storage.Database
         /// <param name="relationalQuery">The calculus model.</param>
         /// <param name="context">The context.</param>
         /// <returns>The query string.</returns>
-        string GenerateQuery(RelationalQuery relationalQuery, QueryContext context);
+        string GenerateQuery(RelationalQuery relationalQuery, IQueryContext context);
     }
 }

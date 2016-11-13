@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// The load node function
         /// </summary>
-        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> _loadNodeFunc;
+        private Func<INodeFactory, IQueryResultRow, IQueryContext, INode> _loadNodeFunc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseValueBinder"/> class.
@@ -168,7 +168,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="nodeFactory">The node factory.</param>
         /// <param name="rowData">The row data.</param>
         /// <param name="context">The context.</param>
-        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, QueryContext context)
+        public INode LoadNode(INodeFactory nodeFactory, IQueryResultRow rowData, IQueryContext context)
         {
             if (_loadNodeFunc == null)
                 _loadNodeFunc = GenerateLoadNodeFunc(context);
@@ -184,9 +184,9 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="queryContext">The query context</param>
         /// <returns>Generated function.</returns>
         /// <exception cref="System.Exception">Term map must be either constant, column or template valued</exception>
-        private Func<INodeFactory, IQueryResultRow, QueryContext, INode> GenerateLoadNodeFunc(QueryContext queryContext)
+        private Func<INodeFactory, IQueryResultRow, IQueryContext, INode> GenerateLoadNodeFunc(IQueryContext queryContext)
         {
-            Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> expr;
+            Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> expr;
 
             if (TermMap.IsConstantValued)
             {
@@ -212,11 +212,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Generates the load node function from template.
         /// </summary>
         /// <param name="queryContext">The query context</param>
-        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromTemplate(QueryContext queryContext)
+        private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromTemplate(IQueryContext queryContext)
         {
             ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
             ParameterExpression row = Expression.Parameter(typeof(IQueryResultRow), "row");
-            ParameterExpression context = Expression.Parameter(typeof(QueryContext), "context");
+            ParameterExpression context = Expression.Parameter(typeof(IQueryContext), "context");
 
             ParameterExpression valVar = Expression.Parameter(typeof(string), "val");
 
@@ -231,7 +231,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             // Change to generate term for value
 
             var block = Expression.Block(typeof(INode), new[] { valVar }, expressions);
-            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
+            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>>(block, nodeFactory, row, context);
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="context">The context.</param>
         /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         /// <param name="queryContext">The query context</param>
-        private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, bool escape, QueryContext queryContext)
+        private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, bool escape, IQueryContext queryContext)
         {
             List<Expression> expressions = new List<Expression>();
             ParameterExpression sbVar = Expression.Parameter(typeof(StringBuilder), "sb");
@@ -282,7 +282,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="column">The column.</param>
         /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         /// <param name="queryContext">The query context</param>
-        private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ICalculusVariable column, bool escape, QueryContext queryContext)
+        private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ICalculusVariable column, bool escape, IQueryContext queryContext)
         {
             var dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
             var valueVar = Expression.Parameter(typeof(string), "value");
@@ -315,7 +315,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// or
         /// Constant must be uri valued or an object map
         /// </exception>
-        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromConstant()
+        private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
             if (TermMap is IUriValuedTermMap)
             {
@@ -439,7 +439,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Now the uri must be absolute
         /// or
         /// </exception>
-        private static INode GenerateUriTermForValue(string value, INodeFactory factory, QueryContext context, Uri baseUri)
+        private static INode GenerateUriTermForValue(string value, INodeFactory factory, IQueryContext context, Uri baseUri)
         {
             try
             {
@@ -475,7 +475,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="context">The context.</param>
         /// <returns>Uri.</returns>
         /// <exception cref="System.Exception">The relative IRI cannot contain any . or .. parts</exception>
-        private static Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, Uri baseUri, QueryContext context)
+        private static Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, Uri baseUri, IQueryContext context)
         {
             if (relativePart.Split('/').Any(seg => seg == "." || seg == ".."))
                 throw new Exception("The relative IRI cannot contain any . or .. parts");
@@ -516,11 +516,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Generates the load node function from column.
         /// </summary>
         /// <param name="queryContext">The query context</param>
-        private Expression<Func<INodeFactory, IQueryResultRow, QueryContext, INode>> GenerateLoadNodeFuncFromColumn(QueryContext queryContext)
+        private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromColumn(IQueryContext queryContext)
         {
             ParameterExpression nodeFactory = Expression.Parameter(typeof(INodeFactory), "nodeFactory");
             ParameterExpression row = Expression.Parameter(typeof(IQueryResultRow), "row");
-            ParameterExpression context = Expression.Parameter(typeof(QueryContext), "context");
+            ParameterExpression context = Expression.Parameter(typeof(IQueryContext), "context");
 
             var column = NeededCalculusVariables.Single();
             var columnName = queryContext.QueryNamingHelpers.GetVariableName(null, column);
@@ -549,7 +549,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
 
             var block = Expression.Block(typeof(INode), new[] { dbColVar, valVar }, expressions);
-            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, QueryContext, INode>>(block, nodeFactory, row, context);
+            return Expression.Lambda<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>>(block, nodeFactory, row, context);
         }
         #endregion
     }

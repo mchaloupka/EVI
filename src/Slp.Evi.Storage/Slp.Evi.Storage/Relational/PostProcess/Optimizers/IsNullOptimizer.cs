@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// </summary>
         /// <param name="query"></param>
         /// <param name="context"></param>
-        protected override IsNullOptimizerAnalyzeResult CreateInitialData(RelationalQuery query, QueryContext context)
+        protected override IsNullOptimizerAnalyzeResult CreateInitialData(RelationalQuery query, IQueryContext context)
         {
             var analyzeResult = new IsNullOptimizerAnalyzeResult(query.Model);
             IsNullCalculator.TransformCalculusSource(query.Model, new IsNullCalculator.IsNullCalculatorParameter(analyzeResult, context));
@@ -120,7 +120,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// </summary>
             /// <param name="analyzeResult">The analysis result.</param>
             /// <param name="context">The query context</param>
-            public void CheckPresentAnalysisResult(IsNullOptimizerAnalyzeResult analyzeResult, QueryContext context)
+            public void CheckPresentAnalysisResult(IsNullOptimizerAnalyzeResult analyzeResult, IQueryContext context)
             {
                 var source = analyzeResult.CurrentSource;
 

@@ -16,7 +16,7 @@ namespace Slp.Evi.Storage.Query
         /// <summary>
         /// The context
         /// </summary>
-        private readonly QueryContext _context;
+        private readonly IQueryContext _context;
 
         /// <summary>
         /// The relational optimizers
@@ -33,7 +33,7 @@ namespace Slp.Evi.Storage.Query
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="context">The context.</param>
-        public QueryPostProcesses(IEviQueryableStorageFactory factory, QueryContext context)
+        public QueryPostProcesses(IEviQueryableStorageFactory factory, IQueryContext context)
         {
             _context = context;
             _relationalPostprocesses = new List<IRelationalPostProcess>(factory.GetRelationalPostProcesses());

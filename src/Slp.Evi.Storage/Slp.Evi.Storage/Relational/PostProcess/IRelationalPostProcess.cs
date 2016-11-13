@@ -13,6 +13,6 @@ namespace Slp.Evi.Storage.Relational.PostProcess
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
-        RelationalQuery Process(RelationalQuery query, QueryContext context);
+        RelationalQuery Process(RelationalQuery query, IQueryContext context);
     }
 }
