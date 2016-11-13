@@ -159,7 +159,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
                     return EviConstants.XsdDate;
                 case "time":
                     return EviConstants.XsdTime;
-                case "dateTime":
+                case "datetime":
                     return EviConstants.XsdDateTime;
                 case "binary":
                 case "varbinary":

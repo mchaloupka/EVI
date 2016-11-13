@@ -474,10 +474,6 @@
       rr:objectMap [ rr:column "mbox_sha1sum"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:validTo;
-      rr:objectMap [ rr:column "validTo"; ];
-    ];
-    rr:predicateObjectMap [
       rr:predicate bsbm:country;
       rr:objectMap [ 
         rr:template "http://downlode.org/rdf/iso-3166/countries#{country}";
