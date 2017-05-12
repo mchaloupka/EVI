@@ -60,3 +60,5 @@ foreach ($file in "AssemblyInfo.cs", "AssemblyInfo.vb" )
 }
 
 nuget restore src\Slp.Evi.Storage\Slp.Evi.Storage.sln
+choco install "msbuild-sonarqube-runner" -y
+MSBuild.SonarQube.Runner.exe begin /k:"EVI" /d:"sonar.host.url=https://sonarqube.com" /d:"sonar.login=$env:SONARQUBE_TOKEN"
