@@ -17,15 +17,5 @@ EVI (v0.0.4-prealpha)
 [![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_bugs)](https://sonarqube.com/dashboard/index/EVI)
 [![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_code_smells)](https://sonarqube.com/dashboard/index/EVI)
 [![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_sqale_debt_ratio)](https://sonarqube.com/dashboard/index/EVI)
-
-[![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_maintainability_rating)](https://sonarqube.com/dashboard/index/EVI)
-[![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_reliability_rating)](https://sonarqube.com/dashboard/index/EVI)
-[![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=new_security_rating)](https://sonarqube.com/dashboard/index/EVI)
-
-
-
-
-
-
-
+================
 .NET implementation of an RDB2RDF storage based on R2RML mapping file
