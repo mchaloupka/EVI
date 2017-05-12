@@ -59,7 +59,10 @@ foreach ($file in "AssemblyInfo.cs", "AssemblyInfo.vb" )
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? {$_.Name -eq $file} | Update-SourceVersion $version $iversion;
 }
 
-$projectName = "EVI"
-nuget restore src\Slp.Evi.Storage\Slp.Evi.Storage.sln
-choco install ""msbuild-sonarqube-runner"" -y
-MSBuild.SonarQube.Runner.exe begin /k:"$projectName" /d:""sonar.host.url=https://sonarqube.com"" /d:"sonar.login=$env:SONARQUBE_TOKEN" /d:"sonar.organization=mchaloupka-github" /d:"sonar.cs.opencover.reportsPaths=coverage.xml"
+if($env:APPVEYOR_REPO_BRANCH -eq "master")
+{
+    $projectName = "EVI"
+    nuget restore src\Slp.Evi.Storage\Slp.Evi.Storage.sln
+    choco install ""msbuild-sonarqube-runner"" -y
+    MSBuild.SonarQube.Runner.exe begin /k:"$projectName" /d:""sonar.host.url=https://sonarqube.com"" /d:"sonar.login=$env:SONARQUBE_TOKEN" /d:"sonar.organization=mchaloupka-github" /d:"sonar.cs.opencover.reportsPaths=coverage.xml"
+}

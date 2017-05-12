@@ -1,4 +1,7 @@
-MSBuild.SonarQube.Runner.exe end /d:"sonar.login=$env:SONARQUBE_TOKEN"
+if($env:APPVEYOR_REPO_BRANCH -eq "master")
+{
+    MSBuild.SonarQube.Runner.exe end /d:"sonar.login=$env:SONARQUBE_TOKEN"
+}
 
 pip install codecov
-codecov -f "coverage.xml" -t $env:CODECOV_TOKEN
+codecov -f "coverage.xml"
