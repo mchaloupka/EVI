@@ -58,3 +58,5 @@ foreach ($file in "AssemblyInfo.cs", "AssemblyInfo.vb" )
 {
 	$env:APPVEYOR_BUILD_FOLDER | get-childitem -recurse |? {$_.Name -eq $file} | Update-SourceVersion $version $iversion;
 }
+
+nuget restore
