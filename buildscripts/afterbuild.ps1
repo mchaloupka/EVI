@@ -1,5 +1,3 @@
-MSBuild.SonarQube.Runner.exe end /d:"sonar.login=$env:SONARQUBE_TOKEN"
-
 $nugetversion = $env:DOTNETR2RMLSTORE_NUGETVERSION
 Add-Type -Assembly System.IO.Compression.FileSystem
 
