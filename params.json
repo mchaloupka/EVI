@@ -1,6 +1,0 @@
-{
-  "name": "EVI",
-  "tagline": ".NET implementation of an RDB2RDF storage based on R2RML mapping file",
-  "body": "# Welcome to the home page of EVI project\r\nEVI project is implementation of SPARQL to SQL translation. The library can be used as a virtual SPARQL endpoint.\r\n\r\n* Nuget package: https://www.nuget.org/packages/slp.evi/0.0.4-prealpha\r\n* Sample endpoint implementation: https://github.com/mchaloupka/EVI-SampleServer\r\n\r\nThere will be more detail in the future. Feel free to contact the author: chaloupkamilos@hotmail.com",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}

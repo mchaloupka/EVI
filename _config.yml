@@ -1,0 +1,8 @@
+title: EVI
+description: .NET implementation of an RDB2RDF storage based on R2RML mapping file
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
