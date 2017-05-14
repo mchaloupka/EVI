@@ -1,4 +1,4 @@
-EVI (v0.0.4-prealpha) 
+EVI (v0.0.4-prealpha)
 ================
 [![Build status](https://ci.appveyor.com/api/projects/status/0occxl9nsbjcmkc2/branch/master?svg=true)](https://ci.appveyor.com/project/mchaloupka/dotnetr2rmlstore/branch/master) 
 [![codecov](https://codecov.io/gh/mchaloupka/EVI/branch/master/graph/badge.svg)](https://codecov.io/gh/mchaloupka/EVI)
@@ -13,5 +13,7 @@ EVI (v0.0.4-prealpha)
 [![Quality Gate](https://sonarqube.com/api/badges/measure?key=EVI&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard/index/EVI)
 
 ---
+
+http://mchaloupka.github.io/EVI/
 
 .NET implementation of an RDB2RDF storage based on R2RML mapping file
