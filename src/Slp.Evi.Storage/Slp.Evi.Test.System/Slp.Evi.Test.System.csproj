@@ -240,6 +240,12 @@
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\bind.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\distinct.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\distinct.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Simple\Type\double.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

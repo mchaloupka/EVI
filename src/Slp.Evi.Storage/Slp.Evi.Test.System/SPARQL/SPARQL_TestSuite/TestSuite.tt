@@ -21,6 +21,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", "Simple", "bind"); #>
 <# BagEqualTest("simple.xml", "Simple", "nested_optional"); #>
 <# BagEqualTest("simple.xml", "Simple", "nested_filter"); #>
+<# BagEqualTest("simple.xml", "Simple", "distinct"); #>
 
 <# BagEqualTest("simple.xml", @"Simple\Filter", "bound"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "not_bound"); #>

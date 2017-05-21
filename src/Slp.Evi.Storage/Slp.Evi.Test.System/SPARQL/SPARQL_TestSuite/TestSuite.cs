@@ -116,6 +116,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_distinct()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\distinct.rq";
+            var resultFile = @"Data\Simple\distinct.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Simple_Filter_bound()
