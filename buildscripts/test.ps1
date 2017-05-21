@@ -3,5 +3,6 @@ OpenCover.Console.exe -register:user -returntargetcode -target:"vstest.console.e
 
 if($LastExitCode -ne 0) {
     Add-AppveyorMessage -Message "Tests failed (exit code: $LastExitCode)"
-    $host.SetShouldExit($LastExitCode)
+    # $host.SetShouldExit($LastExitCode)
+    exit $LastExitCode
 }
