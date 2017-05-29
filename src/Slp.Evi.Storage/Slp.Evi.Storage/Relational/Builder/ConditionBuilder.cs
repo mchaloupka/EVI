@@ -130,7 +130,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(curCase => new ConjunctionCondition(new IFilterCondition[]
                 {
-                    new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(new ColumnExpression(switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
                     CreateEqualsCondition(curCase.ValueBinder, secondValueBinder, context)
                 })).ToList());
             }

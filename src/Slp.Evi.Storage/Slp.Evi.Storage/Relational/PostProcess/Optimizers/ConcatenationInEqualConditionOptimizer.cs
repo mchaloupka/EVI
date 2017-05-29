@@ -218,7 +218,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 }
                 else
                 {
-                    return new ColumnExpression(context, patternItem.RelationalColumn, isIriEscaped);
+                    return new ColumnExpression(patternItem.RelationalColumn, isIriEscaped);
                 }
             }
 

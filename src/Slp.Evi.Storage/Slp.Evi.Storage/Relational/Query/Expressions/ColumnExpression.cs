@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using DatabaseSchemaReader.DataSchema;
-using Slp.Evi.Storage.Query;
 
 namespace Slp.Evi.Storage.Relational.Query.Expressions
 {
@@ -26,10 +25,9 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnExpression"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
         /// <param name="calculusVariable">The calculus variable.</param>
         /// <param name="isUri">if set to <c>true</c> [is URI].</param>
-        public ColumnExpression(IQueryContext context, ICalculusVariable calculusVariable, bool isUri)
+        public ColumnExpression(ICalculusVariable calculusVariable, bool isUri)
         {
             CalculusVariable = calculusVariable;
             IsUri = isUri;

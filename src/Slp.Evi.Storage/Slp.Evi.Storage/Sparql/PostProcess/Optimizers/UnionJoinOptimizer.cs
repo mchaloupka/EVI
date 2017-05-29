@@ -329,11 +329,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     if (pattern is VariablePattern)
                     {
-                        return VerifyVariableInfo(((VariablePattern)pattern).VariableName, termMap, typeCache);
+                        return VerifyVariableInfo(((VariablePattern)pattern).VariableName, termMap);
                     }
                     else if (pattern is BlankNodePattern)
                     {
-                        return VerifyVariableInfo(((BlankNodePattern) pattern).ID, termMap, typeCache);
+                        return VerifyVariableInfo(((BlankNodePattern) pattern).ID, termMap);
                     }
                     else
                     {
@@ -346,8 +346,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="variableName">The variable name</param>
                 /// <param name="termMap">The mapping for the variable</param>
-                /// <param name="typeCache">The type cache</param>
-                private bool VerifyVariableInfo(string variableName, ITermMap termMap, ITypeCache typeCache)
+                private bool VerifyVariableInfo(string variableName, ITermMap termMap)
                 {
                     if (_variables.ContainsKey(variableName))
                     {

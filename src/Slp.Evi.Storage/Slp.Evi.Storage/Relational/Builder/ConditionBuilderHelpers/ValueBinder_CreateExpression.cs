@@ -99,7 +99,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             }
             else if (map.IsColumnValued)
             {
-                return new ColumnExpression(context, valueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
+                return new ColumnExpression(valueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
             }
             else if (map.IsTemplateValued)
             {
@@ -109,7 +109,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 {
                     if (templatePart.IsColumn)
                     {
-                        parts.Add(new ColumnExpression(context, valueBinder.GetCalculusVariable(templatePart.Column),
+                        parts.Add(new ColumnExpression(valueBinder.GetCalculusVariable(templatePart.Column),
                             map.TermType.IsURI));
                     }
                     else if (templatePart.IsText)
@@ -185,7 +185,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             foreach (var @case in switchValueBinder.Cases)
             {
                 var expression = CreateExpression(context, @case.ValueBinder);
-                var condition = new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
+                var condition = new ComparisonCondition(new ColumnExpression(switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
                 statements.Add(new CaseExpression.Statement(condition, expression));
             }
 

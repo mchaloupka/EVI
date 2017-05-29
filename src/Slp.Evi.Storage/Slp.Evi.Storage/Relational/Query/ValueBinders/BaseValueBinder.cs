@@ -223,7 +223,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             List<Expression> expressions = new List<Expression>
             {
                 Expression.Assign(valVar,
-                    GenerateReplaceColumnReferencesFunc(nodeFactory, row, context, TermMap.TermType.IsURI, queryContext)),
+                    GenerateReplaceColumnReferencesFunc(row, TermMap.TermType.IsURI, queryContext)),
                 Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof (string))),
                     Expression.Constant(null, typeof (INode)),
                     GenerateTermForValueFunc(nodeFactory, valVar, context))
@@ -237,12 +237,10 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// Generates the replace column references function.
         /// </summary>
-        /// <param name="nodeFactory">The node factory.</param>
         /// <param name="row">The row.</param>
-        /// <param name="context">The context.</param>
         /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         /// <param name="queryContext">The query context</param>
-        private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, bool escape, IQueryContext queryContext)
+        private Expression GenerateReplaceColumnReferencesFunc(ParameterExpression row, bool escape, IQueryContext queryContext)
         {
             List<Expression> expressions = new List<Expression>();
             ParameterExpression sbVar = Expression.Parameter(typeof(StringBuilder), "sb");
