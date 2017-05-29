@@ -15,7 +15,7 @@
   <dependencies>
     <dependency id="dotNetRDF" version="1.0.12" />
     <dependency id="r2rml4net" version="0.4.0.0-pre01" />
-    <dependency id="DatabaseSchemaReader" version="2.1.0" />
+    <dependency id="DatabaseSchemaReader" version="2.3.1" />
   </dependencies>
   </metadata>
   <files>
