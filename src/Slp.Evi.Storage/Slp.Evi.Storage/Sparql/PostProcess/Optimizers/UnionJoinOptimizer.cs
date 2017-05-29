@@ -78,13 +78,13 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="joinedGraphPattern">The child to be processed</param>
             private void ProcessJoinChild(List<IGraphPattern> childPatterns, List<UnionPattern> childUnionPatterns, IGraphPattern joinedGraphPattern)
             {
-                if (joinedGraphPattern is UnionPattern)
+                if (joinedGraphPattern is UnionPattern unionPattern)
                 {
-                    childUnionPatterns.Add((UnionPattern)joinedGraphPattern);
+                    childUnionPatterns.Add(unionPattern);
                 }
-                else if (joinedGraphPattern is JoinPattern)
+                else if (joinedGraphPattern is JoinPattern joinPattern)
                 {
-                    foreach (var innerJoinedGraphPattern in ((JoinPattern)joinedGraphPattern).JoinedGraphPatterns)
+                    foreach (var innerJoinedGraphPattern in joinPattern.JoinedGraphPatterns)
                     {
                         ProcessJoinChild(childPatterns, childUnionPatterns, innerJoinedGraphPattern);
                     }
@@ -109,10 +109,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 foreach (var childPattern in childPatterns)
                 {
-                    if (childPattern is RestrictedTriplePattern)
+                    if (childPattern is RestrictedTriplePattern triplePattern)
                     {
-                        var triplePattern = (RestrictedTriplePattern) childPattern;
-
                         if (!leftCartesian.VerifyTriplePattern(triplePattern, data))
                         {
                             leftOk = false;
@@ -262,13 +260,13 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="termMap">The mapping for the pattern</param>
                 private void AddPatternInfo(PatternItem pattern, ITermMap termMap)
                 {
-                    if (pattern is VariablePattern)
+                    if (pattern is VariablePattern variablePattern)
                     {
-                        AddVariableInfo(((VariablePattern)pattern).VariableName, termMap);
+                        AddVariableInfo(variablePattern.VariableName, termMap);
                     }
-                    else if (pattern is BlankNodePattern)
+                    else if (pattern is BlankNodePattern blankNodePattern)
                     {
-                        AddVariableInfo(((BlankNodePattern)pattern).ID, termMap);
+                        AddVariableInfo(blankNodePattern.ID, termMap);
                     }
                 }
 
@@ -327,13 +325,13 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="typeCache">The type cache</param>
                 private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap, ITypeCache typeCache)
                 {
-                    if (pattern is VariablePattern)
+                    if (pattern is VariablePattern variablePattern)
                     {
-                        return VerifyVariableInfo(((VariablePattern)pattern).VariableName, termMap);
+                        return VerifyVariableInfo(variablePattern.VariableName, termMap);
                     }
-                    else if (pattern is BlankNodePattern)
+                    else if (pattern is BlankNodePattern blankNodePattern)
                     {
-                        return VerifyVariableInfo(((BlankNodePattern) pattern).ID, termMap);
+                        return VerifyVariableInfo(blankNodePattern.ID, termMap);
                     }
                     else
                     {
@@ -596,15 +594,13 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     if (decider.IsConstantValued)
                     {
-                        if (decider is IUriValuedTermMap)
+                        if (decider is IUriValuedTermMap uriValuedTermMap)
                         {
-                            var uri = ((IUriValuedTermMap)decider).URI;
+                            var uri = uriValuedTermMap.URI;
                             return constantUriFunc(uri);
                         }
-                        else if (decider is IObjectMap)
+                        else if (decider is IObjectMap oMap)
                         {
-                            var oMap = (IObjectMap)decider;
-
                             if (oMap.URI != null)
                             {
                                 return constantUriFunc(oMap.URI);

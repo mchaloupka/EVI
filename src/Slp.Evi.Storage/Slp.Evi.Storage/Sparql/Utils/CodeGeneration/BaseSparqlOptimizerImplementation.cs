@@ -24,13 +24,13 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <returns>The transformation result</returns>
         public virtual ISparqlQuery TransformSparqlQuery(ISparqlQuery toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
         {
-            if (toTransform is IModifier)
+            if (toTransform is IModifier modifier)
             {
-                return TransformModifier((IModifier)toTransform, data);
+                return TransformModifier(modifier, data);
             }
-            else if (toTransform is IGraphPattern)
+            else if (toTransform is IGraphPattern graphPattern)
             {
-                return TransformGraphPattern((IGraphPattern)toTransform, data);
+                return TransformGraphPattern(graphPattern, data);
             }
             else
             {

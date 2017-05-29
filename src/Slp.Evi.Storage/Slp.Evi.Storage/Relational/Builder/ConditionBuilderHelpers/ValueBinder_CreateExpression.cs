@@ -55,14 +55,12 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 
             if (map.IsConstantValued)
             {
-                if (map is IUriValuedTermMap)
+                if (map is IUriValuedTermMap uriValuedTermMap)
                 {
-                    return new ConstantExpression(((IUriValuedTermMap)map).URI, context);
+                    return new ConstantExpression(uriValuedTermMap.URI, context);
                 }
-                else if (map is IObjectMap)
+                else if (map is IObjectMap objectMap)
                 {
-                    var objectMap = (IObjectMap)map;
-
                     if (objectMap.URI != null)
                     {
                         return new ConstantExpression(objectMap.URI, context);

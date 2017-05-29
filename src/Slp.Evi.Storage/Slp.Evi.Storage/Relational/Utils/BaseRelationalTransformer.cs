@@ -67,10 +67,10 @@ namespace Slp.Evi.Storage.Relational.Utils
                     newFilterConditions.Add(new AlwaysFalseCondition());
                     break;
                 }
-                else if (newCondition is ConjunctionCondition)
+                else if (newCondition is ConjunctionCondition newConjunctionCondition)
                 {
                     changed = true;
-                    newFilterConditions.AddRange(((ConjunctionCondition)newCondition).InnerConditions);
+                    newFilterConditions.AddRange(newConjunctionCondition.InnerConditions);
                 }
                 else
                 {
@@ -190,9 +190,9 @@ namespace Slp.Evi.Storage.Relational.Utils
                 {
                     changed = true;
                 }
-                else if (newCondition is ConjunctionCondition)
+                else if (newCondition is ConjunctionCondition newConjunctionCondition)
                 {
-                    innerConditions.AddRange(((ConjunctionCondition) newCondition).InnerConditions);
+                    innerConditions.AddRange(newConjunctionCondition.InnerConditions);
                     changed = true;
                 }
                 else
@@ -247,9 +247,9 @@ namespace Slp.Evi.Storage.Relational.Utils
                 {
                     changed = true;
                 }
-                else if (newCondition is DisjunctionCondition)
+                else if (newCondition is DisjunctionCondition newDisjunctionCondition)
                 {
-                    innerConditions.AddRange(((DisjunctionCondition)newCondition).InnerConditions);
+                    innerConditions.AddRange(newDisjunctionCondition.InnerConditions);
                     changed = true;
                 }
                 else
@@ -345,9 +345,9 @@ namespace Slp.Evi.Storage.Relational.Utils
         {
             var newInner = TransformFilterCondition(toTransform.InnerCondition, data);
 
-            if (newInner is NegationCondition)
+            if (newInner is NegationCondition newNegationCondition)
             {
-                return ((NegationCondition) newInner).InnerCondition;
+                return newNegationCondition.InnerCondition;
             }
             else if (newInner is AlwaysFalseCondition)
             {

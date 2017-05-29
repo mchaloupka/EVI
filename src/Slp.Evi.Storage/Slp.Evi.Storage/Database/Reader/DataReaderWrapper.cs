@@ -229,9 +229,9 @@ namespace Slp.Evi.Storage.Database.Reader
                     {
                         return null;
                     }
-                    else if (_value is double)
+                    else if (_value is double dVal)
                     {
-                        return ((double) _value).ToString(CultureInfo.InvariantCulture);
+                        return dVal.ToString(CultureInfo.InvariantCulture);
                     }
                     else
                     {
@@ -247,13 +247,13 @@ namespace Slp.Evi.Storage.Database.Reader
             /// <exception cref="System.Exception">Cannot convert value to boolean</exception>
             public bool GetBooleanValue()
             {
-                if (_value is bool)
+                if (_value is bool bVal)
                 {
-                    return (bool)_value;
+                    return bVal;
                 }
-                else if(_value is int)
+                else if(_value is int iVal)
                 {
-                    return ((int)_value) == 1;
+                    return iVal == 1;
                 }
                 else
                 {

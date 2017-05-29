@@ -40,17 +40,17 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
 
             foreach (var cond in conditions)
             {
-                if (cond is ISourceCondition)
+                if (cond is ISourceCondition sourceCondition)
                 {
-                    _sourceConditions.Add((ISourceCondition) cond);
+                    _sourceConditions.Add(sourceCondition);
                 }
-                else if (cond is IFilterCondition)
+                else if (cond is IFilterCondition filterCondition)
                 {
-                    _filterConditions.Add((IFilterCondition) cond);
+                    _filterConditions.Add(filterCondition);
                 }
-                else if (cond is IAssignmentCondition)
+                else if (cond is IAssignmentCondition assignmentCondition)
                 {
-                    _assignmentConditions.Add((IAssignmentCondition) cond);
+                    _assignmentConditions.Add(assignmentCondition);
                 }
                 else
                 {

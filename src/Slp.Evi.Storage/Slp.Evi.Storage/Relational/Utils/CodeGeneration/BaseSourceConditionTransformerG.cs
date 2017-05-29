@@ -206,12 +206,12 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         /// <summary>
         /// Visits <see cref="LeftJoinCondition" />
         /// </summary>
-        /// <param name="leftJoinCondition">The visited instance</param>
+        /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(LeftJoinCondition leftJoinCondition, object data)
+        public object Visit(LeftJoinCondition toVisit, object data)
         {
-            return ProcessVisit(leftJoinCondition, (T)data);
+            return ProcessVisit(toVisit, (T)data);
         }
 
         /// <summary>

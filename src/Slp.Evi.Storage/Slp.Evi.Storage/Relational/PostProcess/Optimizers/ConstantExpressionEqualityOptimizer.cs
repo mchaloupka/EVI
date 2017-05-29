@@ -78,9 +78,9 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <returns>The <see cref="EqualityResults"/> of the check.</returns>
             private EqualityResults CheckComparison(IExpression leftOperand, IExpression rightOperand, ComparisonTypes comparisonType)
             {
-                if (leftOperand is ConstantExpression && rightOperand is ConstantExpression && (comparisonType == ComparisonTypes.EqualTo || comparisonType == ComparisonTypes.NotEqualTo))
+                if (leftOperand is ConstantExpression leftConstantExpression && rightOperand is ConstantExpression rightConstantExpression && (comparisonType == ComparisonTypes.EqualTo || comparisonType == ComparisonTypes.NotEqualTo))
                 {
-                    if (AreConstantExpressionsEqual((ConstantExpression) leftOperand, (ConstantExpression) rightOperand))
+                    if (AreConstantExpressionsEqual(leftConstantExpression, rightConstantExpression))
                     {
                         if (comparisonType == ComparisonTypes.EqualTo)
                         {

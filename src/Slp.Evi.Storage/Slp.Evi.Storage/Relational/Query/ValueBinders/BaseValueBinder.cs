@@ -312,15 +312,13 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </exception>
         private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
-            if (TermMap is IUriValuedTermMap)
+            if (TermMap is IUriValuedTermMap uriValuedTermMap)
             {
-                var uri = ((IUriValuedTermMap)TermMap).URI;
+                var uri = uriValuedTermMap.URI;
                 return (fact, row, context) => fact.CreateUriNode(uri);
             }
-            else if (TermMap is IObjectMap)
+            else if (TermMap is IObjectMap objectMap)
             {
-                var objectMap = (IObjectMap)TermMap;
-
                 if (objectMap.URI != null)
                     return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
                 else if (objectMap.Literal != null)

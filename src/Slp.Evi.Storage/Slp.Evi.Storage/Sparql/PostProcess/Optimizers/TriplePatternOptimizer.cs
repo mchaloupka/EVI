@@ -79,10 +79,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             {
                 var pattern = toTransform.SubjectPattern;
 
-                if (pattern is NodeMatchPattern)
+                if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    var nodeMatchPattern = (NodeMatchPattern) pattern;
-
                     return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache.GetValueType(toTransform.SubjectMap));
                 }
                 return true;
@@ -97,10 +95,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             {
                 var pattern = toTransform.PredicatePattern;
 
-                if (pattern is NodeMatchPattern)
+                if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    var nodeMatchPattern = (NodeMatchPattern)pattern;
-
                     return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache.GetValueType(toTransform.PredicateMap));
                 }
                 return true;
@@ -130,9 +126,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     throw new Exception("R2RMLObjectMap or R2RMLRefObjectMap must be assigned");
                 }
 
-                if (pattern is NodeMatchPattern)
+                if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    return CanMatch(((NodeMatchPattern)pattern).Node, r2RmlDef, data.Context.TypeCache.GetValueType(r2RmlDef));
+                    return CanMatch(nodeMatchPattern.Node, r2RmlDef, data.Context.TypeCache.GetValueType(r2RmlDef));
                 }
 
                 return true;
@@ -243,10 +239,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                         var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.ToCompleteUri())});
                         return CanMatch(pattern, termPattern);
                     }
-                    else if (termMap is IObjectMap)
+                    else if (termMap is IObjectMap objectMap)
                     {
-                        var objectMap = (IObjectMap) termMap;
-
                         if (objectMap.URI != null)
                         {
                             var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.ToCompleteUri())});

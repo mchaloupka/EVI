@@ -33,10 +33,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         {
             var newInner = TransformGraphPattern(toTransform.InnerPattern, data);
 
-            if (newInner is FilterPattern)
+            if (newInner is FilterPattern innerFilterPattern)
             {
-                var innerFilterPattern = (FilterPattern) newInner;
-
                 return new FilterPattern(innerFilterPattern.InnerPattern, new ConjunctionExpression(new ISparqlCondition[]
                 {
                     innerFilterPattern.Condition,
@@ -117,12 +115,12 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 ISparqlCondition condition;
                 IGraphPattern newRight;
 
-                if (transformedRight is FilterPattern)
+                if (transformedRight is FilterPattern filterPattern)
                 {
                     condition =
                         new ConjunctionExpression(new ISparqlCondition[]
-                        {toTransform.Condition, ((FilterPattern) transformedRight).Condition});
-                    newRight = ((FilterPattern) transformedRight).InnerPattern;
+                        {toTransform.Condition, filterPattern.Condition});
+                    newRight = filterPattern.InnerPattern;
                 }
                 else
                 {
@@ -131,10 +129,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                 }
 
                 IGraphPattern result;
-                if (transformedLeft is FilterPattern)
+                if (transformedLeft is FilterPattern leftFilter)
                 {
-                    var leftFilter = (FilterPattern) transformedLeft;
-
                     result = new FilterPattern(new LeftJoinPattern(leftFilter.InnerPattern, newRight, condition),
                         leftFilter.Condition);
                 }
