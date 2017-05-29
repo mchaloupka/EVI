@@ -531,7 +531,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             else
             {
-                expressions.Add(Expression.Call(typeof(BaseValueBinder), "AssertNoIllegalCharacters", new Type[0],
+                expressions.Add(Expression.Call(typeof(BaseValueBinder), nameof(AssertNoIllegalCharacters), new Type[0],
                     Expression.New(typeof(Uri).GetConstructor(new[] { typeof(string), typeof(UriKind) }),
                         valVar,
                         Expression.Constant(UriKind.RelativeOrAbsolute, typeof(UriKind)))));
