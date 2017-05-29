@@ -107,9 +107,8 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessAlgebra(ISparqlAlgebra originalAlgebra, IQueryContext context)
         {
-            if (originalAlgebra is Select)
+            if (originalAlgebra is Select orSel)
             {
-                var orSel = (Select)originalAlgebra;
                 var innerAlgebra = ProcessAlgebra(orSel.InnerAlgebra, context);
 
                 if (!orSel.IsSelectAll)
@@ -121,62 +120,54 @@ namespace Slp.Evi.Storage.Sparql.Builder
                     return new SelectModifier(innerAlgebra, innerAlgebra.Variables);
                 }
             }
-            else if (originalAlgebra is IBgp)
+            else if (originalAlgebra is IBgp orBgp)
             {
-                var orBgp = (IBgp)originalAlgebra;
                 return ProcessTriplePatterns(orBgp.TriplePatterns);
             }
-            else if (originalAlgebra is Union)
+            else if (originalAlgebra is Union orUnion)
             {
-                var orUnion = (Union)originalAlgebra;
                 var left = (IGraphPattern)ProcessAlgebra(orUnion.Lhs, context);
                 var right = (IGraphPattern)ProcessAlgebra(orUnion.Rhs, context);
                 return new UnionPattern(new IGraphPattern[] { left, right });
             }
-            else if (originalAlgebra is LeftJoin)
+            else if (originalAlgebra is LeftJoin leftJoin)
             {
-                var leftJoin = (LeftJoin)originalAlgebra;
                 var left = (IGraphPattern)ProcessAlgebra(leftJoin.Lhs, context);
                 var right = (IGraphPattern)ProcessAlgebra(leftJoin.Rhs, context);
                 var condition = ProcessCondition(leftJoin.Filter.Expression, context);
 
                 return new LeftJoinPattern(left, right, condition);
             }
-            else if (originalAlgebra is Filter)
+            else if (originalAlgebra is Filter filter)
             {
-                var filter = (Filter) originalAlgebra;
                 var inner = (IGraphPattern) ProcessAlgebra(filter.InnerAlgebra, context);
                 var innerExpression = ProcessCondition(filter.SparqlFilter.Expression, context);
 
                 return new FilterPattern(inner, innerExpression);
             }
-            else if (originalAlgebra is Join)
+            else if (originalAlgebra is Join join)
             {
-                var join = (Join) originalAlgebra;
                 var left = (IGraphPattern) ProcessAlgebra(join.Lhs, context);
                 var right = (IGraphPattern) ProcessAlgebra(join.Rhs, context);
 
                 return new JoinPattern(new IGraphPattern[] {left, right});
             }
-            else if (originalAlgebra is Extend)
+            else if (originalAlgebra is Extend extend)
             {
-                var extend = (Extend) originalAlgebra;
                 var inner = (IGraphPattern) ProcessAlgebra(extend.InnerAlgebra, context);
 
                 var expression = ProcessExpression(extend.AssignExpression, context);
 
                 return new ExtendPattern(inner, extend.VariableName, expression);
             }
-            else if (originalAlgebra is OrderBy)
+            else if (originalAlgebra is OrderBy orderBy)
             {
-                var orderby = (OrderBy) originalAlgebra;
-                var inner = ProcessAlgebra(orderby.InnerAlgebra, context);
+                var inner = ProcessAlgebra(orderBy.InnerAlgebra, context);
 
-                return CreateOrderBy(inner, orderby.Ordering, context);
+                return CreateOrderBy(inner, orderBy.Ordering, context);
             }
-            else if (originalAlgebra is Slice)
+            else if (originalAlgebra is Slice slice)
             {
-                var slice = (Slice) originalAlgebra;
                 var inner = ProcessAlgebra(slice.InnerAlgebra, context);
 
                 int? limit = (slice.Limit != -1) ? (int?)slice.Limit : null;
@@ -272,13 +263,12 @@ namespace Slp.Evi.Storage.Sparql.Builder
         {
             var processed = ProcessExpression(expression, context);
 
-            if (processed is ISparqlCondition)
+            if (processed is ISparqlCondition sparqlCondition)
             {
-                return (ISparqlCondition)processed;
+                return sparqlCondition;
             }
-            else if (processed is NodeExpression)
+            else if (processed is NodeExpression nodeExpression)
             {
-                var nodeExpression = (NodeExpression)processed;
                 var node = nodeExpression.Node;
 
                 if (node.EffectiveType == XmlSpecsHelper.XmlSchemaDataTypeBoolean)
@@ -299,82 +289,70 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
         private Algebra.ISparqlExpression ProcessExpression(ISparqlExpression expression, IQueryContext context)
         {
-            if (expression is BoundFunction)
+            if (expression is BoundFunction boundFunction)
             {
-                var boundFunction = (BoundFunction) expression;
                 return new IsBoundExpression(boundFunction.Variables.Single());
             }
-            else if (expression is AndExpression)
+            else if (expression is AndExpression conjunction)
             {
-                var conjunction = (AndExpression)expression;
                 var left = ProcessCondition(conjunction.Arguments.ElementAt(0), context);
                 var right = ProcessCondition(conjunction.Arguments.ElementAt(1), context);
                 return new ConjunctionExpression(new ISparqlCondition[] {left, right});
             }
-            else if (expression is OrExpression)
+            else if (expression is OrExpression disjunction)
             {
-                var conjunction = (OrExpression)expression;
-                var left = ProcessCondition(conjunction.Arguments.ElementAt(0), context);
-                var right = ProcessCondition(conjunction.Arguments.ElementAt(1), context);
+                var left = ProcessCondition(disjunction.Arguments.ElementAt(0), context);
+                var right = ProcessCondition(disjunction.Arguments.ElementAt(1), context);
                 return new DisjunctionExpression(new ISparqlCondition[] { left, right });
             }
-            else if (expression is NotExpression)
+            else if (expression is NotExpression notExpression)
             {
-                var notExpression = (NotExpression) expression;
                 return new NegationExpression(ProcessCondition(notExpression.Arguments.Single(), context));
             }
-            else if (expression is GreaterThanExpression)
+            else if (expression is GreaterThanExpression greaterThan)
             {
-                var comparison = (GreaterThanExpression) expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(greaterThan.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(greaterThan.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.GreaterThan);
             }
-            else if (expression is GreaterThanOrEqualToExpression)
+            else if (expression is GreaterThanOrEqualToExpression greaterThanOrEqual)
             {
-                var comparison = (GreaterThanOrEqualToExpression)expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(greaterThanOrEqual.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(greaterThanOrEqual.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.GreaterOrEqualThan);
             }
-            else if (expression is LessThanExpression)
+            else if (expression is LessThanExpression lessThan)
             {
-                var comparison = (LessThanExpression)expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(lessThan.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(lessThan.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.LessThan);
             }
-            else if (expression is LessThanOrEqualToExpression)
+            else if (expression is LessThanOrEqualToExpression lessThanOrEqual)
             {
-                var comparison = (LessThanOrEqualToExpression)expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(lessThanOrEqual.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(lessThanOrEqual.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.LessOrEqualThan);
             }
-            else if (expression is EqualsExpression)
+            else if (expression is EqualsExpression equals)
             {
-                var comparison = (EqualsExpression)expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(equals.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(equals.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.EqualTo);
             }
-            else if (expression is NotEqualsExpression)
+            else if (expression is NotEqualsExpression notEquals)
             {
-                var comparison = (NotEqualsExpression)expression;
-                var left = ProcessExpression(comparison.Arguments.ElementAt(0), context);
-                var right = ProcessExpression(comparison.Arguments.ElementAt(1), context);
+                var left = ProcessExpression(notEquals.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(notEquals.Arguments.ElementAt(1), context);
                 return new ComparisonExpression(left, right, ComparisonTypes.NotEqualTo);
             }
-            else if (expression is VariableTerm)
+            else if (expression is VariableTerm variableTerm)
             {
-                var term = (VariableTerm) expression;
-                var variable = term.Variables.Single();
+                var variable = variableTerm.Variables.Single();
                 return new VariableExpression(variable);
             }
-            else if (expression is ConstantTerm)
+            else if (expression is ConstantTerm constantTerm)
             {
-                var term = (ConstantTerm) expression;
-                return new NodeExpression(term.Node());
+                return new NodeExpression(constantTerm.Node());
             }
 
             throw new NotImplementedException();
