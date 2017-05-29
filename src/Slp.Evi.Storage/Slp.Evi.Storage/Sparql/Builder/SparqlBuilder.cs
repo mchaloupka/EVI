@@ -124,7 +124,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             else if (originalAlgebra is IBgp)
             {
                 var orBgp = (IBgp)originalAlgebra;
-                return ProcessTriplePatterns(orBgp.TriplePatterns, context);
+                return ProcessTriplePatterns(orBgp.TriplePatterns);
             }
             else if (originalAlgebra is Union)
             {
@@ -380,7 +380,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             throw new NotImplementedException();
         }
 
-        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns, IQueryContext context)
+        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns)
         {
             List<IGraphPattern> joinedQueries = new List<IGraphPattern>();
 

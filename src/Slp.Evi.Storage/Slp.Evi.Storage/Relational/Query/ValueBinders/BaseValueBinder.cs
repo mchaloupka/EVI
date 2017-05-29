@@ -261,7 +261,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 }
                 else if (part.IsColumn)
                 {
-                    expressions.Add(Expression.Assign(replacedVar, GenerateReplaceColumnReferenceFunc(nodeFactory, row, context, part, GetVariable(part.Column), escape, queryContext)));
+                    expressions.Add(Expression.Assign(replacedVar, GenerateReplaceColumnReferenceFunc(row, GetVariable(part.Column), escape, queryContext)));
                     expressions.Add(Expression.IfThen(Expression.Equal(replacedVar, Expression.Constant(null, typeof(string))), Expression.Return(endLabel, Expression.Constant(null, typeof(string)))));
                     expressions.Add(Expression.Call(sbVar, appendMethod, replacedVar));
                 }
@@ -275,14 +275,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// Generates the replace column reference function.
         /// </summary>
-        /// <param name="nodeFactory">The node factory.</param>
         /// <param name="row">The row.</param>
-        /// <param name="context">The context.</param>
-        /// <param name="part">The part.</param>
         /// <param name="column">The column.</param>
         /// <param name="escape">if set to <c>true</c> the value should be escaped.</param>
         /// <param name="queryContext">The query context</param>
-        private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression nodeFactory, ParameterExpression row, ParameterExpression context, ITemplatePart part, ICalculusVariable column, bool escape, IQueryContext queryContext)
+        private Expression GenerateReplaceColumnReferenceFunc(ParameterExpression row, ICalculusVariable column, bool escape, IQueryContext queryContext)
         {
             var dbColVar = Expression.Parameter(typeof(IQueryResultColumn), "dbCol");
             var valueVar = Expression.Parameter(typeof(string), "value");
@@ -378,7 +375,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             }
             else if (termType.IsLiteral)
             {
-                expressions.Add(Expression.Assign(nodeVar, GenerateTermForLiteralFunc(factory, value, context)));
+                expressions.Add(Expression.Assign(nodeVar, GenerateTermForLiteralFunc(factory, value)));
             }
             else
             {
@@ -409,13 +406,12 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="value">The value.</param>
-        /// <param name="context">The query context.</param>
         /// <exception cref="System.Exception">
         /// Term map cannot be of term type literal
         /// or
         /// Literal term map cannot have both language tag and datatype set
         /// </exception>
-        private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
+        private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value)
         {
             if (value == null)
                 return null;
@@ -447,7 +443,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 
                 if (!uri.IsAbsoluteUri)
                 {
-                    uri = ConstructAbsoluteUri(factory, value, baseUri, context);
+                    uri = ConstructAbsoluteUri(value, baseUri);
                 }
 
                 if (uri.IsAbsoluteUri)
@@ -469,13 +465,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// Constructs the absolute URI.
         /// </summary>
-        /// <param name="factory">The factory.</param>
         /// <param name="relativePart">The relative part.</param>
         /// <param name="baseUri">The base URI.</param>
-        /// <param name="context">The context.</param>
         /// <returns>Uri.</returns>
         /// <exception cref="System.Exception">The relative IRI cannot contain any . or .. parts</exception>
-        private static Uri ConstructAbsoluteUri(INodeFactory factory, string relativePart, Uri baseUri, IQueryContext context)
+        private static Uri ConstructAbsoluteUri(string relativePart, Uri baseUri)
         {
             if (relativePart.Split('/').Any(seg => seg == "." || seg == ".."))
                 throw new Exception("The relative IRI cannot contain any . or .. parts");
@@ -537,7 +531,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 
             if (TermMap.TermType.IsLiteral)
             {
-                expressions.Add(GenerateTermForLiteralFunc(nodeFactory, valVar, context));
+                expressions.Add(GenerateTermForLiteralFunc(nodeFactory, valVar));
             }
             else
             {

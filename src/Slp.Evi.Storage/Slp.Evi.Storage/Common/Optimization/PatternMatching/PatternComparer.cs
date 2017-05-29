@@ -76,8 +76,8 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 
                 if (!performedAction && isIriEscaped)
                 {
-                    var leftIriEscapedPrefix = GetIriEscapedPrefix(leftPatternItems, ref leftStart, leftEnd, leftPrefix, leftSuffix);
-                    var rightIriEscapedPrefix = GetIriEscapedPrefix(rightPatternItems, ref rightStart, rightEnd, rightPrefix, rightSuffix);
+                    var leftIriEscapedPrefix = GetIriEscapedPrefix(leftPatternItems, ref leftStart, leftEnd, leftPrefix);
+                    var rightIriEscapedPrefix = GetIriEscapedPrefix(rightPatternItems, ref rightStart, rightEnd, rightPrefix);
 
                     if (leftIriEscapedPrefix.Count > 0 || rightIriEscapedPrefix.Count > 0)
                     {
@@ -159,8 +159,7 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <param name="prefix">The prefix.</param>
-        /// <param name="suffix">The suffix.</param>
-        private List<PatternItem> GetIriEscapedPrefix(PatternItem[] patternItems, ref int start, int end, StringBuilder prefix, StringBuilder suffix)
+        private List<PatternItem> GetIriEscapedPrefix(PatternItem[] patternItems, ref int start, int end, StringBuilder prefix)
         {
             List<PatternItem> toReturn = new List<PatternItem>();
 

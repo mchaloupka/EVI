@@ -363,7 +363,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             if (restrictedTriplePattern.RefObjectMap != null)
             {
-                ProcessTriplePatternRefObject(restrictedTriplePattern, conditions, valueBinders, source, refSource, context);
+                ProcessTriplePatternRefObject(restrictedTriplePattern, conditions, valueBinders, refSource, context);
 
                 conditions.Add(new TupleFromSourceCondition(refSource.Variables, refSource));
             }
@@ -644,7 +644,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 var node = ((NodeMatchPattern) pattern).Node;
 
-                ProcessTriplePatternCondition(node, termMap, conditions, valueBinders, source, context);
+                ProcessTriplePatternCondition(node, termMap, conditions, source, context);
             }
             else if (pattern is BlankNodePattern)
             {
@@ -663,10 +663,9 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="node">The node.</param>
         /// <param name="termMap">The term map.</param>
         /// <param name="conditions">The conditions.</param>
-        /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
+        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, ISqlCalculusSource source, IQueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source, context.TypeCache);
             var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
@@ -737,10 +736,9 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="triplePattern">The triple pattern.</param>
         /// <param name="conditions">The conditions.</param>
         /// <param name="valueBinders">The value binders.</param>
-        /// <param name="source">The source.</param>
         /// <param name="refSource">The reference source.</param>
         /// <param name="context">The query context.</param>
-        private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, ISqlCalculusSource refSource, IQueryContext context)
+        private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource refSource, IQueryContext context)
         {
             ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
         }

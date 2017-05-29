@@ -355,7 +355,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                         foreach (var storedTermMap in storedTermMaps)
                         {
-                            if (!CanMatch(termMap, storedTermMap, typeCache))
+                            if (!CanMatch(termMap, storedTermMap))
                             {
                                 return false;
                             }
@@ -377,9 +377,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="first">The first mapping.</param>
                 /// <param name="second">The second mapping.</param>
-                /// <param name="typeCache">The type cache</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(ITermMap first, ITermMap second, ITypeCache typeCache)
+                private bool CanMatch(ITermMap first, ITermMap second)
                 {
                     //var firstType = typeCache.GetValueType(first);
                     //var secondType = typeCache.GetValueType(second);
@@ -422,8 +421,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 private bool CanColumnMatch(ITermMap first, ITermMap second)
                 {
                     return CanMatchFunction(second,
-                        constantUriFunc: x => CanMatchColumn(x, first),
-                        constantLiteralFunc: x => CanMatchColumn(x, first),
+                        constantUriFunc: x => CanColumnMatchUri(first),
+                        constantLiteralFunc: x => CanColumnMatchLiteral(first),
                         columnFunc: x => CanColumnsMatch(first, x),
                         templateFunc: x => CanTemplateMatchColumn(x, first));
                 }
@@ -437,9 +436,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 private bool CanMatch(string literal, ITermMap second)
                 {
                     return CanMatchFunction(second,
-                        constantUriFunc: x => CanMatch(literal, x),
+                        constantUriFunc: x => false,
                         constantLiteralFunc: x => CanMatch(literal, x),
-                        columnFunc: x => CanMatchColumn(literal, x),
+                        columnFunc: x => CanColumnMatchLiteral(x),
                         templateFunc: x => CanMatchTemplate(literal, x)
                         );
                 }
@@ -454,8 +453,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => CanMatch(uri, x),
-                        constantLiteralFunc: x => CanMatch(x, uri),
-                        columnFunc: x => CanMatchColumn(uri, x),
+                        constantLiteralFunc: x => false,
+                        columnFunc: x => CanColumnMatchUri(x),
                         templateFunc: x => CanMatchTemplate(uri, x));
                 }
 
@@ -479,17 +478,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 private bool CanMatch(string firstLiteral, string secondLiteral)
                 {
                     return firstLiteral == secondLiteral;
-                }
-
-                /// <summary>
-                /// Determines whether the literal can match uri.
-                /// </summary>
-                /// <param name="literal">The first literal.</param>
-                /// <param name="uri">The second URI.</param>
-                /// <returns><c>false</c>.</returns>
-                private bool CanMatch(string literal, Uri uri)
-                {
-                    return false;
                 }
 
                 /// <summary>
@@ -564,12 +552,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
 
                 /// <summary>
-                /// Determines whether the literal can match the column mapping.
+                /// Determines whether the column can match a literal.
                 /// </summary>
-                /// <param name="literal">The literal.</param>
                 /// <param name="columnTermMap">The column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatchColumn(string literal, ITermMap columnTermMap)
+                private bool CanColumnMatchLiteral(ITermMap columnTermMap)
                 {
                     if (columnTermMap.TermType.IsLiteral)
                         return true;
@@ -578,12 +565,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
 
                 /// <summary>
-                /// Determines whether the URI can match the column mapping.
+                /// Determines whether the column mapping can match an URI.
                 /// </summary>
-                /// <param name="uri">The URI.</param>
                 /// <param name="columnTermMap">The column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatchColumn(Uri uri, ITermMap columnTermMap)
+                private bool CanColumnMatchUri(ITermMap columnTermMap)
                 {
                     if (columnTermMap.TermType.IsURI)
                         return true;
