@@ -74,22 +74,22 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <summary>
         /// Creates the equals conditions.
         /// </summary>
-        /// <param name="valueBinder">The first value binder.</param>
-        /// <param name="otherValueBinder">The second value binder.</param>
+        /// <param name="first">The first value binder.</param>
+        /// <param name="second">The second value binder.</param>
         /// <param name="context">The context.</param>
-        public IFilterCondition CreateEqualsCondition(IValueBinder valueBinder, IValueBinder otherValueBinder, IQueryContext context)
+        public IFilterCondition CreateEqualsCondition(IValueBinder first, IValueBinder second, IQueryContext context)
         {
-            if (valueBinder is EmptyValueBinder)
+            if (first is EmptyValueBinder)
             {
-                return new NegationCondition(CreateIsBoundCondition(otherValueBinder, context));
+                return new NegationCondition(CreateIsBoundCondition(second, context));
             }
-            else if (valueBinder is BaseValueBinder && otherValueBinder is BaseValueBinder)
+            else if (first is BaseValueBinder && second is BaseValueBinder)
             {
-                var leftOperand = CreateExpression(context, valueBinder);
-                var rightOperand = CreateExpression(context, otherValueBinder);
+                var leftOperand = CreateExpression(context, first);
+                var rightOperand = CreateExpression(context, second);
 
-                var leftType = ((BaseValueBinder) valueBinder).Type;
-                var rightType = ((BaseValueBinder) otherValueBinder).Type;
+                var leftType = ((BaseValueBinder) first).Type;
+                var rightType = ((BaseValueBinder) second).Type;
 
                 if (leftType == rightType)
                 {
@@ -100,10 +100,10 @@ namespace Slp.Evi.Storage.Relational.Builder
                     return new AlwaysFalseCondition();
                 }
             }
-            else if (valueBinder is CoalesceValueBinder)
+            else if (first is CoalesceValueBinder)
             {
                 var disjunctionConditions = new List<IFilterCondition>();
-                var binders = ((CoalesceValueBinder) valueBinder).ValueBinders.ToArray();
+                var binders = ((CoalesceValueBinder) first).ValueBinders.ToArray();
 
                 for (int curIndex = 0; curIndex < binders.Length; curIndex++)
                 {
@@ -114,29 +114,29 @@ namespace Slp.Evi.Storage.Relational.Builder
                         conjunctionConditions.Add(new NegationCondition(CreateIsBoundCondition(binders[prevIndex], context)));
                     }
 
-                    conjunctionConditions.Add(CreateEqualsCondition(binders[curIndex], otherValueBinder, context));
+                    conjunctionConditions.Add(CreateEqualsCondition(binders[curIndex], second, context));
                     disjunctionConditions.Add(new DisjunctionCondition(conjunctionConditions));
                 }
 
                 return new DisjunctionCondition(disjunctionConditions);
             }
-            else if (otherValueBinder is CoalesceValueBinder)
+            else if (second is CoalesceValueBinder)
             {
-                return CreateEqualsCondition(otherValueBinder, valueBinder, context);
+                return CreateEqualsCondition(second, first, context);
             }
-            else if (valueBinder is SwitchValueBinder)
+            else if (first is SwitchValueBinder)
             {
-                var switchValueBinder = (SwitchValueBinder) valueBinder;
+                var switchValueBinder = (SwitchValueBinder) first;
 
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(curCase => new ConjunctionCondition(new IFilterCondition[]
                 {
                     new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
-                    CreateEqualsCondition(curCase.ValueBinder, otherValueBinder, context)
+                    CreateEqualsCondition(curCase.ValueBinder, second, context)
                 })).ToList());
             }
-            else if (otherValueBinder is SwitchValueBinder)
+            else if (second is SwitchValueBinder)
             {
-                return CreateEqualsCondition(otherValueBinder, valueBinder, context);
+                return CreateEqualsCondition(second, first, context);
             }
             else
             {
