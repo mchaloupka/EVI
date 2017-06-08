@@ -1,6 +1,6 @@
 PREFIX ex: <http://example.org/ns#>
 
-SELECT DISTINCT ?x
+SELECT DISTINCT ?s
 WHERE {
-  ?x [] [].
+  ?s ?p ?o.
 }
