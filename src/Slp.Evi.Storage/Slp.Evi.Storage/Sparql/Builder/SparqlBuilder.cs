@@ -15,6 +15,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
+using DistinctModifier = Slp.Evi.Storage.Sparql.Algebra.Modifiers.DistinctModifier;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF.Parsing;
@@ -174,6 +175,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 int? offset = (slice.Offset != 0) ? (int?) slice.Offset : null;
 
                 return new SliceModifier(inner, inner.Variables, limit, offset);
+            }
+            else if (originalAlgebra is Distinct distinct)
+            {
+                var inner = ProcessAlgebra(distinct.InnerAlgebra, context);
+                return new DistinctModifier(inner);
             }
 
             throw new NotImplementedException();

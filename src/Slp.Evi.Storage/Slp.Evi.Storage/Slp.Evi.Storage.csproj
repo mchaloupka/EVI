@@ -92,6 +92,7 @@
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />
     <Compile Include="Sparql\Types\ITypeCache.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
