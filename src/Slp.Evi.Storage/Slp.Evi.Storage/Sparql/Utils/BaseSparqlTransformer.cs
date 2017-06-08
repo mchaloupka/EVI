@@ -167,6 +167,26 @@ namespace Slp.Evi.Storage.Sparql.Utils
             }
         }
 
+        /// <inheritdoc />
+        protected override ISparqlQuery Transform(DistinctModifier toTransform, T data)
+        {
+            var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
+
+            if (newInner is DistinctModifier)
+            {
+                return newInner;
+            }
+            // TODO: ELSE IF REDUCED
+            else if (newInner != toTransform.InnerQuery)
+            {
+                return new DistinctModifier(newInner);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="EmptyPattern"/>
         /// </summary>

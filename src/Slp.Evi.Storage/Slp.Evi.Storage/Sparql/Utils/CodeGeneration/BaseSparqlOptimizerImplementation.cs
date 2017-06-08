@@ -290,5 +290,11 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         {
             return toTransform;
         }
+
+        /// <inheritdoc />
+        protected override ISparqlQuery Transform(DistinctModifier toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
     }
 }

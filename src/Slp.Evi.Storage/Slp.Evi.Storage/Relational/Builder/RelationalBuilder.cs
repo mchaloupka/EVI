@@ -548,6 +548,12 @@ namespace Slp.Evi.Storage.Relational.Builder
             }
         }
 
+        /// <inheritdoc />
+        public object Visit(DistinctModifier distinctModifier, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         /// <summary>

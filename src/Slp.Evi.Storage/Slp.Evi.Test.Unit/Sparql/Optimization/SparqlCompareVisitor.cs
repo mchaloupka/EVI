@@ -25,6 +25,11 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
             throw new NotImplementedException();
         }
 
+        protected override bool Transform(DistinctModifier toTransform, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override bool Transform(EmptyPattern toTransform, object data)
         {
             throw new NotImplementedException();

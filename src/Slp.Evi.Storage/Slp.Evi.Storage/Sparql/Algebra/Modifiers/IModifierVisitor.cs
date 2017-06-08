@@ -31,5 +31,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Modifiers
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(SliceModifier sliceModifier, object data);
+
+        /// <summary>
+        /// Visits <see cref="DistinctModifier"/>
+        /// </summary>
+        /// <param name="distinctModifier">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(DistinctModifier distinctModifier, object data);
     }
 }

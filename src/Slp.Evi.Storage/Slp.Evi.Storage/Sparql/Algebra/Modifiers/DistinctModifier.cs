@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Modifiers
         /// <inheritdoc />
         public object Accept(IModifierVisitor visitor, object data)
         {
-            throw new NotImplementedException();
+            return visitor.Visit(this, data);
         }
     }
 }
