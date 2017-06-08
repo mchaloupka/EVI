@@ -551,7 +551,25 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <inheritdoc />
         public object Visit(DistinctModifier distinctModifier, object data)
         {
-            throw new NotImplementedException();
+            var inner = Process(distinctModifier.InnerQuery, (IQueryContext) data);
+
+            if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
+            {
+                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, modifiedCalculusModel.Ordering, modifiedCalculusModel.Limit, modifiedCalculusModel.Offset, true);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else if (inner.Model is CalculusModel calculusModel)
+            {
+                var newModel = new ModifiedCalculusModel(calculusModel, new List<ModifiedCalculusModel.OrderingPart>(),
+                    null, null, true);
+
+                return new RelationalQuery(newModel, inner.ValueBinders);
+            }
+            else
+            {
+                throw new Exception($"Expected {nameof(ModifiedCalculusModel)} or {nameof(CalculusModel)}");
+            }
         }
 
         #endregion
