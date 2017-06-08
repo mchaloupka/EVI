@@ -128,7 +128,6 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-
         [TestMethod]
         public void Simple_Filter_bound()
         {

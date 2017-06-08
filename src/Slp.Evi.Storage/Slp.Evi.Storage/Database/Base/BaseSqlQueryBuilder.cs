@@ -108,7 +108,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(ModifiedCalculusModel toTransform, VisitorContext data)
         {
-            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering, toTransform.Limit, toTransform.Offset);
+            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering, toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
             return null;
         }
 
@@ -132,7 +132,8 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="ordering">The ordering.</param>
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
-        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, IEnumerable<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset)
+        /// <param name="isDistinct">The flag whether the result should be distinct.</param>
+        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, IEnumerable<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset, bool isDistinct)
         {
             foreach (var sourceCondition in toTransform.SourceConditions)
             {
@@ -158,6 +159,11 @@ namespace Slp.Evi.Storage.Database.Base
             }
 
             data.StringBuilder.Append("SELECT");
+
+            if (isDistinct)
+            {
+                data.StringBuilder.Append(" DISTINCT ");
+            }
 
             if (limit.HasValue && !offset.HasValue)
             {
@@ -286,7 +292,7 @@ namespace Slp.Evi.Storage.Database.Base
 
         private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data)
         {
-            WriteCalculusModel(toTransform, data, new List<ModifiedCalculusModel.OrderingPart>(), null, null);
+            WriteCalculusModel(toTransform, data, new List<ModifiedCalculusModel.OrderingPart>(), null, null, false);
         }
 
         /// <summary>
