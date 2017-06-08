@@ -102,19 +102,17 @@ namespace Slp.Evi.Storage
         {
             var result = Query("SELECT DISTINCT ?graph WHERE { GRAPH ?graph {}}");
 
-            if (result is SparqlResultSet)
+            if (result is SparqlResultSet rset)
             {
-                SparqlResultSet rset = (SparqlResultSet)result;
-
                 foreach (SparqlResult r in rset)
                 {
                     INode node;
 
                     if (r.TryGetValue("?graph", out node))
                     {
-                        if (node is UriNode)
+                        if (node is UriNode uriNode)
                         {
-                            yield return ((UriNode)node).Uri;
+                            yield return uriNode.Uri;
                         }
                         else
                         {

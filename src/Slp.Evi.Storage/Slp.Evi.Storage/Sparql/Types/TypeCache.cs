@@ -112,10 +112,8 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// </summary>
         private IValueType ResolveType(IMapBase map)
         {
-            if (map is ITermMap)
+            if (map is ITermMap termMap)
             {
-                var termMap = (ITermMap) map;
-
                 if ((termMap is ISubjectMap) || (termMap is IPredicateMap))
                 {
                     if (termMap.TermType.IsBlankNode)
@@ -127,7 +125,7 @@ namespace Slp.Evi.Storage.Sparql.Types
                         return _typesIndexDictionary[1];
                     }
                 }
-                else if (termMap is IObjectMap)
+                else if (termMap is IObjectMap objectMap)
                 {
                     if (termMap.TermType.IsBlankNode)
                     {
@@ -139,13 +137,12 @@ namespace Slp.Evi.Storage.Sparql.Types
                     }
                     else if (termMap.TermType.IsLiteral)
                     {
-                        return ResolveLiteralType((IObjectMap)termMap);
+                        return ResolveLiteralType(objectMap);
                     }
                 }
             }
-            else if (map is IRefObjectMap)
+            else if (map is IRefObjectMap refObjectMap)
             {
-                var refObjectMap = (IRefObjectMap) map;
                 return ResolveType(refObjectMap.ParentTriplesMap.SubjectMap);
             }
 

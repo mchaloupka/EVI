@@ -176,7 +176,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             {
                 if (data.Data.IsReplaced(toTransform.CalculusVariable))
                 {
-                    return new ColumnExpression(data.Context, data.Data.GetReplacingVariable(toTransform.CalculusVariable), toTransform.IsUri);
+                    return new ColumnExpression(data.Data.GetReplacingVariable(toTransform.CalculusVariable), toTransform.IsUri);
                 }
                 else
                 {

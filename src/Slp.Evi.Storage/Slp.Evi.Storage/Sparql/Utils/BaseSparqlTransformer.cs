@@ -25,13 +25,13 @@ namespace Slp.Evi.Storage.Sparql.Utils
         /// <returns>The transformed calculus source.</returns>
         public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
         {
-            if (instance is IModifier)
+            if (instance is IModifier modifier)
             {
-                return TransformModifier((IModifier)instance, data);
+                return TransformModifier(modifier, data);
             }
-            else if (instance is IGraphPattern)
+            else if (instance is IGraphPattern graphPattern)
             {
-                return TransformGraphPattern((IGraphPattern)instance, data);
+                return TransformGraphPattern(graphPattern, data);
             }
             else
             {
@@ -80,10 +80,8 @@ namespace Slp.Evi.Storage.Sparql.Utils
         {
             var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
 
-            if (newInner is OrderByModifier)
+            if (newInner is OrderByModifier innerOrderBy)
             {
-                var innerOrderBy = (OrderByModifier)newInner;
-
                 return new OrderByModifier(innerOrderBy.InnerQuery, innerOrderBy.InnerQuery.Variables, toTransform.Ordering.Union(innerOrderBy.Ordering).ToArray());
             }
             else if (newInner != toTransform.InnerQuery)
@@ -106,10 +104,8 @@ namespace Slp.Evi.Storage.Sparql.Utils
         {
             var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
 
-            if (newInner is SliceModifier)
+            if (newInner is SliceModifier innerSlice)
             {
-                var innerSlice = (SliceModifier)newInner;
-
                 int? limit = innerSlice.Limit;
                 int? offset = innerSlice.Offset;
 
@@ -505,9 +501,8 @@ namespace Slp.Evi.Storage.Sparql.Utils
             {
                 return new BooleanTrueExpression();
             }
-            else if (newInner is ComparisonExpression)
+            else if (newInner is ComparisonExpression comparisonExpression)
             {
-                var comparisonExpression = (ComparisonExpression)newInner;
                 var left = comparisonExpression.LeftOperand;
                 var right = comparisonExpression.RightOperand;
 

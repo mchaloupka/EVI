@@ -74,10 +74,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <param name="expression">The expression.</param>
             private IEnumerable<Tuple<IFilterCondition, IExpression>> ExtractStatements(IExpression expression)
             {
-                if (expression is CaseExpression)
+                if (expression is CaseExpression caseExpression)
                 {
-                    var caseExpression = (CaseExpression) expression;
-
                     foreach (var statement in caseExpression.Statements)
                     {
                         foreach (var extractStatement in ExtractStatements(statement.Expression))
@@ -106,9 +104,9 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 {
                     return new IFilterCondition[0];
                 }
-                else if (condition is ConjunctionCondition)
+                else if (condition is ConjunctionCondition conjunctionCondition)
                 {
-                    return ((ConjunctionCondition) condition).InnerConditions.SelectMany(ExtractConditions);
+                    return conjunctionCondition.InnerConditions.SelectMany(ExtractConditions);
                 }
                 else
                 {

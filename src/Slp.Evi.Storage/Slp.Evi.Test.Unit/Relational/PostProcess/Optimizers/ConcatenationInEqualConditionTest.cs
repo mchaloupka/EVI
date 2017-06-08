@@ -29,7 +29,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, true)
+                new ColumnExpression(dummyColumn1, true)
             }, queryContext.Db.SqlTypeForString);
 
             var right = new ConstantExpression("http://s.com/12", queryContext);
@@ -39,7 +39,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("12", queryContext), 
                 ComparisonTypes.EqualTo);
 
@@ -54,7 +54,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var dummyColumn1 = dummyTable.GetVariable("col1");
 
             var left = new ConcatenationExpression(new List<IExpression> {
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("/s", queryContext)
             }, queryContext.Db.SqlTypeForString);
 
@@ -65,7 +65,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
@@ -80,7 +80,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("/s", queryContext)
             }, queryContext.Db.SqlTypeForString);
 
@@ -91,7 +91,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
@@ -107,9 +107,9 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, true),
+                new ColumnExpression(dummyColumn1, true),
                 new ConstantExpression("/s/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn2, true),
+                new ColumnExpression(dummyColumn2, true),
                 new ConstantExpression("/e", queryContext),
             }, queryContext.Db.SqlTypeForString);
 
@@ -122,10 +122,10 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var expected = new ConjunctionCondition(new List<IFilterCondition>()
             {
                 new ComparisonCondition(
-                    new ColumnExpression(queryContext, dummyColumn1, true),
+                    new ColumnExpression(dummyColumn1, true),
                     new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo),
                 new ComparisonCondition(
-                    new ColumnExpression(queryContext, dummyColumn2, true),
+                    new ColumnExpression(dummyColumn2, true),
                     new ConstantExpression("14", queryContext), ComparisonTypes.EqualTo)
             });
 
@@ -141,7 +141,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, false)
+                new ColumnExpression(dummyColumn1, false)
             }, queryContext.Db.SqlTypeForString);
 
             var right = new ConstantExpression("http://s.com/12", queryContext);
@@ -151,7 +151,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
@@ -165,7 +165,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var dummyColumn1 = dummyTable.GetVariable("col1");
 
             var left = new ConcatenationExpression(new List<IExpression> {
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("/s", queryContext)
             }, queryContext.Db.SqlTypeForString);
 
@@ -176,7 +176,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
@@ -191,7 +191,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("/s", queryContext)
             }, queryContext.Db.SqlTypeForString);
 
@@ -202,7 +202,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var result = _optimizer.TransformFilterCondition(condition, GetContext(queryContext));
 
             var expected = new ComparisonCondition(
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("12", queryContext), ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);
@@ -218,9 +218,9 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var left = new ConcatenationExpression(new List<IExpression> {
                 new ConstantExpression("http://s.com/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn1, false),
+                new ColumnExpression(dummyColumn1, false),
                 new ConstantExpression("/s/", queryContext),
-                new ColumnExpression(queryContext, dummyColumn2, false),
+                new ColumnExpression(dummyColumn2, false),
                 new ConstantExpression("/e", queryContext),
             }, queryContext.Db.SqlTypeForString);
 
@@ -233,9 +233,9 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             var expected = new ComparisonCondition(
                 new ConcatenationExpression(new List<IExpression>()
                 {
-                    new ColumnExpression(queryContext, dummyColumn1, false),
+                    new ColumnExpression(dummyColumn1, false),
                     new ConstantExpression("/s/", queryContext),
-                    new ColumnExpression(queryContext, dummyColumn2, false)
+                    new ColumnExpression(dummyColumn2, false)
                 }, queryContext.Db.SqlTypeForString),
                 new ConstantExpression("12/s/14", queryContext), ComparisonTypes.EqualTo);
 

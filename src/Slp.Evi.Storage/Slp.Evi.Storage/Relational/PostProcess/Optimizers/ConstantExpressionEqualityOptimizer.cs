@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 var leftOperand = toTransform.LeftOperand;
                 var rightOperand = toTransform.RightOperand;
 
-                var compareResult = CheckComparison(leftOperand, rightOperand, toTransform.ComparisonType, data);
+                var compareResult = CheckComparison(leftOperand, rightOperand, toTransform.ComparisonType);
 
                 switch (compareResult)
                 {
@@ -75,13 +75,12 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <param name="leftOperand">The left operand.</param>
             /// <param name="rightOperand">The right operand.</param>
             /// <param name="comparisonType">The comparison type</param>
-            /// <param name="data">The passed data.</param>
             /// <returns>The <see cref="EqualityResults"/> of the check.</returns>
-            private EqualityResults CheckComparison(IExpression leftOperand, IExpression rightOperand, ComparisonTypes comparisonType, OptimizationContext data)
+            private EqualityResults CheckComparison(IExpression leftOperand, IExpression rightOperand, ComparisonTypes comparisonType)
             {
-                if (leftOperand is ConstantExpression && rightOperand is ConstantExpression && (comparisonType == ComparisonTypes.EqualTo || comparisonType == ComparisonTypes.NotEqualTo))
+                if (leftOperand is ConstantExpression leftConstantExpression && rightOperand is ConstantExpression rightConstantExpression && (comparisonType == ComparisonTypes.EqualTo || comparisonType == ComparisonTypes.NotEqualTo))
                 {
-                    if (AreConstantExpressionsEqual((ConstantExpression) leftOperand, (ConstantExpression) rightOperand))
+                    if (AreConstantExpressionsEqual(leftConstantExpression, rightConstantExpression))
                     {
                         if (comparisonType == ComparisonTypes.EqualTo)
                         {

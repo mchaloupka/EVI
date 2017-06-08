@@ -83,13 +83,13 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 return new NegationCondition(CreateIsBoundCondition(secondValueBinder, context));
             }
-            else if (firstValueBinder is BaseValueBinder && secondValueBinder is BaseValueBinder)
+            else if (firstValueBinder is BaseValueBinder leftValueBinder && secondValueBinder is BaseValueBinder rightValueBinder)
             {
                 var leftOperand = CreateExpression(context, firstValueBinder);
                 var rightOperand = CreateExpression(context, secondValueBinder);
 
-                var leftType = ((BaseValueBinder) firstValueBinder).Type;
-                var rightType = ((BaseValueBinder) secondValueBinder).Type;
+                var leftType = leftValueBinder.Type;
+                var rightType = rightValueBinder.Type;
 
                 if (leftType == rightType)
                 {
@@ -100,10 +100,10 @@ namespace Slp.Evi.Storage.Relational.Builder
                     return new AlwaysFalseCondition();
                 }
             }
-            else if (firstValueBinder is CoalesceValueBinder)
+            else if (firstValueBinder is CoalesceValueBinder coalesceValueBinder)
             {
                 var disjunctionConditions = new List<IFilterCondition>();
-                var binders = ((CoalesceValueBinder) firstValueBinder).ValueBinders.ToArray();
+                var binders = coalesceValueBinder.ValueBinders.ToArray();
 
                 for (int curIndex = 0; curIndex < binders.Length; curIndex++)
                 {
@@ -124,13 +124,11 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 return CreateEqualsCondition(secondValueBinder, firstValueBinder, context);
             }
-            else if (firstValueBinder is SwitchValueBinder)
+            else if (firstValueBinder is SwitchValueBinder switchValueBinder)
             {
-                var switchValueBinder = (SwitchValueBinder) firstValueBinder;
-
                 return new DisjunctionCondition(switchValueBinder.Cases.Select(curCase => new ConjunctionCondition(new IFilterCondition[]
                 {
-                    new ComparisonCondition(new ColumnExpression(context, switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(new ColumnExpression(switchValueBinder.CaseVariable, false), new ConstantExpression(curCase.CaseValue, context), ComparisonTypes.EqualTo),
                     CreateEqualsCondition(curCase.ValueBinder, secondValueBinder, context)
                 })).ToList());
             }
@@ -177,13 +175,13 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="node">The node.</param>
         public IExpression CreateExpression(IQueryContext context, INode node)
         {
-            if (node is UriNode)
+            if (node is UriNode uriNode)
             {
-                return new ConstantExpression(((UriNode)node).Uri, context);
+                return new ConstantExpression(uriNode.Uri, context);
             }
-            else if (node is LiteralNode)
+            else if (node is LiteralNode literalNode)
             {
-                return CreateLiteralExpression(context, (LiteralNode)node);
+                return CreateLiteralExpression(context, literalNode);
             }
             else
             {

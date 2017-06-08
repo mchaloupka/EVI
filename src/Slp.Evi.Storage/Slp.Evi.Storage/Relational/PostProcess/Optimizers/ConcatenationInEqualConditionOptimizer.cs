@@ -59,13 +59,13 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                     var leftOperand = toTransform.LeftOperand;
                     var rightOperand = toTransform.RightOperand;
 
-                    if (leftOperand is ConcatenationExpression)
+                    if (leftOperand is ConcatenationExpression leftConcatenationExpression)
                     {
-                        result = ExpandEquals((ConcatenationExpression)leftOperand, rightOperand, data);
+                        result = ExpandEquals(leftConcatenationExpression, rightOperand, data);
                     }
-                    else if (rightOperand is ConcatenationExpression)
+                    else if (rightOperand is ConcatenationExpression rightConcatenationExpression)
                     {
-                        result = ExpandEquals((ConcatenationExpression)rightOperand, leftOperand, data);
+                        result = ExpandEquals(rightConcatenationExpression, leftOperand, data);
                     }
 
                     if (result != null && toTransform.ComparisonType == ComparisonTypes.NotEqualTo)
@@ -85,13 +85,13 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <param name="data">The context.</param>
             private IFilterCondition ExpandEquals(ConcatenationExpression leftOperand, IExpression rightOperand, OptimizationContext data)
             {
-                if (rightOperand is ConcatenationExpression)
+                if (rightOperand is ConcatenationExpression leftConstantExpression)
                 {
-                    return ExpandEquals(leftOperand, (ConcatenationExpression)rightOperand, data);
+                    return ExpandEquals(leftOperand, leftConstantExpression, data);
                 }
-                else if (rightOperand is ConstantExpression)
+                else if (rightOperand is ConstantExpression rightConstantExpression)
                 {
-                    return ExpandEquals(leftOperand, (ConstantExpression)rightOperand, data);
+                    return ExpandEquals(leftOperand, rightConstantExpression, data);
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 }
                 else
                 {
-                    return new ColumnExpression(context, patternItem.RelationalColumn, isIriEscaped);
+                    return new ColumnExpression(patternItem.RelationalColumn, isIriEscaped);
                 }
             }
 
@@ -232,15 +232,15 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
 
                 var patternItems = parts.Select(x =>
                 {
-                    if (x is ConstantExpression)
+                    if (x is ConstantExpression constantExpression)
                     {
-                        return new PatternItem(((ConstantExpression)x).Value.ToString());
+                        return new PatternItem(constantExpression.Value.ToString());
                     }
-                    else if (x is ColumnExpression)
+                    else if (x is ColumnExpression columnExpression)
                     {
                         return new PatternItem()
                         {
-                            RelationalColumn = ((ColumnExpression)x).CalculusVariable
+                            RelationalColumn = columnExpression.CalculusVariable
                         };
                     }
                     else

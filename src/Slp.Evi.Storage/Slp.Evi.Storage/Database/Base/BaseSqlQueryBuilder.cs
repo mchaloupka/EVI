@@ -218,7 +218,7 @@ namespace Slp.Evi.Storage.Database.Base
                 }
             }
 
-            var leftJoinConditions = toTransform.SourceConditions.Where(x => x is LeftJoinCondition).ToList();
+            var leftJoinConditions = toTransform.SourceConditions.OfType<LeftJoinCondition>().ToList();
             foreach (var leftJoinCondition in leftJoinConditions)
             {
                 TransformSourceCondition(leftJoinCondition, data);
@@ -731,17 +731,14 @@ namespace Slp.Evi.Storage.Database.Base
                 {
                     stringBuilder.Append("NULL");
                 }
-                else if (variableSource is ISourceCondition)
+                else if (variableSource is ISourceCondition sourceCondition)
                 {
-                    var sourceCondition = (ISourceCondition)variableSource;
-
                     stringBuilder.Append(context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
                     stringBuilder.Append('.');
                     stringBuilder.Append(context.QueryNamingHelpers.GetVariableName(sourceCondition, variable));
                 }
-                else if (variableSource is IAssignmentCondition)
+                else if (variableSource is IAssignmentCondition assignmentCondition)
                 {
-                    var assignmentCondition = (IAssignmentCondition)variableSource;
                     assignmentCondition.Accept(new WriteCalculusVariable_Assignment_Visitor(this), data);
                 }
                 else
