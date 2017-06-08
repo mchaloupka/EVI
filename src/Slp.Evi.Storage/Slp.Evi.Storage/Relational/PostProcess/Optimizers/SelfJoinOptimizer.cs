@@ -349,7 +349,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 if (changed)
                 {
                     return new ModifiedCalculusModel(toTransform.InnerModel, newOrderingParts, toTransform.Limit,
-                        toTransform.Offset);
+                        toTransform.Offset, toTransform.IsDistinct);
                 }
                 else
                 {

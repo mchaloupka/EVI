@@ -451,14 +451,14 @@ namespace Slp.Evi.Storage.Relational.Builder
             if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
             {
                 orderings.AddRange(modifiedCalculusModel.Ordering);
-                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, orderings, modifiedCalculusModel.Limit, modifiedCalculusModel.Offset);
+                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, orderings, modifiedCalculusModel.Limit, modifiedCalculusModel.Offset, modifiedCalculusModel.IsDistinct);
 
                 return new RelationalQuery(newModel, inner.ValueBinders);
             }
             else if (inner.Model is CalculusModel calculusModel)
             {
                 var newModel = new ModifiedCalculusModel(calculusModel, orderings,
-                    null, null);
+                    null, null, false);
 
                 return new RelationalQuery(newModel, inner.ValueBinders);
             }
@@ -531,14 +531,14 @@ namespace Slp.Evi.Storage.Relational.Builder
                     }
                 }
 
-                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, modifiedCalculusModel.Ordering, limit, offset);
+                var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, modifiedCalculusModel.Ordering, limit, offset, modifiedCalculusModel.IsDistinct);
 
                 return new RelationalQuery(newModel, inner.ValueBinders);
             }
             else if (inner.Model is CalculusModel calculusModel)
             {
                 var newModel = new ModifiedCalculusModel(calculusModel, new List<ModifiedCalculusModel.OrderingPart>(),
-                    sliceModifier.Limit, sliceModifier.Offset);
+                    sliceModifier.Limit, sliceModifier.Offset, false);
 
                 return new RelationalQuery(newModel, inner.ValueBinders);
             }

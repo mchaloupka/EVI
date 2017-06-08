@@ -137,7 +137,7 @@ namespace Slp.Evi.Storage.Relational.Utils
 
             if (changed || newInner != toTransform.InnerModel)
             {
-                return new ModifiedCalculusModel(newInner, ordering, toTransform.Limit, toTransform.Offset);
+                return new ModifiedCalculusModel(newInner, ordering, toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
             }
             else
             {
