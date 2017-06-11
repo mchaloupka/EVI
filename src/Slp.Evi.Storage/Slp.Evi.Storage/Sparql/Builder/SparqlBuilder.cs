@@ -122,7 +122,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
             }
             else if (originalAlgebra is IBgp orBgp)
             {
-                return ProcessTriplePatterns(orBgp.TriplePatterns);
+                return ProcessTriplePatterns(orBgp.TriplePatterns, context);
             }
             else if (originalAlgebra is Union orUnion)
             {
@@ -358,42 +358,62 @@ namespace Slp.Evi.Storage.Sparql.Builder
             throw new NotImplementedException();
         }
 
-        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> triplePatterns)
+        private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> patterns, IQueryContext context)
         {
-            List<IGraphPattern> joinedQueries = new List<IGraphPattern>();
+            IGraphPattern currentGraphPattern = null;
 
-            foreach (var triplePattern in triplePatterns.OfType<VDS.RDF.Query.Patterns.TriplePattern>())
+            foreach (var pattern in patterns)
             {
-                var processed = new Algebra.Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
-                    triplePattern.Object);
-                joinedQueries.Add(processed);
+                if (pattern is VDS.RDF.Query.Patterns.TriplePattern triplePattern)
+                {
+                    var processed = new Algebra.Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
+                        triplePattern.Object);
+
+                    if (currentGraphPattern == null)
+                    {
+                        currentGraphPattern = processed;
+                    }
+                    else if (currentGraphPattern is JoinPattern join)
+                    {
+                        var joined = join.JoinedGraphPatterns.ToList();
+                        joined.Add(processed);
+                        currentGraphPattern = new JoinPattern(joined);
+                    }
+                    else
+                    {
+                        currentGraphPattern = new JoinPattern(new[] {currentGraphPattern, processed});
+                    }
+                }
+                else
+                {
+                    if (currentGraphPattern == null)
+                    {
+                        currentGraphPattern = new EmptyPattern();
+                    }
+
+                    if (pattern is VDS.RDF.Query.Patterns.FilterPattern filter)
+                    {
+                        var condition = ProcessCondition(filter.Filter.Expression, context);
+                        currentGraphPattern = new FilterPattern(currentGraphPattern, condition);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException($"The used pattern {pattern.GetType().Name} is not yet supported");
+                    }
+
+                    // TODO:
+                    //    http://www.dotnetrdf.org/api/dotNetRDF~VDS.RDF.Query.Patterns.ITriplePattern.html
+                    //    //BindPattern
+                    //    //FilterPattern
+                    //    //LetPattern
+                    //    //PropertyFunctionPattern
+                    //    //PropertyPathPattern
+                    //    //SubQueryPattern
+                    //    //TriplePattern
+                }
             }
 
-            IGraphPattern currentQuery;
-            if (joinedQueries.Count == 0)
-            {
-                currentQuery = new EmptyPattern();
-            }
-            else if (joinedQueries.Count == 1)
-            {
-                currentQuery = joinedQueries[0];
-            }
-            else
-            {
-                currentQuery = new JoinPattern(joinedQueries);
-            }
-
-            // TODO:
-            //    http://www.dotnetrdf.org/api/dotNetRDF~VDS.RDF.Query.Patterns.ITriplePattern.html
-            //    //BindPattern
-            //    //FilterPattern
-            //    //LetPattern
-            //    //PropertyFunctionPattern
-            //    //PropertyPathPattern
-            //    //SubQueryPattern
-            //    //TriplePattern
-
-            return currentQuery;
+            return currentGraphPattern;
         }
     }
 }
