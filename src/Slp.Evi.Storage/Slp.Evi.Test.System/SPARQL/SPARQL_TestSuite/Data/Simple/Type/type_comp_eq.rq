@@ -1,0 +1,8 @@
+PREFIX ex: <http://example.org/ns#>
+
+SELECT ?i
+WHERE {
+  [] ex:int ?i.
+  [] ex:double ?d.
+  FILTER(?i = ?d)
+}
