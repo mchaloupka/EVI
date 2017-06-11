@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <storage>
   <sql>
+    <table name="iri_table">
+      <column name="subject" type="nvarchar(max)" nullable="false" />
+      <column name="predicate" type="nvarchar(max)" nullable="false" />
+      <column name="object" type="nvarchar(max)" nullable="true" />
+    </table>
     <table name="simple_table">
       <column name="subject" type="nvarchar(max)" nullable="false" />
       <column name="predicate" type="nvarchar(max)" nullable="false" />
@@ -16,13 +21,16 @@
       <column name="predicate" type="nvarchar(max)" nullable="false" />
       <column name="object" type="float" nullable="true" />
     </table>
-    <query>INSERT INTO simple_table VALUES('a','b','c')</query>
-    <query>INSERT INTO simple_table VALUES('b','c','a')</query>
-    <query>INSERT INTO simple_table VALUES('c','a','b')</query>
-    <query>INSERT INTO simple_table VALUES('c','d',NULL)</query>
-    <query>INSERT INTO simple_table VALUES('a','d','e')</query>
-    <query>INSERT INTO simple_table VALUES('c','e','1')</query>
-    <query>INSERT INTO simple_table VALUES('a','e','1')</query>
+    <query>INSERT INTO iri_table VALUES('a','b','c')</query>
+    <query>INSERT INTO iri_table VALUES('b','c','a')</query>
+    <query>INSERT INTO iri_table VALUES('c','a','b')</query>
+    <query>INSERT INTO iri_table VALUES('c','d',NULL)</query>
+    <query>INSERT INTO iri_table VALUES('a','d','e')</query>
+    <query>INSERT INTO iri_table VALUES('c','e','1')</query>
+    <query>INSERT INTO iri_table VALUES('a','e','1')</query>
+
+    <query>INSERT INTO simple_table VALUES('a','simple','1')</query>
+    <query>INSERT INTO simple_table VALUES('b','simple','2')</query>
     
     <query>INSERT INTO int_table VALUES('a','int',1)</query>
     <query>INSERT INTO int_table VALUES('b','int',2)</query>
@@ -41,13 +49,24 @@
     @prefix ex: <http://example.org/ns#> .
 
     <#Triples> a rr:TriplesMap;
-      rr:logicalTable [ rr:tableName "simple_table" ];
+      rr:logicalTable [ rr:tableName "iri_table" ];
       rr:subjectMap [
         rr:template "http://example.org/ns#{subject}";
       ];
       rr:predicateObjectMap [
         rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
         rr:objectMap [ rr:template "http://example.org/ns#{object}"; ];
+      ];
+    .
+    
+    <#SimpleTriples> a rr:TriplesMap;
+      rr:logicalTable [ rr:tableName "simple_table" ];
+      rr:subjectMap [
+        rr:template "http://example.org/ns#{subject}";
+      ];
+      rr:predicateObjectMap [
+        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:objectMap [ rr:column "object"; ];
       ];
     .
 
