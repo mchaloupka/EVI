@@ -8,7 +8,7 @@ WHERE {
   OPTIONAL {
     ?s iri:d ?d
     OPTIONAL {
-      ?c iri:int 2
+      ?c lit:int 2
     }
   }
 }
