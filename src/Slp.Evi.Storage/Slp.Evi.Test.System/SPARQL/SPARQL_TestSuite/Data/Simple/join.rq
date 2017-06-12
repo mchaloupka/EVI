@@ -1,8 +1,9 @@
-PREFIX ex: <http://example.org/ns#>
+PREFIX iri: <http://example.org/iri/>
+PREFIX lit: <http://example.org/lit/>
 
 SELECT ?a ?b ?c
 WHERE {
-  ?a ex:b ?c.
-  ?c ex:a ?b.
-  ?b ex:c ?a.
+  ?a iri:b ?c.
+  ?c iri:a ?b.
+  ?b iri:c ?a.
 }

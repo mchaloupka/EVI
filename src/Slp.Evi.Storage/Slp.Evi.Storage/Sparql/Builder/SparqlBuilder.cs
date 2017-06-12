@@ -360,7 +360,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
         private IGraphPattern ProcessTriplePatterns(IEnumerable<ITriplePattern> patterns, IQueryContext context)
         {
-            IGraphPattern currentGraphPattern = null;
+            IGraphPattern currentGraphPattern = new EmptyPattern();
 
             foreach (var pattern in patterns)
             {
@@ -369,7 +369,7 @@ namespace Slp.Evi.Storage.Sparql.Builder
                     var processed = new Algebra.Patterns.TriplePattern(triplePattern.Subject, triplePattern.Predicate,
                         triplePattern.Object);
 
-                    if (currentGraphPattern == null)
+                    if (currentGraphPattern is EmptyPattern)
                     {
                         currentGraphPattern = processed;
                     }
@@ -386,11 +386,6 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 }
                 else
                 {
-                    if (currentGraphPattern == null)
-                    {
-                        currentGraphPattern = new EmptyPattern();
-                    }
-
                     if (pattern is VDS.RDF.Query.Patterns.FilterPattern filter)
                     {
                         var condition = ProcessCondition(filter.Filter.Expression, context);

@@ -9,17 +9,17 @@
   <results>
     <result>
       <binding name="a">
-        <uri>http://example.org/ns#b</uri>
+        <uri>http://example.org/iri/b</uri>
       </binding>
     </result>
     <result>
       <binding name="a">
-        <uri>http://example.org/ns#c</uri>
+        <uri>http://example.org/iri/c</uri>
       </binding>
     </result>
     <result>
       <binding name="a">
-        <uri>http://example.org/ns#d</uri>
+        <uri>http://example.org/iri/d</uri>
       </binding>
     </result>
   </results>

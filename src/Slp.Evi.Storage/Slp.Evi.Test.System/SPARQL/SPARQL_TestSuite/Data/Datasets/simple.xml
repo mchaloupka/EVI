@@ -8,17 +8,14 @@
     </table>
     <table name="simple_table">
       <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="predicate" type="nvarchar(max)" nullable="false" />
       <column name="object" type="nvarchar(max)" nullable="true" />
     </table>
     <table name="int_table">
       <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="predicate" type="nvarchar(max)" nullable="false" />
       <column name="object" type="int" nullable="true" />
     </table>
     <table name="double_table">
       <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="predicate" type="nvarchar(max)" nullable="false" />
       <column name="object" type="float" nullable="true" />
     </table>
     <query>INSERT INTO iri_table VALUES('a','b','c')</query>
@@ -29,43 +26,44 @@
     <query>INSERT INTO iri_table VALUES('c','e','1')</query>
     <query>INSERT INTO iri_table VALUES('a','e','1')</query>
 
-    <query>INSERT INTO simple_table VALUES('a','simple','1')</query>
-    <query>INSERT INTO simple_table VALUES('b','simple','2')</query>
+    <query>INSERT INTO simple_table VALUES('a','1')</query>
+    <query>INSERT INTO simple_table VALUES('b','2')</query>
     
-    <query>INSERT INTO int_table VALUES('a','int',1)</query>
-    <query>INSERT INTO int_table VALUES('b','int',2)</query>
-    <query>INSERT INTO int_table VALUES('c','int',3)</query>
-    <query>INSERT INTO int_table VALUES('d','int',4)</query>
+    <query>INSERT INTO int_table VALUES('a',1)</query>
+    <query>INSERT INTO int_table VALUES('b',2)</query>
+    <query>INSERT INTO int_table VALUES('c',3)</query>
+    <query>INSERT INTO int_table VALUES('d',4)</query>
 
-    <query>INSERT INTO double_table VALUES('a','double',1)</query>
-    <query>INSERT INTO double_table VALUES('b','double',2)</query>
-    <query>INSERT INTO double_table VALUES('c','double',3.5)</query>
-    <query>INSERT INTO double_table VALUES('d','double',4.3)</query>
+    <query>INSERT INTO double_table VALUES('a',1)</query>
+    <query>INSERT INTO double_table VALUES('b',2)</query>
+    <query>INSERT INTO double_table VALUES('c',3.5)</query>
+    <query>INSERT INTO double_table VALUES('d',4.3)</query>
   </sql>
   <mapping>
 <![CDATA[
     @base <http://example.com/base/> .
     @prefix rr: <http://www.w3.org/ns/r2rml#> .
-    @prefix ex: <http://example.org/ns#> .
+    @prefix iri: <http://example.org/iri/> .
+    @prefix lit: <http://example.org/lit/> .
 
     <#Triples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "iri_table" ];
       rr:subjectMap [
-        rr:template "http://example.org/ns#{subject}";
+        rr:template "http://example.org/iri/{subject}";
       ];
       rr:predicateObjectMap [
-        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
-        rr:objectMap [ rr:template "http://example.org/ns#{object}"; ];
+        rr:predicateMap [ rr:template "http://example.org/iri/{predicate}"; ];
+        rr:objectMap [ rr:template "http://example.org/iri/{object}"; ];
       ];
     .
     
     <#SimpleTriples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "simple_table" ];
       rr:subjectMap [
-        rr:template "http://example.org/ns#{subject}";
+        rr:template "http://example.org/iri/{subject}";
       ];
       rr:predicateObjectMap [
-        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:predicate lit:simple;
         rr:objectMap [ rr:column "object"; ];
       ];
     .
@@ -73,10 +71,10 @@
      <#IntTriples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "int_table" ];
       rr:subjectMap [
-        rr:template "http://example.org/ns#{subject}";
+        rr:template "http://example.org/iri/{subject}";
       ];
       rr:predicateObjectMap [
-        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:predicate lit:int;
         rr:objectMap [ rr:column "object"; ];
       ];
     .
@@ -84,10 +82,10 @@
     <#DoubleTriples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "double_table" ];
       rr:subjectMap [
-        rr:template "http://example.org/ns#{subject}";
+        rr:template "http://example.org/iri/{subject}";
       ];
       rr:predicateObjectMap [
-        rr:predicateMap [ rr:template "http://example.org/ns#{predicate}"; ];
+        rr:predicate lit:double;
         rr:objectMap [ rr:column "object"; ];
       ];
     .

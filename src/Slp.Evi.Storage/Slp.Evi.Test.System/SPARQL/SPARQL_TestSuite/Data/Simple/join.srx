@@ -11,13 +11,13 @@
   <results>
     <result>
       <binding name="a">
-        <uri>http://example.org/ns#a</uri>
+        <uri>http://example.org/iri/a</uri>
       </binding>
       <binding name="b">
-        <uri>http://example.org/ns#b</uri>
+        <uri>http://example.org/iri/b</uri>
       </binding>
       <binding name="c">
-        <uri>http://example.org/ns#c</uri>
+        <uri>http://example.org/iri/c</uri>
       </binding>
     </result>
   </results>
