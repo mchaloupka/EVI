@@ -33,11 +33,13 @@
     <query>INSERT INTO int_table VALUES('b',2)</query>
     <query>INSERT INTO int_table VALUES('c',3)</query>
     <query>INSERT INTO int_table VALUES('d',4)</query>
+    <query>INSERT INTO int_table VALUES('e',35)</query>
 
     <query>INSERT INTO double_table VALUES('a',1)</query>
     <query>INSERT INTO double_table VALUES('b',2)</query>
     <query>INSERT INTO double_table VALUES('c',3.5)</query>
     <query>INSERT INTO double_table VALUES('d',4.3)</query>
+    <query>INSERT INTO double_table VALUES('e',35.1)</query>
   </sql>
   <mapping>
 <![CDATA[

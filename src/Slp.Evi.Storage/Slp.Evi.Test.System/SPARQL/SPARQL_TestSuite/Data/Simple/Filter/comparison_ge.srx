@@ -22,5 +22,10 @@
         <uri>http://example.org/iri/d</uri>
       </binding>
     </result>
+    <result>
+      <binding name="a">
+        <uri>http://example.org/iri/e</uri>
+      </binding>
+    </result>
   </results>
 </sparql>
