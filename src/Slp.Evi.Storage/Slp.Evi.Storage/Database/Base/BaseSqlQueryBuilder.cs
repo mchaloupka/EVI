@@ -207,7 +207,7 @@ namespace Slp.Evi.Storage.Database.Base
                 {
                     if (i > 0)
                     {
-                        data.StringBuilder.Append(',');
+                        data.StringBuilder.Append(" INNER JOIN ");
                     }
 
                     var sourceCondition = sourceConditions[i];
@@ -215,6 +215,11 @@ namespace Slp.Evi.Storage.Database.Base
                     TransformSourceCondition(sourceCondition, data);
                     data.StringBuilder.Append(" AS ");
                     data.StringBuilder.Append(data.Context.QueryNamingHelpers.GetSourceConditionName(sourceCondition));
+
+                    if (i > 0)
+                    {
+                        data.StringBuilder.Append(" ON 1=1"); // TODO: Some conditions could be there instead of 1=1
+                    }
                 }
             }
 
