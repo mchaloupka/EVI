@@ -1,0 +1,9 @@
+PREFIX iri: <http://example.org/iri/>
+PREFIX lit: <http://example.org/lit/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?i
+WHERE {
+  [] lit:int ?i.
+  FILTER(?i > "4.0"^^xsd:double)
+}
