@@ -64,6 +64,11 @@ namespace Slp.Evi.Storage.Database
         DataType SqlTypeForInt { get; }
 
         /// <summary>
+        /// Gets the SQL type for double.
+        /// </summary>
+        DataType SqlTypeForDouble { get; }
+
+        /// <summary>
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
         /// </summary>
         Uri GetNaturalRdfType(string dbType);

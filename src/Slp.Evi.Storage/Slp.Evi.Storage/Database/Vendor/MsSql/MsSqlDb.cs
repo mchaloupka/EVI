@@ -126,6 +126,9 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// <value>The SQL type for int.</value>
         public override DataType SqlTypeForInt => new DataType("int", "System.Int32");
 
+        /// <inheritdoc />
+        public override DataType SqlTypeForDouble => new DataType("float", "System.Double");
+
         /// <summary>
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
         /// </summary>

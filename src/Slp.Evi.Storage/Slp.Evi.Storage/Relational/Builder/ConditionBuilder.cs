@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
@@ -225,6 +226,9 @@ namespace Slp.Evi.Storage.Relational.Builder
                     case XmlSpecsHelper.XmlSchemaDataTypeInt:
                     case XmlSpecsHelper.XmlSchemaDataTypeInteger:
                         return new ConstantExpression(int.Parse(node.Value), context);
+                    case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                    case XmlSpecsHelper.XmlSchemaDataTypeDouble:
+                        return new ConstantExpression(double.Parse(node.Value, CultureInfo.InvariantCulture), context);
                     default:
                         throw new NotImplementedException();
                 }

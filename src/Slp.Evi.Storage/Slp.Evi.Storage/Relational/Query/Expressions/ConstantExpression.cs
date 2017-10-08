@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
 
@@ -69,6 +70,19 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
             SqlString = number.ToString();
             _context = context;
             SqlType = context.Db.SqlTypeForInt;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <param name="context">The query context.</param>
+        public ConstantExpression(double number, IQueryContext context)
+        {
+            Value = number;
+            SqlString = number.ToString(CultureInfo.InvariantCulture);
+            _context = context;
+            SqlType = context.Db.SqlTypeForDouble;
         }
 
         /// <summary>
