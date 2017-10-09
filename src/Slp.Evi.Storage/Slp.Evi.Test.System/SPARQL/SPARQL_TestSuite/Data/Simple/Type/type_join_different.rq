@@ -1,0 +1,8 @@
+PREFIX iri: <http://example.org/iri/>
+PREFIX lit: <http://example.org/lit/>
+
+SELECT ?i
+WHERE {
+  [] lit:int ?i.
+  [] lit:double ?i.
+}

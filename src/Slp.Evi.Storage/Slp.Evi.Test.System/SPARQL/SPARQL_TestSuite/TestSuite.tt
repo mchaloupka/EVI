@@ -39,6 +39,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", @"Simple\Type", "type_comp_eq"); #>
 <# BagEqualTest("simple.xml", @"Simple\Type", "type_comp_eq2"); #>
 <# BagEqualTest("simple.xml", @"Simple\Type", "type_comp_gt"); #>
+<# BagEqualTest("simple.xml", @"Simple\Type", "type_join_different"); #>
 
 <# BagEqualTest("students.xml", "Students", "no_result"); #>
 <# BagEqualTest("students.xml", "Students", "student_names"); #>
