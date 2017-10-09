@@ -142,7 +142,21 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="type">The type of <paramref name="termMap"/></param>
             public bool CanMatch(INode node, ITermMap termMap, IValueType type)
             {
-                if (type.IsLiteral)
+                if (type.Category == TypeCategories.BlankNode)
+                {
+                    if (node.NodeType != NodeType.Blank)
+                    {
+                        return false;
+                    }
+                }
+                else if (type.Category == TypeCategories.IRI)
+                {
+                    if (node.NodeType != NodeType.Uri)
+                    {
+                        return false;
+                    }
+                }
+                else
                 {
                     if (node.NodeType != NodeType.Literal)
                     {
@@ -160,24 +174,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     {
                         return false;
                     }
-                }
-                else if (type.IsBlank)
-                {
-                    if (node.NodeType != NodeType.Blank)
-                    {
-                        return false;
-                    }
-                }
-                else if (type.IsIRI)
-                {
-                    if (node.NodeType != NodeType.Uri)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    throw new InvalidOperationException("Type has to be one of literal, blank or iri.");
                 }
 
                 return CanMatchValue(node, termMap);
