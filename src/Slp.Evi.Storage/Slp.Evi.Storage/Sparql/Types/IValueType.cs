@@ -8,27 +8,53 @@ using VDS.RDF;
 namespace Slp.Evi.Storage.Sparql.Types
 {
     /// <summary>
+    /// Type categories for <see cref="IValueType"/>
+    /// </summary>
+    public enum TypeCategories
+    {
+        /// <summary>
+        /// Represents blank nodes
+        /// </summary>
+        BlankNode = 0,
+        /// <summary>
+        /// Represent IRI nodes
+        /// </summary>
+        IRI = 1,
+        /// <summary>
+        /// Represent simple literals (without types)
+        /// </summary>
+        SimpleLiteral = 2,
+        /// <summary>
+        /// Represent numeric literals
+        /// </summary>
+        NumericLiteral = 3,
+        /// <summary>
+        /// Represent string literals
+        /// </summary>
+        StringLiteral = 4,
+        /// <summary>
+        /// Represent boolean literal
+        /// </summary>
+        BooleanLiteral = 5,
+        /// <summary>
+        /// Represent date-time literal
+        /// </summary>
+        DateTimeLiteral = 6,
+        /// <summary>
+        /// Represent other literals
+        /// </summary>
+        OtherLiterals = 7
+    }
+
+    /// <summary>
     /// Interface for type information
     /// </summary>
     public interface IValueType
     {
         /// <summary>
-        /// Gets a value indicating whether this instance is IRI.
+        /// Gets the type category.
         /// </summary>
-        /// <value><c>true</c> if this instance is IRI; otherwise, <c>false</c>.</value>
-        bool IsIRI { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is blank.
-        /// </summary>
-        /// <value><c>true</c> if this instance is blank; otherwise, <c>false</c>.</value>
-        bool IsBlank { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is literal.
-        /// </summary>
-        /// <value><c>true</c> if this instance is literal; otherwise, <c>false</c>.</value>
-        bool IsLiteral { get; }
+        TypeCategories Category { get; }
     }
 
     /// <summary>
@@ -52,8 +78,8 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// <summary>
         /// Creates the literal node.
         /// </summary>
-        /// <param name="fact">The factory to be used.</param>
+        /// <param name="factory">The factory to be used.</param>
         /// <param name="value">The value.</param>
-        INode CreateLiteralNode(INodeFactory fact, string value);
+        INode CreateLiteralNode(INodeFactory factory, string value);
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Slp.Evi.Storage.Utils;
 using VDS.RDF;
+using VDS.RDF.Parsing;
 
 namespace Slp.Evi.Storage.Sparql.Types
 {
@@ -21,27 +23,63 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// <param name="languageTag">The language tag (<c>null</c> for no language tag).</param>
         public LiteralValueType(Uri literalType, string languageTag)
         {
-            LiteralType = literalType;
-            LanguageTag = languageTag;
+            if (string.IsNullOrEmpty(languageTag))
+            {
+                LanguageTag = null;
+
+                if (literalType == null)
+                {
+                    LiteralType = null;
+                    Category = TypeCategories.SimpleLiteral;
+                }
+                else
+                {
+                    LiteralType = literalType;
+                    Category = TypeToCategory(literalType);
+                }
+            }
+            else
+            {
+                LanguageTag = languageTag;
+                Category = TypeCategories.OtherLiterals;
+            }
         }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is IRI.
+        /// Convert <paramref name="literalType"/> to <see cref="TypeCategories"/>.
         /// </summary>
-        /// <value><c>true</c> if this instance is IRI; otherwise, <c>false</c>.</value>
-        public bool IsIRI => false;
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is blank.
-        /// </summary>
-        /// <value><c>true</c> if this instance is blank; otherwise, <c>false</c>.</value>
-        public bool IsBlank => false;
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is literal.
-        /// </summary>
-        /// <value><c>true</c> if this instance is literal; otherwise, <c>false</c>.</value>
-        public bool IsLiteral => true;
+        private TypeCategories TypeToCategory(Uri literalType)
+        {
+            switch (literalType.ToCompleteUri())
+            {
+                case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
+                case XmlSpecsHelper.XmlSchemaDataTypeDouble:
+                case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                case XmlSpecsHelper.XmlSchemaDataTypeShort:
+                case XmlSpecsHelper.XmlSchemaDataTypeByte:
+                case XmlSpecsHelper.XmlSchemaDataTypeInt:
+                case XmlSpecsHelper.XmlSchemaDataTypeInteger:
+                case XmlSpecsHelper.XmlSchemaDataTypeLong:
+                case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
+                case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
+                case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
+                case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
+                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
+                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
+                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
+                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
+                    return TypeCategories.NumericLiteral;
+                case XmlSpecsHelper.XmlSchemaDataTypeString:
+                    return TypeCategories.StringLiteral;
+                case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
+                    return TypeCategories.BooleanLiteral;
+                case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                    return TypeCategories.DateTimeLiteral;
+                default:
+                    return TypeCategories.OtherLiterals;
+            }
+        }
 
         /// <summary>
         /// Gets the type of the literal.
@@ -64,7 +102,7 @@ namespace Slp.Evi.Storage.Sparql.Types
         {
             if (LanguageTag != null && LiteralType != null)
             {
-                throw new Exception("Literal term map cannot have both language tag and datatype set");
+                throw new InvalidOperationException("Literal term map cannot have both language tag and data type set");
             }
             else if (LanguageTag != null)
             {
@@ -79,5 +117,8 @@ namespace Slp.Evi.Storage.Sparql.Types
                 return factory.CreateLiteralNode(value);
             }
         }
+
+        /// <inheritdoc />
+        public TypeCategories Category { get; }
     }
 }
