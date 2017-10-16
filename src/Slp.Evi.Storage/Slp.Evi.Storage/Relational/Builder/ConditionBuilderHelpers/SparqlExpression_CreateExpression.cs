@@ -35,7 +35,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="context">The context.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IExpression.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public IExpression CreateExpression(ISparqlExpression expression, IQueryContext context, List<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
