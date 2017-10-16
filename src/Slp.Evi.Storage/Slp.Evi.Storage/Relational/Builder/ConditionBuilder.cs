@@ -164,7 +164,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="valueBinder">The value binder.</param>
-        public IExpression CreateExpression(IQueryContext context, IValueBinder valueBinder)
+        public ExpressionsSet CreateExpression(IQueryContext context, IValueBinder valueBinder)
         {
             return _valueBinderCreateExpression.CreateExpression(context, valueBinder);
         }
@@ -174,7 +174,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="node">The node.</param>
-        public IExpression CreateExpression(IQueryContext context, INode node)
+        public ExpressionsSet CreateExpression(IQueryContext context, INode node)
         {
             if (node is UriNode uriNode)
             {

@@ -37,9 +37,9 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="valueBinder">The value binder.</param>
-        public IExpression CreateExpression(IQueryContext context, IValueBinder valueBinder)
+        public ExpressionsSet CreateExpression(IQueryContext context, IValueBinder valueBinder)
         {
-            return (IExpression) valueBinder.Accept(this, context);
+            return (ExpressionsSet) valueBinder.Accept(this, context);
         }
 
         /// <summary>

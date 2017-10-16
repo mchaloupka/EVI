@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
+using Slp.Evi.Storage.Sparql.Types;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
@@ -35,10 +38,10 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="context">The context.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IExpression.</returns>
-        public IExpression CreateExpression(ISparqlExpression expression, IQueryContext context, List<IValueBinder> valueBinders)
+        public ExpressionsSet CreateExpression(ISparqlExpression expression, IQueryContext context, List<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
-            return (IExpression)expression.Accept(this, parameter);
+            return (ExpressionsSet)expression.Accept(this, parameter);
         }
 
         /// <summary>
@@ -144,9 +147,40 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ComparisonExpression comparisonExpression, object data)
         {
-            var left = (IExpression)comparisonExpression.LeftOperand.Accept(this, data);
-            var right = (IExpression)comparisonExpression.RightOperand.Accept(this, data);
-            return new ComparisonCondition(left, right, comparisonExpression.ComparisonType);
+            var left = (ExpressionsSet)comparisonExpression.LeftOperand.Accept(this, data);
+            var right = (ExpressionsSet)comparisonExpression.RightOperand.Accept(this, data);
+
+            List<IFilterCondition> conditions = new List<IFilterCondition>();
+
+            foreach (var typeCategory in Enum.GetValues(typeof(TypeCategories)).OfType<TypeCategories>())
+            {
+                // TODO: Create the conditions
+                switch (typeCategory)
+                {
+                    case TypeCategories.BlankNode:
+                        break;
+                    case TypeCategories.IRI:
+                        break;
+                    case TypeCategories.SimpleLiteral:
+                        break;
+                    case TypeCategories.NumericLiteral:
+                        break;
+                    case TypeCategories.StringLiteral:
+                        break;
+                    case TypeCategories.BooleanLiteral:
+                        break;
+                    case TypeCategories.DateTimeLiteral:
+                        break;
+                    case TypeCategories.OtherLiterals:
+                        break;
+                }
+            }
+
+            return new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression, ComparisonTypes.EqualTo),
+                new DisjunctionCondition(conditions), 
+            });
         }
 
         /// <summary>
