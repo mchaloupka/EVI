@@ -49,7 +49,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="context">The context.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IFilterCondition.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public IFilterCondition CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
