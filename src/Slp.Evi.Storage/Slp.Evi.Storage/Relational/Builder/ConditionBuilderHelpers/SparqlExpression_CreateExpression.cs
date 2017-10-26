@@ -5,6 +5,7 @@ using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Types;
@@ -37,11 +38,20 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="expression">The expression.</param>
         /// <param name="context">The context.</param>
         /// <param name="valueBinders">The value binders.</param>
-        /// <returns>IExpression.</returns>
         public ExpressionsSet CreateExpression(ISparqlExpression expression, IQueryContext context, List<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
-            return (ExpressionsSet)expression.Accept(this, parameter);
+            return CreateExpression(expression, parameter);
+        }
+
+        /// <summary>
+        /// Creates the expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="parameter">The parameter.</param>
+        public ExpressionsSet CreateExpression(ISparqlExpression expression, ExpressionVisitParameter parameter)
+        {
+            return (ExpressionsSet) expression.Accept(this, parameter);
         }
 
         /// <summary>
@@ -50,11 +60,20 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <param name="condition">The condition.</param>
         /// <param name="context">The context.</param>
         /// <param name="valueBinders">The value binders.</param>
-        /// <returns>IFilterCondition.</returns>
-        public IFilterCondition CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
+        public ConditionPart CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
         {
             var parameter = new ExpressionVisitParameter(context, valueBinders);
-            return (IFilterCondition) condition.Accept(this, parameter);
+            return CreateCondition(condition, parameter);
+        }
+
+        /// <summary>
+        /// Creates the condition.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="parameter">The parameter.</param>
+        public ConditionPart CreateCondition(ISparqlCondition condition, ExpressionVisitParameter parameter)
+        {
+            return (ConditionPart)condition.Accept(this, parameter);
         }
 
         /// <summary>
@@ -108,8 +127,9 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(NegationExpression negationExpression, object data)
         {
-            var inner = (IFilterCondition)negationExpression.InnerCondition.Accept(this, data);
-            return new NegationCondition(inner);
+            var inner = CreateCondition(negationExpression.InnerCondition, (ExpressionVisitParameter)data);
+
+            return new ConditionPart(inner.IsNotErrorCondition, new NegationCondition(inner.MainCondition));
         }
 
         /// <summary>
@@ -134,9 +154,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(ConjunctionExpression conjunctionExpression, object data)
         {
             var innerConditions =
-                conjunctionExpression.Operands.Select(x => x.Accept(this, data)).OfType<IFilterCondition>();
+                conjunctionExpression.Operands
+                .Select(x => CreateCondition(x, (ExpressionVisitParameter) data))
+                .ToList();
 
-            return new ConjunctionCondition(innerConditions);
+            return new ConditionPart(
+                new ConjunctionCondition(innerConditions.Select(x => x.IsNotErrorCondition)),
+                new ConjunctionCondition(innerConditions.Select(x => x.MainCondition)));
         }
 
         /// <summary>
@@ -147,40 +171,110 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ComparisonExpression comparisonExpression, object data)
         {
-            var left = (ExpressionsSet)comparisonExpression.LeftOperand.Accept(this, data);
-            var right = (ExpressionsSet)comparisonExpression.RightOperand.Accept(this, data);
+            var parameter = (ExpressionVisitParameter) data;
+            var left = CreateExpression(comparisonExpression.LeftOperand, parameter);
+            var right = CreateExpression(comparisonExpression.RightOperand, parameter);
 
             List<IFilterCondition> conditions = new List<IFilterCondition>();
+            List<IFilterCondition> notAnErrorConditions = new List<IFilterCondition>();
 
-            foreach (var typeCategory in Enum.GetValues(typeof(TypeCategories)).OfType<TypeCategories>())
+            notAnErrorConditions.Add(
+                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression,
+                    ComparisonTypes.EqualTo));
+
+            switch (comparisonExpression.ComparisonType)
             {
-                // TODO: Create the conditions
-                switch (typeCategory)
-                {
-                    case TypeCategories.BlankNode:
-                        break;
-                    case TypeCategories.IRI:
-                        break;
-                    case TypeCategories.SimpleLiteral:
-                        break;
-                    case TypeCategories.NumericLiteral:
-                        break;
-                    case TypeCategories.StringLiteral:
-                        break;
-                    case TypeCategories.BooleanLiteral:
-                        break;
-                    case TypeCategories.DateTimeLiteral:
-                        break;
-                    case TypeCategories.OtherLiterals:
-                        break;
-                }
+                case ComparisonTypes.GreaterThan:
+                case ComparisonTypes.GreaterOrEqualThan:
+                case ComparisonTypes.LessThan:
+                case ComparisonTypes.LessOrEqualThan:
+                    notAnErrorConditions.Add(new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression, ComparisonTypes.EqualTo));
+                    notAnErrorConditions.Add(new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int)TypeCategories.BlankNode, parameter.QueryContext), ComparisonTypes.NotEqualTo));
+                    notAnErrorConditions.Add(new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int)TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.NotEqualTo));
+                    notAnErrorConditions.Add(new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int)TypeCategories.OtherLiterals, parameter.QueryContext), ComparisonTypes.NotEqualTo));
+                    break;
             }
 
-            return new ConjunctionCondition(new IFilterCondition[]
+            // Comparison of simple literal
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
             {
-                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression, ComparisonTypes.EqualTo),
-                new DisjunctionCondition(conditions), 
-            });
+                new ComparisonCondition(left.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(right.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.StringExpression, right.StringExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            // Comparison of string literal
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(right.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.StringExpression, right.StringExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            // Comparison of numeric literal
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(right.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.NumericExpression, right.NumericExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            // Comparison of boolean literal
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.BooleanLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(right.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.BooleanLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.BooleanExpression, right.BooleanExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            // Comparison of datetime literal
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.DateTimeLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(right.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.DateTimeLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.DateTimeExpression, right.DateTimeExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            // Comparison of all other literals
+            conditions.Add(new ConjunctionCondition(new IFilterCondition[]
+            {
+                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression,
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.TypeExpression, right.TypeExpression,
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(left.StringExpression, right.StringExpression,
+                    comparisonExpression.ComparisonType),
+            }));
+
+            var mainCondition = new DisjunctionCondition(conditions);
+            var noErrorCondition = new ConjunctionCondition(notAnErrorConditions);
+
+            return new ConditionPart(noErrorCondition, mainCondition);
         }
 
         /// <summary>
@@ -204,9 +298,14 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(DisjunctionExpression disjunctionExpression, object data)
         {
             var innerConditions =
-                disjunctionExpression.Operands.Select(x => x.Accept(this, data)).OfType<IFilterCondition>();
+                disjunctionExpression.Operands
+                .Select(x => CreateCondition(x, (ExpressionVisitParameter) data))
+                    .ToList();
 
-            return new DisjunctionCondition(innerConditions);
+            return new ConditionPart(
+                new ConjunctionCondition(innerConditions.Select(x => x.IsNotErrorCondition)),
+                new DisjunctionCondition(innerConditions.Select(x => x.MainCondition))
+                );
         }
     }
 }

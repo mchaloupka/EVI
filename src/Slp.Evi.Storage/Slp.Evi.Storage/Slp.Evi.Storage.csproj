@@ -92,6 +92,7 @@
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ExpressionsSet.cs" />
     <Compile Include="Sparql\Types\ITypeCache.cs" />
     <Compile Include="Sparql\Types\TypeCategories.cs" />
