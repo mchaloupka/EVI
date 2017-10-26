@@ -178,10 +178,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             List<IFilterCondition> conditions = new List<IFilterCondition>();
             List<IFilterCondition> notAnErrorConditions = new List<IFilterCondition>();
 
-            notAnErrorConditions.Add(
-                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression,
-                    ComparisonTypes.EqualTo));
-
             switch (comparisonExpression.ComparisonType)
             {
                 case ComparisonTypes.GreaterThan:
@@ -263,12 +259,18 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             // Comparison of all other literals
             conditions.Add(new ConjunctionCondition(new IFilterCondition[]
             {
-                new ComparisonCondition(left.TypeCategoryExpression, right.TypeCategoryExpression,
-                    ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.TypeExpression, right.TypeExpression,
                     ComparisonTypes.EqualTo),
+                new DisjunctionCondition(new IFilterCondition[]
+                {
+                    new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.BlankNode, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.IRI, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(left.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.OtherLiterals, parameter.QueryContext), ComparisonTypes.EqualTo)
+                }),
                 new ComparisonCondition(left.StringExpression, right.StringExpression,
-                    comparisonExpression.ComparisonType),
+                    comparisonExpression.ComparisonType)
             }));
 
             var mainCondition = new DisjunctionCondition(conditions);

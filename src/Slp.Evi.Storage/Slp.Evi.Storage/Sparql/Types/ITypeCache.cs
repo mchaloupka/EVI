@@ -1,4 +1,5 @@
-﻿using TCode.r2rml4net.Mapping;
+﻿using System;
+using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Sparql.Types
 {
@@ -21,5 +22,28 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// Gets the <see cref="IValueType"/> for <paramref name="termMap"/>
         /// </summary>
         IValueType GetValueType(IMapBase termMap);
+
+        /// <summary>
+        /// Gets the <see cref="IValueType"/> for IRI
+        /// </summary>
+        IValueType IRIValueType { get; }
+
+        /// <summary>
+        /// Gets the <see cref="IValueType"/> for simple literal
+        /// </summary>
+        IValueType SimpleLiteralValueType { get; }
+
+        /// <summary>
+        /// Gets the <see cref="IValueType"/> for literal with language
+        /// </summary>
+        /// <param name="language">The language.</param>
+        IValueType GetValueTypeForLanguage(string language);
+
+        /// <summary>
+        /// Gets the <see cref="IValueType"/> for literal with datatype.
+        /// </summary>
+        /// <param name="dataTypeUri">The data type absolute URI.</param>
+        /// <returns>IValueType.</returns>
+        IValueType GetValueTypeForDataType(Uri dataTypeUri);
     }
 }

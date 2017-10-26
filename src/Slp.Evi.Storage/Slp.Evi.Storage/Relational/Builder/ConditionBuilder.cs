@@ -10,6 +10,8 @@ using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
+using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Utils;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
@@ -53,13 +55,52 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 var leftOperand = CreateExpression(context, valueBinder);
                 var rightOperand = CreateExpression(context, node);
-
-                return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
+                return CreateEqualsCondition(leftOperand, rightOperand, context);
             }
             else
             {
                 throw new NotImplementedException();
             }
+        }
+
+        /// <summary>
+        /// Creates the equals condition.
+        /// </summary>
+        /// <param name="leftOperand">The left operand.</param>
+        /// <param name="rightOperand">The right operand.</param>
+        /// <param name="context">The context.</param>
+        private IFilterCondition CreateEqualsCondition(ExpressionsSet leftOperand, ExpressionsSet rightOperand, IQueryContext context)
+        {
+            Func<TypeCategories, IFilterCondition> isOfTypeCondition = (category) =>
+                new ComparisonCondition(leftOperand.TypeCategoryExpression, new ConstantExpression((int)category, context),
+                    ComparisonTypes.EqualTo);
+
+            IFilterCondition isStringBasedCondition = new DisjunctionCondition(new IFilterCondition[]
+            {
+                isOfTypeCondition(TypeCategories.BlankNode),
+                isOfTypeCondition(TypeCategories.IRI),
+                isOfTypeCondition(TypeCategories.SimpleLiteral),
+                isOfTypeCondition(TypeCategories.StringLiteral),
+                isOfTypeCondition(TypeCategories.OtherLiterals)
+            });
+
+            Func<IFilterCondition, Func<ExpressionsSet, IExpression>, IFilterCondition> columnCondition = (condition, column) => new ConjunctionCondition(new IFilterCondition[]
+            {
+                condition,
+                new ComparisonCondition(column(leftOperand), column(rightOperand), ComparisonTypes.EqualTo) 
+            });
+
+            return new ConjunctionCondition(new IFilterCondition[] {
+                    new ComparisonCondition(leftOperand.TypeExpression, rightOperand.TypeExpression,
+                        ComparisonTypes.EqualTo),
+                    new DisjunctionCondition(new IFilterCondition[]
+                    {
+                        columnCondition(isStringBasedCondition, x => x.StringExpression),
+                        columnCondition(isOfTypeCondition(TypeCategories.DateTimeLiteral), x => x.DateTimeExpression),
+                        columnCondition(isOfTypeCondition(TypeCategories.NumericLiteral), x => x.NumericExpression),
+                        columnCondition(isOfTypeCondition(TypeCategories.BooleanLiteral), x => x.BooleanExpression),
+                    }), 
+                });
         }
 
         /// <summary>
@@ -94,7 +135,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
                 if (leftType == rightType)
                 {
-                    return new ComparisonCondition(leftOperand, rightOperand, ComparisonTypes.EqualTo);
+                    return CreateEqualsCondition(leftOperand, rightOperand, context);
                 }
                 else
                 {
@@ -178,7 +219,17 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             if (node is UriNode uriNode)
             {
-                return new ConstantExpression(uriNode.Uri, context);
+                var iriType = context.TypeCache.IRIValueType;
+                var type = context.TypeCache.GetIndex(iriType);
+                var category = iriType.Category;
+
+                return new ExpressionsSet(
+                    new ConstantExpression(type, context),
+                    new ConstantExpression((int) category, context), 
+                    new ConstantExpression(uriNode.Uri, context), 
+                    null,
+                    null,
+                    null);
             }
             else if (node is LiteralNode literalNode)
             {
@@ -213,55 +264,97 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="node">The node.</param>
-        private IExpression CreateLiteralExpression(IQueryContext context, LiteralNode node)
+        private ExpressionsSet CreateLiteralExpression(IQueryContext context, LiteralNode node)
         {
-            if (node.DataType == null)
+            if (node.DataType == null && node.Language == null)
             {
-                return new ConstantExpression(node.Value, context);
+                var iriType = context.TypeCache.SimpleLiteralValueType;
+                var type = context.TypeCache.GetIndex(iriType);
+                var category = iriType.Category;
+
+                return new ExpressionsSet(
+                    new ConstantExpression(type, context),
+                    new ConstantExpression((int)category, context),
+                    new ConstantExpression(node.Value, context),
+                    null,
+                    null,
+                    null);
+            }
+            else if (node.DataType == null)
+            {
+                var iriType = context.TypeCache.GetValueTypeForLanguage(node.Language);
+                var type = context.TypeCache.GetIndex(iriType);
+                var category = iriType.Category;
+
+                return new ExpressionsSet(
+                    new ConstantExpression(type, context),
+                    new ConstantExpression((int) category, context),
+                    new ConstantExpression(node.Value, context),
+                    null,
+                    null,
+                    null);
             }
             else
             {
-                switch (node.DataType.AbsoluteUri)
+                var iriType = context.TypeCache.GetValueTypeForDataType(node.DataType);
+                var type = context.TypeCache.GetIndex(iriType);
+                var category = iriType.Category;
+
+                IExpression stringExpression = null;
+                IExpression numericExpression = null;
+                IExpression booleanExpression = null;
+                IExpression dateTimeExpression = null;
+
+                switch (node.DataType.ToCompleteUri())
                 {
                     case XmlSpecsHelper.XmlSchemaDataTypeInt:
                     case XmlSpecsHelper.XmlSchemaDataTypeInteger:
-                        return new ConstantExpression(int.Parse(node.Value), context);
+                        numericExpression = new ConstantExpression(int.Parse(node.Value), context);
+                        break;
                     case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                     case XmlSpecsHelper.XmlSchemaDataTypeDouble:
-                        return new ConstantExpression(double.Parse(node.Value, CultureInfo.InvariantCulture), context);
+                        numericExpression = new ConstantExpression(double.Parse(node.Value, CultureInfo.InvariantCulture), context);
+                        break;
                     default:
                         throw new NotImplementedException();
+
+                    // TODO: https://bitbucket.org/dotnetrdf/dotnetrdf/src/b37d1707735f727613d0804a7a81a56b2a7e6ce3/Libraries/core/net40/Parsing/XMLSpecsHelper.cs?at=default
+                    //XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
+                    //XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
+                    //XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
+                    //XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
+                    //XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
+                    //XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
+                    //XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
+                    //XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
+                    //XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
+                    //XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
+                    //XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
+                    //XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
+                    //XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
+                    //XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
+                    //XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
+                    //XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
+                    //XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
+                    //XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
+                    //XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
+                    //XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
+                    //XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
+                    //XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
+                    //XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
+                    //XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
+                    //XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
+                    //XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
                 }
 
-                // TODO: https://bitbucket.org/dotnetrdf/dotnetrdf/src/b37d1707735f727613d0804a7a81a56b2a7e6ce3/Libraries/core/net40/Parsing/XMLSpecsHelper.cs?at=default
-                //XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
-                //XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
-                //XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
-                //XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
-                //XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
-                //XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
-                //XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
-                //XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
-                //XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
-                //XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
-                //XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
-                //XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
-                //XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
-                //XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
-                //XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
-                //XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
-                //XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
-                //XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
-                //XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
-                //XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
-                //XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
-                //XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
-                //XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
-                //XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
-                //XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
-                //XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
+                return new ExpressionsSet(
+                    new ConstantExpression(type, context),
+                    new ConstantExpression((int)category, context),
+                    stringExpression,
+                    numericExpression,
+                    booleanExpression,
+                    dateTimeExpression);
             }
-
         }
 
         /// <summary>
@@ -272,7 +365,9 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The used value binders.</param>
         public IFilterCondition CreateCondition(ISparqlCondition condition, IQueryContext context, IEnumerable<IValueBinder> valueBinders)
         {
-            return _sparqlExpressionCreateExpression.CreateCondition(condition, context, valueBinders);
+            var c = _sparqlExpressionCreateExpression.CreateCondition(condition, context, valueBinders);
+            return new ConjunctionCondition(new[]
+                {c.IsNotErrorCondition, c.MainCondition});
         }
 
         /// <summary>
@@ -282,8 +377,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="expression">The expression.</param>
         /// <param name="valueBinders">The value binders.</param>
         /// <returns>IExpression.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public IExpression CreateExpression(IQueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
+        public ExpressionsSet CreateExpression(IQueryContext context, ISparqlExpression expression, List<IValueBinder> valueBinders)
         {
             return _sparqlExpressionCreateExpression.CreateExpression(expression, context, valueBinders);
         }
@@ -305,7 +399,6 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="data">The data.</param>
         /// <returns>IEnumerable&lt;IExpression&gt;.</returns>
-        /// <exception cref="NotImplementedException"></exception>
         public IEnumerable<IExpression> CreateOrderByExpression(string variable, IEnumerable<IValueBinder> valueBinders, IQueryContext data)
         {
             // TODO: Handle order specifics
@@ -315,7 +408,13 @@ namespace Slp.Evi.Storage.Relational.Builder
             {
                 if (valueBinder.VariableName == variable)
                 {
-                    yield return CreateExpression(data, valueBinder);
+                    var expressionSet = CreateExpression(data, valueBinder);
+
+                    yield return expressionSet.TypeCategoryExpression;
+                    yield return expressionSet.StringExpression;
+                    yield return expressionSet.NumericExpression;
+                    yield return expressionSet.BooleanExpression;
+                    yield return expressionSet.DateTimeExpression;
                 }
             }
         }
