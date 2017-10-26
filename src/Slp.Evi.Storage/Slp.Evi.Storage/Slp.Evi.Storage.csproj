@@ -147,7 +147,7 @@
     <Compile Include="Relational\Query\Expressions\CoalesceExpression.cs" />
     <Compile Include="Relational\Query\Sources\ModifiedCalculusModel.cs" />
     <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
-    <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
+    <Compile Include="Relational\Query\ValueBinders\ExpressionSetValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\PostProcess\IRelationalPostProcess.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />

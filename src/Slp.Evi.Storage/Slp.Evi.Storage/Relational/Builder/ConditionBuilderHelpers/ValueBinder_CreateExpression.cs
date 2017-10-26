@@ -191,12 +191,12 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         }
 
         /// <summary>
-        /// Visits <see cref="ExpressionValueBinder"/>
+        /// Visits <see cref="ExpressionSetValueBinder"/>
         /// </summary>
-        /// <param name="expressionValueBinder">The visited instance</param>
+        /// <param name="expressionSetValueBinder">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(ExpressionValueBinder expressionValueBinder, object data)
+        public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
             throw new NotImplementedException();
         }

@@ -16,14 +16,9 @@ namespace Slp.Evi.Storage.Query
     public class QueryContext : IQueryContext
     {
         /// <summary>
-        /// The blank nodes subjects.
+        /// The blank nodes.
         /// </summary>
-        private readonly Dictionary<string, INode> _blankNodesSubjects;
-
-        /// <summary>
-        /// The blank nodes objects.
-        /// </summary>
-        private readonly Dictionary<string, INode> _blankNodesObjects;
+        private readonly Dictionary<string, INode> _blankNodes;
 
         /// <summary>
         /// The used variables
@@ -49,8 +44,8 @@ namespace Slp.Evi.Storage.Query
             Db = db;
             Mapping = mapping;
             SchemaProvider = schemaProvider;
-            _blankNodesSubjects = new Dictionary<string, INode>();
-            _blankNodesObjects = new Dictionary<string, INode>();
+            _blankNodes = new Dictionary<string, INode>();
+            _blankNodes = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
             QueryPostProcesses = new QueryPostProcesses(factory, this);
@@ -114,34 +109,16 @@ namespace Slp.Evi.Storage.Query
         /// <param name="factory">The factory.</param>
         /// <param name="value">The value.</param>
         /// <returns>Node.</returns>
-        public INode GetBlankNodeSubjectForValue(INodeFactory factory, object value)
+        public INode GetBlankNodeForValue(INodeFactory factory, object value)
         {
             var sVal = value.ToString();
 
-            if (!_blankNodesSubjects.ContainsKey(sVal))
+            if (!_blankNodes.ContainsKey(sVal))
             {
-                _blankNodesSubjects.Add(sVal, factory.CreateBlankNode());
+                _blankNodes.Add(sVal, factory.CreateBlankNode());
             }
 
-            return _blankNodesSubjects[sVal];
-        }
-
-        /// <summary>
-        /// Gets the blank node object for value.
-        /// </summary>
-        /// <param name="factory">The factory.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>Node.</returns>
-        public INode GetBlankNodeObjectForValue(INodeFactory factory, object value)
-        {
-            var sVal = value.ToString();
-
-            if (!_blankNodesObjects.ContainsKey(sVal))
-            {
-                _blankNodesObjects.Add(sVal, factory.CreateBlankNode());
-            }
-
-            return _blankNodesObjects[sVal];
+            return _blankNodes[sVal];
         }
 
         /// <summary>
