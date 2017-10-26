@@ -14,7 +14,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
     /// Its intention is to represent various expressions according to type
     /// they represent.
     /// </remarks>
-    public class ExpressionsSet
+    public sealed class ExpressionsSet : IEquatable<ExpressionsSet>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionsSet"/> class.
@@ -64,5 +64,47 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// Gets the expression which contains the value if it is datetime.
         /// </summary>
         public IExpression DateTimeExpression { get; }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ExpressionsSet) obj);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(ExpressionsSet other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(TypeExpression, other.TypeExpression) && Equals(TypeCategoryExpression, other.TypeCategoryExpression) && Equals(StringExpression, other.StringExpression) && Equals(NumericExpression, other.NumericExpression) && Equals(BooleanExpression, other.BooleanExpression) && Equals(DateTimeExpression, other.DateTimeExpression);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (TypeExpression != null ? TypeExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TypeCategoryExpression != null ? TypeCategoryExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (StringExpression != null ? StringExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (NumericExpression != null ? NumericExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BooleanExpression != null ? BooleanExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (DateTimeExpression != null ? DateTimeExpression.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(ExpressionsSet left, ExpressionsSet right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ExpressionsSet left, ExpressionsSet right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
