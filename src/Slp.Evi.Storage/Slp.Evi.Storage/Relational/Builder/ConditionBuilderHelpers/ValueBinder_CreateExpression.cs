@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -45,13 +46,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <summary>
         /// Visits <see cref="BaseValueBinder"/>
         /// </summary>
-        /// <param name="valueBinder">The visited instance</param>
+        /// <param name="baseValueBinder">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(BaseValueBinder valueBinder, object data)
+        public object Visit(BaseValueBinder baseValueBinder, object data)
         {
             var context = (IQueryContext) data;
-            var map = valueBinder.TermMap;
+            var map = baseValueBinder.TermMap;
 
             if (map.IsConstantValued)
             {
@@ -87,27 +88,27 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                     }
                     else
                     {
-                        throw new Exception("Object map's value must be IRI or literal.");
+                        throw new InvalidOperationException("Object map's value must be IRI or literal.");
                     }
                 }
                 else
                 {
-                    throw new Exception("Unknonwn constant valued term map");
+                    throw new InvalidOperationException("Unknonwn constant valued term map");
                 }
             }
             else if (map.IsColumnValued)
             {
-                return new ColumnExpression(valueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
+                return new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
             }
             else if (map.IsTemplateValued)
             {
                 List<IExpression> parts = new List<IExpression>();
 
-                foreach (var templatePart in valueBinder.TemplateParts)
+                foreach (var templatePart in baseValueBinder.TemplateParts)
                 {
                     if (templatePart.IsColumn)
                     {
-                        parts.Add(new ColumnExpression(valueBinder.GetCalculusVariable(templatePart.Column),
+                        parts.Add(new ColumnExpression(baseValueBinder.GetCalculusVariable(templatePart.Column),
                             map.TermType.IsURI));
                     }
                     else if (templatePart.IsText)
@@ -116,7 +117,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                     }
                     else
                     {
-                        throw new Exception("Must be column or constant");
+                        throw new InvalidOperationException("Must be column or constant");
                     }
                 }
 
@@ -135,7 +136,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             }
             else
             {
-                throw new Exception("Mapping can be only constant, column or template valued");
+                throw new InvalidOperationException("Mapping can be only constant, column or template valued");
             }
         }
 
@@ -159,14 +160,18 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(CoalesceValueBinder coalesceValueBinder, object data)
         {
             var context = (IQueryContext) data;
-            List<IExpression> expressions = new List<IExpression>();
 
-            foreach (var binder in coalesceValueBinder.ValueBinders)
-            {
-                expressions.Add(CreateExpression(context, binder));
-            }
+            var expressionsSets = coalesceValueBinder.ValueBinders
+                .Select(x => CreateExpression(context, x)).ToList();
 
-            return new CoalesceExpression(expressions);
+            return new ExpressionsSet(
+                new CoalesceExpression(expressionsSets.Select(x => x.TypeExpression)),
+                new CoalesceExpression(expressionsSets.Select(x => x.TypeCategoryExpression)),
+                new CoalesceExpression(expressionsSets.Select(x => x.StringExpression)),
+                new CoalesceExpression(expressionsSets.Select(x => x.NumericExpression)),
+                new CoalesceExpression(expressionsSets.Select(x => x.BooleanExpression)),
+                new CoalesceExpression(expressionsSets.Select(x => x.DateTimeExpression))
+                );
         }
 
         /// <summary>
@@ -178,16 +183,33 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(SwitchValueBinder switchValueBinder, object data)
         {
             var context = (IQueryContext) data;
-            var statements = new List<CaseExpression.Statement>();
+            var typeStatements = new List<CaseExpression.Statement>();
+            var typeCategoryStatements = new List<CaseExpression.Statement>();
+            var stringStatements = new List<CaseExpression.Statement>();
+            var numericStatements = new List<CaseExpression.Statement>();
+            var booleanStatements = new List<CaseExpression.Statement>();
+            var datetimeStatements = new List<CaseExpression.Statement>();
 
             foreach (var @case in switchValueBinder.Cases)
             {
                 var expression = CreateExpression(context, @case.ValueBinder);
                 var condition = new ComparisonCondition(new ColumnExpression(switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
-                statements.Add(new CaseExpression.Statement(condition, expression));
+
+                typeStatements.Add(new CaseExpression.Statement(condition, expression.TypeExpression));
+                typeCategoryStatements.Add(new CaseExpression.Statement(condition, expression.TypeCategoryExpression));
+                stringStatements.Add(new CaseExpression.Statement(condition, expression.StringExpression));
+                numericStatements.Add(new CaseExpression.Statement(condition, expression.NumericExpression));
+                booleanStatements.Add(new CaseExpression.Statement(condition, expression.BooleanExpression));
+                datetimeStatements.Add(new CaseExpression.Statement(condition, expression.DateTimeExpression));
             }
 
-            return new CaseExpression(statements);
+            return new ExpressionsSet(
+                new CaseExpression(typeStatements),
+                new CaseExpression(typeCategoryStatements),
+                new CaseExpression(stringStatements),
+                new CaseExpression(numericStatements),
+                new CaseExpression(booleanStatements),
+                new CaseExpression(datetimeStatements));
         }
 
         /// <summary>
