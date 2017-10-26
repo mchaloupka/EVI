@@ -142,12 +142,12 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <returns>The returned data</returns>
         public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
-            var newExpression = _optimizerImplementation.TransformExpression(expressionSetValueBinder.Expression,
+            var newExpressionSet = _optimizerImplementation.TransformExpressionSet(expressionSetValueBinder.ExpressionSet,
                 (BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext)data);
 
-            if (newExpression != expressionSetValueBinder.Expression)
+            if (newExpressionSet != expressionSetValueBinder.ExpressionSet)
             {
-                return new ExpressionSetValueBinder(expressionSetValueBinder.VariableName, newExpression);
+                return new ExpressionSetValueBinder(expressionSetValueBinder.VariableName, newExpressionSet);
             }
             else
             {

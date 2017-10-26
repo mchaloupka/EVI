@@ -1,5 +1,6 @@
 ﻿// Generated code, do not edit!!!
 
+using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
@@ -237,5 +238,19 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         {
             return toTransform;
         }
+        /// <summary>
+        /// Transforms the whole expressions <see cref="ExpressionsSet" />.
+        /// </summary>
+        public ExpressionsSet TransformExpressionSet(ExpressionsSet expressionSet, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return new ExpressionsSet(
+                TransformExpression(expressionSet.TypeExpression, data),
+                TransformExpression(expressionSet.TypeCategoryExpression, data),
+                TransformExpression(expressionSet.StringExpression, data),
+                TransformExpression(expressionSet.NumericExpression, data),
+                TransformExpression(expressionSet.BooleanExpression, data),
+                TransformExpression(expressionSet.DateTimeExpression, data));
+        }
+
     }
 }
