@@ -7,6 +7,7 @@ using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Sparql.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
@@ -48,23 +49,35 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         /// <param name="baseValueBinder">The visited instance</param>
         /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
         public object Visit(BaseValueBinder baseValueBinder, object data)
         {
             var context = (IQueryContext) data;
             var map = baseValueBinder.TermMap;
+            var type = context.TypeCache.GetValueType(map);
 
             if (map.IsConstantValued)
             {
                 if (map is IUriValuedTermMap uriValuedTermMap)
                 {
-                    return new ConstantExpression(uriValuedTermMap.URI, context);
+                    return new ExpressionsSet(
+                        new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                        new ConstantExpression((int)type.Category, context),
+                        new ConstantExpression(uriValuedTermMap.URI, context),
+                        null,
+                        null,
+                        null);
                 }
                 else if (map is IObjectMap objectMap)
                 {
                     if (objectMap.URI != null)
                     {
-                        return new ConstantExpression(objectMap.URI, context);
+                        return new ExpressionsSet(
+                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                            new ConstantExpression((int)type.Category, context),
+                            new ConstantExpression(objectMap.URI, context),
+                            null,
+                            null,
+                            null);
                     }
                     else if (objectMap.Literal != null)
                     {
@@ -93,12 +106,46 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 }
                 else
                 {
-                    throw new InvalidOperationException("Unknonwn constant valued term map");
+                    throw new InvalidOperationException("Unknown constant valued term map");
                 }
             }
             else if (map.IsColumnValued)
             {
-                return new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI);
+                switch (type.Category)
+                {
+                    case TypeCategories.NumericLiteral:
+                        return new ExpressionsSet(
+                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                            new ConstantExpression((int)type.Category, context),
+                            null,
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            null,
+                            null);
+                    case TypeCategories.BooleanLiteral:
+                        return new ExpressionsSet(
+                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                            new ConstantExpression((int)type.Category, context),
+                            null,
+                            null,
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            null);
+                    case TypeCategories.DateTimeLiteral:
+                        return new ExpressionsSet(
+                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                            new ConstantExpression((int)type.Category, context),
+                            null,
+                            null,
+                            null,
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI));
+                    default:
+                        return new ExpressionsSet(
+                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                            new ConstantExpression((int)type.Category, context),
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            null,
+                            null,
+                            null);
+                }
             }
             else if (map.IsTemplateValued)
             {
@@ -123,15 +170,33 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 
                 if (parts.Count == 0)
                 {
-                    return new ConstantExpression(string.Empty, context);
+                    return new ExpressionsSet(
+                        new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                        new ConstantExpression((int)type.Category, context),
+                        new ConstantExpression(string.Empty, context),
+                        null,
+                        null,
+                        null);
                 }
                 else if (parts.Count == 1)
                 {
-                    return parts[0];
+                    return new ExpressionsSet(
+                        new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                        new ConstantExpression((int)type.Category, context),
+                        parts[0],
+                        null,
+                        null,
+                        null);
                 }
                 else
                 {
-                    return new ConcatenationExpression(parts, context.Db.SqlTypeForString);
+                    return new ExpressionsSet(
+                        new ConstantExpression(context.TypeCache.GetIndex(type), context),
+                        new ConstantExpression((int)type.Category, context),
+                        new ConcatenationExpression(parts, context.Db.SqlTypeForString),
+                        null,
+                        null,
+                        null);
                 }
             }
             else
