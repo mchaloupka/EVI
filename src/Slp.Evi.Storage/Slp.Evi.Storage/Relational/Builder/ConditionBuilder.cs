@@ -10,7 +10,7 @@ using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF;
 using VDS.RDF.Parsing;

@@ -7,7 +7,7 @@ using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Relational.Builder;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Sparql.Builder;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Parsing;

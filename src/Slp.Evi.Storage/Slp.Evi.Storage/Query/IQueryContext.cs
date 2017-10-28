@@ -1,7 +1,7 @@
 ﻿using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;

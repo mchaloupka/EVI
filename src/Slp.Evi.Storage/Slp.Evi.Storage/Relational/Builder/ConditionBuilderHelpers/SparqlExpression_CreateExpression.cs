@@ -8,7 +8,7 @@ using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {

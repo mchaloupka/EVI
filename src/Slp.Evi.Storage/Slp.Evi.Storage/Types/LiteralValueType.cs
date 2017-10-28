@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
-namespace Slp.Evi.Storage.Sparql.Types
+namespace Slp.Evi.Storage.Types
 {
     /// <summary>
     /// Represents literal value.
     /// </summary>
-    /// <seealso cref="Slp.Evi.Storage.Sparql.Types.ILiteralValueType" />
+    /// <seealso cref="ILiteralValueType" />
     public class LiteralValueType
         : ILiteralValueType
     {

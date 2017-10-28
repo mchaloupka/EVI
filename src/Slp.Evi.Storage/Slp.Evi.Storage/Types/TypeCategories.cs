@@ -1,4 +1,4 @@
-﻿namespace Slp.Evi.Storage.Sparql.Types
+﻿namespace Slp.Evi.Storage.Types
 {
     /// <summary>
     /// Type categories for <see cref="IValueType"/>

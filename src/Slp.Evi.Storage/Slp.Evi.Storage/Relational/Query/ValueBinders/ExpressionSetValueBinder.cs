@@ -6,7 +6,7 @@ using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
 using Slp.Evi.Storage.Relational.Query.Utils;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using VDS.RDF;
 
 namespace Slp.Evi.Storage.Relational.Query.ValueBinders

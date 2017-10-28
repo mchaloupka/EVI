@@ -95,8 +95,8 @@
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ExpressionsSet.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
-    <Compile Include="Sparql\Types\ITypeCache.cs" />
-    <Compile Include="Sparql\Types\TypeCategories.cs" />
+    <Compile Include="Types\ITypeCache.cs" />
+    <Compile Include="Types\TypeCategories.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
     <Compile Include="Mapping\ClassPredicateMap.cs" />
@@ -243,11 +243,11 @@
     <Compile Include="Sparql\PostProcess\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\Optimizers\UnionJoinOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\SafeAlgebra\AscendFilterPattern.cs" />
-    <Compile Include="Sparql\Types\BlankValueType.cs" />
-    <Compile Include="Sparql\Types\IRIValueType.cs" />
-    <Compile Include="Sparql\Types\IValueType.cs" />
-    <Compile Include="Sparql\Types\LiteralValueType.cs" />
-    <Compile Include="Sparql\Types\TypeCache.cs" />
+    <Compile Include="Types\BlankValueType.cs" />
+    <Compile Include="Types\IRIValueType.cs" />
+    <Compile Include="Types\IValueType.cs" />
+    <Compile Include="Types\LiteralValueType.cs" />
+    <Compile Include="Types\TypeCache.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
       <AutoGen>True</AutoGen>

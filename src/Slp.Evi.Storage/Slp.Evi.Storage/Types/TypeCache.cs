@@ -5,7 +5,7 @@ using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 
-namespace Slp.Evi.Storage.Sparql.Types
+namespace Slp.Evi.Storage.Types
 {
     /// <summary>
     /// The type cache.
