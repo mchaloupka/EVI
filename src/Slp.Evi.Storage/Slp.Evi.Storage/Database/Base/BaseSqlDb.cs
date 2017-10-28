@@ -97,6 +97,12 @@ namespace Slp.Evi.Storage.Database.Base
         /// <inheritdoc />
         public abstract DataType SqlTypeForDouble { get; }
 
+        /// <inheritdoc />
+        public abstract DataType SqlTypeForBoolean { get; }
+
+        /// <inheritdoc />
+        public abstract DataType SqlTypeForDateTime { get; }
+
         /// <summary>
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
         /// </summary>

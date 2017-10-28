@@ -65,7 +65,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                         new ConstantExpression(uriValuedTermMap.URI, context),
                         null,
                         null,
-                        null);
+                        null,
+                        context);
                 }
                 else if (map is IObjectMap objectMap)
                 {
@@ -77,7 +78,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             new ConstantExpression(objectMap.URI, context),
                             null,
                             null,
-                            null);
+                            null,
+                            context);
                     }
                     else if (objectMap.Literal != null)
                     {
@@ -120,7 +122,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             null,
                             new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
                             null,
-                            null);
+                            null,
+                            context);
                     case TypeCategories.BooleanLiteral:
                         return new ExpressionsSet(
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
@@ -128,7 +131,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             null,
                             null,
                             new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
-                            null);
+                            null,
+                            context);
                     case TypeCategories.DateTimeLiteral:
                         return new ExpressionsSet(
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
@@ -136,7 +140,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             null,
                             null,
                             null,
-                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI));
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            context);
                     default:
                         return new ExpressionsSet(
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
@@ -144,7 +149,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
                             null,
                             null,
-                            null);
+                            null,
+                            context);
                 }
             }
             else if (map.IsTemplateValued)
@@ -176,7 +182,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                         new ConstantExpression(string.Empty, context),
                         null,
                         null,
-                        null);
+                        null,
+                        context);
                 }
                 else if (parts.Count == 1)
                 {
@@ -186,7 +193,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                         parts[0],
                         null,
                         null,
-                        null);
+                        null,
+                        context);
                 }
                 else
                 {
@@ -196,7 +204,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                         new ConcatenationExpression(parts, context.Db.SqlTypeForString),
                         null,
                         null,
-                        null);
+                        null,
+                        context);
                 }
             }
             else
@@ -235,8 +244,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new CoalesceExpression(expressionsSets.Select(x => x.StringExpression)),
                 new CoalesceExpression(expressionsSets.Select(x => x.NumericExpression)),
                 new CoalesceExpression(expressionsSets.Select(x => x.BooleanExpression)),
-                new CoalesceExpression(expressionsSets.Select(x => x.DateTimeExpression))
-                );
+                new CoalesceExpression(expressionsSets.Select(x => x.DateTimeExpression)),
+                context);
         }
 
         /// <summary>
@@ -274,7 +283,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new CaseExpression(stringStatements),
                 new CaseExpression(numericStatements),
                 new CaseExpression(booleanStatements),
-                new CaseExpression(datetimeStatements));
+                new CaseExpression(datetimeStatements),
+                context);
         }
 
         /// <summary>

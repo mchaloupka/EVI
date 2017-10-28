@@ -255,7 +255,8 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
                 TransformExpression(expressionSet.StringExpression, data),
                 TransformExpression(expressionSet.NumericExpression, data),
                 TransformExpression(expressionSet.BooleanExpression, data),
-                TransformExpression(expressionSet.DateTimeExpression, data));
+                TransformExpression(expressionSet.DateTimeExpression, data),
+                data.Context);
         }
 
     }

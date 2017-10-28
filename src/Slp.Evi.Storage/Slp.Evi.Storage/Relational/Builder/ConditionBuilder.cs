@@ -229,7 +229,8 @@ namespace Slp.Evi.Storage.Relational.Builder
                     new ConstantExpression(uriNode.Uri, context), 
                     null,
                     null,
-                    null);
+                    null,
+                    context);
             }
             else if (node is LiteralNode literalNode)
             {
@@ -278,7 +279,8 @@ namespace Slp.Evi.Storage.Relational.Builder
                     new ConstantExpression(node.Value, context),
                     null,
                     null,
-                    null);
+                    null,
+                    context);
             }
             else if (node.DataType == null)
             {
@@ -292,7 +294,8 @@ namespace Slp.Evi.Storage.Relational.Builder
                     new ConstantExpression(node.Value, context),
                     null,
                     null,
-                    null);
+                    null,
+                    context);
             }
             else
             {
@@ -353,7 +356,8 @@ namespace Slp.Evi.Storage.Relational.Builder
                     stringExpression,
                     numericExpression,
                     booleanExpression,
-                    dateTimeExpression);
+                    dateTimeExpression,
+                    context);
             }
         }
 

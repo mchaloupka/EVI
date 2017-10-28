@@ -1,4 +1,6 @@
 ﻿using System;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query.Expressions;
 
 namespace Slp.Evi.Storage.Relational.Query
 {
@@ -9,25 +11,26 @@ namespace Slp.Evi.Storage.Relational.Query
     /// Its intention is to represent various expressions according to type
     /// they represent.
     /// </remarks>
-    public sealed class ExpressionsSet : IEquatable<ExpressionsSet>
+    public sealed class ExpressionsSet 
+        : IEquatable<ExpressionsSet>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionsSet"/> class.
         /// </summary>
         /// <param name="typeExpression">The type expression.</param>
         /// <param name="typeCategoryExpression">The type category expression.</param>
-        /// <param name="stringExpression">The string expression.</param>
-        /// <param name="numericExpression">The numeric expression.</param>
-        /// <param name="booleanExpression">The boolean expression.</param>
-        /// <param name="dateTimeExpression">The date time expression.</param>
-        public ExpressionsSet(IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression)
+        /// <param name="stringExpression">The string expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
+        /// <param name="numericExpression">The numeric expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
+        /// <param name="booleanExpression">The boolean expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
+        /// <param name="dateTimeExpression">The date time expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
+        public ExpressionsSet(IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression, IQueryContext context)
         {
             TypeExpression = typeExpression;
             TypeCategoryExpression = typeCategoryExpression;
-            StringExpression = stringExpression;
-            NumericExpression = numericExpression;
-            BooleanExpression = booleanExpression;
-            DateTimeExpression = dateTimeExpression;
+            StringExpression = stringExpression ?? new NullExpression(context.Db.SqlTypeForString);
+            NumericExpression = numericExpression ?? new NullExpression(context.Db.SqlTypeForInt);
+            BooleanExpression = booleanExpression ?? new NullExpression(context.Db.SqlTypeForBoolean);
+            DateTimeExpression = dateTimeExpression ?? new NullExpression(context.Db.SqlTypeForDateTime);
         }
 
         /// <summary>

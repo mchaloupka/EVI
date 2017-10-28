@@ -68,6 +68,9 @@ namespace Slp.Evi.Storage.Database
         /// </summary>
         DataType SqlTypeForDouble { get; }
 
+        DataType SqlTypeForBoolean { get; }
+        DataType SqlTypeForDateTime { get; }
+
         /// <summary>
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
         /// </summary>
