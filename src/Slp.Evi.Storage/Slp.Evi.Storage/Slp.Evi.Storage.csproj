@@ -89,6 +89,7 @@
     <Compile Include="Database\Reader\DataReaderWrapper.cs" />
     <Compile Include="Database\Vendor\MsSql\MsSqlDb.cs" />
     <Compile Include="Database\Vendor\MsSql\MsSqlDbFactory.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlQueryBuilder.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Query\IQueryContext.cs" />

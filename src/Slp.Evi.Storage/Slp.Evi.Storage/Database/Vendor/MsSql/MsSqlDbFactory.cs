@@ -23,7 +23,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         public virtual ISqlQueryBuilder CreateSqlQueryBuilder()
         {
-            return new BaseSqlQueryBuilder();
+            return new MsSqlQueryBuilder();
         }
     }
 }

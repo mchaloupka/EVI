@@ -18,7 +18,7 @@ namespace Slp.Evi.Storage.Database.Base
     /// <summary>
     /// The base sql query builder
     /// </summary>
-    public class BaseSqlQueryBuilder
+    public abstract class BaseSqlQueryBuilder
         : BaseExpressionTransformerG<BaseSqlQueryBuilder.VisitorContext, object, object, object, object, object>, ISqlQueryBuilder
     {
         /// <summary>
@@ -426,23 +426,30 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="comparisonType">Comparison type</param>
         protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType)
         {
-            if (leftDataType.TypeName == rightDataType.TypeName)
+            var commonType = GetCommonTypeForComparison(leftDataType, rightDataType);
+
+            if (leftDataType.TypeName == commonType)
             {
                 writeLeft();
-                WriteComparisonOperator(writeText, comparisonType);
-                writeRight();
             }
             else
             {
                 writeText("CAST(");
                 writeLeft();
-                writeText(" AS nvarchar(MAX))");
+                writeText($" AS {commonType})");
+            }
 
-                WriteComparisonOperator(writeText, comparisonType);
+            WriteComparisonOperator(writeText, comparisonType);
 
+            if (rightDataType.TypeName == commonType)
+            {
+                writeRight();
+            }
+            else
+            {
                 writeText("CAST(");
                 writeRight();
-                writeText(" AS nvarchar(MAX))");
+                writeText($" AS {commonType})");
             }
         }
 
@@ -803,5 +810,10 @@ namespace Slp.Evi.Storage.Database.Base
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Gets the nearest type these two types could be casted to for comparison.
+        /// </summary>
+        protected abstract string GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType);
     }
 }
