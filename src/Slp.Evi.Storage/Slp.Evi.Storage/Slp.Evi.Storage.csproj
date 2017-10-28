@@ -98,7 +98,6 @@
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />
     <Compile Include="Types\TypeCategories.cs" />
-    <Compile Include="Relational\Builder\ValueBinderAligner.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />

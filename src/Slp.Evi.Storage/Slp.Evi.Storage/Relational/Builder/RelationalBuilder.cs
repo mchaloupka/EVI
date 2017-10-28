@@ -33,17 +33,11 @@ namespace Slp.Evi.Storage.Relational.Builder
         private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
-        /// The value binder aligner
-        /// </summary>
-        private readonly ValueBinderAligner _valueBinderAligner;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.
         /// </summary>
         public RelationalBuilder()
         {
             _conditionBuilder = new ConditionBuilder();
-            _valueBinderAligner = new ValueBinderAligner();
         }
 
         /// <summary>
@@ -452,7 +446,6 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var queryContext = (IQueryContext)data;
             var inner = Process(orderByModifier.InnerQuery, queryContext);
-            inner = _valueBinderAligner.Align(inner, queryContext);
 
             var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, (IQueryContext) data);
 
@@ -561,8 +554,6 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var queryContext = (IQueryContext) data;
             var inner = Process(distinctModifier.InnerQuery, queryContext);
-
-            inner = _valueBinderAligner.Align(inner, queryContext);
 
             if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
             {
