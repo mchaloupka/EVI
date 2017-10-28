@@ -68,7 +68,14 @@ namespace Slp.Evi.Storage.Database
         /// </summary>
         DataType SqlTypeForDouble { get; }
 
+        /// <summary>
+        /// Gets the SQL type for boolean.
+        /// </summary>
         DataType SqlTypeForBoolean { get; }
+
+        /// <summary>
+        /// Gets the SQL type for date time.
+        /// </summary>
         DataType SqlTypeForDateTime { get; }
 
         /// <summary>

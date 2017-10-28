@@ -23,6 +23,7 @@ namespace Slp.Evi.Storage.Relational.Query
         /// <param name="numericExpression">The numeric expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
         /// <param name="booleanExpression">The boolean expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
         /// <param name="dateTimeExpression">The date time expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
+        /// <param name="context">The query context</param>
         public ExpressionsSet(IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression, IQueryContext context)
         {
             TypeExpression = typeExpression;
@@ -95,11 +96,23 @@ namespace Slp.Evi.Storage.Relational.Query
             }
         }
 
+        /// <summary>
+        /// Implements the == operator.
+        /// </summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator ==(ExpressionsSet left, ExpressionsSet right)
         {
             return Equals(left, right);
         }
 
+        /// <summary>
+        /// Implements the != operator.
+        /// </summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator !=(ExpressionsSet left, ExpressionsSet right)
         {
             return !Equals(left, right);
