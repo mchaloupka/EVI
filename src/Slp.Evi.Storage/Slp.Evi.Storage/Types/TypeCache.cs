@@ -240,7 +240,7 @@ namespace Slp.Evi.Storage.Types
             }
             else
             {
-                var dataTypeFullUri = dataType.ToCompleteUri();
+                var dataTypeFullUri = dataType.AbsoluteUri;
                 var dictionary = _createdTypeOnlyIndexes;
 
                 if (languageTag != null)

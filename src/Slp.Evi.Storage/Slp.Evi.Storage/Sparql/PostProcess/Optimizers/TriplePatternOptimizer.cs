@@ -193,7 +193,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                         return false;
                     }
                     var uri = node.GetUri();
-                    var pattern = new Pattern(true, new[] { new PatternItem(uri.ToCompleteUri()) });
+                    var pattern = new Pattern(true, new[] { new PatternItem(uri.AbsoluteUri) });
                     return CanMatch(pattern, termMap);
                 }
                 if (node.NodeType == NodeType.Literal)
@@ -232,14 +232,14 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     if (termMap is IUriValuedTermMap)
                     {
                         var uriValued = (IUriValuedTermMap)termMap;
-                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.ToCompleteUri())});
+                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.AbsoluteUri)});
                         return CanMatch(pattern, termPattern);
                     }
                     else if (termMap is IObjectMap objectMap)
                     {
                         if (objectMap.URI != null)
                         {
-                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.ToCompleteUri())});
+                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.AbsoluteUri)});
                             return CanMatch(pattern, termPattern);
                         }
                         else if (objectMap.Literal != null)

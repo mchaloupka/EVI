@@ -46,7 +46,7 @@ namespace Slp.Evi.Storage.Types
         /// </summary>
         private TypeCategories TypeToCategory(Uri literalType)
         {
-            switch (literalType.ToCompleteUri())
+            switch (literalType.AbsoluteUri)
             {
                 case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
                 case XmlSpecsHelper.XmlSchemaDataTypeDouble:

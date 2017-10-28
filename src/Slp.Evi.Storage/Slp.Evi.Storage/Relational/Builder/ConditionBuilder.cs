@@ -308,7 +308,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 IExpression booleanExpression = null;
                 IExpression dateTimeExpression = null;
 
-                switch (node.DataType.ToCompleteUri())
+                switch (node.DataType.AbsoluteUri)
                 {
                     case XmlSpecsHelper.XmlSchemaDataTypeInt:
                     case XmlSpecsHelper.XmlSchemaDataTypeInteger:
