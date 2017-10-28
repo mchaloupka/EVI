@@ -25,13 +25,13 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// Gets the SQL string.
         /// </summary>
         /// <value>The SQL string.</value>
-        public string SqlString { get; private set; }
+        public string SqlString { get; }
 
         /// <summary>
         /// Gets the value.
         /// </summary>
         /// <value>The value.</value>
-        public object Value { get; private set; }
+        public object Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
