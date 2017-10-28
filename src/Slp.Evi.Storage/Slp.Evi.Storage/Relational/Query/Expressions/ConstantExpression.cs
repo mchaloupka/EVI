@@ -16,7 +16,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The context
         /// </summary>
-        private IQueryContext _context;
+        private readonly IQueryContext _context;
 
         // TODO: Value escaping
         // TODO: Connect with current db vendor
@@ -110,5 +110,8 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         {
             get { yield break; }
         }
+
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue => true;
     }
 }

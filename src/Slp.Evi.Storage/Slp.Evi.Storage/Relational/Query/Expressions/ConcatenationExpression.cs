@@ -8,7 +8,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
     /// <summary>
     /// The concatenation expression
     /// </summary>
-    public class ConcatenationExpression 
+    public class ConcatenationExpression
         : IExpression
     {
         /// <summary>
@@ -55,5 +55,8 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// </summary>
         /// <value>The used calculus variables.</value>
         public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
+
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue => InnerExpressions.All(x => x.HasAlwaysTheSameValue);
     }
 }

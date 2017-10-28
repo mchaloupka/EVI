@@ -54,6 +54,9 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <value>The used calculus variables.</value>
         public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
 
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue => false;
+
         /// <summary>
         /// Statement in the case expression
         /// </summary>

@@ -35,5 +35,8 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
 
         /// <inheritdoc />
         public IEnumerable<ICalculusVariable> UsedCalculusVariables => Enumerable.Empty<ICalculusVariable>();
+
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue => true;
     }
 }

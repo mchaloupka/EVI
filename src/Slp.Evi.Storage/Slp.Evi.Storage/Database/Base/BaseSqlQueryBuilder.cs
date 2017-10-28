@@ -249,7 +249,7 @@ namespace Slp.Evi.Storage.Database.Base
             data.LeaveCalculusModel();
 
             bool firstOrderBy = true;
-            foreach (var orderingPart in ordering)
+            foreach (var orderingPart in ordering.Where(x => !x.Expression.HasAlwaysTheSameValue))
             {
                 if (firstOrderBy)
                 {
