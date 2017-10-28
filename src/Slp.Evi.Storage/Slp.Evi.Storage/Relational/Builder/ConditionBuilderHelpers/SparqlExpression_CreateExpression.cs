@@ -277,7 +277,20 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             }));
 
             var mainCondition = new DisjunctionCondition(conditions);
-            var noErrorCondition = new ConjunctionCondition(notAnErrorConditions);
+            IFilterCondition noErrorCondition;
+
+            if (notAnErrorConditions.Count == 0)
+            {
+                noErrorCondition = new AlwaysTrueCondition();
+            }
+            else if (notAnErrorConditions.Count == 1)
+            {
+                noErrorCondition = notAnErrorConditions[0];
+            }
+            else
+            {
+                noErrorCondition = new ConjunctionCondition(notAnErrorConditions);
+            }
 
             return new ConditionPart(noErrorCondition, mainCondition);
         }
