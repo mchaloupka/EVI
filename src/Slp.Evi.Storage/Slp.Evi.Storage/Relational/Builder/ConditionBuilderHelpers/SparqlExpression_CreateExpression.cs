@@ -85,16 +85,19 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(IsBoundExpression isBoundExpression, object data)
         {
             var param = (ExpressionVisitParameter)data;
+            IFilterCondition condition;
 
             IValueBinder valueBinder;
             if (param.ValueBinders.TryGetValue(isBoundExpression.Variable, out valueBinder))
             {
-                return _conditionBuilder.CreateIsBoundCondition(valueBinder, param.QueryContext);
+                condition = _conditionBuilder.CreateIsBoundCondition(valueBinder, param.QueryContext);
             }
             else
             {
-                return new AlwaysFalseCondition();
+                condition = new AlwaysFalseCondition();
             }
+
+            return new ConditionPart(new AlwaysTrueCondition(), condition);
         }
 
         /// <summary>
@@ -105,7 +108,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(BooleanTrueExpression booleanTrueExpression, object data)
         {
-            return new AlwaysTrueCondition();
+            return new ConditionPart(new AlwaysTrueCondition(), new AlwaysTrueCondition());
         }
 
         /// <summary>
@@ -116,7 +119,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(BooleanFalseExpression booleanFalseExpression, object data)
         {
-            return new AlwaysFalseCondition();
+            return new ConditionPart(new AlwaysTrueCondition(), new AlwaysFalseCondition());
         }
 
         /// <summary>
