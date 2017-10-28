@@ -41,11 +41,11 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         object Visit(SwitchValueBinder switchValueBinder, object data);
 
         /// <summary>
-        /// Visits <see cref="ExpressionValueBinder"/>
+        /// Visits <see cref="ExpressionSetValueBinder"/>
         /// </summary>
-        /// <param name="expressionValueBinder">The visited instance</param>
+        /// <param name="expressionSetValueBinder">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        object Visit(ExpressionValueBinder expressionValueBinder, object data);
+        object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data);
     }
 }

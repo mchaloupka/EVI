@@ -21,5 +21,10 @@ namespace Slp.Evi.Storage.Relational.Query
         /// </summary>
         /// <value>The used calculus variables.</value>
         IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this expression is always evaluated to the same value.
+        /// </summary>
+        bool HasAlwaysTheSameValue { get; }
     }
 }

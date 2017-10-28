@@ -10,7 +10,7 @@ using Slp.Evi.Storage.Sparql.Builder;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using TCode.r2rml4net;
 using VDS.RDF;
 using VDS.RDF.Query;

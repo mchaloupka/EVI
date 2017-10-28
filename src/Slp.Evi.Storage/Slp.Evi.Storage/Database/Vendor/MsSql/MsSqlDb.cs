@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -10,7 +9,6 @@ using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database.Base;
 using Slp.Evi.Storage.Database.Reader;
 using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.RDF;
 
 namespace Slp.Evi.Storage.Database.Vendor.MsSql
 {
@@ -125,6 +123,15 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         /// <value>The SQL type for int.</value>
         public override DataType SqlTypeForInt => new DataType("int", "System.Int32");
+
+        /// <inheritdoc />
+        public override DataType SqlTypeForDouble => new DataType("float", "System.Double");
+
+        /// <inheritdoc />
+        public override DataType SqlTypeForBoolean => new DataType("bit", "System.Boolean");
+
+        /// <inheritdoc />
+        public override DataType SqlTypeForDateTime => new DataType("datetime2", "System.DateTime");
 
         /// <summary>
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>

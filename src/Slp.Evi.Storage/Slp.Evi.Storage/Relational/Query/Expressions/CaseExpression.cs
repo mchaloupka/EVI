@@ -54,6 +54,30 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <value>The used calculus variables.</value>
         public IEnumerable<ICalculusVariable> UsedCalculusVariables { get; }
 
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue
+        {
+            get
+            {
+                if (Statements.Select(x => x.Expression).All(x => x is NullExpression))
+                    return true;
+
+                if (Statements.Select(x => x.Expression).All(x => x is ConstantExpression))
+                {
+                    var constants = Statements.Select(x => x.Expression).Cast<ConstantExpression>().ToList();
+                    var sqlTypes = constants.Select(x => x.SqlType).Distinct();
+                    var sqlStrings = constants.Select(x => x.SqlString).Distinct();
+
+                    if (sqlTypes.Count() == 1 && sqlStrings.Count() == 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         /// <summary>
         /// Statement in the case expression
         /// </summary>

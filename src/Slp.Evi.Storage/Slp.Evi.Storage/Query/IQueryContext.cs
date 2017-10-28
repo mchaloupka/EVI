@@ -1,7 +1,7 @@
 ﻿using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -72,19 +72,10 @@ namespace Slp.Evi.Storage.Query
         string CreateSparqlVariable();
 
         /// <summary>
-        /// Gets the blank node object for value.
+        /// Gets the blank node for value.
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="value">The value.</param>
-        /// <returns>Node.</returns>
-        INode GetBlankNodeObjectForValue(INodeFactory factory, object value);
-
-        /// <summary>
-        /// Gets the blank node subject for value.
-        /// </summary>
-        /// <param name="factory">The factory.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>Node.</returns>
-        INode GetBlankNodeSubjectForValue(INodeFactory factory, object value);
+        INode GetBlankNodeForValue(INodeFactory factory, object value);
     }
 }

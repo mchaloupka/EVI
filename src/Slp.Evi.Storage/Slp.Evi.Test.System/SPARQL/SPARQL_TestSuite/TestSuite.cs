@@ -285,6 +285,54 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_Type_type_comp_eq()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\type_comp_eq.rq";
+            var resultFile = @"Data\Simple\Type\type_comp_eq.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Type_type_comp_eq2()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\type_comp_eq2.rq";
+            var resultFile = @"Data\Simple\Type\type_comp_eq2.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Type_type_comp_gt()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\type_comp_gt.rq";
+            var resultFile = @"Data\Simple\Type\type_comp_gt.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Simple_Type_type_join_different()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\Type\type_join_different.rq";
+            var resultFile = @"Data\Simple\Type\type_join_different.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Students_no_result()

@@ -328,5 +328,11 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpe
         {
             return new IsNullOptimizerAggregatedValues();
         }
+
+        /// <inheritdoc />
+        protected override IsNullOptimizerAggregatedValues Transform(NullExpression toTransform, IsNullCalculatorParameter data)
+        {
+            return new IsNullOptimizerAggregatedValues();
+        }
     }
 }

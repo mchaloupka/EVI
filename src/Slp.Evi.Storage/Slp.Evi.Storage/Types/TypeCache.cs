@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
-using VDS.RDF;
-using VDS.RDF.Query.Expressions.Primary;
 
-namespace Slp.Evi.Storage.Sparql.Types
+namespace Slp.Evi.Storage.Types
 {
     /// <summary>
     /// The type cache.
@@ -106,6 +100,18 @@ namespace Slp.Evi.Storage.Sparql.Types
         /// Gets the <see cref="IValueType"/> for <paramref name="termMap"/>
         /// </summary>
         public IValueType GetValueType(IMapBase termMap) => _typesDictionary.GetValueFor(termMap);
+
+        /// <inheritdoc />
+        public IValueType IRIValueType => _typesIndexDictionary[1];
+
+        /// <inheritdoc />
+        public IValueType SimpleLiteralValueType => _typesIndexDictionary[3];
+
+        /// <inheritdoc />
+        public IValueType GetValueTypeForLanguage(string language) => GetValueType(language, null);
+
+        /// <inheritdoc />
+        public IValueType GetValueTypeForDataType(Uri dataTypeUri) => GetValueType(null, dataTypeUri);
 
         /// <summary>
         /// Resolves the type for <paramref name="map"/>.
@@ -206,6 +212,11 @@ namespace Slp.Evi.Storage.Sparql.Types
                 }
             }
 
+            return GetValueType(languageTag, dataType);
+        }
+
+        private IValueType GetValueType(string languageTag, Uri dataType)
+        {
             if (dataType == null && languageTag == null)
             {
                 return _typesIndexDictionary[3];
@@ -229,7 +240,7 @@ namespace Slp.Evi.Storage.Sparql.Types
             }
             else
             {
-                var dataTypeFullUri = dataType.ToCompleteUri();
+                var dataTypeFullUri = dataType.AbsoluteUri;
                 var dictionary = _createdTypeOnlyIndexes;
 
                 if (languageTag != null)

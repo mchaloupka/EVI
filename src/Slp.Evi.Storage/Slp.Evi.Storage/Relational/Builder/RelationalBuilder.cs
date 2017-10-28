@@ -401,7 +401,6 @@ namespace Slp.Evi.Storage.Relational.Builder
             var valueBinders = inner.ValueBinders.ToList();
 
             var expression = _conditionBuilder.CreateExpression(context, extendPattern.Expression, valueBinders);
-                //(IExpression)_extendPattern.Expression.Accept(this, new ExpressionVisitParameter(context, valueBinders));
 
             if (valueBinders.Any(x => x.VariableName == extendPattern.VariableName))
             {
@@ -409,7 +408,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             }
             else
             {
-                var newValueBinder = new ExpressionValueBinder(extendPattern.VariableName, expression);
+                var newValueBinder = new ExpressionSetValueBinder(extendPattern.VariableName, expression);
                 valueBinders.Add(newValueBinder);
 
                 return ((IQueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders));

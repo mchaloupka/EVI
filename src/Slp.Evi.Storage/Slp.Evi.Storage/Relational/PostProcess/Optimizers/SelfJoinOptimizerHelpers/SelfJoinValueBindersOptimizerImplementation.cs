@@ -135,23 +135,23 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         }
 
         /// <summary>
-        /// Visits <see cref="ExpressionValueBinder"/>
+        /// Visits <see cref="ExpressionSetValueBinder"/>
         /// </summary>
-        /// <param name="expressionValueBinder">The visited instance</param>
+        /// <param name="expressionSetValueBinder">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(ExpressionValueBinder expressionValueBinder, object data)
+        public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
-            var newExpression = _optimizerImplementation.TransformExpression(expressionValueBinder.Expression,
+            var newExpressionSet = _optimizerImplementation.TransformExpressionSet(expressionSetValueBinder.ExpressionSet,
                 (BaseRelationalOptimizer<SelfJoinOptimizerData>.OptimizationContext)data);
 
-            if (newExpression != expressionValueBinder.Expression)
+            if (newExpressionSet != expressionSetValueBinder.ExpressionSet)
             {
-                return new ExpressionValueBinder(expressionValueBinder.VariableName, newExpression);
+                return new ExpressionSetValueBinder(expressionSetValueBinder.VariableName, newExpressionSet);
             }
             else
             {
-                return expressionValueBinder;
+                return expressionSetValueBinder;
             }
         }
     }

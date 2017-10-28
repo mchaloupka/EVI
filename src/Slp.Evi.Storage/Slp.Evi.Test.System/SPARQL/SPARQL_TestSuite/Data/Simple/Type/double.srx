@@ -27,5 +27,10 @@
         <literal type="xsd:double">4.3</literal>
       </binding>
     </result>
+    <result>
+      <binding name="i">
+        <literal type="xsd:double">35.1</literal>
+      </binding>
+    </result>
   </results>
 </sparql>

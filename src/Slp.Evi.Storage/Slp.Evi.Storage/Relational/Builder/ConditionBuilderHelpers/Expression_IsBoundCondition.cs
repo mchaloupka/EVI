@@ -102,5 +102,11 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new DisjunctionCondition(
                     coalesceExpression.InnerExpressions.Select(x => (IFilterCondition) x.Accept(this, data)).ToList());
         }
+
+        /// <inheritdoc />
+        public object Visit(NullExpression nullExpression, object data)
+        {
+            return new AlwaysFalseCondition();
+        }
     }
 }

@@ -10,15 +10,15 @@
   <results>
     <result>
       <binding name="s">
-        <uri>http://example.org/ns#a</uri>
+        <uri>http://example.org/iri/a</uri>
       </binding>
       <binding name="d">
-        <uri>http://example.org/ns#e</uri>
+        <uri>http://example.org/iri/e</uri>
       </binding>
     </result>
     <result>
       <binding name="s">
-        <uri>http://example.org/ns#c</uri>
+        <uri>http://example.org/iri/c</uri>
       </binding>
     </result>
   </results>

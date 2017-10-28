@@ -1,7 +1,8 @@
-PREFIX ex: <http://example.org/ns#>
+PREFIX iri: <http://example.org/iri/>
+PREFIX lit: <http://example.org/lit/>
 
 SELECT ?a
 WHERE {
-  ?a ex:int ?b
+  ?a lit:int ?b
   FILTER(?b > 1 && ?b < 4)
 }

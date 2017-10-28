@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Query;
-using Slp.Evi.Storage.Sparql.Types;
+using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Extensions;

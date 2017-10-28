@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
 
@@ -15,7 +16,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <summary>
         /// The context
         /// </summary>
-        private IQueryContext _context;
+        private readonly IQueryContext _context;
 
         // TODO: Value escaping
         // TODO: Connect with current db vendor
@@ -24,13 +25,13 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// Gets the SQL string.
         /// </summary>
         /// <value>The SQL string.</value>
-        public string SqlString { get; private set; }
+        public string SqlString { get; }
 
         /// <summary>
         /// Gets the value.
         /// </summary>
         /// <value>The value.</value>
-        public object Value { get; private set; }
+        public object Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
@@ -72,6 +73,19 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
+        /// </summary>
+        /// <param name="number">The number.</param>
+        /// <param name="context">The query context.</param>
+        public ConstantExpression(double number, IQueryContext context)
+        {
+            Value = number;
+            SqlString = number.ToString(CultureInfo.InvariantCulture);
+            _context = context;
+            SqlType = context.Db.SqlTypeForDouble;
+        }
+
+        /// <summary>
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; }
@@ -96,5 +110,8 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         {
             get { yield break; }
         }
+
+        /// <inheritdoc />
+        public bool HasAlwaysTheSameValue => true;
     }
 }

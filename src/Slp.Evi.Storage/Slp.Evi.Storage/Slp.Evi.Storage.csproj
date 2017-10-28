@@ -89,12 +89,17 @@
     <Compile Include="Database\Reader\DataReaderWrapper.cs" />
     <Compile Include="Database\Vendor\MsSql\MsSqlDb.cs" />
     <Compile Include="Database\Vendor\MsSql\MsSqlDbFactory.cs" />
+    <Compile Include="Database\Vendor\MsSql\MsSqlQueryBuilder.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
+    <Compile Include="Relational\Query\ExpressionsSet.cs" />
+    <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
+    <Compile Include="Types\ITypeCache.cs" />
+    <Compile Include="Types\TypeCategories.cs" />
     <Compile Include="Relational\Builder\ValueBinderAligner.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />
-    <Compile Include="Sparql\Types\ITypeCache.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
     <Compile Include="Mapping\ClassPredicateMap.cs" />
@@ -146,7 +151,7 @@
     <Compile Include="Relational\Query\Expressions\CoalesceExpression.cs" />
     <Compile Include="Relational\Query\Sources\ModifiedCalculusModel.cs" />
     <Compile Include="Relational\Query\Utils\StaticEvaluator.cs" />
-    <Compile Include="Relational\Query\ValueBinders\ExpressionValueBinder.cs" />
+    <Compile Include="Relational\Query\ValueBinders\ExpressionSetValueBinder.cs" />
     <Compile Include="Relational\Query\ValueBinders\SwitchValueBinder.cs" />
     <Compile Include="Relational\PostProcess\IRelationalPostProcess.cs" />
     <Compile Include="Relational\PostProcess\Optimizers\ConcatenationInEqualConditionOptimizer.cs" />
@@ -241,11 +246,11 @@
     <Compile Include="Sparql\PostProcess\Optimizers\TriplePatternOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\Optimizers\UnionJoinOptimizer.cs" />
     <Compile Include="Sparql\PostProcess\SafeAlgebra\AscendFilterPattern.cs" />
-    <Compile Include="Sparql\Types\BlankValueType.cs" />
-    <Compile Include="Sparql\Types\IRIValueType.cs" />
-    <Compile Include="Sparql\Types\IValueType.cs" />
-    <Compile Include="Sparql\Types\LiteralValueType.cs" />
-    <Compile Include="Sparql\Types\TypeCache.cs" />
+    <Compile Include="Types\BlankValueType.cs" />
+    <Compile Include="Types\IRIValueType.cs" />
+    <Compile Include="Types\IValueType.cs" />
+    <Compile Include="Types\LiteralValueType.cs" />
+    <Compile Include="Types\TypeCache.cs" />
     <Compile Include="Sparql\Utils\BaseSparqlTransformer.cs" />
     <Compile Include="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
       <AutoGen>True</AutoGen>

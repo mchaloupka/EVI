@@ -4,8 +4,8 @@ using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using Slp.Evi.Storage.Sparql.Types;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
+using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Extensions;
 using TCode.r2rml4net.Mapping;
@@ -142,7 +142,21 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="type">The type of <paramref name="termMap"/></param>
             public bool CanMatch(INode node, ITermMap termMap, IValueType type)
             {
-                if (type.IsLiteral)
+                if (type.Category == TypeCategories.BlankNode)
+                {
+                    if (node.NodeType != NodeType.Blank)
+                    {
+                        return false;
+                    }
+                }
+                else if (type.Category == TypeCategories.IRI)
+                {
+                    if (node.NodeType != NodeType.Uri)
+                    {
+                        return false;
+                    }
+                }
+                else
                 {
                     if (node.NodeType != NodeType.Literal)
                     {
@@ -160,24 +174,6 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     {
                         return false;
                     }
-                }
-                else if (type.IsBlank)
-                {
-                    if (node.NodeType != NodeType.Blank)
-                    {
-                        return false;
-                    }
-                }
-                else if (type.IsIRI)
-                {
-                    if (node.NodeType != NodeType.Uri)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    throw new InvalidOperationException("Type has to be one of literal, blank or iri.");
                 }
 
                 return CanMatchValue(node, termMap);
@@ -197,7 +193,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                         return false;
                     }
                     var uri = node.GetUri();
-                    var pattern = new Pattern(true, new[] { new PatternItem(uri.ToCompleteUri()) });
+                    var pattern = new Pattern(true, new[] { new PatternItem(uri.AbsoluteUri) });
                     return CanMatch(pattern, termMap);
                 }
                 if (node.NodeType == NodeType.Literal)
@@ -236,14 +232,14 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     if (termMap is IUriValuedTermMap)
                     {
                         var uriValued = (IUriValuedTermMap)termMap;
-                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.ToCompleteUri())});
+                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.AbsoluteUri)});
                         return CanMatch(pattern, termPattern);
                     }
                     else if (termMap is IObjectMap objectMap)
                     {
                         if (objectMap.URI != null)
                         {
-                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.ToCompleteUri())});
+                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.AbsoluteUri)});
                             return CanMatch(pattern, termPattern);
                         }
                         else if (objectMap.Literal != null)

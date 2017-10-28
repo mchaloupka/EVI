@@ -47,5 +47,13 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(CoalesceExpression coalesceExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="NullExpression"/>
+        /// </summary>
+        /// <param name="nullExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(NullExpression nullExpression, object data);
     }
 }

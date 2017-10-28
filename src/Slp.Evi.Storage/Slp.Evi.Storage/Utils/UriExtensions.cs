@@ -19,14 +19,6 @@ namespace Slp.Evi.Storage.Utils
         }
 
         /// <summary>
-        /// Returns complete URI string (including fragment)
-        /// </summary>
-        public static string ToCompleteUri(this Uri uri)
-        {
-            return $"{uri}{uri.Fragment}";
-        }
-
-        /// <summary>
         /// Determines whether two URIs are equal (including fragment)
         /// </summary>
         /// <param name="uri">The URI.</param>
