@@ -74,6 +74,12 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
             return toTransform;
         }
 
+        /// <inheritdoc />
+        protected override IExpression Transform(NullExpression toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
         /// <summary>
         /// Process the <see cref="AssignmentFromExpressionCondition"/>
         /// </summary>

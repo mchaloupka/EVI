@@ -711,6 +711,13 @@ namespace Slp.Evi.Storage.Database.Base
             return null;
         }
 
+        /// <inheritdoc />
+        protected override object Transform(NullExpression toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("NULL");
+            return null;
+        }
+
         /// <summary>
         /// Writes the calculus variable.
         /// </summary>

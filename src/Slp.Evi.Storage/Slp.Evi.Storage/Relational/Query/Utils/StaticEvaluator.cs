@@ -140,6 +140,12 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             return null;
         }
 
+        /// <inheritdoc />
+        public object Visit(NullExpression nullExpression, object data)
+        {
+            return null;
+        }
+
         /// <summary>
         /// Visits <see cref="AlwaysFalseCondition"/>
         /// </summary>

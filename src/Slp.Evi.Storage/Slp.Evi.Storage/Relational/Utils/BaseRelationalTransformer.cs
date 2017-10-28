@@ -586,6 +586,12 @@ namespace Slp.Evi.Storage.Relational.Utils
             }
         }
 
+        /// <inheritdoc />
+        protected override IExpression Transform(NullExpression toTransform, T data)
+        {
+            return toTransform;
+        }
+
         /// <summary>
         /// Process the <see cref="AssignmentFromExpressionCondition"/>
         /// </summary>

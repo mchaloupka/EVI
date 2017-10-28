@@ -221,6 +221,11 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        public object Visit(NullExpression nullExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(AssignmentFromExpressionCondition assignmentFromExpressionCondition, object data)
         {
             throw new NotImplementedException();

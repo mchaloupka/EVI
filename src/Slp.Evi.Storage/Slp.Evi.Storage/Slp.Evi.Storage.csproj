@@ -94,6 +94,7 @@
     <Compile Include="Query\IQueryContext.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ExpressionsSet.cs" />
+    <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
     <Compile Include="Sparql\Types\ITypeCache.cs" />
     <Compile Include="Sparql\Types\TypeCategories.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
