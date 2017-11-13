@@ -731,8 +731,6 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="variable">The variable.</param>
         /// <param name="currentModel">The current model.</param>
         /// <param name="data"></param>
-        /// 
-        /// 
         private void WriteCalculusVariable(ICalculusVariable variable, CalculusModel currentModel, VisitorContext data)
         {
             var stringBuilder = data.StringBuilder;
@@ -768,7 +766,7 @@ namespace Slp.Evi.Storage.Database.Base
         }
 
         /// <summary>
-        /// Visitor for writing the calculus variable comming from assignment condition
+        /// Visitor for writing the calculus variable coming from assignment condition
         /// </summary>
         private class WriteCalculusVariable_Assignment_Visitor : IAssignmentConditionVisitor
         {
