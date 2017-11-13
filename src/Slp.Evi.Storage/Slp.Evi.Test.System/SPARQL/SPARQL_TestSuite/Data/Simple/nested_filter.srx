@@ -17,7 +17,7 @@
         <literal type="xsd:double">1</literal>
       </binding>
       <binding name="c">
-        <literal type="xsd:int">1</literal>
+        <literal type="xsd:integer">1</literal>
       </binding>
     </result>
     <result>
@@ -25,7 +25,7 @@
         <uri>http://example.org/iri/c</uri>
       </binding>
       <binding name="c">
-        <literal type="xsd:int">3</literal>
+        <literal type="xsd:integer">3</literal>
       </binding>
     </result>
   </results>
