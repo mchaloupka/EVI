@@ -426,9 +426,9 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="comparisonType">Comparison type</param>
         protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType)
         {
-            var commonType = GetCommonTypeForComparison(leftDataType, rightDataType);
+            GetCommonTypeForComparison(leftDataType, rightDataType, out string leftCast, out string rightCast);
 
-            if (leftDataType.TypeName == commonType)
+            if(string.IsNullOrEmpty(leftCast))
             {
                 writeLeft();
             }
@@ -436,12 +436,12 @@ namespace Slp.Evi.Storage.Database.Base
             {
                 writeText("CAST(");
                 writeLeft();
-                writeText($" AS {commonType})");
+                writeText($" AS {leftCast})");
             }
 
             WriteComparisonOperator(writeText, comparisonType);
 
-            if (rightDataType.TypeName == commonType)
+            if (string.IsNullOrEmpty(rightCast))
             {
                 writeRight();
             }
@@ -449,7 +449,7 @@ namespace Slp.Evi.Storage.Database.Base
             {
                 writeText("CAST(");
                 writeRight();
-                writeText($" AS {commonType})");
+                writeText($" AS {rightCast})");
             }
         }
 
@@ -812,6 +812,6 @@ namespace Slp.Evi.Storage.Database.Base
         /// <summary>
         /// Gets the nearest type these two types could be casted to for comparison.
         /// </summary>
-        protected abstract string GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType);
+        protected abstract void GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
     }
 }

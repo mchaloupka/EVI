@@ -17,11 +17,14 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         : BaseSqlQueryBuilder
     {
         /// <inheritdoc />
-        protected override string GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType)
+        protected override void GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight)
         {
+            neededCastLeft = null;
+            neededCastRight = null;
+
             if (leftDataType.TypeName == rightDataType.TypeName)
             {
-                return leftDataType.TypeName;
+                return;
             }
 
             var leftTypeName = leftDataType.TypeName.ToLowerInvariant();
@@ -32,7 +35,12 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
                 if ((leftTypeName == "float") || (leftTypeName == "real")
                     || (rightTypeName == "float") || (rightTypeName == "real"))
                 {
-                    return "float";
+                    if (leftTypeName != "float" && leftTypeName != "real")
+                        neededCastLeft = "float";
+                    if (rightTypeName != "float" && rightTypeName != "real")
+                        neededCastRight = "float";
+
+                    return;
                 }
 
                 var intTypes = new List<string>()
@@ -49,17 +57,41 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
 
                 if (leftIndex >= 0 && rightIndex >= 0)
                 {
-                    return intTypes[Math.Min(leftIndex, rightIndex)];
+                    var neededType = intTypes[Math.Min(leftIndex, rightIndex)];
+
+                    if (leftIndex < 0)
+                        neededCastLeft = neededType;
+
+                    if (rightIndex < 0)
+                        neededCastRight = neededType;
+
+                    return;
                 }
 
-                return "numeric(38,8)";
+                if(!leftDataType.IsNumeric)
+                    neededCastLeft = "numeric(38,8)";
+                if(!rightDataType.IsNumeric)
+                    neededCastRight = "numeric(38,8)";
+
+                return;
             }
-            else if (leftDataType.IsDateTime || rightDataType.IsDateTime)
+            else if (leftDataType.IsDateTime && rightDataType.IsDateTime)
             {
-                return "datetime2";
+                if(!leftDataType.IsDateTime)
+                    neededCastLeft = "datetime2";
+
+                if (!rightDataType.IsDateTime)
+                    neededCastRight = "datetime2";
+
+                return;
             }
 
-            return "nvarchar(MAX)";
+            if (!leftDataType.IsString)
+                neededCastLeft = "nvarchar(MAX)";
+            if (!rightDataType.IsString)
+                neededCastRight = "nvarchar(MAX)";
+
+            return;
         }
 
         private bool IsNumericType(DataType dataType)
