@@ -46,7 +46,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             _variables = new Dictionary<string, ICalculusVariable>();
             _loadNodeFunc = null;
             Type = typeCache.GetValueType(termMap);
-            
+
             if (termMap.IsConstantValued)
             {
                 // No columns needed
@@ -409,9 +409,6 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </exception>
         private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value)
         {
-            if (value == null)
-                return null;
-
             if (!(Type is ILiteralValueType))
                 throw new InvalidOperationException("It is not possible to generate literal for non literal type");
 
