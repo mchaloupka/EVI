@@ -28,7 +28,7 @@
 
     <query>INSERT INTO simple_table VALUES('a','1')</query>
     <query>INSERT INTO simple_table VALUES('b','2')</query>
-    
+
     <query>INSERT INTO int_table VALUES('a',1)</query>
     <query>INSERT INTO int_table VALUES('b',2)</query>
     <query>INSERT INTO int_table VALUES('c',3)</query>
@@ -58,7 +58,7 @@
         rr:objectMap [ rr:template "http://example.org/iri/{object}"; ];
       ];
     .
-    
+
     <#SimpleTriples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "simple_table" ];
       rr:subjectMap [
@@ -80,7 +80,7 @@
         rr:objectMap [ rr:column "object"; ];
       ];
     .
-    
+
     <#DoubleTriples> a rr:TriplesMap;
       rr:logicalTable [ rr:tableName "double_table" ];
       rr:subjectMap [

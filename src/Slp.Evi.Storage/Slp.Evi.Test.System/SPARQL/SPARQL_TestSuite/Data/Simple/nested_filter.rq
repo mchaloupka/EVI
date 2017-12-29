@@ -4,9 +4,9 @@ PREFIX lit: <http://example.org/lit/>
 SELECT ?s ?d ?c
 WHERE {
   ?s iri:e iri:1;
-    iri:b ?c.
+    lit:int ?c.
   OPTIONAL {
-    ?s iri:d ?d
-    FILTER (?c = 2)
+    ?s lit:double ?d
+    FILTER (?c = 1)
   }
 }

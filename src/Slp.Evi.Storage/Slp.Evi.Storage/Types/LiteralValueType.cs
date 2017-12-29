@@ -96,7 +96,11 @@ namespace Slp.Evi.Storage.Types
         /// <param name="value">The value.</param>
         public INode CreateLiteralNode(INodeFactory factory, string value)
         {
-            if (LanguageTag != null && LiteralType != null)
+            if (value == null)
+            {
+                return null;
+            }
+            else if (LanguageTag != null && LiteralType != null)
             {
                 throw new InvalidOperationException("Literal term map cannot have both language tag and data type set");
             }
