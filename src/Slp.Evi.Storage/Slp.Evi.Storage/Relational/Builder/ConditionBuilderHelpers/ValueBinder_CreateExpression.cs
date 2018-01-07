@@ -161,6 +161,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 {
                     if (templatePart.IsColumn)
                     {
+                        // TODO: Add safe IRI handling if needed
                         parts.Add(new ColumnExpression(baseValueBinder.GetCalculusVariable(templatePart.Column),
                             map.TermType.IsURI));
                     }

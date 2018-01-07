@@ -44,7 +44,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         public RelationalBuilder()
         {
             _conditionBuilder = new ConditionBuilder();
-            _valueBinderAligner = new ValueBinderAligner();
+            _valueBinderAligner = new ValueBinderAligner(_conditionBuilder);
         }
 
         /// <summary>
