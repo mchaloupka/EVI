@@ -13,11 +13,17 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 
 namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
+    /// <summary>
+    /// The flattener for <see cref="IValueBinder"/>.
+    /// </summary>
     public class ValueBinderFlattener
         : IValueBinderVisitor
     {
         private readonly ConditionBuilder _conditionBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueBinderFlattener"/> class.
+        /// </summary>
         public ValueBinderFlattener(ConditionBuilder conditionBuilder)
         {
             _conditionBuilder = conditionBuilder;

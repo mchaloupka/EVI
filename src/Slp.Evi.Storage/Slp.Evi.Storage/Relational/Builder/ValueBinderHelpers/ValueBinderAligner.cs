@@ -8,15 +8,27 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 
 namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
+    /// <summary>
+    /// The aligner for <see cref="IValueBinder"/>.
+    /// </summary>
     public class ValueBinderAligner
     {
         private readonly ValueBinderFlattener _valueBinderFlattener;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueBinderAligner"/> class.
+        /// </summary>
+        /// <param name="conditionBuilder">The condition builder.</param>
         public ValueBinderAligner(ConditionBuilder conditionBuilder)
         {
             this._valueBinderFlattener = new ValueBinderFlattener(conditionBuilder);
         }
 
+        /// <summary>
+        /// Aligns the specified query.
+        /// </summary>
+        /// <param name="toAlign">Query to align.</param>
+        /// <param name="queryContext">The query context.</param>
         public RelationalQuery Align(RelationalQuery toAlign, IQueryContext queryContext)
         {
             var valueBinders = toAlign.ValueBinders.ToList();
