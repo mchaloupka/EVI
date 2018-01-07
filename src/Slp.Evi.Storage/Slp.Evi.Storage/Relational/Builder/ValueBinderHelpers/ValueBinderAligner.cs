@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
+using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
+using Slp.Evi.Storage.Types;
 
 namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
@@ -13,6 +19,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
     /// </summary>
     public class ValueBinderAligner
     {
+        private readonly ConditionBuilder _conditionBuilder;
         private readonly ValueBinderFlattener _valueBinderFlattener;
 
         /// <summary>
@@ -21,7 +28,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
         /// <param name="conditionBuilder">The condition builder.</param>
         public ValueBinderAligner(ConditionBuilder conditionBuilder)
         {
-            this._valueBinderFlattener = new ValueBinderFlattener(conditionBuilder);
+            _conditionBuilder = conditionBuilder;
+            _valueBinderFlattener = new ValueBinderFlattener(_conditionBuilder);
         }
 
         /// <summary>
@@ -89,7 +97,73 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    var groupedByType = flattened
+                        .Select(x => (x.condition, (BaseValueBinder) x.valueBinder))
+                        .GroupBy(x => x.Item2.Type);
+
+                    var cases = new List<SwitchValueBinder.Case>();
+                    var caseIndex = 0;
+                    var caseStatements = new List<CaseExpression.Statement>();
+                    var aligned = false;
+
+                    foreach (var typeGroup in groupedByType)
+                    {
+                        if (typeGroup.Count() == 1)
+                        {
+                            var item = typeGroup.First();
+                            caseStatements.Add(new CaseExpression.Statement(item.Item1, new ConstantExpression(caseIndex, queryContext)));
+                            cases.Add(new SwitchValueBinder.Case(caseIndex++, item.Item2));
+                        }
+                        else
+                        {
+                            switch (typeGroup.Key.Category)
+                            {
+                                case TypeCategories.IRI:
+                                    throw new NotImplementedException();
+                                case TypeCategories.NumericLiteral:
+                                    aligned = true;
+                                    caseIndex = AlignLiteralValues(valueBinder, typeGroup.Key, typeGroup.ToList(),
+                                        assignmentConditions, caseIndex, cases, caseStatements, queryContext,
+                                        queryContext.Db.SqlTypeForDouble, x => x.NumericExpression);
+                                    break;
+                                case TypeCategories.BlankNode:
+                                case TypeCategories.SimpleLiteral:
+                                case TypeCategories.StringLiteral:
+                                case TypeCategories.OtherLiterals:
+                                    aligned = true;
+                                    caseIndex = AlignLiteralValues(valueBinder, typeGroup.Key, typeGroup.ToList(),
+                                        assignmentConditions, caseIndex, cases, caseStatements, queryContext,
+                                        queryContext.Db.SqlTypeForString, x => x.StringExpression);
+                                    break;
+                                case TypeCategories.BooleanLiteral:
+                                    aligned = true;
+                                    caseIndex = AlignLiteralValues(valueBinder, typeGroup.Key, typeGroup.ToList(),
+                                        assignmentConditions, caseIndex, cases, caseStatements, queryContext,
+                                        queryContext.Db.SqlTypeForBoolean, x => x.BooleanExpression);
+                                    break;
+                                case TypeCategories.DateTimeLiteral:
+                                    aligned = true;
+                                    caseIndex = AlignLiteralValues(valueBinder, typeGroup.Key, typeGroup.ToList(),
+                                        assignmentConditions, caseIndex, cases, caseStatements, queryContext,
+                                        queryContext.Db.SqlTypeForDateTime, x => x.DateTimeExpression);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                        }
+                    }
+
+                    if (!aligned)
+                    {
+                        resultingBinders.Add(valueBinder);
+                    }
+                    else
+                    {
+                        var caseVariable = new AssignedVariable(queryContext.Db.SqlTypeForInt);
+                        assignmentConditions.Add(new AssignmentFromExpressionCondition(caseVariable, new CaseExpression(caseStatements)));
+
+                        resultingBinders.Add(new SwitchValueBinder(valueBinder.VariableName, caseVariable, cases));
+                    }
                 }
             }
 
@@ -117,6 +191,63 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             {
                 return (calculusModel, originalBinders, false);
             }
+        }
+
+        private int AlignLiteralValues(IValueBinder valueBinder, IValueType type, List<(IFilterCondition condition, BaseValueBinder)> typeGroup, List<IAssignmentCondition> assignmentConditions, int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, DataType columnType, Func<ExpressionsSet, IExpression> expressionSelector)
+        {
+            var newVariable = new AssignedVariable(columnType);
+            var expressions = new List<(IFilterCondition condition, IExpression expression)>();
+
+            foreach (var valueTuple in typeGroup)
+            {
+                var expression = expressionSelector(_conditionBuilder.CreateExpression(queryContext, valueTuple.Item2));
+                expressions.Add((valueTuple.Item1, expression));
+            }
+
+            var caseExpression = new CaseExpression(expressions.Select(x =>
+                new CaseExpression.Statement(x.condition, x.expression)));
+
+            assignmentConditions.Add(new AssignmentFromExpressionCondition(newVariable, caseExpression));
+
+            var typeExpression = new ConstantExpression(queryContext.TypeCache.GetIndex(type),
+                queryContext);
+            var typeCategoryExpression = new ConstantExpression((int) type.Category, queryContext);
+            var columnExpression = new ColumnExpression(newVariable, false);
+
+            ExpressionSetValueBinder newValueBinder = null;
+            switch (type.Category)
+            {
+                case TypeCategories.BlankNode:
+                case TypeCategories.SimpleLiteral:
+                case TypeCategories.StringLiteral:
+                case TypeCategories.OtherLiterals:
+                    newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
+                        new ExpressionsSet(typeExpression, typeCategoryExpression, columnExpression, null, null, null,
+                            queryContext));
+                    break;
+                case TypeCategories.NumericLiteral:
+                    newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
+                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, columnExpression, null, null,
+                            queryContext));
+                    break;
+                case TypeCategories.BooleanLiteral:
+                    newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
+                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, null, columnExpression,  null,
+                            queryContext));
+                    break;
+                case TypeCategories.DateTimeLiteral:
+                    newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
+                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, null, null, columnExpression,
+                            queryContext));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var condition = new DisjunctionCondition(typeGroup.Select(x => x.Item1));
+            caseStatements.Add(new CaseExpression.Statement(condition, new ConstantExpression(caseIndex, queryContext)));
+            cases.Add(new SwitchValueBinder.Case(caseIndex++, newValueBinder));
+            return caseIndex;
         }
 
         private IValueBinder ConvertToExpressionSetValueBinder(IValueBinder valueBinder, IQueryContext queryContext)
