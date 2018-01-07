@@ -98,6 +98,7 @@
     <Compile Include="Query\IQueryContext.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
+    <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
     <Compile Include="Relational\Query\ExpressionsSet.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />

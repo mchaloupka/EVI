@@ -9,6 +9,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
     public class ValueBinderAligner
     {
+        private ValueBinderFlattener _valueBinderFlattener;
+
+        public ValueBinderAligner()
+        {
+            this._valueBinderFlattener = new ValueBinderFlattener();
+        }
+
         public RelationalQuery Align(RelationalQuery toAlign, IQueryContext queryContext)
         {
             var valueBinders = toAlign.ValueBinders.ToList();
@@ -53,6 +60,14 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 
         private (CalculusModel model, IEnumerable<IValueBinder> valueBinders, bool changed) Align(CalculusModel calculusModel, IEnumerable<IValueBinder> valueBinders, IQueryContext queryContext)
         {
+            List<IValueBinder> resultingBinders = new List<IValueBinder>();
+            List<IAssignmentCondition> assignmentConditions = new List<IAssignmentCondition>();
+
+            foreach (var valueBinder in valueBinders)
+            {
+                var flattened = _valueBinderFlattener.Flatten(valueBinder, queryContext);
+            }
+
             throw new NotImplementedException();
         }
     }
