@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -33,11 +34,17 @@ namespace Slp.Evi.Storage.Relational.Builder
         private readonly ConditionBuilder _conditionBuilder;
 
         /// <summary>
+        /// The value binder aligner
+        /// </summary>
+        private readonly ValueBinderAligner _valueBinderAligner;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.
         /// </summary>
         public RelationalBuilder()
         {
             _conditionBuilder = new ConditionBuilder();
+            _valueBinderAligner = new ValueBinderAligner();
         }
 
         /// <summary>
@@ -309,7 +316,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var caseAssignmentCondition = new AssignmentFromExpressionCondition(caseVariable, caseValueExpression);
 
                 newConditions.Add(caseAssignmentCondition);
-                
+
                 var newVariables = new List<ICalculusVariable>(oldModel.Variables);
                 newVariables.Add(caseVariable);
 
@@ -356,7 +363,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             ISqlCalculusSource source;
             ISqlCalculusSource refSource;
-            
+
             ProcessTriplePatternSource(restrictedTriplePattern, conditions, out source, out refSource, context);
             ProcessTriplePatternSubject(restrictedTriplePattern, conditions, valueBinders, source, context);
             ProcessTriplePatternPredicate(restrictedTriplePattern, conditions, valueBinders, source, context);
@@ -555,18 +562,22 @@ namespace Slp.Evi.Storage.Relational.Builder
             var queryContext = (IQueryContext) data;
             var inner = Process(distinctModifier.InnerQuery, queryContext);
 
-            if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
+            var alignedQuery = _valueBinderAligner.Align(inner, queryContext);
+            var model = alignedQuery.Model;
+            var valueBinders = alignedQuery.ValueBinders;
+
+            if (model is ModifiedCalculusModel modifiedCalculusModel)
             {
                 var newModel = new ModifiedCalculusModel(modifiedCalculusModel.InnerModel, modifiedCalculusModel.Ordering, modifiedCalculusModel.Limit, modifiedCalculusModel.Offset, true);
 
-                return new RelationalQuery(newModel, inner.ValueBinders);
+                return new RelationalQuery(newModel, valueBinders);
             }
-            else if (inner.Model is CalculusModel calculusModel)
+            else if (model is CalculusModel calculusModel)
             {
                 var newModel = new ModifiedCalculusModel(calculusModel, new List<ModifiedCalculusModel.OrderingPart>(),
                     null, null, true);
 
-                return new RelationalQuery(newModel, inner.ValueBinders);
+                return new RelationalQuery(newModel, valueBinders);
             }
             else
             {
