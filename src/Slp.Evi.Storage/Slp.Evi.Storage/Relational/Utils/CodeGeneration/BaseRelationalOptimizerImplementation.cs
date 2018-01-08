@@ -74,7 +74,12 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
             return toTransform;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Process the <see cref="NullExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IExpression Transform(NullExpression toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
