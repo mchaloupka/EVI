@@ -11,7 +11,7 @@ namespace Slp.Evi.Storage.Relational.Query
     /// Its intention is to represent various expressions according to type
     /// they represent.
     /// </remarks>
-    public sealed class ExpressionsSet 
+    public sealed class ExpressionsSet
         : IEquatable<ExpressionsSet>
     {
         /// <summary>
@@ -26,8 +26,8 @@ namespace Slp.Evi.Storage.Relational.Query
         /// <param name="context">The query context</param>
         public ExpressionsSet(IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression, IQueryContext context)
         {
-            TypeExpression = typeExpression;
-            TypeCategoryExpression = typeCategoryExpression;
+            TypeExpression = typeExpression ?? new NullExpression(context.Db.SqlTypeForInt);
+            TypeCategoryExpression = typeCategoryExpression ?? new NullExpression(context.Db.SqlTypeForInt);
             StringExpression = stringExpression ?? new NullExpression(context.Db.SqlTypeForString);
             NumericExpression = numericExpression ?? new NullExpression(context.Db.SqlTypeForInt);
             BooleanExpression = booleanExpression ?? new NullExpression(context.Db.SqlTypeForBoolean);

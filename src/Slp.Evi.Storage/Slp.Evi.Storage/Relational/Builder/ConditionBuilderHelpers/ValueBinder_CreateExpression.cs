@@ -223,7 +223,14 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(EmptyValueBinder emptyValueBinder, object data)
         {
-            throw new NotImplementedException();
+            return new ExpressionsSet(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                (QueryContext) data);
         }
 
         /// <summary>
