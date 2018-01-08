@@ -83,14 +83,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             }
         }
 
-        private (CalculusModel model, IEnumerable<IValueBinder> valueBinders, bool changed) Align(CalculusModel calculusModel, IEnumerable<IValueBinder> valueBinders, IQueryContext queryContext)
+        private (CalculusModel model, List<IValueBinder> valueBinders, bool changed) Align(CalculusModel calculusModel, List<IValueBinder> valueBinders, IQueryContext queryContext)
         {
             List<IValueBinder> resultingBinders = new List<IValueBinder>();
             List<IAssignmentCondition> assignmentConditions = new List<IAssignmentCondition>();
             bool changed = false;
-            var originalBinders = valueBinders.ToList();
 
-            foreach (var valueBinder in originalBinders)
+            foreach (var valueBinder in valueBinders)
             {
                 var flattened = _valueBinderFlattener.Flatten(valueBinder, queryContext).ToList();
 
@@ -194,14 +193,107 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             }
             else
             {
-                return (calculusModel, originalBinders, false);
+                return (calculusModel, valueBinders, false);
             }
         }
 
         private bool AlignIriValues(List<(IFilterCondition condition, BaseValueBinder valueBinder)> bindersToProcess, List<IAssignmentCondition> assignmentConditions, ref int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext)
         {
             var matchGroups = new List<List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)>>();
-            bool shouldBeReplacedByExpression = false;
+            var shouldBeReplacedByExpression = GroupIriValueBinders(bindersToProcess, matchGroups);
+
+            if (shouldBeReplacedByExpression)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                bool modified = false;
+
+                foreach (var matchGroup in matchGroups)
+                {
+                    if (matchGroup.Count == 1)
+                    {
+                        caseStatements.Add(new CaseExpression.Statement(matchGroup[0].condition, new ConstantExpression(caseIndex, queryContext)));
+                        cases.Add(new SwitchValueBinder.Case(caseIndex++, matchGroup[0].valueBinder));
+                    }
+                    else
+                    {
+                        var firstValueBinder = matchGroup[0].valueBinder;
+
+                        if (matchGroup.All(x => ValueBindersSimilar(firstValueBinder, x.valueBinder)))
+                        {
+                            modified = AlignSimilarIriValueBinders(assignmentConditions, ref caseIndex, cases, caseStatements, queryContext, matchGroup, firstValueBinder);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                }
+
+                return modified;
+            }
+        }
+
+        private static bool AlignSimilarIriValueBinders(List<IAssignmentCondition> assignmentConditions, ref int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)> matchGroup, BaseValueBinder firstValueBinder)
+        {
+            bool modified;
+            if (firstValueBinder.TermMap.IsConstantValued)
+            {
+                var disjunctionCondition =
+                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
+
+                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
+                cases.Add(new SwitchValueBinder.Case(caseIndex++, firstValueBinder));
+                modified = true;
+            }
+            else if (firstValueBinder.TermMap.IsTemplateValued)
+            {
+                var columnExpressions = new Dictionary<string, (AssignedVariable variable, List<(IFilterCondition condition, IExpression expression)> cases)>();
+
+                foreach (var valueTuple in matchGroup)
+                {
+                    var secondValueBinder = valueTuple.valueBinder;
+
+                    foreach (var templatePart in firstValueBinder.TemplateParts.Where(x => x.IsColumn))
+                    {
+                        var columnName = templatePart.Column;
+
+                        if (!columnExpressions.TryGetValue(columnName, out var expressions))
+                        {
+                            expressions = (new AssignedVariable(queryContext.Db.SqlTypeForString), new List<(IFilterCondition condition, IExpression expression)>());
+                            columnExpressions.Add(columnName, expressions);
+                        }
+
+                        expressions.cases.Add((valueTuple.condition, new ColumnExpression(secondValueBinder.GetCalculusVariable(columnName), true)));
+                    }
+                }
+
+                foreach (var columnExpression in columnExpressions.Values)
+                {
+                    assignmentConditions.Add(new AssignmentFromExpressionCondition(columnExpression.variable, new CaseExpression(columnExpression.cases.Select(x => new CaseExpression.Statement(x.condition, x.expression)))));
+                }
+
+                var newValueBinder = new BaseValueBinder(firstValueBinder, x => columnExpressions[x].variable);
+                var disjunctionCondition =
+                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
+
+                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
+                cases.Add(new SwitchValueBinder.Case(caseIndex++, newValueBinder));
+                modified = true;
+            }
+            else
+            {
+                throw new Exception("Should never happen as the column base term maps are handled differently");
+            }
+
+            return modified;
+        }
+
+        private bool GroupIriValueBinders(List<(IFilterCondition condition, BaseValueBinder valueBinder)> bindersToProcess, List<List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)>> matchGroups)
+        {
+            var shouldBeReplacedByExpression = false;
 
             foreach (var valueTuple in bindersToProcess)
             {
@@ -261,85 +353,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 }
             }
 
-            if (shouldBeReplacedByExpression)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                bool modified = false;
-
-                foreach (var matchGroup in matchGroups)
-                {
-                    if (matchGroup.Count == 1)
-                    {
-                        caseStatements.Add(new CaseExpression.Statement(matchGroup[0].condition, new ConstantExpression(caseIndex, queryContext)));
-                        cases.Add(new SwitchValueBinder.Case(caseIndex++, matchGroup[0].valueBinder));
-                    }
-                    else
-                    {
-                        var firstValueBinder = matchGroup[0].valueBinder;
-
-                        if (matchGroup.All(x => ValueBindersSimilar(firstValueBinder, x.valueBinder)))
-                        {
-                            if (firstValueBinder.TermMap.IsConstantValued)
-                            {
-                                var disjunctionCondition =
-                                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
-
-                                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
-                                cases.Add(new SwitchValueBinder.Case(caseIndex++, firstValueBinder));
-                                modified = true;
-                            }
-                            else if (firstValueBinder.TermMap.IsTemplateValued)
-                            {
-                                var columnExpressions = new Dictionary<string, (AssignedVariable variable, List<(IFilterCondition condition, IExpression expression)> cases)>();
-
-                                foreach (var valueTuple in matchGroup)
-                                {
-                                    var secondValueBinder = valueTuple.valueBinder;
-
-                                    foreach (var templatePart in firstValueBinder.TemplateParts.Where(x => x.IsColumn))
-                                    {
-                                        var columnName = templatePart.Column;
-
-                                        if (!columnExpressions.TryGetValue(columnName, out var expressions))
-                                        {
-                                            expressions = (new AssignedVariable(queryContext.Db.SqlTypeForString), new List<(IFilterCondition condition, IExpression expression)>());
-                                            columnExpressions.Add(columnName, expressions);
-                                        }
-
-                                        expressions.cases.Add((valueTuple.condition, new ColumnExpression(secondValueBinder.GetCalculusVariable(columnName), true)));
-                                    }
-                                }
-
-                                foreach (var columnExpression in columnExpressions.Values)
-                                {
-                                    assignmentConditions.Add(new AssignmentFromExpressionCondition(columnExpression.variable, new CaseExpression(columnExpression.cases.Select(x => new CaseExpression.Statement(x.condition, x.expression)))));
-                                }
-
-                                var newValueBinder = new BaseValueBinder(firstValueBinder, x => columnExpressions[x].variable);
-                                var disjunctionCondition =
-                                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
-
-                                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
-                                cases.Add(new SwitchValueBinder.Case(caseIndex++, newValueBinder));
-                                modified = true;
-                            }
-                            else
-                            {
-                                throw new Exception("Should never happen as the column base term maps are handled differently");
-                            }
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-                }
-
-                return modified;
-            }
+            return shouldBeReplacedByExpression;
         }
 
         private bool ValueBindersSimilar(BaseValueBinder firstValueBinder, BaseValueBinder secondValueBinder)
