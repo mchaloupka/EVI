@@ -119,11 +119,17 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 return (Column != null ? Column.GetHashCode() : 0);
             }
 
+            /// <summary>
+            /// Implements the == operator.
+            /// </summary>
             public static bool operator ==(ColumnTemplatePart left, ColumnTemplatePart right)
             {
                 return Equals(left, right);
             }
 
+            /// <summary>
+            /// Implements the != operator.
+            /// </summary>
             public static bool operator !=(ColumnTemplatePart left, ColumnTemplatePart right)
             {
                 return !Equals(left, right);
@@ -195,11 +201,17 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 return (Text != null ? Text.GetHashCode() : 0);
             }
 
+            /// <summary>
+            /// Implements the == operator.
+            /// </summary>
             public static bool operator ==(TextTemplatePart left, TextTemplatePart right)
             {
                 return Equals(left, right);
             }
 
+            /// <summary>
+            /// Implements the != operator.
+            /// </summary>
             public static bool operator !=(TextTemplatePart left, TextTemplatePart right)
             {
                 return !Equals(left, right);
