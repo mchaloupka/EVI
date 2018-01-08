@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
+using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 
@@ -12,6 +13,8 @@ namespace Slp.Evi.Storage.Types
     /// </summary>
     public class TypeCache : ITypeCache
     {
+        private readonly R2RMLCache _cache;
+
         /// <summary>
         /// The database schema provider
         /// </summary>
@@ -59,8 +62,9 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeCache"/> class.
         /// </summary>
-        public TypeCache(IDbSchemaProvider dbSchemaProvider, ISqlDatabase database)
+        public TypeCache(R2RMLCache r2rmlCache, IDbSchemaProvider dbSchemaProvider, ISqlDatabase database)
         {
+            _cache = r2rmlCache;
             _dbSchemaProvider = dbSchemaProvider;
             _database = database;
             _typesDictionary = new CacheDictionary<IMapBase, IValueType>(ResolveType);
@@ -186,21 +190,22 @@ namespace Slp.Evi.Storage.Types
                 {
                     var columnName = objectMap.ColumnName;
                     var triplesMap = objectMap.GetTriplesMapConfiguration();
+                    var tableName = _cache.GetSqlTable(triplesMap);
 
-                    if (triplesMap.TableName != null)
+                    if (tableName != null)
                     {
-                        var tableInfo = _dbSchemaProvider.GetTableInfo(triplesMap.TableName);
+                        var tableInfo = _dbSchemaProvider.GetTableInfo(tableName);
 
                         if (tableInfo == null)
                         {
-                            throw new Exception($"Table {triplesMap.TableName} not found");
+                            throw new Exception($"Table {tableName} not found");
                         }
 
                         var column = tableInfo.FindColumn(columnName);
 
                         if (column == null)
                         {
-                            throw new Exception($"Column {columnName} not found in table {triplesMap.TableName}");
+                            throw new Exception($"Column {columnName} not found in table {tableName}");
                         }
 
                         dataType = _database.GetNaturalRdfType(column.DbDataType);
