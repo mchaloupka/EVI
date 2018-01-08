@@ -100,6 +100,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_01.srx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\ProductType_OrderBy.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -352,7 +355,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_1.rq">
+    <None Include="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">

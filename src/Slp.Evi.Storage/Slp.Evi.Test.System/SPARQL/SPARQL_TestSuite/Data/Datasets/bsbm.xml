@@ -123,7 +123,7 @@
     @prefix rev: <http://purl.org/stuff/rev#> .
     @prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> .
     @prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/> .
-    
+
   <#ProductFeature> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "productfeature" ];
     rr:subjectMap [
@@ -140,7 +140,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -177,7 +177,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -204,20 +204,20 @@
     ];
     rr:predicateObjectMap [
       rr:predicate foaf:homepage;
-      rr:objectMap [ 
-        rr:column "homepage"; 
+      rr:objectMap [
+        rr:column "homepage";
         rr:termType rr:IRI;
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:country;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:template "http://downlode.org/rdf/iso-3166/countries#{country}";
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -302,7 +302,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -312,7 +312,7 @@
       rr:objectMap [ rr:column "publishDate"; ];
     ];
   .
-  
+
   <#ProductTypeProduct> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "producttypeproduct" ];
     rr:subjectMap [
@@ -329,7 +329,7 @@
       ];
     ];
   .
-  
+
   <#ProductFeatureProduct> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "productfeatureproduct" ];
     rr:subjectMap [
@@ -346,7 +346,7 @@
       ];
     ];
   .
-  
+
   <#Vendor> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "vendor" ];
     rr:subjectMap [
@@ -363,20 +363,20 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:homepage;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "homepage";
         rr:termType rr:IRI;
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:country;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:template "http://downlode.org/rdf/iso-3166/countries#{country}";
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -386,7 +386,7 @@
       rr:objectMap [ rr:column "publishDate"; ];
     ];
   .
-  
+
   <#Offer> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "offer" ];
     rr:subjectMap [
@@ -441,14 +441,14 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:offerWebpage;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "offerWebpage";
         rr:termType rr:IRI;
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -475,13 +475,13 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:country;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:template "http://downlode.org/rdf/iso-3166/countries#{country}";
       ];
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
@@ -491,7 +491,7 @@
       rr:objectMap [ rr:column "publishDate"; ];
     ];
   .
-  
+
   <#Review> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "review" ];
     rr:subjectMap [
@@ -558,7 +558,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [ 
+      rr:objectMap [
         rr:column "publisher";
         rr:termType rr:IRI;
       ];
