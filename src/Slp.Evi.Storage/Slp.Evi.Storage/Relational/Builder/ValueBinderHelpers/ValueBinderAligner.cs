@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                     var modifiedModel = new ModifiedCalculusModel(newModel.model, modifiedCalculusModel.Ordering,
                         modifiedCalculusModel.Limit, modifiedCalculusModel.Offset, modifiedCalculusModel.IsDistinct);
 
-                    return new RelationalQuery(modifiedModel, newModel.valueBinders);
+                    return queryContext.QueryPostProcesses.PostProcess(new RelationalQuery(modifiedModel, newModel.valueBinders));
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 
                 if (newModel.changed)
                 {
-                    return new RelationalQuery(newModel.model, newModel.valueBinders);
+                    return queryContext.QueryPostProcesses.PostProcess(new RelationalQuery(newModel.model, newModel.valueBinders));
                 }
                 else
                 {

@@ -69,7 +69,7 @@ namespace Slp.Evi.Storage.Query
             _db = db;
             _factory = factory;
             _schemaProvider = new DbSchemaProvider(db);
-            
+
             _mapping = factory.CreateMappingProcessor(mapping);
             _sparqlBuilder = factory.CreateSparqlBuilder();
             _relationalBuilder = factory.CreateRelationalBuilder();
@@ -144,7 +144,7 @@ namespace Slp.Evi.Storage.Query
             {
                 ProcessResult(rdfHandler, resultsHandler, originalQuery, context, sqlAlgebra, result);
             }
-            
+
             // TODO: Check this out:
             //if(sqlAlgebra is NoRowSource)
             //{

@@ -23,7 +23,6 @@ namespace Slp.Evi.Storage.Query
         private readonly Dictionary<ISourceCondition, string> _sourceConditionNames;
 
         private int _sourceConditionNameCounter;
-         
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryNamingHelpers"/> class.
@@ -392,7 +391,7 @@ namespace Slp.Evi.Storage.Query
             public object Visit(LeftJoinCondition leftJoinCondition, object data)
             {
                 ((CalculusModelSpecificData)data).AddData(leftJoinCondition);
-                return null; 
+                return null;
             }
         }
 

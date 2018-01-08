@@ -181,7 +181,10 @@ namespace Slp.Evi.Storage.Database.Base
                     }
 
                     data.StringBuilder.Append(' ');
+
+                    data.EnterCalculusModel(toTransform);
                     WriteCalculusVariable(neededVariables[i], toTransform, data);
+                    data.LeaveCalculusModel();
 
                     data.StringBuilder.Append(" AS ");
 
@@ -737,8 +740,6 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="variable">The variable.</param>
         /// <param name="currentModel">The current model.</param>
         /// <param name="data"></param>
-        /// 
-        /// 
         private void WriteCalculusVariable(ICalculusVariable variable, CalculusModel currentModel, VisitorContext data)
         {
             var stringBuilder = data.StringBuilder;
