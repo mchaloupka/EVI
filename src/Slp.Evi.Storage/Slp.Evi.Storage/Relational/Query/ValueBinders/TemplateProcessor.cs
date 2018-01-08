@@ -57,7 +57,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// Template column part
         /// </summary>
-        public class ColumnTemplatePart : ITemplatePart
+        public class ColumnTemplatePart : ITemplatePart, IEquatable<ColumnTemplatePart>
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="ColumnTemplatePart"/> class.
@@ -95,12 +95,45 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             {
                 get { throw new Exception("Asked for text on ColumnTemplatePart"); }
             }
+
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != typeof(ColumnTemplatePart)) return false;
+                return Equals((ColumnTemplatePart) obj);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(ColumnTemplatePart other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return string.Equals(Column, other.Column);
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return (Column != null ? Column.GetHashCode() : 0);
+            }
+
+            public static bool operator ==(ColumnTemplatePart left, ColumnTemplatePart right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(ColumnTemplatePart left, ColumnTemplatePart right)
+            {
+                return !Equals(left, right);
+            }
         }
 
         /// <summary>
         /// Template text part
         /// </summary>
-        public class TextTemplatePart : ITemplatePart
+        public class TextTemplatePart : ITemplatePart, IEquatable<TextTemplatePart>
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="TextTemplatePart"/> class.
@@ -137,6 +170,39 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             public string Column
             {
                 get { throw new Exception("Asked for column on TextTemplatePart"); }
+            }
+
+            /// <inheritdoc />
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != typeof(TextTemplatePart)) return false;
+                return Equals((TextTemplatePart) obj);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(TextTemplatePart other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return string.Equals(Text, other.Text);
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return (Text != null ? Text.GetHashCode() : 0);
+            }
+
+            public static bool operator ==(TextTemplatePart left, TextTemplatePart right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(TextTemplatePart left, TextTemplatePart right)
+            {
+                return !Equals(left, right);
             }
         }
     }

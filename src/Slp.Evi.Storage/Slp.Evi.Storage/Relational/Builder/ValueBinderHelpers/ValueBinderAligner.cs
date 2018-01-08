@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
@@ -11,6 +12,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Types;
+using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
@@ -21,6 +23,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
     {
         private readonly ConditionBuilder _conditionBuilder;
         private readonly ValueBinderFlattener _valueBinderFlattener;
+        private readonly PatternComparer _patternComparer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueBinderAligner"/> class.
@@ -30,6 +33,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
         {
             _conditionBuilder = conditionBuilder;
             _valueBinderFlattener = new ValueBinderFlattener(_conditionBuilder);
+            _patternComparer = new PatternComparer();
         }
 
         /// <summary>
@@ -99,7 +103,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 {
                     var groupedByType = flattened
                         .Select(x => (x.condition, (BaseValueBinder) x.valueBinder))
-                        .GroupBy(x => x.Item2.Type);
+                        .GroupBy(x => x.Item2.Type)
+                        .ToList();
 
                     var cases = new List<SwitchValueBinder.Case>();
                     var caseIndex = 0;
@@ -119,7 +124,9 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                             switch (typeGroup.Key.Category)
                             {
                                 case TypeCategories.IRI:
-                                    throw new NotImplementedException();
+                                    aligned = AlignIriValues(typeGroup.ToList(), assignmentConditions,
+                                                  ref caseIndex, cases, caseStatements, queryContext) || aligned;
+                                    break;
                                 case TypeCategories.NumericLiteral:
                                     aligned = true;
                                     caseIndex = AlignLiteralValues(valueBinder, typeGroup.Key, typeGroup.ToList(),
@@ -167,8 +174,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 }
             }
 
-            // If some assignment needed then modify model
-            // else: ...
             if (assignmentConditions.Count > 0)
             {
                 var conditions = new List<ICondition>();
@@ -191,6 +196,186 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             {
                 return (calculusModel, originalBinders, false);
             }
+        }
+
+        private bool AlignIriValues(List<(IFilterCondition condition, BaseValueBinder valueBinder)> bindersToProcess, List<IAssignmentCondition> assignmentConditions, ref int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext)
+        {
+            var matchGroups = new List<List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)>>();
+            bool shouldBeReplacedByExpression = false;
+
+            foreach (var valueTuple in bindersToProcess)
+            {
+                var termMap = valueTuple.valueBinder.TermMap;
+                var templateParts = new List<PatternItem>();
+
+                if (termMap.IsColumnValued)
+                {
+                    shouldBeReplacedByExpression = true;
+                    break;
+                }
+                else if (termMap.IsConstantValued)
+                {
+                    if (termMap is IUriValuedTermMap uriValuedTermMap)
+                    {
+                        templateParts.Add(new PatternItem(uriValuedTermMap.URI.AbsoluteUri));
+                    }
+                    else if (termMap is IObjectMap objectMap)
+                    {
+                        if (objectMap.URI != null)
+                        {
+                            templateParts.Add(new PatternItem(objectMap.URI.AbsoluteUri));
+                        }
+                        else
+                        {
+                            throw new Exception("Should never happen for IRI value binders");
+                        }
+                    }
+                }
+                else
+                {
+                    templateParts.AddRange(valueTuple.valueBinder.TemplateParts.Select(PatternItem.FromTemplatePart));
+                }
+
+                var templatePattern = new Pattern(true, templateParts);
+
+                var foundGroup = false;
+
+                foreach (var matchGroup in matchGroups)
+                {
+                    var isInGroup = matchGroup.Any(x => !_patternComparer.Compare(templatePattern, x.templatePattern).NeverMatch);
+
+                    if (isInGroup)
+                    {
+                        matchGroup.Add((valueTuple.condition, valueTuple.valueBinder, templatePattern));
+                        foundGroup = true;
+                        break;
+                    }
+                }
+
+                if (!foundGroup)
+                {
+                    matchGroups.Add(new List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)>()
+                    {
+                        (valueTuple.condition, valueTuple.valueBinder, templatePattern)
+                    });
+                }
+            }
+
+            if (shouldBeReplacedByExpression)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                bool modified = false;
+
+                foreach (var matchGroup in matchGroups)
+                {
+                    if (matchGroup.Count == 1)
+                    {
+                        caseStatements.Add(new CaseExpression.Statement(matchGroup[0].condition, new ConstantExpression(caseIndex, queryContext)));
+                        cases.Add(new SwitchValueBinder.Case(caseIndex++, matchGroup[0].valueBinder));
+                    }
+                    else
+                    {
+                        var firstValueBinder = matchGroup[0].valueBinder;
+
+                        if (matchGroup.All(x => ValueBindersSimilar(firstValueBinder, x.valueBinder)))
+                        {
+                            if (firstValueBinder.TermMap.IsConstantValued)
+                            {
+                                var disjunctionCondition =
+                                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
+
+                                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
+                                cases.Add(new SwitchValueBinder.Case(caseIndex++, firstValueBinder));
+                                modified = true;
+                            }
+                            else if (firstValueBinder.TermMap.IsTemplateValued)
+                            {
+                                var columnExpressions = new Dictionary<string, (AssignedVariable variable, List<(IFilterCondition condition, IExpression expression)> cases)>();
+
+                                foreach (var valueTuple in matchGroup)
+                                {
+                                    var secondValueBinder = valueTuple.valueBinder;
+
+                                    foreach (var templatePart in firstValueBinder.TemplateParts.Where(x => x.IsColumn))
+                                    {
+                                        var columnName = templatePart.Column;
+
+                                        if (!columnExpressions.TryGetValue(columnName, out var expressions))
+                                        {
+                                            expressions = (new AssignedVariable(queryContext.Db.SqlTypeForString), new List<(IFilterCondition condition, IExpression expression)>());
+                                            columnExpressions.Add(columnName, expressions);
+                                        }
+
+                                        expressions.cases.Add((valueTuple.condition, new ColumnExpression(secondValueBinder.GetCalculusVariable(columnName), true)));
+                                    }
+                                }
+
+                                foreach (var columnExpression in columnExpressions.Values)
+                                {
+                                    assignmentConditions.Add(new AssignmentFromExpressionCondition(columnExpression.variable, new CaseExpression(columnExpression.cases.Select(x => new CaseExpression.Statement(x.condition, x.expression)))));
+                                }
+
+                                var newValueBinder = new BaseValueBinder(firstValueBinder, x => columnExpressions[x].variable);
+                                var disjunctionCondition =
+                                    new DisjunctionCondition(matchGroup.Select(x => x.condition));
+
+                                caseStatements.Add(new CaseExpression.Statement(disjunctionCondition, new ConstantExpression(caseIndex, queryContext)));
+                                cases.Add(new SwitchValueBinder.Case(caseIndex++, newValueBinder));
+                                modified = true;
+                            }
+                            else
+                            {
+                                throw new Exception("Should never happen as the column base term maps are handled differently");
+                            }
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                }
+
+                return modified;
+            }
+        }
+
+        private bool ValueBindersSimilar(BaseValueBinder firstValueBinder, BaseValueBinder secondValueBinder)
+        {
+            if (firstValueBinder.TermMap == secondValueBinder.TermMap)
+            {
+                return true;
+            }
+
+            if (firstValueBinder.TermMap.IsTemplateValued && secondValueBinder.TermMap.IsTemplateValued)
+            {
+                var firstTemplateParts = firstValueBinder.TemplateParts.ToList();
+                var secondTemplateParts = secondValueBinder.TemplateParts.ToList();
+
+                if (firstTemplateParts.Count == secondTemplateParts.Count)
+                {
+                    bool same = true;
+
+                    for (int i = 0; i < firstTemplateParts.Count; i++)
+                    {
+                        if (!firstTemplateParts[i].Equals(secondTemplateParts[i]))
+                        {
+                            same = false;
+                            break;
+                        }
+                    }
+
+                    if (same)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+            // TODO: Add case when the term maps are not equal but they refer to the same constant
         }
 
         private int AlignLiteralValues(IValueBinder valueBinder, IValueType type, List<(IFilterCondition condition, BaseValueBinder)> typeGroup, List<IAssignmentCondition> assignmentConditions, int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, DataType columnType, Func<ExpressionsSet, IExpression> expressionSelector)
@@ -252,7 +437,11 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 
         private IValueBinder ConvertToExpressionSetValueBinder(IValueBinder valueBinder, IQueryContext queryContext)
         {
+            // TODO: It should add the expressions to the SELECT statement
             throw new NotImplementedException();
         }
     }
 }
+
+
+
