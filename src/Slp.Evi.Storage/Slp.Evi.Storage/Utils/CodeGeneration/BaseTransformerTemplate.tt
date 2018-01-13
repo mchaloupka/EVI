@@ -59,7 +59,7 @@ namespace <#= namespaceName #>
     }
 #>
     public abstract class <#= className #><T, TR<#+ foreach (var typeParam in additionalTypeParameters) { Write(", "); Write(typeParam.Item1); } #>>
-        <#+ 
+        <#+
         var inheritsFrom = (new string[] { inheritsFromName, visitorName }).Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
         if(inheritsFrom.Length > 0)
@@ -81,7 +81,7 @@ namespace <#= namespaceName #>
 <#+
     }
 
-    void GenerateMainTransformMethod(string parameterType) 
+    void GenerateMainTransformMethod(string parameterType)
     {
 #>
         /// <summary>
@@ -97,20 +97,9 @@ namespace <#= namespaceName #>
 <#+
     }
 
-    void GenerateCommonMethods(string parameterType) 
+    void GenerateCommonMethods(string parameterType)
     {
 #>
-        /// <summary>
-        /// Decides whether we should use standard or fallback transformation for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool CommonShouldTransform(<#= parameterType #> toTransform, T data)
-        {
-            return true;
-        }
-
         /// <summary>
         /// Post-process for the transformation.
         /// </summary>
@@ -121,17 +110,6 @@ namespace <#= namespaceName #>
         protected virtual TR CommonPostTransform(TR transformed, <#= parameterType #> toTransform, T data)
         {
             return transformed;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR CommonFallbackTransform(<#= parameterType #> toTransform, T data)
-        {
-            throw new NotImplementedException();
         }
 
 <#+
@@ -157,17 +135,10 @@ namespace <#= namespaceName #>
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(<#= parameterType #> toVisit, T data) 
+        protected virtual TR ProcessVisit(<#= parameterType #> toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -179,17 +150,6 @@ namespace <#= namespaceName #>
         protected abstract TR Transform(<#= parameterType #> toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(<#= parameterType #> toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -199,17 +159,6 @@ namespace <#= namespaceName #>
         protected virtual TR PostTransform(TR transformed, <#= parameterType #> toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(<#= parameterType #> toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
 <#+
