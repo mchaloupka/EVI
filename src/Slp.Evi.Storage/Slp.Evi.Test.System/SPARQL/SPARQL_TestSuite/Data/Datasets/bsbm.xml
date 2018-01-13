@@ -167,7 +167,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate rdfs:subClassOf;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#ProductType>;
         rr:joinCondition [
           rr:child "parent";
@@ -244,7 +244,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:producer;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Producer>;
         rr:joinCondition [
           rr:child "producer";
@@ -320,7 +320,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate rdf:type;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#ProductType>;
         rr:joinCondition [
           rr:child "productType";
@@ -337,7 +337,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate rdf:type;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#ProductFeature>;
         rr:joinCondition [
           rr:child "productFeature";
@@ -395,7 +395,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:product;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Product>;
         rr:joinCondition [
           rr:child "product";
@@ -405,7 +405,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:producer;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Producer>;
         rr:joinCondition [
           rr:child "producer";
@@ -415,7 +415,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:vendor;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Vendor>;
         rr:joinCondition [
           rr:child "vendor";
@@ -500,7 +500,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:product;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Product>;
         rr:joinCondition [
           rr:child "product";
@@ -510,7 +510,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:producer;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Producer>;
         rr:joinCondition [
           rr:child "producer";
@@ -520,7 +520,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:reviewer;
-      rr:refObjectMap [
+      rr:objectMap [
         rr:parentTriplesMap <#Person>;
         rr:joinCondition [
           rr:child "person";
