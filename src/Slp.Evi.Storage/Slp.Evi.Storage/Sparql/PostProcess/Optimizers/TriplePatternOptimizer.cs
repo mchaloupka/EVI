@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="TriplePatternOptimizer"/> class.
         /// </summary>
-        public TriplePatternOptimizer() 
+        public TriplePatternOptimizer()
             : base(new TriplePatternOptimizerImplementation())
         { }
 

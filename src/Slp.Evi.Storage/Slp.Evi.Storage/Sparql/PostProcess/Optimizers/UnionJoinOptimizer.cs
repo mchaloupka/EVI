@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="UnionJoinOptimizer"/> class.
         /// </summary>
-        public UnionJoinOptimizer() 
+        public UnionJoinOptimizer()
             : base(new UnionJoinOptimizerImplementation())
         { }
 
@@ -47,7 +47,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
 
                 foreach (var pattern in toTransform.JoinedGraphPatterns)
-                { 
+                {
                     ProcessJoinChild(childPatterns, childUnionPatterns, pattern);
                 }
 
@@ -130,7 +130,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     currentCartesians.Add(leftCartesian);
 
                     currentCartesians = childUnionPatterns
-                        .Aggregate(currentCartesians, 
+                        .Aggregate(currentCartesians,
                         (current, childUnionPattern) => ProcessCartesian(current, childUnionPattern, data));
                 }
 

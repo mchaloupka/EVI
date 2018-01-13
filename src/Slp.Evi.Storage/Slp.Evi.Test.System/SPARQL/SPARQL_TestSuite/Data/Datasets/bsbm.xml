@@ -253,23 +253,23 @@
       ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:productPropertyTextual1;
+      rr:predicate bsbm:productPropertyNumeric1;
       rr:objectMap [ rr:column "propertyNum1"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:productPropertyTextual2;
+      rr:predicate bsbm:productPropertyNumeric2;
       rr:objectMap [ rr:column "propertyNum2"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:productPropertyTextual3;
+      rr:predicate bsbm:productPropertyNumeric3;
       rr:objectMap [ rr:column "propertyNum3"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:productPropertyTextual4;
+      rr:predicate bsbm:productPropertyNumeric4;
       rr:objectMap [ rr:column "propertyNum4"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:productPropertyTextual5;
+      rr:predicate bsbm:productPropertyNumeric5;
       rr:objectMap [ rr:column "propertyNum5"; ];
     ];
     rr:predicateObjectMap [
@@ -336,7 +336,7 @@
       rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product{product}";
     ];
     rr:predicateObjectMap [
-      rr:predicate rdf:type;
+      rr:predicate bsbm:productFeature;
       rr:objectMap [
         rr:parentTriplesMap <#ProductFeature>;
         rr:joinCondition [
