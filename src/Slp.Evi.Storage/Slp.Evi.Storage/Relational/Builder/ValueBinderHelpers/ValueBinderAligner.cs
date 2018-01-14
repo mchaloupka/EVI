@@ -336,7 +336,9 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 }
                 else
                 {
-                    templateParts.AddRange(valueTuple.valueBinder.TemplateParts.Select(PatternItem.FromTemplatePart));
+                    templateParts.AddRange(valueTuple.valueBinder.TemplateParts.Select(templatePart =>
+                        PatternItem.FromTemplatePart(templatePart,
+                            new Func<string, ICalculusVariable>(valueTuple.valueBinder.GetCalculusVariable))));
                 }
 
                 var templatePattern = new Pattern(true, templateParts);

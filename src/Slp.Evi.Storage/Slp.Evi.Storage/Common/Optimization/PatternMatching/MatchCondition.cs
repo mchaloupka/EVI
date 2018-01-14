@@ -1,3 +1,8 @@
+using System;
+using System.Globalization;
+using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Storage.Query;
+
 namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {
     /// <summary>
@@ -57,11 +62,56 @@ namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
         /// <param name="rightPattern">The right pattern.</param>
         public static MatchCondition CreateCondition(Pattern leftPattern, Pattern rightPattern)
         {
+            if (!CanEqualToOther(leftPattern, rightPattern) || !CanEqualToOther(rightPattern, leftPattern))
+            {
+                return new MatchCondition()
+                {
+                    IsAlwaysFalse = true
+                };
+            }
+
             return new MatchCondition()
             {
                 LeftPattern = leftPattern,
                 RightPattern = rightPattern
             };
+        }
+
+        private static bool CanEqualToOther(Pattern first, Pattern other)
+        {
+            if (first.PatternItems.Length > 0)
+            {
+                var firstItem = first.PatternItems[0];
+                if (firstItem.IsColumn && firstItem.DataType != null && firstItem.DataType.IsNumeric)
+                {
+                    if (other.PatternItems.Length == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        var otherFirstItem = other.PatternItems[0];
+                        if (otherFirstItem.IsConstant)
+                        {
+                            if (otherFirstItem.Text.Length > 0)
+                            {
+                                var category = char.GetUnicodeCategory(otherFirstItem.Text[0]);
+
+                                switch (category)
+                                {
+                                    case UnicodeCategory.DecimalDigitNumber:
+                                    case UnicodeCategory.MathSymbol:
+                                        break;
+                                    default:
+                                        return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -280,6 +280,7 @@
     <Compile Include="Utils\FixesExtensions.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
+    <Compile Include="Utils\MappingExtensions.cs" />
     <Compile Include="Utils\UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

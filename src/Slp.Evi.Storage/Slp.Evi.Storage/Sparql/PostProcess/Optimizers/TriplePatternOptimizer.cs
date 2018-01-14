@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
@@ -81,7 +83,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache.GetValueType(toTransform.SubjectMap));
+                    return CanMatch(nodeMatchPattern.Node, toTransform.SubjectMap, data.Context.TypeCache.GetValueType(toTransform.SubjectMap), data.Context);
                 }
                 return true;
             }
@@ -97,7 +99,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache.GetValueType(toTransform.PredicateMap));
+                    return CanMatch(nodeMatchPattern.Node, toTransform.PredicateMap, data.Context.TypeCache.GetValueType(toTransform.PredicateMap), data.Context);
                 }
                 return true;
             }
@@ -128,7 +130,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                 if (pattern is NodeMatchPattern nodeMatchPattern)
                 {
-                    return CanMatch(nodeMatchPattern.Node, r2RmlDef, data.Context.TypeCache.GetValueType(r2RmlDef));
+                    return CanMatch(nodeMatchPattern.Node, r2RmlDef, data.Context.TypeCache.GetValueType(r2RmlDef), data.Context);
                 }
 
                 return true;
@@ -140,7 +142,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
             /// <param name="type">The type of <paramref name="termMap"/></param>
-            public bool CanMatch(INode node, ITermMap termMap, IValueType type)
+            /// <param name="context">The query context.</param>
+            public bool CanMatch(INode node, ITermMap termMap, IValueType type, IQueryContext context)
             {
                 if (type.Category == TypeCategories.BlankNode)
                 {
@@ -176,7 +179,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                 }
 
-                return CanMatchValue(node, termMap);
+                return CanMatchValue(node, termMap, context);
             }
 
             /// <summary>
@@ -184,7 +187,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// </summary>
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
-            private bool CanMatchValue(INode node, ITermMap termMap)
+            /// <param name="context">The query context</param>
+            private bool CanMatchValue(INode node, ITermMap termMap, IQueryContext context)
             {
                 if (node.NodeType == NodeType.Uri)
                 {
@@ -194,7 +198,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     var uri = node.GetUri();
                     var pattern = new Pattern(true, new[] { new PatternItem(uri.AbsoluteUri) });
-                    return CanMatch(pattern, termMap);
+                    return CanMatch(pattern, termMap, context);
                 }
                 if (node.NodeType == NodeType.Literal)
                 {
@@ -205,7 +209,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                     var literalNode = (ILiteralNode) node;
                     var pattern = new Pattern(false, new[] { new PatternItem(literalNode.Value) });
-                    return CanMatch(pattern, termMap);
+                    return CanMatch(pattern, termMap, context);
                 }
                 else
                 {
@@ -218,20 +222,22 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// </summary>
             /// <param name="pattern">The pattern.</param>
             /// <param name="termMap">The term map.</param>
-            private bool CanMatch(Pattern pattern, ITermMap termMap)
+            /// <param name="context">The query context</param>
+            private bool CanMatch(Pattern pattern, ITermMap termMap, IQueryContext context)
             {
                 bool isIriEscaped = !termMap.TermType.IsLiteral;
 
                 if (termMap.IsColumnValued)
                 {
-                    var termPattern = new Pattern(isIriEscaped, new[] {new PatternItem()});
+                    var termPattern = new Pattern(isIriEscaped,
+                        new[] {new PatternItem(termMap.GetTypeResolver(context)(termMap.ColumnName))});
+
                     return CanMatch(pattern, termPattern);
                 }
                 if (termMap.IsConstantValued)
                 {
-                    if (termMap is IUriValuedTermMap)
+                    if (termMap is IUriValuedTermMap uriValued)
                     {
-                        var uriValued = (IUriValuedTermMap)termMap;
                         var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.AbsoluteUri)});
                         return CanMatch(pattern, termPattern);
                     }
@@ -260,7 +266,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 else if (termMap.IsTemplateValued)
                 {
                     var templateParts = _templateProcessor.ParseTemplate(termMap.Template);
-                    var patternItems = templateParts.Select(PatternItem.FromTemplatePart);
+                    var patternItems = templateParts.Select(x => PatternItem.FromTemplatePart(x, termMap.GetTypeResolver(context)));
                     var termPattern = new Pattern(isIriEscaped, patternItems);
                     return CanMatch(pattern, termPattern);
                 }

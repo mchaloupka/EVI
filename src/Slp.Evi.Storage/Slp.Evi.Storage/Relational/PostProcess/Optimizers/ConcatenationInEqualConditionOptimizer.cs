@@ -20,7 +20,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcatenationInEqualConditionOptimizer"/> class.
         /// </summary>
-        public ConcatenationInEqualConditionOptimizer() 
+        public ConcatenationInEqualConditionOptimizer()
             : base(new ConcatenationInEqualConditionOptimizerImplementation())
         { }
 
@@ -238,10 +238,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                     }
                     else if (x is ColumnExpression columnExpression)
                     {
-                        return new PatternItem()
-                        {
-                            RelationalColumn = columnExpression.CalculusVariable
-                        };
+                        return new PatternItem(columnExpression.CalculusVariable);
                     }
                     else
                     {
