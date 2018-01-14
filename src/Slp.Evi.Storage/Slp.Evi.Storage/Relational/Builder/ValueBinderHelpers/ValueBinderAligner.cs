@@ -221,9 +221,15 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                     {
                         var firstValueBinder = matchGroup[0].valueBinder;
 
-                        if (matchGroup.All(x => ValueBindersSimilar(firstValueBinder, x.valueBinder)))
+                        var similarities = matchGroup.Select(x =>
                         {
-                            modified = AlignSimilarIriValueBinders(assignmentConditions, ref caseIndex, cases, caseStatements, queryContext, matchGroup, firstValueBinder);
+                            var isSimilar = ValueBindersSimilar(firstValueBinder, x.valueBinder, out var mapping);
+                            return (isSimilar, x.condition, x.valueBinder, x.templatePattern, mapping);
+                        }).ToList();
+
+                        if (similarities.All(x => x.Item1))
+                        {
+                            modified = AlignSimilarIriValueBinders(assignmentConditions, ref caseIndex, cases, caseStatements, queryContext, similarities, firstValueBinder);
                         }
                         else
                         {
@@ -236,7 +242,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             }
         }
 
-        private static bool AlignSimilarIriValueBinders(List<IAssignmentCondition> assignmentConditions, ref int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, List<(IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern)> matchGroup, BaseValueBinder firstValueBinder)
+        private static bool AlignSimilarIriValueBinders(List<IAssignmentCondition> assignmentConditions, ref int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, List<(bool isSimilar, IFilterCondition condition, BaseValueBinder valueBinder, Pattern templatePattern, Dictionary<string, string> mapping)> matchGroup, BaseValueBinder firstValueBinder)
         {
             bool modified;
             if (firstValueBinder.TermMap.IsConstantValued)
@@ -266,7 +272,12 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                             columnExpressions.Add(columnName, expressions);
                         }
 
-                        expressions.cases.Add((valueTuple.condition, new ColumnExpression(secondValueBinder.GetCalculusVariable(columnName), true)));
+                        if (!valueTuple.mapping.TryGetValue(columnName, out var secondColumnName))
+                        {
+                            secondColumnName = columnName;
+                        }
+
+                        expressions.cases.Add((valueTuple.condition, new ColumnExpression(secondValueBinder.GetCalculusVariable(secondColumnName), true)));
                     }
                 }
 
@@ -356,8 +367,10 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
             return shouldBeReplacedByExpression;
         }
 
-        private bool ValueBindersSimilar(BaseValueBinder firstValueBinder, BaseValueBinder secondValueBinder)
+        private bool ValueBindersSimilar(BaseValueBinder firstValueBinder, BaseValueBinder secondValueBinder, out Dictionary<string, string> variableNames)
         {
+            variableNames = new Dictionary<string, string>();
+
             if (firstValueBinder.TermMap == secondValueBinder.TermMap)
             {
                 return true;
@@ -374,7 +387,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 
                     for (int i = 0; i < firstTemplateParts.Count; i++)
                     {
-                        if (!firstTemplateParts[i].Equals(secondTemplateParts[i]))
+                        if (!firstTemplateParts[i].IsSimilarTo(secondTemplateParts[i], variableNames))
                         {
                             same = false;
                             break;
