@@ -30,15 +30,15 @@
       <column name="label" type="nvarchar(100)" nullable="true" />
       <column name="comment" type="nvarchar(2000)" nullable="true" />
       <column name="producer" type="int" nullable="true" />
-      <column name="propertyNum1" type="int" nullable="true"/>
-      <column name="propertyNum2" type="int" nullable="true"/>
-      <column name="propertyNum3" type="int" nullable="true"/>
+      <column name="propertyNum1" type="int" />
+      <column name="propertyNum2" type="int" />
+      <column name="propertyNum3" type="int" />
       <column name="propertyNum4" type="int" nullable="true"/>
       <column name="propertyNum5" type="int" nullable="true"/>
       <column name="propertyNum6" type="int" nullable="true"/>
-      <column name="propertyTex1" type="nvarchar(250)" nullable="true"/>
-      <column name="propertyTex2" type="nvarchar(250)" nullable="true"/>
-      <column name="propertyTex3" type="nvarchar(250)" nullable="true"/>
+      <column name="propertyTex1" type="nvarchar(250)" />
+      <column name="propertyTex2" type="nvarchar(250)" />
+      <column name="propertyTex3" type="nvarchar(250)" />
       <column name="propertyTex4" type="nvarchar(250)" nullable="true"/>
       <column name="propertyTex5" type="nvarchar(250)" nullable="true"/>
       <column name="propertyTex6" type="nvarchar(250)" nullable="true"/>
@@ -244,6 +244,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:producer;
+      rr:predicate dc:publisher;
       rr:objectMap [
         rr:parentTriplesMap <#Producer>;
         rr:joinCondition [
@@ -299,13 +300,6 @@
     rr:predicateObjectMap [
       rr:predicate bsbm:productPropertyTextual6;
       rr:objectMap [ rr:column "propertyTex6"; ];
-    ];
-    rr:predicateObjectMap [
-      rr:predicate dc:publisher;
-      rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
-      ];
     ];
     rr:predicateObjectMap [
       rr:predicate dc:date;
