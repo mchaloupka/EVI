@@ -529,6 +529,12 @@ namespace Slp.Evi.Storage.Relational.Utils
                 var newCondition = TransformFilterCondition(statement.Condition, data);
                 var newExpression = TransformExpression(statement.Expression, data);
 
+                if (newCondition is AlwaysFalseCondition)
+                {
+                    changed = true;
+                    continue;
+                }
+
                 if (newCondition != statement.Condition || newExpression != statement.Expression)
                 {
                     changed = true;
@@ -538,9 +544,23 @@ namespace Slp.Evi.Storage.Relational.Utils
                 {
                     newStatements.Add(statement);
                 }
+
+                if (newCondition is AlwaysTrueCondition)
+                {
+                    changed = true;
+                    break;
+                }
             }
 
-            if (changed)
+            if (newStatements.Count == 0)
+            {
+                return new NullExpression(toTransform.SqlType);
+            }
+            else if (newStatements.Count == 1 && newStatements[0].Condition is AlwaysTrueCondition)
+            {
+                return newStatements[0].Expression;
+            }
+            else if (changed)
             {
                 return new CaseExpression(newStatements);
             }
