@@ -9,6 +9,9 @@ using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Utils
 {
+    /// <summary>
+    /// Extensions for mapping classes.
+    /// </summary>
     public static class MappingExtensions
     {
         /// <summary>
