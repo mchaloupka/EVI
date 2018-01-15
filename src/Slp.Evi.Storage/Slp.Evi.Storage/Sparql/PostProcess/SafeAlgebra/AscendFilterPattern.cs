@@ -72,7 +72,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                     changed = true;
                     innerFilter = (FilterPattern)newInner;
                 }
-                if (newInner != joinedGraphPattern)
+                else if (newInner != joinedGraphPattern)
                 {
                     changed = true;
                     newInnerPatterns.Add(newInner);
