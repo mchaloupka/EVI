@@ -700,5 +700,21 @@ namespace Slp.Evi.Storage.Sparql.Utils
                 return toTransform;
             }
         }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(BinaryArithmeticExpression toTransform, T data)
+        {
+            var newLeft = TransformSparqlExpression(toTransform.LeftOperand, data);
+            var newRight = TransformSparqlExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new BinaryArithmeticExpression(newLeft, newRight, toTransform.Operation);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
     }
 }

@@ -79,5 +79,13 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(DisjunctionExpression disjunctionExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="BinaryArithmeticExpression"/>
+        /// </summary>
+        /// <param name="binaryArithmeticExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(BinaryArithmeticExpression binaryArithmeticExpression, object data);
     }
 }

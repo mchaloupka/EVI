@@ -325,5 +325,11 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new DisjunctionCondition(innerConditions.Select(x => x.MainCondition))
                 );
         }
+
+        /// <inheritdoc />
+        public object Visit(BinaryArithmeticExpression binaryArithmeticExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -78,6 +78,7 @@
     <Compile Include="Bootstrap\DefaultEviQueryableStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IEviQueryableStorageFactory.cs" />
+    <Compile Include="Common\Algebra\ArithmeticOperation.cs" />
     <Compile Include="Common\Algebra\ComparisonTypes.cs" />
     <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
     <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
     <Compile Include="Relational\Query\ExpressionsSet.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\BinaryArithmeticExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />
     <Compile Include="Types\TypeCategories.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />

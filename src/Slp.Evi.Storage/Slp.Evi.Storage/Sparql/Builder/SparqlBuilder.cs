@@ -19,6 +19,7 @@ using DistinctModifier = Slp.Evi.Storage.Sparql.Algebra.Modifiers.DistinctModifi
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Ordering;
 
 namespace Slp.Evi.Storage.Sparql.Builder
@@ -359,6 +360,13 @@ namespace Slp.Evi.Storage.Sparql.Builder
             else if (expression is ConstantTerm constantTerm)
             {
                 return new NodeExpression(constantTerm.Node());
+            }
+            else if (expression is AdditionExpression additionExpression)
+            {
+                var left = ProcessExpression(additionExpression.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(additionExpression.Arguments.ElementAt(1), context);
+
+                return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Add);
             }
 
             throw new NotImplementedException();
