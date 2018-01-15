@@ -303,7 +303,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
-            throw new NotImplementedException();
+            return expressionSetValueBinder.ExpressionSet;
         }
     }
 }
