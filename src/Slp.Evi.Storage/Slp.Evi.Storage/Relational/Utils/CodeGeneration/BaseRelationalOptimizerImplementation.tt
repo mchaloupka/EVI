@@ -143,6 +143,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         public ExpressionsSet TransformExpressionSet(ExpressionsSet expressionSet, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return new ExpressionsSet(
+                TransformFilterCondition(expressionSet.IsNotErrorCondition, data),
                 TransformExpression(expressionSet.TypeExpression, data),
                 TransformExpression(expressionSet.TypeCategoryExpression, data),
                 TransformExpression(expressionSet.StringExpression, data),

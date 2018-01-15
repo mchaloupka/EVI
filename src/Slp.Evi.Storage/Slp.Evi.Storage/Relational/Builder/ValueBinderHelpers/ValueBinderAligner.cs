@@ -410,12 +410,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
         private int AlignLiteralValues(IValueBinder valueBinder, IValueType type, List<(IFilterCondition condition, BaseValueBinder)> typeGroup, List<IAssignmentCondition> assignmentConditions, int caseIndex, List<SwitchValueBinder.Case> cases, List<CaseExpression.Statement> caseStatements, IQueryContext queryContext, DataType columnType, Func<ExpressionsSet, IExpression> expressionSelector)
         {
             var newVariable = new AssignedVariable(columnType);
-            var expressions = new List<(IFilterCondition condition, IExpression expression)>();
+            var expressions = new List<(IFilterCondition condition, IExpression expression, IFilterCondition notAnErrorCondition)>();
 
             foreach (var valueTuple in typeGroup)
             {
-                var expression = expressionSelector(_conditionBuilder.CreateExpression(queryContext, valueTuple.Item2));
-                expressions.Add((valueTuple.Item1, expression));
+                var expressionSet = _conditionBuilder.CreateExpression(queryContext, valueTuple.Item2);
+                var expression = expressionSelector(expressionSet);
+                expressions.Add((valueTuple.Item1, expression, expressionSet.IsNotErrorCondition));
             }
 
             var caseExpression = new CaseExpression(expressions.Select(x =>
@@ -427,6 +428,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 queryContext);
             var typeCategoryExpression = new ConstantExpression((int) type.Category, queryContext);
             var columnExpression = new ColumnExpression(newVariable, false);
+            var notAnErrorCondition = new DisjunctionCondition(expressions.Select(x =>
+                new ConjunctionCondition(new[] {x.condition, x.notAnErrorCondition})));
 
             ExpressionSetValueBinder newValueBinder = null;
             switch (type.Category)
@@ -436,22 +439,22 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 case TypeCategories.StringLiteral:
                 case TypeCategories.OtherLiterals:
                     newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
-                        new ExpressionsSet(typeExpression, typeCategoryExpression, columnExpression, null, null, null,
+                        new ExpressionsSet(notAnErrorCondition, typeExpression, typeCategoryExpression, columnExpression, null, null, null,
                             queryContext));
                     break;
                 case TypeCategories.NumericLiteral:
                     newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
-                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, columnExpression, null, null,
+                        new ExpressionsSet(notAnErrorCondition, typeExpression, typeCategoryExpression, null, columnExpression, null, null,
                             queryContext));
                     break;
                 case TypeCategories.BooleanLiteral:
                     newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
-                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, null, columnExpression,  null,
+                        new ExpressionsSet(notAnErrorCondition, typeExpression, typeCategoryExpression, null, null, columnExpression, null,
                             queryContext));
                     break;
                 case TypeCategories.DateTimeLiteral:
                     newValueBinder = new ExpressionSetValueBinder(valueBinder.VariableName,
-                        new ExpressionsSet(typeExpression, typeCategoryExpression, null, null, null, columnExpression,
+                        new ExpressionsSet(notAnErrorCondition, typeExpression, typeCategoryExpression, null, null, null, columnExpression,
                             queryContext));
                     break;
                 default:

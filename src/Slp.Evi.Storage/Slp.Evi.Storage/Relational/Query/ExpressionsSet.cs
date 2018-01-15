@@ -17,6 +17,7 @@ namespace Slp.Evi.Storage.Relational.Query
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionsSet"/> class.
         /// </summary>
+        /// <param name="isNotErrorCondition">The condition whether the expression does not produce an error.</param>
         /// <param name="typeExpression">The type expression.</param>
         /// <param name="typeCategoryExpression">The type category expression.</param>
         /// <param name="stringExpression">The string expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
@@ -24,8 +25,9 @@ namespace Slp.Evi.Storage.Relational.Query
         /// <param name="booleanExpression">The boolean expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
         /// <param name="dateTimeExpression">The date time expression (if <c>null</c> is passed, then corresponding <see cref="NullExpression"/> will be used).</param>
         /// <param name="context">The query context</param>
-        public ExpressionsSet(IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression, IQueryContext context)
+        public ExpressionsSet(IFilterCondition isNotErrorCondition, IExpression typeExpression, IExpression typeCategoryExpression, IExpression stringExpression, IExpression numericExpression, IExpression booleanExpression, IExpression dateTimeExpression, IQueryContext context)
         {
+            IsNotErrorCondition = isNotErrorCondition;
             TypeExpression = typeExpression ?? new NullExpression(context.Db.SqlTypeForInt);
             TypeCategoryExpression = typeCategoryExpression ?? new NullExpression(context.Db.SqlTypeForInt);
             StringExpression = stringExpression ?? new NullExpression(context.Db.SqlTypeForString);
@@ -33,6 +35,11 @@ namespace Slp.Evi.Storage.Relational.Query
             BooleanExpression = booleanExpression ?? new NullExpression(context.Db.SqlTypeForBoolean);
             DateTimeExpression = dateTimeExpression ?? new NullExpression(context.Db.SqlTypeForDateTime);
         }
+
+        /// <summary>
+        /// Gets the condition whether the expression does not produce an error.
+        /// </summary>
+        public IFilterCondition IsNotErrorCondition { get; }
 
         /// <summary>
         /// Gets the expression which returns the type id.

@@ -60,6 +60,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 if (map is IUriValuedTermMap uriValuedTermMap)
                 {
                     return new ExpressionsSet(
+                        new AlwaysTrueCondition(),
                         new ConstantExpression(context.TypeCache.GetIndex(type), context),
                         new ConstantExpression((int)type.Category, context),
                         new ConstantExpression(uriValuedTermMap.URI, context),
@@ -73,6 +74,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                     if (objectMap.URI != null)
                     {
                         return new ExpressionsSet(
+                            new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             new ConstantExpression(objectMap.URI, context),
@@ -117,6 +119,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 {
                     case TypeCategories.NumericLiteral:
                         return new ExpressionsSet(
+                            new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             null,
@@ -126,6 +129,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             context);
                     case TypeCategories.BooleanLiteral:
                         return new ExpressionsSet(
+                            new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             null,
@@ -135,6 +139,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             context);
                     case TypeCategories.DateTimeLiteral:
                         return new ExpressionsSet(
+                            new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             null,
@@ -144,6 +149,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             context);
                     default:
                         return new ExpressionsSet(
+                            new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
@@ -178,6 +184,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 if (parts.Count == 0)
                 {
                     return new ExpressionsSet(
+                        new AlwaysTrueCondition(),
                         new ConstantExpression(context.TypeCache.GetIndex(type), context),
                         new ConstantExpression((int)type.Category, context),
                         new ConstantExpression(string.Empty, context),
@@ -189,6 +196,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 else if (parts.Count == 1)
                 {
                     return new ExpressionsSet(
+                        new AlwaysTrueCondition(),
                         new ConstantExpression(context.TypeCache.GetIndex(type), context),
                         new ConstantExpression((int)type.Category, context),
                         parts[0],
@@ -200,6 +208,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 else
                 {
                     return new ExpressionsSet(
+                        new AlwaysTrueCondition(),
                         new ConstantExpression(context.TypeCache.GetIndex(type), context),
                         new ConstantExpression((int)type.Category, context),
                         new ConcatenationExpression(parts, context.Db.SqlTypeForString),
@@ -224,13 +233,14 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(EmptyValueBinder emptyValueBinder, object data)
         {
             return new ExpressionsSet(
+                new AlwaysTrueCondition(),
                 null,
                 null,
                 null,
                 null,
                 null,
                 null,
-                (QueryContext) data);
+                (QueryContext)data);
         }
 
         /// <summary>
@@ -247,6 +257,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 .Select(x => CreateExpression(context, x)).ToList();
 
             return new ExpressionsSet(
+                new ConjunctionCondition(expressionsSets.Select(x => x.IsNotErrorCondition)),
                 new CoalesceExpression(expressionsSets.Select(x => x.TypeExpression)),
                 new CoalesceExpression(expressionsSets.Select(x => x.TypeCategoryExpression)),
                 new CoalesceExpression(expressionsSets.Select(x => x.StringExpression)),
@@ -265,33 +276,36 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(SwitchValueBinder switchValueBinder, object data)
         {
             var context = (IQueryContext) data;
+            var notErrorStatements = new List<IFilterCondition>();
             var typeStatements = new List<CaseExpression.Statement>();
             var typeCategoryStatements = new List<CaseExpression.Statement>();
             var stringStatements = new List<CaseExpression.Statement>();
             var numericStatements = new List<CaseExpression.Statement>();
             var booleanStatements = new List<CaseExpression.Statement>();
-            var datetimeStatements = new List<CaseExpression.Statement>();
+            var dateTimeStatements = new List<CaseExpression.Statement>();
 
             foreach (var @case in switchValueBinder.Cases)
             {
                 var expression = CreateExpression(context, @case.ValueBinder);
                 var condition = new ComparisonCondition(new ColumnExpression(switchValueBinder.CaseVariable, false), new ConstantExpression(@case.CaseValue, context), ComparisonTypes.EqualTo);
 
+                notErrorStatements.Add(new ConjunctionCondition(new[] {condition, expression.IsNotErrorCondition}));
                 typeStatements.Add(new CaseExpression.Statement(condition, expression.TypeExpression));
                 typeCategoryStatements.Add(new CaseExpression.Statement(condition, expression.TypeCategoryExpression));
                 stringStatements.Add(new CaseExpression.Statement(condition, expression.StringExpression));
                 numericStatements.Add(new CaseExpression.Statement(condition, expression.NumericExpression));
                 booleanStatements.Add(new CaseExpression.Statement(condition, expression.BooleanExpression));
-                datetimeStatements.Add(new CaseExpression.Statement(condition, expression.DateTimeExpression));
+                dateTimeStatements.Add(new CaseExpression.Statement(condition, expression.DateTimeExpression));
             }
 
             return new ExpressionsSet(
+                new DisjunctionCondition(notErrorStatements),
                 new CaseExpression(typeStatements),
                 new CaseExpression(typeCategoryStatements),
                 new CaseExpression(stringStatements),
                 new CaseExpression(numericStatements),
                 new CaseExpression(booleanStatements),
-                new CaseExpression(datetimeStatements),
+                new CaseExpression(dateTimeStatements),
                 context);
         }
 
