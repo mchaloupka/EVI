@@ -108,7 +108,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(ModifiedCalculusModel toTransform, VisitorContext data)
         {
-            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering, toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
+            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering.ToList(), toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
             return null;
         }
 
@@ -133,7 +133,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
         /// <param name="isDistinct">The flag whether the result should be distinct.</param>
-        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, IEnumerable<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset, bool isDistinct)
+        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, List<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset, bool isDistinct)
         {
             foreach (var sourceCondition in toTransform.SourceConditions)
             {
@@ -156,6 +156,12 @@ namespace Slp.Evi.Storage.Database.Base
             {
                 var sourceInParent = data.Context.QueryNamingHelpers.GetSourceCondtion(parentModel, toTransform);
                 neededVariables.AddRange(sourceInParent.CalculusVariables);
+            }
+
+            if (isDistinct && ordering.Count > 0)
+            {
+                // The ORDER BY and DISTINCT may cause issue if it is in the same query lavel
+                data.StringBuilder.Append("SELECT * FROM (");
             }
 
             data.StringBuilder.Append("SELECT");
@@ -256,6 +262,12 @@ namespace Slp.Evi.Storage.Database.Base
             }
 
             data.LeaveCalculusModel();
+
+            if (isDistinct && ordering.Count > 0)
+            {
+                // The ORDER BY and DISTINCT may cause issue if it is in the same query lavel
+                data.StringBuilder.Append(") AS o");
+            }
 
             bool firstOrderBy = true;
             foreach (var orderingPart in ordering.Where(x => !x.Expression.HasAlwaysTheSameValue))
