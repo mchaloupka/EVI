@@ -368,6 +368,13 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Add);
             }
+            else if (expression is SubtractionExpression subtractionExpression)
+            {
+                var left = ProcessExpression(subtractionExpression.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(subtractionExpression.Arguments.ElementAt(1), context);
+
+                return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Subtract);
+            }
 
             throw new NotImplementedException();
         }
