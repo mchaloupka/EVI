@@ -268,6 +268,12 @@ namespace Slp.Evi.Storage.Database.Reader
             {
                 return _value as int?;
             }
+
+            /// <inheritdoc />
+            public object GetValue()
+            {
+                return _value;
+            }
         }
     }
 }

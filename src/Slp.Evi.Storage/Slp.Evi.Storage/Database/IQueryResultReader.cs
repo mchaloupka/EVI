@@ -69,5 +69,10 @@ namespace Slp.Evi.Storage.Database
         /// Gets the integer value.
         /// </summary>
         int? GetIntegerValue();
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        object GetValue();
     }
 }

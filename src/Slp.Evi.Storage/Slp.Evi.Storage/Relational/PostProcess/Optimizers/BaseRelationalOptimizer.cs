@@ -21,7 +21,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         protected BaseRelationalOptimizer(BaseRelationalOptimizerImplementation<T> optimizerImplementation)
         {
             _optimizerImplementation = optimizerImplementation;
-        } 
+        }
 
         /// <summary>
         /// The optimizer implementation

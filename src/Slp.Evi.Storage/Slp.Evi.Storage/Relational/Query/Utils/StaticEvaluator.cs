@@ -77,7 +77,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var param = (StaticEvaluatorParameter) data;
             var columnName = param.Context.QueryNamingHelpers.GetVariableName(null, columnExpression.CalculusVariable);
             var column = param.RowData.GetColumn(columnName);
-            return column.StringValue;
+            return column.GetValue();
         }
 
         /// <summary>

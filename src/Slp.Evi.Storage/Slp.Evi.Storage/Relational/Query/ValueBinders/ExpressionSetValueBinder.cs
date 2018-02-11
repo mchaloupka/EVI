@@ -28,14 +28,15 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             VariableName = variableName;
             ExpressionSet = expressionSet;
             NeededCalculusVariables =
-                expressionSet.TypeCategoryExpression.UsedCalculusVariables
+                expressionSet.IsNotErrorCondition.UsedCalculusVariables
+                    .Union(expressionSet.TypeCategoryExpression.UsedCalculusVariables)
                     .Union(expressionSet.TypeExpression.UsedCalculusVariables)
                     .Union(expressionSet.StringExpression.UsedCalculusVariables)
                     .Union(expressionSet.NumericExpression.UsedCalculusVariables)
                     .Union(expressionSet.BooleanExpression.UsedCalculusVariables)
                     .Union(expressionSet.DateTimeExpression.UsedCalculusVariables)
                     .Distinct()
-                    .ToList();
+                    .ToArray();
         }
 
         /// <summary>
