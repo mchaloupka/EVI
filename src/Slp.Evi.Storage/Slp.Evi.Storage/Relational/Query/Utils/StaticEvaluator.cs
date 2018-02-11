@@ -26,6 +26,17 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         }
 
         /// <summary>
+        /// Evaluates the specified filter condition.
+        /// </summary>
+        /// <param name="filterCondition">The expression.</param>
+        /// <param name="rowData">The row data.</param>
+        /// <param name="context">The context.</param>
+        public bool Evaluate(IFilterCondition filterCondition, IQueryResultRow rowData, IQueryContext context)
+        {
+            return (bool)filterCondition.Accept(this, new StaticEvaluatorParameter(rowData, context));
+        }
+
+        /// <summary>
         /// Helper class representing passed parameter
         /// </summary>
         private class StaticEvaluatorParameter

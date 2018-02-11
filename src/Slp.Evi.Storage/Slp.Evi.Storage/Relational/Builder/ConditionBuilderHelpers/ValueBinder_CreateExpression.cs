@@ -317,7 +317,19 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
-            return expressionSetValueBinder.ExpressionSet;
+            return new ExpressionsSet(
+                new AlwaysTrueCondition(),
+                new CaseExpression(new[]
+                {
+                    new CaseExpression.Statement(expressionSetValueBinder.ExpressionSet.IsNotErrorCondition,
+                        expressionSetValueBinder.ExpressionSet.TypeExpression)
+                }),
+                expressionSetValueBinder.ExpressionSet.TypeCategoryExpression,
+                expressionSetValueBinder.ExpressionSet.StringExpression,
+                expressionSetValueBinder.ExpressionSet.NumericExpression,
+                expressionSetValueBinder.ExpressionSet.BooleanExpression,
+                expressionSetValueBinder.ExpressionSet.DateTimeExpression,
+                (IQueryContext) data);
         }
     }
 }
