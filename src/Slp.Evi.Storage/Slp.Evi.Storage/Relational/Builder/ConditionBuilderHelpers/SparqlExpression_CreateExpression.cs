@@ -9,6 +9,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Types;
+using Slp.Evi.Storage.Utils;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
@@ -329,7 +330,36 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <inheritdoc />
         public object Visit(BinaryArithmeticExpression binaryArithmeticExpression, object data)
         {
-            throw new NotImplementedException();
+            var parameter = (ExpressionVisitParameter) data;
+            var leftExpression = CreateExpression(binaryArithmeticExpression.LeftOperand, parameter);
+            var rightExpression = CreateExpression(binaryArithmeticExpression.RightOperand, parameter);
+
+            var notErrorCondition = new ConjunctionCondition(new[]
+            {
+                leftExpression.IsNotErrorCondition,
+                rightExpression.IsNotErrorCondition,
+                new ComparisonCondition(leftExpression.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo),
+                new ComparisonCondition(leftExpression.TypeCategoryExpression,
+                    new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
+                    ComparisonTypes.EqualTo)
+            });
+
+            var numericExpression = new BinaryNumericExpression(leftExpression.NumericExpression, rightExpression.NumericExpression,
+                binaryArithmeticExpression.Operation, parameter.QueryContext);
+
+            var numericType = parameter.QueryContext.TypeCache.GetValueTypeForDataType(EviConstants.XsdNumeric);
+
+            return new ExpressionsSet(
+                notErrorCondition,
+                new ConstantExpression(parameter.QueryContext.TypeCache.GetIndex(numericType), parameter.QueryContext),
+                new ConstantExpression((int) numericType.Category, parameter.QueryContext),
+                null,
+                numericExpression,
+                null,
+                null,
+                parameter.QueryContext);
         }
     }
 }

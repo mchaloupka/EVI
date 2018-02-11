@@ -101,6 +101,7 @@
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
     <Compile Include="Relational\Query\ExpressionsSet.cs" />
+    <Compile Include="Relational\Query\Expressions\BinaryNumericExpression.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\BinaryArithmeticExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />

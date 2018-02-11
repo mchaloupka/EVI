@@ -82,5 +82,10 @@ namespace Slp.Evi.Storage.Database
         /// Gets the natural RDF type for the SQL type <paramref name="dbType"/>
         /// </summary>
         Uri GetNaturalRdfType(string dbType);
+
+        /// <summary>
+        /// Gets the nearest type these two types could be casted to for comparison.
+        /// </summary>
+        DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType);
     }
 }

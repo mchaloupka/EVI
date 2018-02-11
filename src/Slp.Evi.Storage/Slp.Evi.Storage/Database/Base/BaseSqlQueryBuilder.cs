@@ -413,7 +413,7 @@ namespace Slp.Evi.Storage.Database.Base
         {
             TransformComparisonCondition(() => TransformExpression(toTransform.LeftOperand, data),
                 () => TransformExpression(toTransform.RightOperand, data), x => data.StringBuilder.Append(x),
-                toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, toTransform.ComparisonType);
+                toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, toTransform.ComparisonType, data);
 
             return null;
         }
@@ -431,7 +431,7 @@ namespace Slp.Evi.Storage.Database.Base
 
             TransformComparisonCondition(() => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data),
                 () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data),
-                x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType, ComparisonTypes.EqualTo);
+                x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType, ComparisonTypes.EqualTo, data);
 
             return null;
         }
@@ -445,9 +445,10 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="leftDataType">Type of the left data.</param>
         /// <param name="rightDataType">Type of the right data.</param>
         /// <param name="comparisonType">Comparison type</param>
-        protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType)
+        /// <param name="context">The query context</param>
+        protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType, VisitorContext context)
         {
-            var commonType = GetCommonTypeForComparison(leftDataType, rightDataType);
+            var commonType = context.Context.Db.GetCommonTypeForComparison(leftDataType, rightDataType).TypeName;
 
             if (leftDataType.TypeName == commonType)
             {
@@ -829,10 +830,5 @@ namespace Slp.Evi.Storage.Database.Base
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Gets the nearest type these two types could be casted to for comparison.
-        /// </summary>
-        protected abstract string GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType);
     }
 }

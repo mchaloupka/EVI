@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -23,7 +24,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="connectionString">The connection string.</param>
-        public MsSqlDb(ISqlDbFactory factory, string connectionString) 
+        public MsSqlDb(ISqlDbFactory factory, string connectionString)
             : base(factory, connectionString, SqlType.SqlServer)
         {
 
@@ -175,6 +176,52 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        /// <inheritdoc />
+        public override DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType)
+        {
+            if (leftDataType.TypeName == rightDataType.TypeName)
+            {
+                return leftDataType;
+            }
+
+            var leftTypeName = leftDataType.TypeName.ToLowerInvariant();
+            var rightTypeName = rightDataType.TypeName.ToLowerInvariant();
+
+            if (leftDataType.IsNumeric && rightDataType.IsNumeric)
+            {
+                if ((leftTypeName == "float") || (leftTypeName == "real")
+                                              || (rightTypeName == "float") || (rightTypeName == "real"))
+                {
+                    return new DataType("float", "System.Double");
+                }
+
+                var intTypes = new List<string>()
+                {
+                    "bit",
+                    "tinyint",
+                    "smallint",
+                    "int",
+                    "bigint"
+                };
+
+                var leftIndex = intTypes.FindIndex(x => x == leftTypeName);
+                var rightIndex = intTypes.FindIndex(x => x == rightTypeName);
+
+                if (leftIndex >= 0 && rightIndex >= 0)
+                {
+                    return new DataType(intTypes[Math.Min(leftIndex, rightIndex)], "System.Int64");
+                }
+
+                return new DataType("numeric(38,8)", "System.Decimal");
+            }
+            else if (leftDataType.IsDateTime || rightDataType.IsDateTime)
+            {
+                return new DataType("datetime2", "System.DateTime");
+            }
+
+            return new DataType("nvarchar(MAX)", "System.String");
         }
     }
 }
