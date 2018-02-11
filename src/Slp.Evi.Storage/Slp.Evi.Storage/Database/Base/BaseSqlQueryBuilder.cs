@@ -475,6 +475,60 @@ namespace Slp.Evi.Storage.Database.Base
             }
         }
 
+        /// <inheritdoc />
+        protected override object Transform(BinaryNumericExpression toTransform, VisitorContext data)
+        {
+            var commonType = data.Context.Db.GetCommonTypeForComparison(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType).TypeName;
+
+            var leftCast = toTransform.LeftOperand.SqlType.TypeName != commonType;
+
+            if (leftCast)
+            {
+                data.StringBuilder.Append("CAST((");
+            }
+
+            toTransform.LeftOperand.Accept(this, data);
+
+            if (leftCast)
+            {
+                data.StringBuilder.Append($") AS {commonType})");
+            }
+
+            switch (toTransform.Operator)
+            {
+                case ArithmeticOperation.Add:
+                    data.StringBuilder.Append("+");
+                    break;
+                case ArithmeticOperation.Subtract:
+                    data.StringBuilder.Append("-");
+                    break;
+                case ArithmeticOperation.Divide:
+                    data.StringBuilder.Append("/");
+                    break;
+                case ArithmeticOperation.Multiply:
+                    data.StringBuilder.Append("*");
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            var rightCast = toTransform.RightOperand.SqlType.TypeName != commonType;
+
+            if (rightCast)
+            {
+                data.StringBuilder.Append("CAST((");
+            }
+
+            toTransform.RightOperand.Accept(this, data);
+
+            if (rightCast)
+            {
+                data.StringBuilder.Append($") AS {commonType})");
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Writes the comparison operator.
         /// </summary>

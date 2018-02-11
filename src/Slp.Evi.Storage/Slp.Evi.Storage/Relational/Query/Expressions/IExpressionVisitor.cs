@@ -55,5 +55,13 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(NullExpression nullExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="BinaryNumericExpression"/>
+        /// </summary>
+        /// <param name="binaryNumericExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(BinaryNumericExpression binaryNumericExpression, object data);
     }
 }

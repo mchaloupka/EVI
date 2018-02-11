@@ -32,22 +32,40 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// </summary>
         public ArithmeticOperation Operator { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryNumericExpression"/> class.
+        /// </summary>
+        /// <param name="leftOperand">The left operand.</param>
+        /// <param name="rightOperand">The right operand.</param>
+        /// <param name="oper">The operator.</param>
+        /// <param name="context">The context.</param>
         public BinaryNumericExpression(IExpression leftOperand, IExpression rightOperand, ArithmeticOperation oper, IQueryContext context)
+            : this(leftOperand, rightOperand, oper, context.Db.GetCommonTypeForComparison(leftOperand.SqlType, rightOperand.SqlType))
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryNumericExpression"/> class.
+        /// </summary>
+        /// <param name="leftOperand">The left operand.</param>
+        /// <param name="rightOperand">The right operand.</param>
+        /// <param name="oper">The operator.</param>
+        /// <param name="sqlType">The sql type.</param>
+        public BinaryNumericExpression(IExpression leftOperand, IExpression rightOperand, ArithmeticOperation oper, DataType sqlType)
         {
             LeftOperand = leftOperand;
             RightOperand = rightOperand;
             Operator = oper;
-            SqlType = context.Db.GetCommonTypeForComparison(leftOperand.SqlType, rightOperand.SqlType);
             HasAlwaysTheSameValue = leftOperand.HasAlwaysTheSameValue && rightOperand.HasAlwaysTheSameValue;
             UsedCalculusVariables = leftOperand.UsedCalculusVariables.Union(rightOperand.UsedCalculusVariables)
                 .Distinct().ToArray();
+            SqlType = sqlType;
         }
 
         /// <inheritdoc />
         [DebuggerStepThrough]
         public object Accept(IExpressionVisitor visitor, object data)
         {
-            throw new NotImplementedException();
+            return visitor.Visit(this, data);
         }
 
         /// <inheritdoc />

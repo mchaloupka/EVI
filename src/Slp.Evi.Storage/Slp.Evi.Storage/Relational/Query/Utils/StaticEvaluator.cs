@@ -157,6 +157,27 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             return null;
         }
 
+        /// <inheritdoc />
+        public object Visit(BinaryNumericExpression binaryNumericExpression, object data)
+        {
+            var left = Convert.ToDecimal(binaryNumericExpression.LeftOperand.Accept(this, data));
+            var right = Convert.ToDecimal(binaryNumericExpression.RightOperand.Accept(this, data));
+
+            switch (binaryNumericExpression.Operator)
+            {
+                case ArithmeticOperation.Add:
+                    return left + right;
+                case ArithmeticOperation.Subtract:
+                    return left - right;
+                case ArithmeticOperation.Divide:
+                    return left / right;
+                case ArithmeticOperation.Multiply:
+                    return left * right;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         /// Visits <see cref="AlwaysFalseCondition"/>
         /// </summary>

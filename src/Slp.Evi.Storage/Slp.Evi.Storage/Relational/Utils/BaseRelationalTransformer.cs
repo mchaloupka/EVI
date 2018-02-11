@@ -612,6 +612,22 @@ namespace Slp.Evi.Storage.Relational.Utils
             return toTransform;
         }
 
+        /// <inheritdoc />
+        protected override IExpression Transform(BinaryNumericExpression toTransform, T data)
+        {
+            var newLeft = TransformExpression(toTransform.LeftOperand, data);
+            var newRight = TransformExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new BinaryNumericExpression(newLeft, newRight, toTransform.Operator, toTransform.SqlType);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="AssignmentFromExpressionCondition"/>
         /// </summary>
