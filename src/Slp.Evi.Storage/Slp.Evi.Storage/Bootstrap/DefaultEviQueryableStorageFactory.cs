@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
@@ -23,6 +24,17 @@ namespace Slp.Evi.Storage.Bootstrap
     public class DefaultEviQueryableStorageFactory
         : IEviQueryableStorageFactory
     {
+        private readonly ILoggerFactory _loggerFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultEviQueryableStorageFactory"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public DefaultEviQueryableStorageFactory(ILoggerFactory loggerFactory)
+        {
+            _loggerFactory = loggerFactory;
+        }
+
         /// <summary>
         /// Creates the query processor.
         /// </summary>
