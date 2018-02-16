@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage;
 using Slp.Evi.Storage.Bootstrap;
@@ -35,7 +36,9 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
         private static IEviQueryableStorageFactory GetStorageFactory()
         {
             var loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
+
+            loggerFactory.AddConsole(LogLevel.Trace);
+            loggerFactory.AddDebug(LogLevel.Trace);
 
             return new DefaultEviQueryableStorageFactory(loggerFactory);
         }

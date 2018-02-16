@@ -59,7 +59,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         public virtual SparqlBuilder CreateSparqlBuilder()
         {
-            return new SparqlBuilder();
+            return new SparqlBuilder(_loggerFactory.CreateLogger<SparqlBuilder>());
         }
 
         /// <summary>

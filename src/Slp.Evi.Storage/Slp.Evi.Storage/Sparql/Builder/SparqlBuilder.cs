@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -29,6 +30,17 @@ namespace Slp.Evi.Storage.Sparql.Builder
     /// </summary>
     public class SparqlBuilder
     {
+        private readonly ILogger<SparqlBuilder> _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SparqlBuilder"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public SparqlBuilder(ILogger<SparqlBuilder> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Processes the specified context.
         /// </summary>
@@ -37,25 +49,35 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <exception cref="System.Exception">Cannot handle unknown query type</exception>
         public ISparqlQuery Process(IQueryContext context)
         {
+            ISparqlQuery result;
+
             switch (context.OriginalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    return ProcessAsk(context);
+                    result = ProcessAsk(context);
+                    break;
                 case SparqlQueryType.Construct:
-                    return ProcessConstruct(context);
+                    result = ProcessConstruct(context);
+                    break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    return ProcessDescribe(context);
+                    result = ProcessDescribe(context);
+                    break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    return ProcessSelect(context);
+                    result = ProcessSelect(context);
+                    break;
                 default:
                     throw new Exception("Cannot handle unknown query type");
             }
+
+            context.DebugLogging.LogTransformation(_logger, context.OriginalQuery, result);
+
+            return result;
         }
 
         /// <summary>

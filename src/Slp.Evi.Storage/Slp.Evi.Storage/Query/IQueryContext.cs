@@ -66,6 +66,12 @@ namespace Slp.Evi.Storage.Query
         ITypeCache TypeCache { get; }
 
         /// <summary>
+        /// Gets the debug logging.
+        /// </summary>
+        /// <value>The debug logging.</value>
+        DebugLogger DebugLogging { get; }
+
+        /// <summary>
         /// Creates a sparql variable.
         /// </summary>
         /// <returns>The variable name.</returns>

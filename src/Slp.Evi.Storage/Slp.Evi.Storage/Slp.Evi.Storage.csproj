@@ -96,7 +96,9 @@
     <Compile Include="Database\Vendor\MsSql\MsSqlQueryBuilder.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
+    <Compile Include="Query\DebugLogger.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Query\Logging\SparqlQueryRepresentation.cs" />
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
