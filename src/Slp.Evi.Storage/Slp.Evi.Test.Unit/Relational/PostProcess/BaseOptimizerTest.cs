@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DatabaseSchemaReader.DataSchema;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Slp.Evi.Storage.Bootstrap;
@@ -60,7 +61,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
             var mappingMock = new Mock<IMappingProcessor>();
             mappingMock.Setup(x => x.GetMappingTransformer()).Returns(() => null);
 
-            var factory = new DefaultEviQueryableStorageFactory();
+            var factory = new DefaultEviQueryableStorageFactory(new LoggerFactory());
             return factory.CreateQueryContext(GenerateSparqlQuery(), mappingMock.Object, GetDb(), GetSchemaProvider(), null, null);
         }
 
