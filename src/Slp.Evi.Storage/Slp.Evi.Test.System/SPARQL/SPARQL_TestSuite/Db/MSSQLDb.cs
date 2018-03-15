@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Extensions.Logging;
@@ -38,10 +39,9 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
         {
             var loggerFactory = new LoggerFactory();
 
-            loggerFactory.AddConsole(LogLevel.Trace);
-
             if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
             {
+                loggerFactory.AddConsole(LogLevel.Trace);
                 loggerFactory.AddDebug(LogLevel.Trace);
             }
 
