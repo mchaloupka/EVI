@@ -29,7 +29,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         /// <param name="context">The context.</param>
         public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
-            return TransformSparqlQuery(query, null);
+            return TransformSparqlQuery(query, null, context);
         }
 
         /// <summary>

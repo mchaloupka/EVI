@@ -23,7 +23,7 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="context">The context.</param>
         public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
-            return TransformSparqlQuery(query, context);
+            return TransformSparqlQuery(query, context, context);
         }
 
         /// <summary>

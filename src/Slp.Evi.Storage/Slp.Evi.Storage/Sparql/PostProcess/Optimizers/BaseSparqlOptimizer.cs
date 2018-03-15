@@ -62,7 +62,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             {
                 Context = context,
                 Data = CreateInitialData()
-            });
+            }, context);
         }
 
         /// <summary>
