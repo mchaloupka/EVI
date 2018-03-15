@@ -38,6 +38,7 @@ namespace Slp.Evi.Storage.Query.Logging
                 }
                 first = false;
 
+                _sb.Append("?");
                 _sb.Append(variable);
             }
             _sb.Append(" | ");
@@ -188,6 +189,7 @@ namespace Slp.Evi.Storage.Query.Logging
         {
             if (patternItem is VariablePattern variablePattern)
             {
+                _sb.Append("?");
                 _sb.Append(variablePattern.VariableName);
             }
             else if (patternItem is NodeMatchPattern nodeMatchPattern)
@@ -317,6 +319,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(VariableExpression variableExpression, object data)
         {
+            _sb.Append("?");
             _sb.Append(variableExpression.Variable);
             return null;
         }
