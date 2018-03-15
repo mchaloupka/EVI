@@ -51,7 +51,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="mapping">The mapping.</param>
         public virtual IMappingProcessor CreateMappingProcessor(IR2RML mapping)
         {
-            return new MappingProcessor(mapping);
+            return new MappingProcessor(mapping, _loggerFactory);
         }
 
         /// <summary>
@@ -103,10 +103,10 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="mapping">Used mapping processor</param>
         public IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping)
         {
-            yield return new AscendFilterPattern();
+            yield return new AscendFilterPattern(_loggerFactory.CreateLogger<AscendFilterPattern>());
             yield return mapping.GetMappingTransformer();
-            yield return new TriplePatternOptimizer();
-            yield return new UnionJoinOptimizer();
+            yield return new TriplePatternOptimizer(_loggerFactory.CreateLogger<TriplePatternOptimizer>());
+            yield return new UnionJoinOptimizer(_loggerFactory.CreateLogger<UnionJoinOptimizer>());
         }
     }
 }

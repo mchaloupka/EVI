@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DatabaseSchemaReader.DataSchema;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
@@ -26,8 +27,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="TriplePatternOptimizer"/> class.
         /// </summary>
-        public TriplePatternOptimizer()
-            : base(new TriplePatternOptimizerImplementation())
+        /// <param name="logger">The logger</param>
+        public TriplePatternOptimizer(ILogger<TriplePatternOptimizer> logger)
+            : base(new TriplePatternOptimizerImplementation(), logger)
         { }
 
         /// <summary>

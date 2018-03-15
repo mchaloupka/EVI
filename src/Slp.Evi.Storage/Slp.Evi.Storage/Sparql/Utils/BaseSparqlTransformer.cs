@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
@@ -17,13 +19,38 @@ namespace Slp.Evi.Storage.Sparql.Utils
     public class BaseSparqlTransformer<T>
         : BaseSparqlExpressionTransformerG<T, ISparqlExpression, IGraphPattern, ISparqlQuery>
     {
+        protected readonly ILogger _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseSparqlTransformer{T}"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public BaseSparqlTransformer(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="ISparqlQuery" />.
+        /// </summary>
+        /// <param name="instance">The instance to transform.</param>
+        /// <param name="data">The passed data.</param>
+        /// <param name="context">The query context</param>
+        /// <returns>The transformed calculus source.</returns>
+        public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data, IQueryContext context)
+        {
+            ISparqlQuery result = TransformSparqlQuery(instance, data);
+            context.DebugLogging.LogTransformation(_logger, instance, result);
+            return result;
+        }
+
         /// <summary>
         /// Transforms the <see cref="ISparqlQuery" />.
         /// </summary>
         /// <param name="instance">The instance to transform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
+        protected ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
         {
             if (instance is IModifier modifier)
             {

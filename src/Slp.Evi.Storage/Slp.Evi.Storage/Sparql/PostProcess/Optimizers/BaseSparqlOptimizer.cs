@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Query;
+﻿using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Utils;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
@@ -21,7 +22,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// Initializes a new instance of the <see cref="BaseSparqlOptimizer{T}"/> class.
         /// </summary>
         /// <param name="optimizerImplementation">The optimizer implementation.</param>
-        protected BaseSparqlOptimizer(BaseSparqlOptimizerImplementation<T> optimizerImplementation)
+        /// <param name="logger">The logger</param>
+        protected BaseSparqlOptimizer(BaseSparqlOptimizerImplementation<T> optimizerImplementation, ILogger logger)
+            : base(logger)
         {
             _optimizerImplementation = optimizerImplementation;
         }

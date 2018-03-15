@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
@@ -34,7 +35,8 @@ namespace Slp.Evi.Storage.Mapping
         /// Initializes a new instance of the <see cref="MappingTransformer"/> class.
         /// </summary>
         /// <param name="mappingProcessor">The mapping processor.</param>
-        public MappingTransformer(IMappingProcessor mappingProcessor)
+        public MappingTransformer(IMappingProcessor mappingProcessor, ILogger<MappingTransformer> logger)
+            : base(logger)
         {
             _mappingProcessor = mappingProcessor;
         }
@@ -92,16 +94,16 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="subjectMap">The subject map.</param>
         /// <param name="classUri">The class URI.</param>
         /// <param name="graphMaps">The graph maps.</param>
-        private void ConstrainTriplePattern(TriplePattern triplePattern, 
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap, 
+        private void ConstrainTriplePattern(TriplePattern triplePattern,
+            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
             System.Uri classUri, List<IGraphMap> graphMaps)
         {
             if (graphMaps.Any())
             {
-                patterns.AddRange(graphMaps.Select(graphMap => 
-                    new RestrictedTriplePattern(triplePattern.SubjectPattern, 
-                        triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap, 
-                        subjectMap, new ClassPredicateMap(tripleMap.BaseUri), 
+                patterns.AddRange(graphMaps.Select(graphMap =>
+                    new RestrictedTriplePattern(triplePattern.SubjectPattern,
+                        triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
+                        subjectMap, new ClassPredicateMap(tripleMap.BaseUri),
                         new ClassObjectMap(tripleMap.BaseUri, classUri), null, graphMap)));
             }
             else
@@ -109,7 +111,7 @@ namespace Slp.Evi.Storage.Mapping
                 patterns.Add(
                     new RestrictedTriplePattern(triplePattern.SubjectPattern,
                     triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
-                    subjectMap, new ClassPredicateMap(tripleMap.BaseUri), 
+                    subjectMap, new ClassPredicateMap(tripleMap.BaseUri),
                     new ClassObjectMap(tripleMap.BaseUri, classUri),
                     null, null));
             }
@@ -125,8 +127,8 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="predicateMap">The predicate map.</param>
         /// <param name="refObjectMap">The reference object map.</param>
         /// <param name="graphMaps">The graph maps.</param>
-        private void ConstrainTriplePattern(TriplePattern triplePattern, 
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap, 
+        private void ConstrainTriplePattern(TriplePattern triplePattern,
+            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
             IPredicateMap predicateMap, IRefObjectMap refObjectMap, List<IGraphMap> graphMaps)
         {
             if (graphMaps.Any())
@@ -155,8 +157,8 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="predicateMap">The predicate map.</param>
         /// <param name="objectMap">The object map.</param>
         /// <param name="graphMaps">The graph maps.</param>
-        private void ConstrainTriplePattern(TriplePattern triplePattern, 
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap, 
+        private void ConstrainTriplePattern(TriplePattern triplePattern,
+            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
             IPredicateMap predicateMap, IObjectMap objectMap, List<IGraphMap> graphMaps)
         {
             if (graphMaps.Any())

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DatabaseSchemaReader.DataSchema;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
@@ -26,8 +27,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="UnionJoinOptimizer"/> class.
         /// </summary>
-        public UnionJoinOptimizer()
-            : base(new UnionJoinOptimizerImplementation())
+        /// <param name="logger">The logger</param>
+        public UnionJoinOptimizer(ILogger<UnionJoinOptimizer> logger)
+            : base(new UnionJoinOptimizerImplementation(), logger)
         { }
 
         /// <summary>

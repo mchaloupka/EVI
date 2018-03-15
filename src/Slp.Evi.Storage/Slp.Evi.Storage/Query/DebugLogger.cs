@@ -22,7 +22,6 @@ namespace Slp.Evi.Storage.Query
         /// <param name="logger">The logger.</param>
         /// <param name="original">The original form.</param>
         /// <param name="transformed">The transformed form.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void LogTransformation<TFrom, TTo>(ILogger logger, TFrom original, TTo transformed)
         {
             if (!logger.IsEnabled(LogLevel.Debug))

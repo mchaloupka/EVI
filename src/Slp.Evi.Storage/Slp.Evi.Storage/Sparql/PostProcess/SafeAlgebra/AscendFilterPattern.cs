@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
@@ -13,6 +14,14 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
     public class AscendFilterPattern
         : BaseSparqlTransformer<object>, ISparqlPostProcess
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AscendFilterPattern"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public AscendFilterPattern(ILogger<AscendFilterPattern> logger)
+         : base(logger)
+        { }
+
         /// <summary>
         /// Optimizes the specified query.
         /// </summary>
