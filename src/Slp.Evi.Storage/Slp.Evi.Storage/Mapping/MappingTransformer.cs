@@ -35,6 +35,7 @@ namespace Slp.Evi.Storage.Mapping
         /// Initializes a new instance of the <see cref="MappingTransformer"/> class.
         /// </summary>
         /// <param name="mappingProcessor">The mapping processor.</param>
+        /// <param name="logger">The logger</param>
         public MappingTransformer(IMappingProcessor mappingProcessor, ILogger<MappingTransformer> logger)
             : base(logger)
         {

@@ -19,6 +19,9 @@ namespace Slp.Evi.Storage.Sparql.Utils
     public class BaseSparqlTransformer<T>
         : BaseSparqlExpressionTransformerG<T, ISparqlExpression, IGraphPattern, ISparqlQuery>
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         protected readonly ILogger _logger;
 
         /// <summary>
