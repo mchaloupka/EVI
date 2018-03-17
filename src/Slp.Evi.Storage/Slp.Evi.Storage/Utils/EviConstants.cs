@@ -18,11 +18,6 @@ namespace Slp.Evi.Storage.Utils
         public static readonly Uri XsdInteger = new Uri($"{BaseXsdNamespace}integer");
 
         /// <summary>
-        /// The XSD numeric type
-        /// </summary>
-        public static readonly Uri XsdNumeric = new Uri($"{BaseXsdNamespace}numeric");
-
-        /// <summary>
         /// The XSD boolean type
         /// </summary>
         public static readonly Uri XsdBoolean = new Uri($"{BaseXsdNamespace}boolean");

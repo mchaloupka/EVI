@@ -10,6 +10,7 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
+using VDS.RDF.Parsing;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
@@ -201,9 +202,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new ComparisonCondition(left.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
-                new ComparisonCondition(right.TypeCategoryExpression,
-                    new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
-                    ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.StringExpression, right.StringExpression,
                     comparisonExpression.ComparisonType),
             }));
@@ -212,9 +210,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             conditions.Add(new ConjunctionCondition(new IFilterCondition[]
             {
                 new ComparisonCondition(left.TypeCategoryExpression,
-                    new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext),
-                    ComparisonTypes.EqualTo),
-                new ComparisonCondition(right.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.StringExpression, right.StringExpression,
@@ -227,9 +222,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new ComparisonCondition(left.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
-                new ComparisonCondition(right.TypeCategoryExpression,
-                    new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
-                    ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.NumericExpression, right.NumericExpression,
                     comparisonExpression.ComparisonType),
             }));
@@ -240,9 +232,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new ComparisonCondition(left.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.BooleanLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
-                new ComparisonCondition(right.TypeCategoryExpression,
-                    new ConstantExpression((int) TypeCategories.BooleanLiteral, parameter.QueryContext),
-                    ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.BooleanExpression, right.BooleanExpression,
                     comparisonExpression.ComparisonType),
             }));
@@ -251,9 +240,6 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             conditions.Add(new ConjunctionCondition(new IFilterCondition[]
             {
                 new ComparisonCondition(left.TypeCategoryExpression,
-                    new ConstantExpression((int) TypeCategories.DateTimeLiteral, parameter.QueryContext),
-                    ComparisonTypes.EqualTo),
-                new ComparisonCondition(right.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.DateTimeLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
                 new ComparisonCondition(left.DateTimeExpression, right.DateTimeExpression,
@@ -341,7 +327,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new ComparisonCondition(leftExpression.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo),
-                new ComparisonCondition(leftExpression.TypeCategoryExpression,
+                new ComparisonCondition(rightExpression.TypeCategoryExpression,
                     new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext),
                     ComparisonTypes.EqualTo)
             });
@@ -349,7 +335,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             var numericExpression = new BinaryNumericExpression(leftExpression.NumericExpression, rightExpression.NumericExpression,
                 binaryArithmeticExpression.Operation, parameter.QueryContext);
 
-            var numericType = parameter.QueryContext.TypeCache.GetValueTypeForDataType(EviConstants.XsdNumeric);
+            var numericType = parameter.QueryContext.TypeCache.GetValueTypeForDataType(EviConstants.XsdDecimal);
 
             return new ExpressionsSet(
                 notErrorCondition,
