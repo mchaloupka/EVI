@@ -1,0 +1,68 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.IO" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Text.Encoding" #>
+<#@ assembly name="System.Threading.Tasks" #>
+<#@ assembly name="$(SolutionDir)/roslyn/Microsoft.CodeAnalysis.dll" #>
+<#@ assembly name="$(SolutionDir)/roslyn/Microsoft.CodeAnalysis.CSharp.dll" #>
+<#@ assembly name="$(SolutionDir)/roslyn/System.Collections.Immutable.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp" #>
+<#@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #>
+// This is generated code, do not edit!!!
+using System;
+using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Query;
+using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
+using Slp.Evi.Storage.Sparql.Algebra.Patterns;
+
+namespace Slp.Evi.Storage.Relational.Builder.CodeGeneration
+{
+    /// <summary>
+    /// Relational builder
+    /// </summary>
+    public abstract class BaseRelationalBuilder
+        : IModifierVisitor, IGraphPatternVisitor
+    {
+<#
+    GenerateInterface(@"Sparql\Algebra\Patterns\IGraphPatternVisitor.cs");
+    GenerateInterface(@"Sparql\Algebra\Modifiers\IModifierVisitor.cs");
+#>
+    }
+}
+
+<#+
+    void GenerateInterface(string visitorPath)
+    {
+        var syntaxTree = (CSharpSyntaxTree)CSharpSyntaxTree.ParseText(File.ReadAllText(Host.ResolveAssemblyReference(@"$(ProjectDir)\" + visitorPath)));
+        var interfaceDeclaration = syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single();
+
+        foreach (var method in interfaceDeclaration.Members.OfType<MethodDeclarationSyntax>())
+        {
+            var firstParameter = method.ParameterList.Parameters.OfType<ParameterSyntax>().First();
+            var firstParameterType = firstParameter.Type.ToString();
+            GenerateMethod(firstParameterType);
+        }
+    }
+
+    void GenerateMethod(string instanceType)
+    {
+#>
+        /// <summary>
+        /// Visits <see cref="<#= instanceType #>" />
+        /// </summary>
+        /// <param name="instance">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(<#= instanceType #> instance, object data)
+        {
+            return ((IQueryContext) data).QueryPostProcesses.PostProcess(Transform(instance, (IQueryContext) data));
+        }
+
+        protected abstract RelationalQuery Transform(<#= instanceType #> instance, IQueryContext context);
+<#+
+    }
+#>

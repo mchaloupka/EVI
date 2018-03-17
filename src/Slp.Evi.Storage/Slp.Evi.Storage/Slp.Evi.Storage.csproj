@@ -99,6 +99,11 @@
     <Compile Include="Query\DebugLogger.cs" />
     <Compile Include="Query\IQueryContext.cs" />
     <Compile Include="Query\Logging\SparqlQueryRepresentation.cs" />
+    <Compile Include="Relational\Builder\CodeGeneration\BaseRelationalBuilder.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseRelationalBuilder.tt</DependentUpon>
+    </Compile>
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
@@ -328,6 +333,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Relational\Builder\CodeGeneration\BaseRelationalBuilder.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalBuilder.cs</LastGenOutput>
+    </Content>
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>

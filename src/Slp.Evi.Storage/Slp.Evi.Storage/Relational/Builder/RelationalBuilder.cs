@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
+using Slp.Evi.Storage.Relational.Builder.CodeGeneration;
 using Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
@@ -26,7 +27,7 @@ namespace Slp.Evi.Storage.Relational.Builder
     /// Relational builder
     /// </summary>
     public class RelationalBuilder
-        : IModifierVisitor, IGraphPatternVisitor
+        : BaseRelationalBuilder
     {
         /// <summary>
         /// The condition builder
@@ -71,38 +72,27 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         #region PatternVisitor
-        /// <summary>
-        /// Visits <see cref="EmptyPattern" />
-        /// </summary>
-        /// <param name="emptyPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(EmptyPattern emptyPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(EmptyPattern instance, IQueryContext context)
         {
-            return ((IQueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return new RelationalQuery(
                 new CalculusModel(
-                    new ICalculusVariable[] {},
-                    new ICondition[] {}),
-                new IValueBinder[] {}));
+                    new ICalculusVariable[] { },
+                    new ICondition[] { }),
+                new IValueBinder[] { });
         }
 
-        /// <summary>
-        /// Visits <see cref="Sparql.Algebra.Patterns.FilterPattern" />
-        /// </summary>
-        /// <param name="filterPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(FilterPattern filterPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(FilterPattern filterPattern, IQueryContext context)
         {
-            var inner = (RelationalQuery)filterPattern.InnerPattern.Accept(this, data);
-            var innerModel = inner.Model as CalculusModel;
+            var inner = (RelationalQuery)filterPattern.InnerPattern.Accept(this, context);
 
-            if (innerModel == null)
+            if (!(inner.Model is CalculusModel innerModel))
             {
                 throw new Exception($"Only {nameof(CalculusModel)} is expected");
             }
 
-            var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, (IQueryContext)data, inner.ValueBinders);
+            var condition = _conditionBuilder.CreateCondition(filterPattern.Condition, context, inner.ValueBinders);
 
             var conditions = new List<ICondition>();
             conditions.AddRange(innerModel.SourceConditions);
@@ -111,55 +101,36 @@ namespace Slp.Evi.Storage.Relational.Builder
             conditions.Add(condition);
 
             var model = new CalculusModel(innerModel.Variables, conditions);
-            var query = new RelationalQuery(model, inner.ValueBinders);
-
-            return ((IQueryContext) data).QueryPostProcesses.PostProcess(query);
+            return new RelationalQuery(model, inner.ValueBinders);
         }
 
-        /// <summary>
-        /// Visits <see cref="NotMatchingPattern" />
-        /// </summary>
-        /// <param name="notMatchingPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(NotMatchingPattern notMatchingPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(NotMatchingPattern instance, IQueryContext context)
         {
-            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return new RelationalQuery(
                 new CalculusModel(
                     new ICalculusVariable[] { },
-                    new ICondition[] { new AlwaysFalseCondition() }),
-                notMatchingPattern.Variables.Select(x => new EmptyValueBinder(x))));
+                    new ICondition[] {new AlwaysFalseCondition()}),
+                instance.Variables.Select(x => new EmptyValueBinder(x)));
         }
 
-        /// <summary>
-        /// Visits <see cref="Sparql.Algebra.Patterns.GraphPattern" />
-        /// </summary>
-        /// <param name="graphPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(GraphPattern graphPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(GraphPattern instance, IQueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Visits <see cref="JoinPattern" />
-        /// </summary>
-        /// <param name="joinPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(JoinPattern joinPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(JoinPattern instance, IQueryContext context)
         {
-            var relationalQueries = joinPattern.JoinedGraphPatterns.Select(x => x.Accept(this, data)).Cast<RelationalQuery>().ToList();
+            var relationalQueries = instance.JoinedGraphPatterns.Select(x => x.Accept(this, context)).Cast<RelationalQuery>().ToList();
 
             Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
             List<ICondition> conditions = new List<ICondition>();
 
             foreach (var relationalQuery in relationalQueries)
             {
-                var model = relationalQuery.Model as CalculusModel;
-
-                if (model == null)
+                if (!(relationalQuery.Model is CalculusModel model))
                 {
                     throw new Exception($"Only {nameof(CalculusModel)} is expected");
                 }
@@ -173,7 +144,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                     if (valueBinders.ContainsKey(valueBinder.VariableName))
                     {
                         var otherValueBinder = valueBinders[valueBinder.VariableName];
-                        conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, (IQueryContext) data));
+                        conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, context));
 
                         valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                     }
@@ -188,19 +159,14 @@ namespace Slp.Evi.Storage.Relational.Builder
             var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
             var calculusModel = new CalculusModel(neededVariables, conditions);
 
-            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(calculusModel, finalValueBinders));
+            return new RelationalQuery(calculusModel, finalValueBinders);
         }
 
-        /// <summary>
-        /// Visits <see cref="LeftJoinPattern" />
-        /// </summary>
-        /// <param name="leftJoinPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(LeftJoinPattern leftJoinPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(LeftJoinPattern leftJoinPattern, IQueryContext context)
         {
-            var leftQuery = (RelationalQuery)leftJoinPattern.LeftOperand.Accept(this, data);
-            var rightQuery = (RelationalQuery) leftJoinPattern.RightOperand.Accept(this, data);
+            var leftQuery = (RelationalQuery)leftJoinPattern.LeftOperand.Accept(this, context);
+            var rightQuery = (RelationalQuery)leftJoinPattern.RightOperand.Accept(this, context);
 
             var leftQueryModel = leftQuery.Model as CalculusModel;
 
@@ -229,7 +195,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 {
                     var otherValueBinder = valueBinders[valueBinder.VariableName];
                     joinConditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder,
-                        (IQueryContext) data));
+                        context));
 
                     valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                 }
@@ -239,7 +205,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 }
             }
 
-            joinConditions.Add(_conditionBuilder.CreateCondition(leftJoinPattern.Condition, (IQueryContext)data, valueBinders.Values));
+            joinConditions.Add(_conditionBuilder.CreateCondition(leftJoinPattern.Condition, context, valueBinders.Values));
 
             var leftJoinCondition = new LeftJoinCondition(rightQuery.Model, joinConditions, rightQuery.Model.Variables);
             conditions.Add(leftJoinCondition);
@@ -249,42 +215,26 @@ namespace Slp.Evi.Storage.Relational.Builder
             variables.AddRange(rightQuery.Model.Variables);
 
             var model = new CalculusModel(variables, conditions);
-            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders.Values.ToList()));
+
+            return new RelationalQuery(model, valueBinders.Values.ToList());
         }
 
-        /// <summary>
-        /// Visits <see cref="MinusPattern" />
-        /// </summary>
-        /// <param name="minusPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(MinusPattern minusPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(MinusPattern instance, IQueryContext context)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Visits <see cref="Sparql.Algebra.Patterns.TriplePattern" />
-        /// </summary>
-        /// <param name="triplePattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        /// <exception cref="System.InvalidOperationException">The triple pattern should not be present when transforming to relational form.</exception>
-        public object Visit(TriplePattern triplePattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(TriplePattern instance, IQueryContext context)
         {
             throw new InvalidOperationException("The triple pattern should not be present when transforming to relational form.");
         }
 
-        /// <summary>
-        /// Visits <see cref="UnionPattern" />
-        /// </summary>
-        /// <param name="unionPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(UnionPattern unionPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(UnionPattern instance, IQueryContext context)
         {
-            var context = (IQueryContext) data;
-            var relationalQueries = unionPattern.UnionedGraphPatterns.Select(x => x.Accept(this, data)).Cast<RelationalQuery>().ToList();
+            var relationalQueries = instance.UnionedGraphPatterns.Select(x => x.Accept(this, context)).Cast<RelationalQuery>().ToList();
 
             List<ICalculusSource> sources = new List<ICalculusSource>();
             List<ICalculusVariable> variables = new List<ICalculusVariable>();
@@ -297,9 +247,7 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             foreach (var relationalQuery in relationalQueries)
             {
-                var oldModel = relationalQuery.Model as CalculusModel;
-
-                if (oldModel == null)
+                if (!(relationalQuery.Model is CalculusModel oldModel))
                 {
                     throw new Exception($"Only {nameof(CalculusModel)} is expected");
                 }
@@ -349,15 +297,9 @@ namespace Slp.Evi.Storage.Relational.Builder
             return new RelationalQuery(model, valueBinders.Values.ToList());
         }
 
-        /// <summary>
-        /// Visits <see cref="RestrictedTriplePattern" />
-        /// </summary>
-        /// <param name="restrictedTriplePattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(RestrictedTriplePattern restrictedTriplePattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(RestrictedTriplePattern restrictedTriplePattern, IQueryContext context)
         {
-            var context = (IQueryContext) data;
             List<ICondition> conditions = new List<ICondition>();
             List<IValueBinder> valueBinders = new List<IValueBinder>();
 
@@ -381,22 +323,16 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             conditions.Add(new TupleFromSourceCondition(source.Variables, source));
 
-            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(
+            return new RelationalQuery(
                 new CalculusModel(
                     valueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct(),
                     conditions),
-                valueBinders));
+                valueBinders);
         }
 
-        /// <summary>
-        /// Visits <see cref="ExtendPattern"/>
-        /// </summary>
-        /// <param name="extendPattern">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(ExtendPattern extendPattern, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(ExtendPattern extendPattern, IQueryContext context)
         {
-            var context = (IQueryContext)data;
             var inner = Process(extendPattern.InnerPattern, context);
             var model = inner.Model;
             var valueBinders = inner.ValueBinders.ToList();
@@ -412,22 +348,17 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var newValueBinder = new ExpressionSetValueBinder(extendPattern.VariableName, expression);
                 valueBinders.Add(newValueBinder);
 
-                return ((IQueryContext) data).QueryPostProcesses.PostProcess(new RelationalQuery(model, valueBinders));
+                return new RelationalQuery(model, valueBinders);
             }
         }
-
         #endregion
 
         #region ModifierVisitor
-        /// <summary>
-        /// Visits <see cref="SelectModifier" />
-        /// </summary>
-        /// <param name="selectModifier">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(SelectModifier selectModifier, object data)
+
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(SelectModifier selectModifier, IQueryContext context)
         {
-            var inner = Process(selectModifier.InnerQuery, (IQueryContext) data);
+            var inner = Process(selectModifier.InnerQuery, context);
 
             Dictionary<string, IValueBinder> providedValueBinders = inner.ValueBinders.ToDictionary(valueBinder => valueBinder.VariableName);
 
@@ -440,21 +371,15 @@ namespace Slp.Evi.Storage.Relational.Builder
                     : new EmptyValueBinder(variable));
             }
 
-            return ((IQueryContext)data).QueryPostProcesses.PostProcess(new RelationalQuery(inner.Model, valueBinders));
+            return new RelationalQuery(inner.Model, valueBinders);
         }
 
-        /// <summary>
-        /// Visits <see cref="OrderByModifier"/>
-        /// </summary>
-        /// <param name="orderByModifier">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(OrderByModifier orderByModifier, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(OrderByModifier orderByModifier, IQueryContext queryContext)
         {
-            var queryContext = (IQueryContext)data;
             var inner = Process(orderByModifier.InnerQuery, queryContext);
 
-            var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, (IQueryContext) data);
+            var orderings = ProcessOrdering(inner.ValueBinders, orderByModifier.Ordering, queryContext);
 
             if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
             {
@@ -500,15 +425,10 @@ namespace Slp.Evi.Storage.Relational.Builder
             return result;
         }
 
-        /// <summary>
-        /// Visits <see cref="SliceModifier"/>
-        /// </summary>
-        /// <param name="sliceModifier">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
-        public object Visit(SliceModifier sliceModifier, object data)
+        /// <inheritdoc />
+        protected override RelationalQuery Transform(SliceModifier sliceModifier, IQueryContext context)
         {
-            var inner = Process(sliceModifier.InnerQuery, (IQueryContext) data);
+            var inner = Process(sliceModifier.InnerQuery, context);
 
             if (inner.Model is ModifiedCalculusModel modifiedCalculusModel)
             {
@@ -557,12 +477,11 @@ namespace Slp.Evi.Storage.Relational.Builder
         }
 
         /// <inheritdoc />
-        public object Visit(DistinctModifier distinctModifier, object data)
+        protected override RelationalQuery Transform(DistinctModifier distinctModifier, IQueryContext context)
         {
-            var queryContext = (IQueryContext) data;
-            var inner = Process(distinctModifier.InnerQuery, queryContext);
+            var inner = Process(distinctModifier.InnerQuery, context);
 
-            var alignedQuery = _valueBinderAligner.Align(inner, queryContext);
+            var alignedQuery = _valueBinderAligner.Align(inner, context);
             var model = alignedQuery.Model;
             var valueBinders = alignedQuery.ValueBinders;
 
