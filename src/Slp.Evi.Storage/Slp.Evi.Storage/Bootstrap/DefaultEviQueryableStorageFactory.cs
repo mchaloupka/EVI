@@ -82,7 +82,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <returns>The relational builder.</returns>
         public virtual RelationalBuilder CreateRelationalBuilder()
         {
-            return new RelationalBuilder();
+            return new RelationalBuilder(_loggerFactory.CreateLogger<RelationalBuilder>());
         }
 
         /// <summary>

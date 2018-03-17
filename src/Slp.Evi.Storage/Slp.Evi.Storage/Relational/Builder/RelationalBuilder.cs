@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder.CodeGeneration;
 using Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers;
@@ -42,7 +43,8 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <summary>
         /// Initializes a new instance of the <see cref="RelationalBuilder"/> class.
         /// </summary>
-        public RelationalBuilder()
+        public RelationalBuilder(ILogger<RelationalBuilder> logger)
+            : base(logger)
         {
             _conditionBuilder = new ConditionBuilder();
             _valueBinderAligner = new ValueBinderAligner(_conditionBuilder);
