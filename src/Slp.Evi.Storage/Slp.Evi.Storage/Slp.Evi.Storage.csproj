@@ -98,6 +98,7 @@
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
     <Compile Include="Query\DebugLogger.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Query\Logging\RelationalQueryRepresentation.cs" />
     <Compile Include="Query\Logging\SparqlQueryRepresentation.cs" />
     <Compile Include="Relational\Builder\CodeGeneration\BaseRelationalBuilder.cs">
       <AutoGen>True</AutoGen>

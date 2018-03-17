@@ -50,7 +50,7 @@ namespace Slp.Evi.Storage.Database.Base
                 StringBuilder = stringBuilder;
                 Context = context;
                 RelationalQuery = relationalQuery;
-                modelsStack = new Stack<CalculusModel>();
+                _modelsStack = new Stack<CalculusModel>();
             }
 
             /// <summary>
@@ -75,7 +75,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets the current calculus model.
             /// </summary>
             /// <value>The current calculus model (<c>null</c> if you are topmost).</value>
-            public CalculusModel CurrentCalculusModel => (modelsStack.Count > 0) ? modelsStack.Peek() : null;
+            public CalculusModel CurrentCalculusModel => (_modelsStack.Count > 0) ? _modelsStack.Peek() : null;
 
             /// <summary>
             /// Enters the calculus model.
@@ -83,7 +83,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// <param name="model">The model.</param>
             public void EnterCalculusModel(CalculusModel model)
             {
-                modelsStack.Push(model);
+                _modelsStack.Push(model);
             }
 
             /// <summary>
@@ -91,13 +91,13 @@ namespace Slp.Evi.Storage.Database.Base
             /// </summary>
             public void LeaveCalculusModel()
             {
-                modelsStack.Pop();
+                _modelsStack.Pop();
             }
 
             /// <summary>
             /// The models stack
             /// </summary>
-            private readonly Stack<CalculusModel> modelsStack;
+            private readonly Stack<CalculusModel> _modelsStack;
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Slp.Evi.Storage.Database.Base
 
             if (isDistinct && ordering.Count > 0)
             {
-                // The ORDER BY and DISTINCT may cause issue if it is in the same query lavel
+                // The ORDER BY and DISTINCT may cause issue if it is in the same query level
                 data.StringBuilder.Append("SELECT * FROM (");
             }
 
