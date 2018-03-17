@@ -585,7 +585,16 @@ namespace Slp.Evi.Storage.Relational.Utils
             {
                 var newExpression = TransformExpression(innerExpression, data);
 
-                if (newExpression != innerExpression)
+                if (newExpression is NullExpression)
+                {
+                    changed = true;
+                }
+                else if (newExpression is CoalesceExpression coalesce)
+                {
+                    changed = true;
+                    newInnerExpressions.AddRange(coalesce.InnerExpressions);
+                }
+                else if (newExpression != innerExpression)
                 {
                     changed = true;
                     newInnerExpressions.Add(newExpression);
@@ -596,7 +605,15 @@ namespace Slp.Evi.Storage.Relational.Utils
                 }
             }
 
-            if (changed)
+            if (newInnerExpressions.Count == 0)
+            {
+                return new NullExpression(toTransform.SqlType);
+            }
+            else if (newInnerExpressions.Count == 1)
+            {
+                return newInnerExpressions.First();
+            }
+            else if (changed)
             {
                 return new CoalesceExpression(newInnerExpressions);
             }
