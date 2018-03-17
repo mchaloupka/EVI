@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
@@ -20,8 +21,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcatenationInEqualConditionOptimizer"/> class.
         /// </summary>
-        public ConcatenationInEqualConditionOptimizer()
-            : base(new ConcatenationInEqualConditionOptimizerImplementation())
+        public ConcatenationInEqualConditionOptimizer(ILogger<ConcatenationInEqualConditionOptimizer> logger)
+            : base(new ConcatenationInEqualConditionOptimizerImplementation(), logger)
         { }
 
         /// <summary>

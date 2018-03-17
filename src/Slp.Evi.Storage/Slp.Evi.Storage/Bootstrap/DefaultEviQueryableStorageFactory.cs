@@ -90,11 +90,11 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         public virtual IEnumerable<IRelationalPostProcess> GetRelationalPostProcesses()
         {
-            yield return new CaseExpressionToConditionOptimizer();
-            yield return new ConcatenationInEqualConditionOptimizer();
-            yield return new ConstantExpressionEqualityOptimizer();
-            yield return new IsNullOptimizer();
-            yield return new SelfJoinOptimizer();
+            yield return new CaseExpressionToConditionOptimizer(_loggerFactory.CreateLogger<CaseExpressionToConditionOptimizer>());
+            yield return new ConcatenationInEqualConditionOptimizer(_loggerFactory.CreateLogger<ConcatenationInEqualConditionOptimizer>());
+            yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
+            yield return new SelfJoinOptimizer(_loggerFactory.CreateLogger<SelfJoinOptimizer>());
         }
 
         /// <summary>

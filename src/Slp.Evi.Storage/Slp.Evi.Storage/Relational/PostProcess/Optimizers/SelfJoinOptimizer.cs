@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHelpers;
 using Slp.Evi.Storage.Relational.Query;
@@ -23,8 +24,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfJoinOptimizer"/> class.
         /// </summary>
-        public SelfJoinOptimizer() 
-            : base(new SelfJoinOptimizerImplementation())
+        public SelfJoinOptimizer(ILogger<SelfJoinOptimizer> logger)
+            : base(new SelfJoinOptimizerImplementation(), logger)
         {
             _selfJoinConstraintsCalculator = new SelfJoinConstraintsCalculator();
             _selfJoinValueBinderOptimizerImplementation = new SelfJoinValueBindersOptimizerImplementation(OptimizerImplementation);

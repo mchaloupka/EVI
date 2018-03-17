@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Query;
+﻿using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Utils;
@@ -18,15 +19,22 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// Initializes a new instance of the <see cref="BaseRelationalOptimizer{T}"/> class.
         /// </summary>
         /// <param name="optimizerImplementation">The optimizer implementation.</param>
-        protected BaseRelationalOptimizer(BaseRelationalOptimizerImplementation<T> optimizerImplementation)
+        /// <param name="logger">The logger.</param>
+        protected BaseRelationalOptimizer(BaseRelationalOptimizerImplementation<T> optimizerImplementation, ILogger logger)
         {
             _optimizerImplementation = optimizerImplementation;
+            _logger = logger;
         }
 
         /// <summary>
         /// The optimizer implementation
         /// </summary>
         private readonly BaseRelationalOptimizerImplementation<T> _optimizerImplementation;
+
+        /// <summary>
+        /// The logger
+        /// </summary>
+        protected readonly ILogger _logger;
 
         /// <summary>
         /// Gets the optimizer implementation.
@@ -59,15 +67,19 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         {
             var optimizationContext = CreateInitialContext(query, context);
             var modifiedModel = (ICalculusSource) query.Model.Accept(this, optimizationContext);
+            RelationalQuery result;
 
             if (modifiedModel != query.Model)
             {
-                return OptimizeRelationalQuery(new RelationalQuery(modifiedModel, query.ValueBinders), optimizationContext);
+                result = OptimizeRelationalQuery(new RelationalQuery(modifiedModel, query.ValueBinders), optimizationContext);
             }
             else
             {
-                return OptimizeRelationalQuery(query, optimizationContext);
+                result = OptimizeRelationalQuery(query, optimizationContext);
             }
+
+            context.DebugLogging.LogTransformation(_logger, query, result);
+            return result;
         }
 
         /// <summary>

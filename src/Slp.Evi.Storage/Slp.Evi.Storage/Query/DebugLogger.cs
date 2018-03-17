@@ -28,8 +28,15 @@ namespace Slp.Evi.Storage.Query
             if (!logger.IsEnabled(LogLevel.Debug))
                 return;
 
-            logger.LogDebug(
-                $"Transformation:\n{GetLoggingRepresentation(original)}\n->\n{GetLoggingRepresentation(transformed)}");
+            if (!original.Equals(transformed))
+            {
+                logger.LogDebug(
+                    $"Transformation:\n{GetLoggingRepresentation(original)}\n->\n{GetLoggingRepresentation(transformed)}");
+            }
+            else
+            {
+                logger.LogDebug($"Transformation of {GetLoggingRepresentation(original)} unchanged.");
+            }
         }
 
         private string GetLoggingRepresentation<T>(T obj)

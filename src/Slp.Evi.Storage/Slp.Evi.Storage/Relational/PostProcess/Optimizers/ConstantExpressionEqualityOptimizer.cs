@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Common.Algebra;
+﻿using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
@@ -15,8 +16,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Creates an instance of <see cref="ConstantExpressionEqualityOptimizer"/>
         /// </summary>
-        public ConstantExpressionEqualityOptimizer() 
-            : base(new ConstantExpressionEqualityOptimizerImplementation())
+        public ConstantExpressionEqualityOptimizer(ILogger<ConstantExpressionEqualityOptimizer> logger)
+            : base(new ConstantExpressionEqualityOptimizerImplementation(), logger)
         {
         }
 
@@ -115,7 +116,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <returns>Returns <c>true</c> if the left operand is equal to the right one, <c>false</c> otherwise.</returns>
             private bool AreConstantExpressionsEqual(ConstantExpression leftOperand, ConstantExpression rightOperand)
             {
-                return (leftOperand.SqlType.TypeName == rightOperand.SqlType.TypeName) 
+                return (leftOperand.SqlType.TypeName == rightOperand.SqlType.TypeName)
                     && (leftOperand.SqlString == rightOperand.SqlString);
             }
         }

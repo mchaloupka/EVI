@@ -154,6 +154,11 @@ namespace Slp.Evi.Storage.Query.Logging
         private void GetRepresentation(ICalculusVariable variable)
         {
             _sb.Append($"var:{_getObjectIndex(variable)}");
+            if (variable is SqlColumn col)
+            {
+                _sb.Append(":");
+                _sb.Append(col.Name);
+            }
         }
 
         /// <inheritdoc />
