@@ -28,7 +28,7 @@ namespace Slp.Evi.Storage.Query
                 return;
 
             logger.LogDebug(
-                $"Transformation:\n{GetObjectIndex(original)}: {GetLoggingRepresentation(original)}\n->\n{GetObjectIndex(transformed)}: {GetLoggingRepresentation(transformed)}");
+                $"Transformation:\n{GetLoggingRepresentation(original)}\n->\n{GetLoggingRepresentation(transformed)}");
         }
 
         private string GetLoggingRepresentation<T>(T obj)
@@ -54,7 +54,7 @@ namespace Slp.Evi.Storage.Query
 
         private string GetStringRepresentation(ISparqlQuery sparqlQuery)
         {
-            var representation = new SparqlQueryRepresentation();
+            var representation = new SparqlQueryRepresentation(GetObjectIndex);
             var str = representation.GetRepresentation(sparqlQuery);
             return str;
         }

@@ -7,7 +7,10 @@ using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Utils;
+using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using GraphPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.GraphPattern;
 using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;
@@ -23,11 +26,22 @@ namespace Slp.Evi.Storage.Query.Logging
     public class SparqlQueryRepresentation
         : IModifierVisitor, IGraphPatternVisitor, ISparqlExpressionVisitor
     {
-        private StringBuilder _sb = new StringBuilder();
+        private readonly Func<object, long> _getObjectIndex;
+        private readonly StringBuilder _sb = new StringBuilder();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SparqlQueryRepresentation"/> class.
+        /// </summary>
+        /// <param name="getObjectIndex">Index of the get object function.</param>
+        public SparqlQueryRepresentation(Func<object, long> getObjectIndex)
+        {
+            _getObjectIndex = getObjectIndex;
+        }
 
         /// <inheritdoc />
         public object Visit(SelectModifier selectModifier, object data)
         {
+            _sb.Append($"{_getObjectIndex(selectModifier)}:");
             _sb.Append("Select(");
             bool first = true;
             foreach (var variable in selectModifier.Variables)
@@ -50,6 +64,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(OrderByModifier orderByModifier, object data)
         {
+            _sb.Append($"{_getObjectIndex(orderByModifier)}:");
             _sb.Append("OrderBy(");
             Process(orderByModifier.InnerQuery);
             _sb.Append(", By: {");
@@ -81,6 +96,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(SliceModifier sliceModifier, object data)
         {
+            _sb.Append($"{_getObjectIndex(sliceModifier)}:");
             _sb.Append("Slice(");
             Process(sliceModifier.InnerQuery);
             _sb.Append($", Limit: {sliceModifier.Limit?.ToString() ?? "none"}, Offset: {sliceModifier.Offset?.ToString() ?? "none"})");
@@ -90,6 +106,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(DistinctModifier distinctModifier, object data)
         {
+            _sb.Append($"{_getObjectIndex(distinctModifier)}:");
             _sb.Append("Distinct(");
             Process(distinctModifier.InnerQuery);
             _sb.Append($")");
@@ -106,6 +123,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(FilterPattern filterPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(filterPattern)}:");
             _sb.Append("Filter(");
             filterPattern.InnerPattern.Accept(this, null);
             _sb.Append(", ");
@@ -130,6 +148,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(JoinPattern joinPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(joinPattern)}:");
             _sb.Append("Join(");
 
             bool first = true;
@@ -151,6 +170,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(LeftJoinPattern leftJoinPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(leftJoinPattern)}:");
             _sb.Append("LeftJoin(");
             leftJoinPattern.LeftOperand.Accept(this, null);
             _sb.Append(", ");
@@ -164,6 +184,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(MinusPattern minusPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(minusPattern)}:");
             _sb.Append("Minus(");
             minusPattern.LeftOperand.Accept(this, null);
             _sb.Append(", ");
@@ -175,6 +196,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(TriplePattern triplePattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(triplePattern)}:");
             _sb.Append("Triple(");
             Process(triplePattern.SubjectPattern);
             _sb.Append(", ");
@@ -209,6 +231,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(UnionPattern unionPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(unionPattern)}:");
             _sb.Append("Union(");
 
             bool first = true;
@@ -230,6 +253,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(RestrictedTriplePattern restrictedTriplePattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(restrictedTriplePattern)}:");
             _sb.Append("RestrictedTriple((");
             Process(restrictedTriplePattern.SubjectPattern);
             _sb.Append(", ");
@@ -249,19 +273,18 @@ namespace Slp.Evi.Storage.Query.Logging
             }
 
             _sb.Append(";");
-            _sb.Append(restrictedTriplePattern.SubjectMap.Node);
+            StringRepresentationOfMap(restrictedTriplePattern.SubjectMap);
             _sb.Append(";");
-            _sb.Append(restrictedTriplePattern.PredicateMap.Node);
+            StringRepresentationOfMap(restrictedTriplePattern.PredicateMap);
             _sb.Append(";");
 
             if (restrictedTriplePattern.RefObjectMap != null)
             {
-                _sb.Append("ref: ");
-                _sb.Append(restrictedTriplePattern.RefObjectMap.Node);
+                StringRepresentationOfMap(restrictedTriplePattern.RefObjectMap);
             }
             else
             {
-                _sb.Append(restrictedTriplePattern.ObjectMap.Node);
+                StringRepresentationOfMap(restrictedTriplePattern.ObjectMap);
             }
 
             _sb.Append(")");
@@ -269,9 +292,47 @@ namespace Slp.Evi.Storage.Query.Logging
             return null;
         }
 
+        private void StringRepresentationOfMap(ITermMap termMap)
+        {
+            if (termMap.IsConstantValued)
+            {
+                if (termMap is IUriValuedTermMap uriTermMap)
+                {
+                    _sb.Append($"<{uriTermMap.URI}>");
+                }
+                else if (termMap is IObjectMap objectMap)
+                {
+                    _sb.Append(objectMap.Literal);
+                }
+                else
+                {
+                    throw new NotSupportedException("Unsupported constant");
+                }
+            }
+            else if (termMap.IsColumnValued)
+            {
+                _sb.Append($"column:<{termMap.ColumnName}>");
+            }
+            else if (termMap.IsTemplateValued)
+            {
+                _sb.Append($"template:<{termMap.Template}>");
+            }
+            else
+            {
+                throw new NotSupportedException("Unsupported term type");
+            }
+        }
+
+        private void StringRepresentationOfMap(IRefObjectMap refMap)
+        {
+            _sb.Append("ref:");
+            _sb.Append(refMap.ParentTriplesMap.Node);
+        }
+
         /// <inheritdoc />
         public object Visit(ExtendPattern extendPattern, object data)
         {
+            _sb.Append($"{_getObjectIndex(extendPattern)}:");
             _sb.Append("Extend(");
             extendPattern.InnerPattern.Accept(this, null);
             _sb.Append(",");
@@ -286,6 +347,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(IsBoundExpression isBoundExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(isBoundExpression)}:");
             _sb.Append("bound(");
             _sb.Append(isBoundExpression.Variable);
             _sb.Append(")");
@@ -310,6 +372,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(NegationExpression negationExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(negationExpression)}:");
             _sb.Append("not(");
             negationExpression.InnerCondition.Accept(this, null);
             _sb.Append(")");
@@ -327,6 +390,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(ConjunctionExpression conjunctionExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(conjunctionExpression)}:");
             _sb.Append("and(");
             bool first = true;
             foreach (var operand in conjunctionExpression.Operands)
@@ -349,6 +413,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(ComparisonExpression comparisonExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(comparisonExpression)}:(");
             comparisonExpression.LeftOperand.Accept(this, null);
 
             switch (comparisonExpression.ComparisonType)
@@ -376,6 +441,7 @@ namespace Slp.Evi.Storage.Query.Logging
             }
 
             comparisonExpression.RightOperand.Accept(this, null);
+            _sb.Append(")");
 
             return null;
         }
@@ -390,6 +456,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(DisjunctionExpression disjunctionExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(disjunctionExpression)}:");
             _sb.Append("or(");
             bool first = true;
             foreach (var operand in disjunctionExpression.Operands)
@@ -412,6 +479,7 @@ namespace Slp.Evi.Storage.Query.Logging
         /// <inheritdoc />
         public object Visit(BinaryArithmeticExpression binaryArithmeticExpression, object data)
         {
+            _sb.Append($"{_getObjectIndex(binaryArithmeticExpression)}:(");
             binaryArithmeticExpression.LeftOperand.Accept(this, null);
 
             switch (binaryArithmeticExpression.Operation)
@@ -433,6 +501,7 @@ namespace Slp.Evi.Storage.Query.Logging
             }
 
             binaryArithmeticExpression.RightOperand.Accept(this, null);
+            _sb.Append(")");
 
             return null;
         }
