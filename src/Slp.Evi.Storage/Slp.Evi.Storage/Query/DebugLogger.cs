@@ -35,7 +35,7 @@ namespace Slp.Evi.Storage.Query
             }
             else
             {
-                logger.LogDebug($"Transformation of {GetLoggingRepresentation(original)} unchanged.");
+                logger.LogDebug($"Transformation of {GetObjectIndex(original)} unchanged.");
             }
         }
 
