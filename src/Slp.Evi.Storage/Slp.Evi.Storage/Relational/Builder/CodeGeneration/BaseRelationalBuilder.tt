@@ -14,6 +14,7 @@
 <#@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #>
 // This is generated code, do not edit!!!
 using System;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
@@ -27,6 +28,20 @@ namespace Slp.Evi.Storage.Relational.Builder.CodeGeneration
     public abstract class BaseRelationalBuilder
         : IModifierVisitor, IGraphPatternVisitor
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
+        protected readonly ILogger _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseRelationalBuilder"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        protected BaseRelationalBuilder(ILogger logger)
+        {
+            _logger = logger;
+        }
+
 <#
     GenerateInterface(@"Sparql\Algebra\Patterns\IGraphPatternVisitor.cs");
     GenerateInterface(@"Sparql\Algebra\Modifiers\IModifierVisitor.cs");
@@ -52,18 +67,24 @@ namespace Slp.Evi.Storage.Relational.Builder.CodeGeneration
     void GenerateMethod(string instanceType, string name)
     {
 #>
-        /// <summary>
-        /// Visits <see cref="<#= instanceType #>" />
-        /// </summary>
-        /// <param name="<#= name #>">The visited instance</param>
-        /// <param name="data">The passed data</param>
-        /// <returns>The returned data</returns>
+        /// <inheritdoc />
         public object Visit(<#= instanceType #> <#= name #>, object data)
         {
-            return ((IQueryContext) data).QueryPostProcesses.PostProcess(Transform(<#= name #>, (IQueryContext) data));
+            var context = (IQueryContext) data;
+            var transformed = Transform(<#= name #>, context);
+
+            context.DebugLogging.LogTransformation(_logger, <#= name #>, transformed);
+
+            return context.QueryPostProcesses.PostProcess(transformed);
         }
 
+        /// <summary>
+        /// Transforms the specified <see cref="<#= instanceType #>" />.
+        /// </summary>
+        /// <param name="<#= name #>">The instance to transform.</param>
+        /// <param name="context">The query context.</param>
         protected abstract RelationalQuery Transform(<#= instanceType #> <#= name #>, IQueryContext context);
+
 <#+
     }
 #>
