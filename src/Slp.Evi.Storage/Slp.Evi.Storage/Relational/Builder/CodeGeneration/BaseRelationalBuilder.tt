@@ -43,26 +43,27 @@ namespace Slp.Evi.Storage.Relational.Builder.CodeGeneration
         foreach (var method in interfaceDeclaration.Members.OfType<MethodDeclarationSyntax>())
         {
             var firstParameter = method.ParameterList.Parameters.OfType<ParameterSyntax>().First();
+            var firstParameterName = firstParameter.Identifier.ValueText;
             var firstParameterType = firstParameter.Type.ToString();
-            GenerateMethod(firstParameterType);
+            GenerateMethod(firstParameterType, firstParameterName);
         }
     }
 
-    void GenerateMethod(string instanceType)
+    void GenerateMethod(string instanceType, string name)
     {
 #>
         /// <summary>
         /// Visits <see cref="<#= instanceType #>" />
         /// </summary>
-        /// <param name="instance">The visited instance</param>
+        /// <param name="<#= name #>">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(<#= instanceType #> instance, object data)
+        public object Visit(<#= instanceType #> <#= name #>, object data)
         {
-            return ((IQueryContext) data).QueryPostProcesses.PostProcess(Transform(instance, (IQueryContext) data));
+            return ((IQueryContext) data).QueryPostProcesses.PostProcess(Transform(<#= name #>, (IQueryContext) data));
         }
 
-        protected abstract RelationalQuery Transform(<#= instanceType #> instance, IQueryContext context);
+        protected abstract RelationalQuery Transform(<#= instanceType #> <#= name #>, IQueryContext context);
 <#+
     }
 #>
