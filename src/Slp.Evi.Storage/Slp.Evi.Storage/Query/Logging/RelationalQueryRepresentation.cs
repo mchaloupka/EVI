@@ -501,5 +501,17 @@ namespace Slp.Evi.Storage.Query.Logging
             _sb.Append(")");
             return null;
         }
+
+        /// <inheritdoc />
+        public object Visit(LikeCondition likeCondition, object data)
+        {
+            _sb.Append($"{_getObjectIndex(likeCondition)}:");
+            _sb.Append("like(");
+            likeCondition.Expression.Accept(this, null);
+            _sb.Append(",");
+            _sb.Append(likeCondition.Pattern);
+            _sb.Append(")");
+            return null;
+        }
     }
 }

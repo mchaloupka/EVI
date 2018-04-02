@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Database.Base;
+using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 
@@ -16,7 +17,5 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
     /// <seealso cref="Slp.Evi.Storage.Database.Base.BaseSqlQueryBuilder" />
     public class MsSqlQueryBuilder
         : BaseSqlQueryBuilder
-    {
-
-    }
+    { }
 }

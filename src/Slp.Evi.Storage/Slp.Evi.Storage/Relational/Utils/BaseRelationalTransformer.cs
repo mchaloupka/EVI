@@ -367,6 +367,21 @@ namespace Slp.Evi.Storage.Relational.Utils
             }
         }
 
+        /// <inheritdoc />
+        protected override IFilterCondition Transform(LikeCondition toTransform, T data)
+        {
+            var newExpression = TransformExpression(toTransform.Expression, data);
+
+            if (newExpression != toTransform.Expression)
+            {
+                return new LikeCondition(newExpression, toTransform.Pattern);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>

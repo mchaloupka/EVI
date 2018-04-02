@@ -229,6 +229,17 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="LikeCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IFilterCondition Transform(LikeCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="CalculusModel"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>

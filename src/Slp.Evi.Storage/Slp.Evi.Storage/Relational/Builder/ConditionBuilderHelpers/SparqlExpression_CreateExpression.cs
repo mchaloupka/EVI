@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -346,6 +347,115 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 null,
                 null,
                 parameter.QueryContext);
+        }
+
+        /// <inheritdoc />
+        public object Visit(SqlRegexFunction regexFunctionExpression, object data)
+        {
+            var parameter = (ExpressionVisitParameter)data;
+
+            if (regexFunctionExpression.Flags != null)
+            {
+                throw new NotImplementedException();
+            }
+
+            var text = CreateExpression(regexFunctionExpression.Text, parameter);
+            var patternExpressionSet = CreateExpression(regexFunctionExpression.Pattern, parameter);
+
+            if (!(patternExpressionSet.TypeExpression is ConstantExpression patternTypeExpression))
+            {
+                throw new NotImplementedException();
+            }
+
+            int patternTypeIndex = (int)patternTypeExpression.Value;
+            var patternType = parameter.QueryContext.TypeCache.GetValueType(patternTypeIndex);
+
+            bool producesAnError = patternType.Category != TypeCategories.SimpleLiteral;
+
+            if (!(patternExpressionSet.StringExpression is ConstantExpression patternExpression))
+            {
+                throw new NotImplementedException();
+            }
+
+            var pattern = (string) patternExpression.Value;
+            pattern = ProcessRegexPattern(pattern);
+
+            var likeCondition = new LikeCondition(text.StringExpression, pattern);
+
+            var notErrorCondition = new ConjunctionCondition(new[]
+            {
+                text.IsNotErrorCondition,
+                patternExpressionSet.IsNotErrorCondition,
+                // TODO: include flags
+                producesAnError ? (IFilterCondition)new AlwaysFalseCondition() : new AlwaysTrueCondition(),
+                new DisjunctionCondition(new[]
+                {
+                    new ComparisonCondition(text.TypeCategoryExpression,
+                        new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext),
+                        ComparisonTypes.EqualTo),
+                    new ComparisonCondition(text.TypeCategoryExpression,
+                        new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
+                        ComparisonTypes.EqualTo)
+                })
+            });
+
+            return new ConditionPart(notErrorCondition, likeCondition);
+        }
+
+        private string ProcessRegexPattern(string pattern)
+        {
+            // TODO: Improve this function
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < pattern.Length; i++)
+            {
+                if (i == 0)
+                {
+                    if (pattern[i] == '^')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        sb.Append("%");
+                    }
+                }
+
+                var c = pattern[i];
+
+                switch (c)
+                {
+                    case '%':
+                        sb.Append("[%]");
+                        break;
+                    case '[':
+                        sb.Append("[[]");
+                        break;
+                    case ']':
+                        sb.Append("[]]");
+                        break;
+                    case '_':
+                        sb.Append("[_]");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+
+                if (i == pattern.Length - 1)
+                {
+                    if (pattern[i] == '$')
+                    {
+                        sb.Remove(sb.Length - 1, 1);
+                    }
+                    else
+                    {
+                        sb.Append('%');
+                    }
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }

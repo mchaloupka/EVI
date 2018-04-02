@@ -380,5 +380,48 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
             return CommonPostTransform(transformed, toTransform, data);
         }
 
+        /// <summary>
+        /// Visits <see cref="LikeCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(LikeCondition toVisit, object data)
+        {
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="LikeCondition" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(LikeCondition toVisit, T data)
+        {
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
+        }
+
+        /// <summary>
+        /// Process the <see cref="LikeCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(LikeCondition toTransform, T data);
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, LikeCondition toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
     }
 }

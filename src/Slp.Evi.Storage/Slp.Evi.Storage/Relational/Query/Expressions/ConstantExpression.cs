@@ -10,7 +10,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
     /// <summary>
     /// Class ConstantExpression.
     /// </summary>
-    public class ConstantExpression 
+    public class ConstantExpression
         : IExpression
     {
         /// <summary>

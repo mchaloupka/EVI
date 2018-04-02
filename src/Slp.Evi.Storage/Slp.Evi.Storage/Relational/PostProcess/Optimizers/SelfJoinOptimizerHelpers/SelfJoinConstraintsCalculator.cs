@@ -70,7 +70,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         public object Visit(ConjunctionCondition conjunctionCondition, object data)
         {
             return conjunctionCondition.InnerConditions.Aggregate(
-                data, 
+                data,
                 (current1, filterCondition) => filterCondition.Accept(this, current1));
         }
 
@@ -151,7 +151,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
                             satisfactionMap.MarkAsSatisfied(satisfaction);
                         }
                     }
-                } 
+                }
             }
 
             return satisfactionMap;
@@ -206,6 +206,12 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         public object Visit(NegationCondition negationCondition, object data)
+        {
+            return data;
+        }
+
+        /// <inheritdoc />
+        public object Visit(LikeCondition likeCondition, object data)
         {
             return data;
         }

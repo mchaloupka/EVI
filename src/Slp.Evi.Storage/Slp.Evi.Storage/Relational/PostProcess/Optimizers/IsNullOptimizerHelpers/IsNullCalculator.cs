@@ -213,6 +213,12 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpe
             return result.GetInverse();
         }
 
+        /// <inheritdoc />
+        protected override IsNullOptimizerAggregatedValues Transform(LikeCondition toTransform, IsNullCalculatorParameter data)
+        {
+            return new IsNullOptimizerAggregatedValues();
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>

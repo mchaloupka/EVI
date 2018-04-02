@@ -587,6 +587,14 @@ namespace Slp.Evi.Storage.Database.Base
             return null;
         }
 
+        /// <inheritdoc />
+        protected override object Transform(LikeCondition toTransform, VisitorContext data)
+        {
+            TransformExpression(toTransform.Expression, data);
+            data.StringBuilder.Append($" LIKE \'{toTransform.Pattern}\'");
+            return null;
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>

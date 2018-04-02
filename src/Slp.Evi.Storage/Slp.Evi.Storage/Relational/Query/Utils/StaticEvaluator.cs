@@ -312,5 +312,11 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var inner = (bool)negationCondition.InnerCondition.Accept(this, data);
             return !inner;
         }
+
+        /// <inheritdoc />
+        public object Visit(LikeCondition likeCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
