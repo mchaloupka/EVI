@@ -15,6 +15,15 @@ using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Query.Logging
 {
+    /// <summary>
+    /// Textual representation for relational queries.
+    /// </summary>
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.ValueBinders.IValueBinderVisitor" />
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.Sources.ICalculusSourceVisitor" />
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.Expressions.IExpressionVisitor" />
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.Conditions.Source.ISourceConditionVisitor" />
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.Conditions.Assignment.IAssignmentConditionVisitor" />
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.Conditions.Filter.IFilterConditionVisitor" />
     public class RelationalQueryRepresentation
         : IValueBinderVisitor,
             ICalculusSourceVisitor,
@@ -26,11 +35,19 @@ namespace Slp.Evi.Storage.Query.Logging
         private readonly Func<object, long> _getObjectIndex;
         private readonly StringBuilder _sb = new StringBuilder();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RelationalQueryRepresentation"/> class.
+        /// </summary>
+        /// <param name="getObjectIndex">A function to get an index of an object.</param>
         public RelationalQueryRepresentation(Func<object, long> getObjectIndex)
         {
             _getObjectIndex = getObjectIndex;
         }
 
+        /// <summary>
+        /// Gets the representation.
+        /// </summary>
+        /// <param name="query">The query.</param>
         public string GetRepresentation(RelationalQuery query)
         {
             _sb.Clear();
