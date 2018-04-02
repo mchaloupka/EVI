@@ -397,6 +397,23 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Subtract);
             }
+            else if (expression is RegexFunction regexFunction)
+            {
+                var arguments = regexFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 2)
+                {
+                    return new SqlRegexFunction(arguments[0], arguments[1]);
+                }
+                else if (arguments.Count == 3)
+                {
+                    return new SqlRegexFunction(arguments[0], arguments[1], arguments[2]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
+            }
 
             throw new NotImplementedException();
         }

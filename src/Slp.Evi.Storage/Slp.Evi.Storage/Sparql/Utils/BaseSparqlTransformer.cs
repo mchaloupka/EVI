@@ -746,5 +746,22 @@ namespace Slp.Evi.Storage.Sparql.Utils
                 return toTransform;
             }
         }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(SqlRegexFunction toTransform, T data)
+        {
+            var newText = TransformSparqlExpression(toTransform.Text, data);
+            var newPattern = TransformSparqlExpression(toTransform.Pattern, data);
+            var newFlags = (toTransform.Flags != null) ? TransformSparqlExpression(toTransform.Flags, data) : null;
+
+            if (newText != toTransform.Text || newPattern != toTransform.Pattern || newFlags != toTransform.Flags)
+            {
+                return new SqlRegexFunction(newText, newPattern, newFlags);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
     }
 }

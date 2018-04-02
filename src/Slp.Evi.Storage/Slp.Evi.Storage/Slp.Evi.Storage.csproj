@@ -112,6 +112,7 @@
     <Compile Include="Relational\Query\Expressions\BinaryNumericExpression.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\BinaryArithmeticExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\SqlRegexFunction.cs" />
     <Compile Include="Types\ITypeCache.cs" />
     <Compile Include="Types\TypeCategories.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />

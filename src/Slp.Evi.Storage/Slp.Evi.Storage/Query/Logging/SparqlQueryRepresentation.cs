@@ -506,6 +506,25 @@ namespace Slp.Evi.Storage.Query.Logging
             return null;
         }
 
+        /// <inheritdoc />
+        public object Visit(SqlRegexFunction regexFunctionExpression, object data)
+        {
+            _sb.Append("regex(");
+
+            regexFunctionExpression.Text.Accept(this, null);
+            _sb.Append(", ");
+            regexFunctionExpression.Pattern.Accept(this, null);
+
+            if (regexFunctionExpression.Flags != null)
+            {
+                _sb.Append(", ");
+                regexFunctionExpression.Flags.Accept(this, null);
+            }
+
+            _sb.Append(")");
+            return null;
+        }
+
         /// <summary>
         /// Gets the representation.
         /// </summary>
