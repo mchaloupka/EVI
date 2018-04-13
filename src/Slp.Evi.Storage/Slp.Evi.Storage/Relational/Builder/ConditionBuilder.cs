@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Xml;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
@@ -320,6 +321,9 @@ namespace Slp.Evi.Storage.Relational.Builder
                     case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                     case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                         numericExpression = new ConstantExpression(double.Parse(node.Value, CultureInfo.InvariantCulture), context);
+                        break;
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        dateTimeExpression = new ConstantExpression(XmlConvert.ToDateTime(node.Value, XmlDateTimeSerializationMode.Utc), context);
                         break;
                     default:
                         throw new NotImplementedException();

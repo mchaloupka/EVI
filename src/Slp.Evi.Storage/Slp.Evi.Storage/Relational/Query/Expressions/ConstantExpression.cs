@@ -86,6 +86,19 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
+        /// </summary>
+        /// <param name="toDateTime">To date time.</param>
+        /// <param name="context">The context.</param>
+        public ConstantExpression(DateTime toDateTime, IQueryContext context)
+        {
+            Value = toDateTime;
+            SqlString = $"\'{toDateTime:yyyy-MM-dd HH:mm:ss.fff}\'";
+            _context = context;
+            SqlType = context.Db.SqlTypeForDateTime;
+        }
+
+        /// <summary>
         /// The SQL type of the expression.
         /// </summary>
         public DataType SqlType { get; }

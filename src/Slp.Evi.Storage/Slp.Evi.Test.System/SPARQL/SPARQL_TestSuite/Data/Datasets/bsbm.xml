@@ -140,10 +140,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
-      ];
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}";
     ];
     rr:predicateObjectMap [
       rr:predicate dc:date;
@@ -177,10 +174,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
-      ];
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}";
     ];
     rr:predicateObjectMap [
       rr:predicate dc:date;
@@ -218,8 +212,11 @@
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
       rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
+        rr:parentTriplesMap <#Producer>;
+        rr:joinCondition [
+          rr:child "publisher";
+          rr:parent "nr";
+        ];
       ];
     ];
     rr:predicateObjectMap [
@@ -244,11 +241,20 @@
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:producer;
-      rr:predicate dc:publisher;
       rr:objectMap [
         rr:parentTriplesMap <#Producer>;
         rr:joinCondition [
           rr:child "producer";
+          rr:parent "nr";
+        ];
+      ];
+    ];
+    rr:predicateObjectMap [
+      rr:predicate dc:publisher;
+      rr:objectMap [
+        rr:parentTriplesMap <#Producer>;
+        rr:joinCondition [
+          rr:child "publisher";
           rr:parent "nr";
         ];
       ];
@@ -371,8 +377,11 @@
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
       rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
+        rr:parentTriplesMap <#Vendor>;
+        rr:joinCondition [
+          rr:child "publisher";
+          rr:parent "nr";
+        ];
       ];
     ];
     rr:predicateObjectMap [
@@ -443,8 +452,11 @@
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
       rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
+        rr:parentTriplesMap <#Vendor>;
+        rr:joinCondition [
+          rr:child "publisher";
+          rr:parent "nr";
+        ];
       ];
     ];
     rr:predicateObjectMap [
@@ -456,7 +468,7 @@
   <#Person> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "person" ];
     rr:subjectMap [
-      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer{nr}";
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site{publisher}/Reviewer{nr}";
       rr:class bsbm:Person;
     ];
     rr:predicateObjectMap [
@@ -475,10 +487,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
-      ];
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site{publisher}";
     ];
     rr:predicateObjectMap [
       rr:predicate dc:date;
@@ -489,7 +498,7 @@
   <#Review> a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "review" ];
     rr:subjectMap [
-      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review{nr}";
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site{publisher}/Review{nr}";
       rr:class bsbm:Review;
     ];
     rr:predicateObjectMap [
@@ -552,10 +561,7 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:publisher;
-      rr:objectMap [
-        rr:column "publisher";
-        rr:termType rr:IRI;
-      ];
+      rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site{publisher}";
     ];
     rr:predicateObjectMap [
       rr:predicate dc:date;
