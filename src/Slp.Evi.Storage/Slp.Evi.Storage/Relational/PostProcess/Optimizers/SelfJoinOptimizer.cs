@@ -319,6 +319,22 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 return base.Transform(toTransform, data);
             }
 
+            /// <inheritdoc />
+            protected override ISourceCondition Transform(LeftJoinCondition toTransform, OptimizationContext data)
+            {
+                if (toTransform.CalculusVariables.Any(x => data.Data.IsReplaced(x)))
+                {
+                    var variables = toTransform.CalculusVariables
+                        .Select(x => data.Data.IsReplaced(x) ? data.Data.GetReplacingVariable(x) : x)
+                        .Distinct()
+                        .ToList();
+
+                    return new LeftJoinCondition(toTransform.RightOperand, toTransform.JoinConditions, variables);
+                }
+
+                return base.Transform(toTransform, data);
+            }
+
             /// <summary>
             /// Process the <see cref="ModifiedCalculusModel"/>
             /// </summary>
