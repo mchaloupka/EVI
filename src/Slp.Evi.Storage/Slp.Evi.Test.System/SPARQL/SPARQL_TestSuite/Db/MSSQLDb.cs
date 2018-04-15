@@ -42,7 +42,6 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
             if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
             {
                 loggerFactory.AddConsole(LogLevel.Trace);
-                loggerFactory.AddDebug(LogLevel.Trace);
             }
 
             return new DefaultEviQueryableStorageFactory(loggerFactory);
