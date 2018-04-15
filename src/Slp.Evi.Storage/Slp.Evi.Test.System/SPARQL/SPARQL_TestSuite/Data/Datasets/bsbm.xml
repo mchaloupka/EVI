@@ -472,11 +472,11 @@
       rr:class bsbm:Person;
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:name;
+      rr:predicate foaf:name;
       rr:objectMap [ rr:column "name"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:mbox_sha1sum;
+      rr:predicate foaf:mbox_sha1sum;
       rr:objectMap [ rr:column "mbox_sha1sum"; ];
     ];
     rr:predicateObjectMap [
@@ -502,7 +502,7 @@
       rr:class bsbm:Review;
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:product;
+      rr:predicate bsbm:reviewFor;
       rr:objectMap [
         rr:parentTriplesMap <#Product>;
         rr:joinCondition [
@@ -522,7 +522,7 @@
       ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:reviewer;
+      rr:predicate rev:reviewer;
       rr:objectMap [
         rr:parentTriplesMap <#Person>;
         rr:joinCondition [
@@ -536,11 +536,11 @@
       rr:objectMap [ rr:column "reviewDate"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:title;
+      rr:predicate dc:title;
       rr:objectMap [ rr:column "title"; ];
     ];
     rr:predicateObjectMap [
-      rr:predicate bsbm:text;
+      rr:predicate rev:text;
       rr:objectMap [ rr:column "text"; ];
     ];
     rr:predicateObjectMap [
