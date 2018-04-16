@@ -748,7 +748,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
         }
 
         /// <inheritdoc />
-        protected override ISparqlExpression Transform(SqlRegexFunction toTransform, T data)
+        protected override ISparqlExpression Transform(RegexExpression toTransform, T data)
         {
             var newText = TransformSparqlExpression(toTransform.Text, data);
             var newPattern = TransformSparqlExpression(toTransform.Pattern, data);
@@ -756,7 +756,7 @@ namespace Slp.Evi.Storage.Sparql.Utils
 
             if (newText != toTransform.Text || newPattern != toTransform.Pattern || newFlags != toTransform.Flags)
             {
-                return new SqlRegexFunction(newText, newPattern, newFlags);
+                return new RegexExpression(newText, newPattern, newFlags);
             }
             else
             {

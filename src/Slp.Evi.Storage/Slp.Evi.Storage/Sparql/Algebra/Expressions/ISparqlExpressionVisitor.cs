@@ -89,11 +89,11 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         object Visit(BinaryArithmeticExpression binaryArithmeticExpression, object data);
 
         /// <summary>
-        /// Visits <see cref="SqlRegexFunction"/>
+        /// Visits <see cref="RegexExpression"/>
         /// </summary>
-        /// <param name="regexFunctionExpression">The visited instance</param>
+        /// <param name="regexExpression">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        object Visit(SqlRegexFunction regexFunctionExpression, object data);
+        object Visit(RegexExpression regexExpression, object data);
     }
 }

@@ -149,12 +149,12 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Process the <see cref="SqlRegexFunction"/>
+        /// Process the <see cref="RegexExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected override ISparqlExpression Transform(SqlRegexFunction toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        protected override ISparqlExpression Transform(RegexExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }

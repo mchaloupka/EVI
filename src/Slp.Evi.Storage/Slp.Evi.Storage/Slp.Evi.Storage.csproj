@@ -115,7 +115,7 @@
     <Compile Include="Sparql\Algebra\Expressions\BinaryArithmeticExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\LangExpression.cs" />
     <Compile Include="Sparql\Algebra\Expressions\LangMatchesExpression.cs" />
-    <Compile Include="Sparql\Algebra\Expressions\SqlRegexFunction.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\RegexExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />
     <Compile Include="Types\TypeCategories.cs" />
     <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />

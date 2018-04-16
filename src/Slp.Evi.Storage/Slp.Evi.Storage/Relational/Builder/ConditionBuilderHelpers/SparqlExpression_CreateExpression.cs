@@ -350,17 +350,17 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         }
 
         /// <inheritdoc />
-        public object Visit(SqlRegexFunction regexFunctionExpression, object data)
+        public object Visit(RegexExpression regexExpression, object data)
         {
             var parameter = (ExpressionVisitParameter)data;
 
-            if (regexFunctionExpression.Flags != null)
+            if (regexExpression.Flags != null)
             {
                 throw new NotImplementedException();
             }
 
-            var text = CreateExpression(regexFunctionExpression.Text, parameter);
-            var patternExpressionSet = CreateExpression(regexFunctionExpression.Pattern, parameter);
+            var text = CreateExpression(regexExpression.Text, parameter);
+            var patternExpressionSet = CreateExpression(regexExpression.Pattern, parameter);
 
             if (!(patternExpressionSet.TypeExpression is ConstantExpression patternTypeExpression))
             {

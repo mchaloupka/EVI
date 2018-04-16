@@ -404,11 +404,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
 
                 if (arguments.Count == 2)
                 {
-                    return new SqlRegexFunction(arguments[0], arguments[1]);
+                    return new RegexExpression(arguments[0], arguments[1]);
                 }
                 else if (arguments.Count == 3)
                 {
-                    return new SqlRegexFunction(arguments[0], arguments[1], arguments[2]);
+                    return new RegexExpression(arguments[0], arguments[1], arguments[2]);
                 }
                 else
                 {

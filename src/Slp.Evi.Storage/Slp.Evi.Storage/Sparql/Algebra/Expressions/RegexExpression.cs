@@ -11,7 +11,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
     /// Represents the REGEX function.
     /// </summary>
     /// <seealso cref="Slp.Evi.Storage.Sparql.Algebra.ISparqlCondition" />
-    public class SqlRegexFunction
+    public class RegexExpression
         : ISparqlCondition
     {
         /// <summary>
@@ -33,12 +33,12 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         public ISparqlExpression Flags { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlRegexFunction"/> class.
+        /// Initializes a new instance of the <see cref="RegexExpression"/> class.
         /// </summary>
         /// <param name="text">The text.</param>
         /// <param name="pattern">The pattern.</param>
         /// <param name="flags">The flags.</param>
-        public SqlRegexFunction(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags = null)
+        public RegexExpression(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags = null)
         {
             Text = text;
             Pattern = pattern;

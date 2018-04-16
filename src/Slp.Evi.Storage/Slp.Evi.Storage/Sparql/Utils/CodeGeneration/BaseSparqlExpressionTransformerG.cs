@@ -469,35 +469,35 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Visits <see cref="SqlRegexFunction" />
+        /// Visits <see cref="RegexExpression" />
         /// </summary>
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        public object Visit(SqlRegexFunction toVisit, object data)
+        public object Visit(RegexExpression toVisit, object data)
         {
             return ProcessVisit(toVisit, (T)data);
         }
 
         /// <summary>
-        /// Processes the visit of <see cref="SqlRegexFunction" />
+        /// Processes the visit of <see cref="RegexExpression" />
         /// </summary>
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(SqlRegexFunction toVisit, T data)
+        protected virtual TR ProcessVisit(RegexExpression toVisit, T data)
         {
             var transformed = Transform(toVisit, data);
             return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
-        /// Process the <see cref="SqlRegexFunction"/>
+        /// Process the <see cref="RegexExpression"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
-        protected abstract TR Transform(SqlRegexFunction toTransform, T data);
+        protected abstract TR Transform(RegexExpression toTransform, T data);
 
         /// <summary>
         /// Post-process for the transformation.
@@ -506,7 +506,7 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toTransform">The transformed instance</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The post-processed transformation result</returns>
-        protected virtual TR PostTransform(TR transformed, SqlRegexFunction toTransform, T data)
+        protected virtual TR PostTransform(TR transformed, RegexExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
         }
