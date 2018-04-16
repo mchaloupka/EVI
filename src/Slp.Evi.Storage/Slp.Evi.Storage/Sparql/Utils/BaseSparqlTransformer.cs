@@ -763,5 +763,37 @@ namespace Slp.Evi.Storage.Sparql.Utils
                 return toTransform;
             }
         }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(LangMatchesExpression toTransform, T data)
+        {
+            var newLanguageExpression = TransformSparqlExpression(toTransform.LanguageExpression, data);
+            var newLanguageRangeExpression = TransformSparqlExpression(toTransform.LanguageRangeExpression, data);
+
+            if (newLanguageExpression != toTransform.LanguageExpression ||
+                newLanguageRangeExpression != toTransform.LanguageRangeExpression)
+            {
+                return new LangMatchesExpression(newLanguageExpression, newLanguageRangeExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(LangExpression toTransform, T data)
+        {
+            var newExpression = TransformSparqlExpression(toTransform.SparqlExpression, data);
+
+            if (newExpression != toTransform.SparqlExpression)
+            {
+                return new LangExpression(newExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
     }
 }

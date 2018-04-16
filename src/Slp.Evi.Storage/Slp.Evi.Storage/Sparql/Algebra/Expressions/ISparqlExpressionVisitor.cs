@@ -95,5 +95,21 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(RegexExpression regexExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="LangMatchesExpression"/>
+        /// </summary>
+        /// <param name="langMatchesExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(LangMatchesExpression langMatchesExpression, object data);
+
+        /// <summary>
+        /// Visits <see cref="LangExpression"/>
+        /// </summary>
+        /// <param name="langExpression">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(LangExpression langExpression, object data);
     }
 }

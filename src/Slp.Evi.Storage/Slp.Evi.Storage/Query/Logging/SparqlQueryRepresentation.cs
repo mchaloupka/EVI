@@ -525,6 +525,26 @@ namespace Slp.Evi.Storage.Query.Logging
             return null;
         }
 
+        /// <inheritdoc />
+        public object Visit(LangMatchesExpression langMatchesExpression, object data)
+        {
+            _sb.Append("langMatches(");
+            langMatchesExpression.LanguageExpression.Accept(this, null);
+            _sb.Append(", ");
+            langMatchesExpression.LanguageRangeExpression.Accept(this, null);
+            _sb.Append(")");
+            return null;
+        }
+
+        /// <inheritdoc />
+        public object Visit(LangExpression langExpression, object data)
+        {
+            _sb.Append("lang(");
+            langExpression.Accept(this, data);
+            _sb.Append(")");
+            return null;
+        }
+
         /// <summary>
         /// Gets the representation.
         /// </summary>

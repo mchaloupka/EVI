@@ -402,6 +402,18 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
             return new ConditionPart(notErrorCondition, likeCondition);
         }
 
+        /// <inheritdoc />
+        public object Visit(LangMatchesExpression langMatchesExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public object Visit(LangExpression langExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         private string ProcessRegexPattern(string pattern)
         {
             // TODO: Improve this function

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,9 +30,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         }
 
         /// <inheritdoc />
+        [DebuggerStepThrough]
         public object Accept(ISparqlExpressionVisitor visitor, object data)
         {
-            throw new NotImplementedException();
+            return visitor.Visit(this, data);
         }
 
         /// <inheritdoc />
