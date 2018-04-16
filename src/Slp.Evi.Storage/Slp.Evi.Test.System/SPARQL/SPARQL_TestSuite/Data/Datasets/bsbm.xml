@@ -537,11 +537,17 @@
     ];
     rr:predicateObjectMap [
       rr:predicate dc:title;
-      rr:objectMap [ rr:column "title"; ];
+      rr:objectMap [
+        rr:column "title";
+        rr:language "en";
+      ];
     ];
     rr:predicateObjectMap [
       rr:predicate rev:text;
-      rr:objectMap [ rr:column "text"; ];
+      rr:objectMap [
+        rr:column "text";
+        rr:language "en";
+      ];
     ];
     rr:predicateObjectMap [
       rr:predicate bsbm:rating1;
