@@ -21,6 +21,7 @@ using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Ordering;
 
 namespace Slp.Evi.Storage.Sparql.Builder
@@ -408,6 +409,32 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 else if (arguments.Count == 3)
                 {
                     return new SqlRegexFunction(arguments[0], arguments[1], arguments[2]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
+            }
+            else if (expression is LangMatchesFunction langMatchesFunction)
+            {
+                var arguments = langMatchesFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 2)
+                {
+                    return new LangMatchesExpression(arguments[0], arguments[1]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
+            }
+            else if (expression is LangFunction langFunction)
+            {
+                var arguments = langFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 1)
+                {
+                    return new LangExpression(arguments[0]);
                 }
                 else
                 {

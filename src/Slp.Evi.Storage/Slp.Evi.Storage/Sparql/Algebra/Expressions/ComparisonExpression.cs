@@ -8,7 +8,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
     /// <summary>
     /// Representing comparison condition
     /// </summary>
-    public class ComparisonExpression 
+    public class ComparisonExpression
         : ISparqlCondition
     {
         /// <summary>
