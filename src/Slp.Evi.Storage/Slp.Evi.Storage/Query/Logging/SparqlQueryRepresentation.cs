@@ -540,7 +540,7 @@ namespace Slp.Evi.Storage.Query.Logging
         public object Visit(LangExpression langExpression, object data)
         {
             _sb.Append("lang(");
-            langExpression.Accept(this, data);
+            langExpression.SparqlExpression.Accept(this, data);
             _sb.Append(")");
             return null;
         }

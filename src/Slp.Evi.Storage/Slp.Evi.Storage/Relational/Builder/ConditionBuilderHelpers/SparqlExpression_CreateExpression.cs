@@ -26,6 +26,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// </summary>
         private readonly ConditionBuilder _conditionBuilder;
 
+        private readonly PossibleTypesExtractor _possibleTypesExtractor;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SparqlExpression_CreateExpression"/> class.
         /// </summary>
@@ -33,6 +35,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public SparqlExpression_CreateExpression(ConditionBuilder conditionBuilder)
         {
             _conditionBuilder = conditionBuilder;
+            _possibleTypesExtractor = new PossibleTypesExtractor();
         }
 
         /// <summary>
@@ -405,13 +408,73 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <inheritdoc />
         public object Visit(LangMatchesExpression langMatchesExpression, object data)
         {
-            throw new NotImplementedException();
+            var parameter = (ExpressionVisitParameter)data;
+            var languageExpression = CreateExpression(langMatchesExpression.LanguageExpression, parameter);
+            var languageRangeExpression = CreateExpression(langMatchesExpression.LanguageRangeExpression, parameter);
+
+            var notErrorCondition = new ConjunctionCondition(new[]
+            {
+                languageExpression.IsNotErrorCondition,
+                languageRangeExpression.IsNotErrorCondition,
+                new ComparisonCondition(languageExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                new ComparisonCondition(languageRangeExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.EqualTo)
+            });
+
+            // TODO: Better condition needed
+            var condition = new ComparisonCondition(languageExpression.StringExpression, languageRangeExpression.StringExpression, ComparisonTypes.EqualTo);
+
+            return new ConditionPart(notErrorCondition, condition);
         }
 
         /// <inheritdoc />
         public object Visit(LangExpression langExpression, object data)
         {
-            throw new NotImplementedException();
+            var parameter = (ExpressionVisitParameter) data;
+            var innerExpression = CreateExpression(langExpression.SparqlExpression, parameter);
+
+            var notErrorCondition = new ConjunctionCondition(new []
+            {
+                innerExpression.IsNotErrorCondition,
+                new DisjunctionCondition(new IFilterCondition[]
+                {
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.NumericLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.StringLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.BooleanLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.DateTimeLiteral, parameter.QueryContext), ComparisonTypes.EqualTo),
+                    new ComparisonCondition(innerExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.OtherLiterals, parameter.QueryContext), ComparisonTypes.EqualTo),
+                })
+            });
+
+            var typeCache = parameter.QueryContext.TypeCache;
+
+            var possibleTypes =
+                _possibleTypesExtractor.CollectPossibleTypes(innerExpression)
+                    .Select(x => new
+                    {
+                        Index = x,
+                        Type = typeCache.GetValueType(x) as ILiteralValueType
+                    })
+                    .GroupBy(x => x.Type?.LanguageTag)
+                    .Select(x => new { Language = x.Key ?? string.Empty, Indexes = x.Select(y => y.Index).Distinct()})
+                    .ToList();
+
+            var statements = new List<CaseExpression.Statement>();
+            foreach (var possibleType in possibleTypes)
+            {
+                var condition = new DisjunctionCondition(possibleType.Indexes.Select(x =>
+                    new ComparisonCondition(innerExpression.TypeExpression,
+                        new ConstantExpression(x, parameter.QueryContext), ComparisonTypes.EqualTo)));
+
+                var expression = new ConstantExpression(possibleType.Language, parameter.QueryContext);
+
+                statements.Add(new CaseExpression.Statement(condition, expression));
+            }
+
+            return new ExpressionsSet(notErrorCondition,
+                new ConstantExpression(typeCache.GetIndex(typeCache.SimpleLiteralValueType), parameter.QueryContext),
+                new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext),
+                new CaseExpression(statements), null, null, null, parameter.QueryContext);
         }
 
         private string ProcessRegexPattern(string pattern)
