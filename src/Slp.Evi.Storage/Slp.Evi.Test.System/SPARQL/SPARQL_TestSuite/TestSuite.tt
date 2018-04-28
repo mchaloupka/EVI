@@ -60,7 +60,6 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_06"); #>
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_07"); #>
 <# EqualTest("bsbm.xml", "Bsbm", "Query_08"); #>
-<# BagEqualTest("bsbm.xml", "Bsbm", "Query_09"); #>
 <# EqualTest("bsbm.xml", "Bsbm", "Query_10"); #>
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_11"); #>
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_12"); #>

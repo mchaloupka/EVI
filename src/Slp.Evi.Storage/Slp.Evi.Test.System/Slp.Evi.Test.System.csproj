@@ -109,7 +109,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPARQL\BaseSPARQLTestSuite.cs" />
     <Compile Include="SPARQL\SPARQL_TestSuite\Db\MSSQLDb.cs" />
-    <Compile Include="SPARQL\SPARQL_TestSuite\TestSuite.cs">
+    <Compile Include="SPARQL\SPARQL_TestSuite\TestSuite1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TestSuite.tt</DependentUpon>
@@ -417,7 +417,7 @@
     </None>
     <Content Include="SPARQL\SPARQL_TestSuite\TestSuite.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestSuite.cs</LastGenOutput>
+      <LastGenOutput>TestSuite1.cs</LastGenOutput>
     </Content>
     <None Include="SPARQL\SPARQL_TestSuite\Data\Datasets\simple.xml">
       <SubType>Designer</SubType>

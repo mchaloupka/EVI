@@ -23,6 +23,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Ordering;
+using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -110,7 +111,30 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessDescribe(IQueryContext context)
         {
-            throw new NotImplementedException();
+            var algebra = ProcessAlgebra(context.OriginalAlgebra, context);
+
+            if (!(algebra is SelectModifier selectModifier) ||
+                !(selectModifier.InnerQuery is IGraphPattern graphPattern))
+            {
+                throw new NotImplementedException();
+            }
+
+            var variables = selectModifier.Variables.ToList();
+            if (variables.Count != 1)
+            {
+                throw new NotSupportedException();
+            }
+
+            variables.Add(context.CreateSparqlVariable());
+            variables.Add(context.CreateSparqlVariable());
+
+            var newInnerQuery = new JoinPattern(new IGraphPattern[]
+            {
+                graphPattern,
+                new TriplePattern(new VariablePattern(variables[0]), new VariablePattern(variables[1]), new VariablePattern(variables[2]))
+            });
+
+            return new SelectModifier(newInnerQuery, variables);
         }
 
         /// <summary>

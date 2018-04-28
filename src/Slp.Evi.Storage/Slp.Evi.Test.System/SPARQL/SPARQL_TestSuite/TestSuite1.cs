@@ -530,18 +530,6 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
         [TestMethod]
-        public void Bsbm_Query_09()
-        {
-            var storage = GetStorage("bsbm.xml");
-            var queryFile = @"Data\Bsbm\Query_09.rq";
-            var resultFile = @"Data\Bsbm\Query_09.srx";
-            var query = GetQuery(queryFile);
-            var result = storage.Query(query);
-            var expected = GetExpected(resultFile);
-            AssertBagEqual(expected, result);
-        }
-
-        [TestMethod]
         public void Bsbm_Query_10()
         {
             var storage = GetStorage("bsbm.xml");
