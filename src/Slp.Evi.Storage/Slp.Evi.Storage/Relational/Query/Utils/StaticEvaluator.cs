@@ -318,5 +318,11 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         {
             throw new NotImplementedException();
         }
+
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

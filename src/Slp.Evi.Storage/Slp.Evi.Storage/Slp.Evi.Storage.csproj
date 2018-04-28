@@ -109,6 +109,7 @@
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\PossibleTypesExtractor.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
     <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\LangMatchesCondition.cs" />
     <Compile Include="Relational\Query\Conditions\Filter\LikeCondition.cs" />
     <Compile Include="Relational\Query\ExpressionsSet.cs" />
     <Compile Include="Relational\Query\Expressions\BinaryNumericExpression.cs" />

@@ -420,8 +420,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                 new ComparisonCondition(languageRangeExpression.TypeCategoryExpression, new ConstantExpression((int) TypeCategories.SimpleLiteral, parameter.QueryContext), ComparisonTypes.EqualTo)
             });
 
-            // TODO: Better condition needed
-            var condition = new ComparisonCondition(languageExpression.StringExpression, languageRangeExpression.StringExpression, ComparisonTypes.EqualTo);
+            var condition = new LangMatchesCondition(languageExpression.StringExpression, languageRangeExpression.StringExpression);
 
             return new ConditionPart(notErrorCondition, condition);
         }

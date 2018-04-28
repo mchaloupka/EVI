@@ -595,6 +595,17 @@ namespace Slp.Evi.Storage.Database.Base
             return null;
         }
 
+        /// <inheritdoc />
+        protected override object Transform(LangMatchesCondition toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("LOWER(");
+            TransformExpression(toTransform.LanguageExpression, data);
+            data.StringBuilder.Append(") LIKE LOWER(");
+            TransformExpression(toTransform.LanguageRangeExpression, data); // TODO: * should be handled so the language matching will work properly
+            data.StringBuilder.Append(")");
+            return null;
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>

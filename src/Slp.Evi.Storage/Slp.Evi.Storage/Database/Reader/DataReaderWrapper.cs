@@ -233,6 +233,10 @@ namespace Slp.Evi.Storage.Database.Reader
                     {
                         return dVal.ToString(CultureInfo.InvariantCulture);
                     }
+                    else if (_value is DateTime dateTime)
+                    {
+                        return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    }
                     else
                     {
                         return _value.ToString();

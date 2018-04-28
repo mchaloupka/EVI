@@ -17,5 +17,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
     /// <seealso cref="Slp.Evi.Storage.Database.Base.BaseSqlQueryBuilder" />
     public class MsSqlQueryBuilder
         : BaseSqlQueryBuilder
-    { }
+    {
+
+    }
 }

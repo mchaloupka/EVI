@@ -382,6 +382,23 @@ namespace Slp.Evi.Storage.Relational.Utils
             }
         }
 
+        /// <inheritdoc />
+        protected override IFilterCondition Transform(LangMatchesCondition toTransform, T data)
+        {
+            var newLanguageExpression = TransformExpression(toTransform.LanguageExpression, data);
+            var newLanguageRangeExpression = TransformExpression(toTransform.LanguageRangeExpression, data);
+
+            if (newLanguageRangeExpression != toTransform.LanguageExpression ||
+                newLanguageRangeExpression != toTransform.LanguageRangeExpression)
+            {
+                return new LangMatchesCondition(newLanguageExpression, newLanguageRangeExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>

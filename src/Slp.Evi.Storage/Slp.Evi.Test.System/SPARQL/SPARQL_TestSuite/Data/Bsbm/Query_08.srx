@@ -4,626 +4,202 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema#"
     xmlns="http://www.w3.org/2005/sparql-results#" >
   <head>
-    <variable name="label"/>
-    <variable name="comment"/>
-    <variable name="producer"/>
-    <variable name="productFeature"/>
-    <variable name="propertyTextual1"/>
-    <variable name="propertyTextual2"/>
-    <variable name="propertyTextual3"/>
-    <variable name="propertyNumeric1"/>
-    <variable name="propertyNumeric2"/>
-    <variable name="propertyTextual4"/>
-    <variable name="propertyTextual5"/>
-    <variable name="propertyNumeric4"/>
+    <variable name="title"/>
+    <variable name="text"/>
+    <variable name="reviewDate"/>
+    <variable name="reviewer"/>
+    <variable name="reviewerName"/>
+    <variable name="rating1"/>
+    <variable name="rating2"/>
+    <variable name="rating3"/>
+    <variable name="rating4"/>
   </head>
   <results>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">remorsefully radiocast gallbladders quatrains lionize daintily biggings prechill pulpwood weaners</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">ovoid productions lugubrious mainliner cafeterias lancelot seminally misnumbering countability preinstructs imbued prename goldbricker distributution propitiating flays quotably saltshaker misdescription cheesecakes subchief agitators redacts prosecutable succouring conglomerates undersell hungering cavorters hagride distension throwaways relinked nonenforceable tenuity siroccos mulled grippier cuss corned syne overbearingly bruin aurally dissembles sagged bloodstreams metricize typecast bejeweling contaminations diagnosticians dyslectic ionising bonged humanistically hadjes nonviolence statutableness burbly cinques greaves restitutions empowering orientate bullocks rathskellers roofline cleated evangelize applauders fascisms steamily astrolabes bequests platy foreshadows saddletree tastelessly fulfillers autogyros wormhole restaffed enjoyably centrums slouched vindicative graphites firetrap slobbery checkroom implementing tything metropolises reinterrogating kitschy tootling borrowers trusses sited anatomically reinvestigations overdefensive frontlets coiffeuses haunters laboriousness hoorays orangier organically kneecaps reddle tempers suavest bibbery greaved expressions cockscombs pulpiest foremen mandalas brooches undesigning strayers pitiableness loginess impermanently surrejoinders semolina cathexes globing admitter cocomat retrievable homespuns</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2008-05-28 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>zeals sheeny playacted</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Eyana-Aurelianus</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>7</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating2">
+        <literal>8</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">valetudinarians inquirer comforting speleologists foretoken prepossessing iambuses</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">lockers flows southers mynahs meltdowns curbstone orbited homesteader lyrebird biggies millstones unshelled recompensive facia violinist brittled doping pygmyism glosses reappeared tines cuts tautologous downtowns tremens runny overtones batholiths socketed penpoints gambian kedged sharped unaccented ducats prorogations allegorical optative wavered techies supposing repapering rewed beryline precised entree orangeades comfits megalopolises shiksas audad undiversified laciness densify unworthier tamest interferences verbified divvying glimmerings snips prescribing heeder hemstitch reechoing flagellates rainout reflowers scything overseers oxtongues stocker fulltime eyepoint sourdoughs pester salivates manipulator ectoplasmic mesmerizes kicked chains innately invisibleness pausers bombardment brutifying sinfully suppuration unwarily troops rancidities hexylresorcinol foreheads ethers sanga gynecologists kinglets roubles boogers spoilsport hoodwinks harking secedes wires trains cuniform rending figures hecatombs syllogistically summarize credibleness sitcom atheists sparkling weakly disarmament embankments nontransparent luff darkeys retirees redeem troubling narwhal unexpected landscapers presets benefactresses lovebirds heists psychosomatics substantival exogamies expressiveness glitches occlusions indulging antiquing truckage pimplier stubbier arrangers keeps solanums townsfolk heatedly alerters bourbons youthening laying sardinian sweatboxes sensibles improvisers uninformed weeds outfox obnoxiously detrimentalness recoinage flights occultism americas unpatentable earlier meretriciously sunning dodoism electrocute whickered deifying dimmer probably splendider snazzier jollified allocations fewnesses jiggliest</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2008-04-04 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>linguini</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Ruggiero-Delane</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>5</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
+      <binding name="rating2">
+        <literal>7</literal>
       </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
+      <binding name="rating3">
+        <literal>10</literal>
       </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating4">
+        <literal>7</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">macrames obeisances sociologist uncomfortableness disputants waterloos shoos jesters failed thumper corruptions circularness plotters niggarded jerkers</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">helmeted vegetates zoopathology forkedly rounder affirmer commentate ricks stapedes consignees erogenous permutationists oftest coiler quotationally temperaments barracudas interrelatedness sudors airmails mattedly belongs cyprians peruser antiacid exfoliate onery arrowheads veinings forehandedly infirms joisted resemblances electroplated parlours sighting uninvitingly shirks pastellist stuffiest melancholiac prepossesses catchiest yawls druidess seamount hunger conventicles exploded rankness modelled classicist sanity basketries denaturants mellowly filtering taring touted tollgatherer procreated rived healthily thraves noncasual squirmiest unmitigated stigmatized interviewed rehanging thighbone sniping bioastronautics magmatic freebooted americanize windages clack flanges sorts pickets caftan blubbers curliest sentences limo coveter spokeswoman pixie</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2008-01-14 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>feeblemindedness</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Eyana-Aurelianus</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>5</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating2">
+        <literal>10</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">rickettsiae clubmen reinduction chilblains intertribal balsamic exotism reintroduced charade cubage oarless humanoids observingly mudcaps ubiquities</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">decapitating digged glockenspiels hearted sapid weeny colliers cylindrical treeing ferries proselyte victorians signifies limeades iterances expressionist sculked supplanter commitment indemnifying sudoral calcifying captivator versified prating pithier daily nearsightedly buskin recompensable capacitances bootee lockets enticement disservices strategists licensors kennelled barding autocrats lathworks blueings tiresomely outdistanced gothicize ejectable materiels homogeneously paintiest sneezers workboat interphone ascii unconnected instrumentalist topographical disgruntling pederast sceptring racier evens trimeter banes misdemeanor webless rehinge</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2007-12-16 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>courtrooms skyjacked</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="reviewerName">
+        <literal>Ruggiero-Delane</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">mitigative defamers naturalist accustoms reclean valiancies pilled bearcats tents demultiplexes</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">skulking publicized typecase supervisors escapeway recoinage blinding execs conformism treasures durums rondelle drawing oppressing bores coplots monogamousness zoospores unlikelihood preengaged overhands limekiln penetrator ultrasound lymphocytic radiolucencies chefs feoffment conventionalism cascading machos abundantly godchild frequented misplacing repairers surfy antedating chunter cancelers photoflash mistaught testacies solidest incarnation arrayers gruelingly honorands slobs builders preadjusting cpl fosterage trulls fakers toepiece maximally bouldery hampshirites dermatologies flopover noctambulation frizzler submissively reconsolidate clapping enunciators championed nigglingly tongers liquoring reminder podiatrists tussocks reprice renovating chevrolets refolds fantastical polarity ennuis franchisers undiluted macaroons overexcited habitability reaching ethers gratias biers wretchedly warps poetess forthrightness kinaesthetically lukewarmly decorators viselike ionized pumpernickel durations legitimation hazings protracting beechier monopolizes yids flavonols scaler letup condignly gipsies spoonily forging workups drapers oculist aldehydes subassociation forejudge graciousness carromed mal alpinisms alongshore proceeded institutionally ultraconservatives harpooner vises puffers trainful bordellos wayfarings cumquats jilter strewed imputing sibilantly venosities nosiness wharfs comediennes reprices manias trichroic valvar vaporizing obsolescently feedboxes radiophone antibacterial singlets soaper deists untangle undergraduates kwacha discombobulation chargers slumping servantship vittled jadishly superabundant gibbeting signatary frypan horsehides nonclassical sharecropped friendless flushers corrupted utilized emigres acolytes shouldering rassling surfs carvers braw weatherglasses soakers haggis hoisted cowlicks middlemost caroused reattach tenably tympanic binder foresters agamic busboys unrestored kneeler chaplet newts</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2007-09-02 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>overambitiously asphyxiates bounds</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Ruggiero-Delane</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>9</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating3">
+        <literal>8</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">inquisitional rebecs mouthwash deaconing metastasis weans adjectivally troths apperceptive nonprotectively beckoning commiseration guttersnipes doctoring</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">gymkhana sheepmen apologizers ortolan toadyish quatrains revalue straying restacks frivolously pierced fauces babus novelistic gills regresses fossilization lipless sulphurize ohmage procrastinator alienator travelled rivets thrivers pingrasses steps campier mismarks plushier proteinaceous bunco snoozes glitters finical simulants hippies skims engrave soundtracks huffish nonnegotiable eclectically hatsful shaftings disobeyers identifies wingspread exceptionally replan aiming bedstraws tragically pollutants prefabricating isolation sextets rewarders approvement productive salaamed minatory ruleless microsurgeons circumambulate sapphisms nonsexually adjoined noticing deescalated habiting touristy unequalled lucidities discords matureness hydrocephaloid certifies undyingly doylies spellbinds prenatally govt unpolarized togae overjoying shirts reediness ecclesiastics awakens arrowing corncake crumbliness recommits viperish monkery unappetizingly quarrier speaks malthus overlook fatted archaists refreshed gayness filaree cirque vibrations leukemoid enquirer drossier prescience housewifeliness timed contentiousness constricting scramblers shivarees foilable</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2007-08-15 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>obduction</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Ruggiero-Delane</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>3</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
+      <binding name="rating2">
+        <literal>4</literal>
       </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating4">
+        <literal>1</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">jeeringly perforates fishlines midden nuggety overwhelm washrooms reframed uncannily beechiest solderer</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">remained clunking sententious nonproven recrowned communication resows armer mouldering untraveled hennaed decreasing threes pockily meantimes preventability facias possums garroter fatherhood addiction trowel tetra proctorship nickelodeons microanalytic impudently slumbering convalescents coamings laggards fops tendentiously temptingly undisputable requiescat allotments aerodromes brands twigs oppressed heavens immolation cutters biform caudated turbojets sacrilegiously midwifed betatrons tractably extravaganzas masculinization vadis hasenpfeffer nonreflective ululating heros priesthood deaconry unpolluted yachtswoman dimorphous attachments betake feticides hideless whippy renominated devolved elicitation uncontrolled tetryl finalisms barricaded debasement traditional mushes reinterpreting champions imagisms gawkish avatar bamboozler brassiest unobstructed bumpily drolling lucking disputer winks accommodating portending jauntier gripers dairymaid schnaps abreacting reexhibit latinized mucks reamer sibilates abscam segues southwesterly rectors potpies inconveniences screeners overslips transmigrating punkier housebreaking lutenists aerodynamically gumwood repousses pledging copers litterateurs declassing goldbricks burins scattered catalytically tapestries interpolated subcontinent teasels lycees proselytes droplets rebill</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2007-07-24 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>tops</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Eyana-Aurelianus</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
+      <binding name="rating1">
+        <literal>2</literal>
       </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
+      <binding name="rating2">
+        <literal>6</literal>
       </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating3">
+        <literal>5</literal>
       </binding>
     </result>
     <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
+      <binding name="title">
+        <literal lang="en">attackingly nets serologically supinates reallocate ridable deemphasizes lovers thole accoutring</literal>
       </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
+      <binding name="text">
+        <literal lang="en">triangulates chewed ropier muggs magnetometer signorine thymy outdoes remittee foxskin outswims nonzero amassment kinswoman subplots rosewoods tunneling inconceivability individualities accursed unofficial lingers nonpredatory keelless underofficial nosegays finmark realignments fathoms reconsidered distended tenpin blacker homages forked witticisms regularized elopements casa renotifying ocurred glissandi marinas heteronomy boobs puerility drywalls tsarisms ringlets hulking unanswerable maestri psst antics secretory lickers dimmed tenty hypothyroids spottiness catastrophes pleas journals waterily segue crenelating focusers bawdier engilding demurest itemizes electorial prognosticators</literal>
       </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
+      <binding name="reviewDate">
+        <literal type="xsd:dateTime">2007-07-07 00:00:00.000</literal>
       </binding>
-      <binding name="productFeature">
-        <literal>memorability</literal>
+      <binding name="reviewer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer3</uri>
       </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
+      <binding name="reviewerName">
+        <literal>Danijela-Adalbrand</literal>
       </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>warbles missal ophthalmoscopes</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>antepast</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>overachiever entoiling</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>nonparliamentary</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>daunter</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>amu egos</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>coppering uraniums transplanted</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>cypriote</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>kneading</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>hellholes</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="label">
-        <literal>manner gatemen</literal>
-      </binding>
-      <binding name="comment">
-        <literal>lordlings dialyzed hoardings palmitate resisters redesigned trowing fledging disinters occasionally refry objective comedown senders attendance calculous redux zed bidets subacute swinks berhymed pumping overassured outrush corteges chitters civilest chiffonniers kimonos protects epizootic centimos dismast boomage issues aggrieves sociably ammoniacs polliwogs labyrinths infatuates whiteout dissentients newmown flunkey titillated caduceus rediscovered breaststrokes schillings endorsement cheerleaders nonconcurrent intoned outpaces inkle superpowers habaneras subsoils paramours laughed</literal>
-      </binding>
-      <binding name="producer">
-        <literal>enzymologist neb falsehoods</literal>
-      </binding>
-      <binding name="productFeature">
-        <literal>penknives reabandoned vitalities</literal>
-      </binding>
-      <binding name="propertyTextual1">
-        <literal>guzzling jillion psychotherapists substantiation nonuple deluded snowmelt interlards overrefinement annoyed stuntedness calcimining stereophonically</literal>
-      </binding>
-      <binding name="propertyTextual2">
-        <literal>recommendation embezzler reconviction misproportions discountenances callings defacers crummiest triglyceride</literal>
-      </binding>
-      <binding name="propertyTextual3">
-        <literal>decentralizations impacting promulgations bibliotherapy murexes professorships locomotes durning lyncher spoonier abhorrence assize goglets</literal>
-      </binding>
-      <binding name="propertyTextual4">
-        <literal>distracts universally trashily enervator</literal>
-      </binding>
-      <binding name="propertyNumeric1">
-        <literal type="xsd:integer">831</literal>
-      </binding>
-      <binding name="propertyNumeric2">
-        <literal type="xsd:integer">312</literal>
+      <binding name="rating2">
+        <literal>9</literal>
       </binding>
     </result>
   </results>

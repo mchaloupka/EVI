@@ -530,5 +530,16 @@ namespace Slp.Evi.Storage.Query.Logging
             _sb.Append(")");
             return null;
         }
+
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            _sb.Append($"{_getObjectIndex(langMatchesCondition)}:langMatches(");
+            langMatchesCondition.LanguageExpression.Accept(this, null);
+            _sb.Append(",");
+            langMatchesCondition.LanguageRangeExpression.Accept(this, null);
+            _sb.Append(")");
+            return null;
+        }
     }
 }

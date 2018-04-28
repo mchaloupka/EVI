@@ -215,5 +215,11 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         {
             return data;
         }
+
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            return data;
+        }
     }
 }

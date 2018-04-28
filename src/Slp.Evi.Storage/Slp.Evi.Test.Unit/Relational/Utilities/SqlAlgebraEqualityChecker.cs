@@ -158,6 +158,12 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data)
         {
             throw new NotImplementedException();
