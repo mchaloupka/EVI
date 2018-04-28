@@ -1,6 +1,6 @@
 ﻿SELECT ?property ?hasValue ?isValueOf
 WHERE {
- { %OfferXYZ% ?property ?hasValue }
+ { <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer23> ?property ?hasValue }
  UNION
- { ?isValueOf ?property %OfferXYZ% }
+ { ?isValueOf ?property <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer23> }
 }
