@@ -24,6 +24,11 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Expressions
         /// </summary>
         public ISparqlExpression LanguageRangeExpression { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LangMatchesExpression"/> class.
+        /// </summary>
+        /// <param name="languageExpression">The language expression.</param>
+        /// <param name="languageRangeExpression">The language range expression.</param>
         public LangMatchesExpression(ISparqlExpression languageExpression, ISparqlExpression languageRangeExpression)
         {
             LanguageExpression = languageExpression;
