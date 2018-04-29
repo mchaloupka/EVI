@@ -60,9 +60,10 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_06"); #>
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_07"); #>
 <# EqualTest("bsbm.xml", "Bsbm", "Query_08"); #>
+<# DoesNotCrashTest("bsbm.xml", "Bsbm", "Query_09"); #>
 <# EqualTest("bsbm.xml", "Bsbm", "Query_10"); #>
 <# BagEqualTest("bsbm.xml", "Bsbm", "Query_11"); #>
-<# BagEqualTest("bsbm.xml", "Bsbm", "Query_12"); #>
+<# DoesNotCrashTest("bsbm.xml", "Bsbm", "Query_12"); #>
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
@@ -147,6 +148,27 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
             AssertEqual(expected, result);
+        }
+
+<#+
+    }
+
+    void DoesNotCrashTest(string dataset, string folder, string name)
+    {
+        if (!datasetNames.Contains(dataset))
+        {
+            datasetNames.Add(dataset);
+        }
+
+#>
+        [TestMethod]
+        public void <#= GetTestName(folder, name) #>()
+        {
+            var storage = GetStorage("<#= dataset #>");
+            var queryFile = @"Data\\<#= folder #>\\<#= name #>.rq";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            Assert.IsNotNull(result);
         }
 
 <#+

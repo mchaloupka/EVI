@@ -5,20 +5,20 @@ PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
 PREFIX bsbm-export: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/export/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
-CONSTRUCT { %OfferXYZ% bsbm-export:product ?productURI .
- %OfferXYZ% bsbm-export:productlabel ?productlabel .
- %OfferXYZ% bsbm-export:vendor ?vendorname .
- %OfferXYZ% bsbm-export:vendorhomepage ?vendorhomepage . 
- %OfferXYZ% bsbm-export:offerURL ?offerURL .
- %OfferXYZ% bsbm-export:price ?price .
- %OfferXYZ% bsbm-export:deliveryDays ?deliveryDays .
- %OfferXYZ% bsbm-export:validuntil ?validTo } 
-WHERE { %OfferXYZ% bsbm:product ?productURI .
+CONSTRUCT { <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:product ?productURI .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:productlabel ?productlabel .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:vendor ?vendorname .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:vendorhomepage ?vendorhomepage .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:offerURL ?offerURL .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:price ?price .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:deliveryDays ?deliveryDays .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm-export:validuntil ?validTo }
+WHERE { <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:product ?productURI .
  ?productURI rdfs:label ?productlabel .
- %OfferXYZ% bsbm:vendor ?vendorURI .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:vendor ?vendorURI .
  ?vendorURI rdfs:label ?vendorname .
  ?vendorURI foaf:homepage ?vendorhomepage .
- %OfferXYZ% bsbm:offerWebpage ?offerURL .
- %OfferXYZ% bsbm:price ?price .
- %OfferXYZ% bsbm:deliveryDays ?deliveryDays .
- %OfferXYZ% bsbm:validTo ?validTo }
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:offerWebpage ?offerURL .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:price ?price .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:deliveryDays ?deliveryDays .
+ <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32> bsbm:validTo ?validTo }

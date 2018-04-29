@@ -163,8 +163,7 @@ namespace Slp.Evi.Test.System.SPARQL
         {
             var expectedSet = ParseSparqlResultSetXmlResultFile(expected);
 
-            Assert.IsTrue(result is SparqlResultSet);
-
+            Assert.IsInstanceOfType(result, typeof(SparqlResultSet));
             var resultSet = (SparqlResultSet)result;
 
             CollectionAssert.AreEqual(expectedSet.Variables.ToArray(), resultSet.Variables.ToArray());
@@ -176,8 +175,7 @@ namespace Slp.Evi.Test.System.SPARQL
         {
             var expectedSet = ParseSparqlResultSetXmlResultFile(expected);
 
-            Assert.IsTrue(result is SparqlResultSet);
-
+            Assert.IsInstanceOfType(result, typeof(SparqlResultSet));
             var resultSet = (SparqlResultSet)result;
 
             CollectionAssert.AreEqual(expectedSet.Variables.ToArray(), resultSet.Variables.ToArray());
