@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHelpers;
 using Slp.Evi.Storage.Relational.Query;
@@ -23,8 +24,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfJoinOptimizer"/> class.
         /// </summary>
-        public SelfJoinOptimizer() 
-            : base(new SelfJoinOptimizerImplementation())
+        public SelfJoinOptimizer(ILogger<SelfJoinOptimizer> logger)
+            : base(new SelfJoinOptimizerImplementation(), logger)
         {
             _selfJoinConstraintsCalculator = new SelfJoinConstraintsCalculator();
             _selfJoinValueBinderOptimizerImplementation = new SelfJoinValueBindersOptimizerImplementation(OptimizerImplementation);
@@ -318,6 +319,22 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 return base.Transform(toTransform, data);
             }
 
+            /// <inheritdoc />
+            protected override ISourceCondition Transform(LeftJoinCondition toTransform, OptimizationContext data)
+            {
+                if (toTransform.CalculusVariables.Any(x => data.Data.IsReplaced(x)))
+                {
+                    var variables = toTransform.CalculusVariables
+                        .Select(x => data.Data.IsReplaced(x) ? data.Data.GetReplacingVariable(x) : x)
+                        .Distinct()
+                        .ToList();
+
+                    return new LeftJoinCondition(toTransform.RightOperand, toTransform.JoinConditions, variables);
+                }
+
+                return base.Transform(toTransform, data);
+            }
+
             /// <summary>
             /// Process the <see cref="ModifiedCalculusModel"/>
             /// </summary>
@@ -349,7 +366,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 if (changed)
                 {
                     return new ModifiedCalculusModel(toTransform.InnerModel, newOrderingParts, toTransform.Limit,
-                        toTransform.Offset);
+                        toTransform.Offset, toTransform.IsDistinct);
                 }
                 else
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -15,10 +16,14 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
+using DistinctModifier = Slp.Evi.Storage.Sparql.Algebra.Modifiers.DistinctModifier;
 using ISparqlExpression = VDS.RDF.Query.Expressions.ISparqlExpression;
 using Slp.Evi.Storage.Utils;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Ordering;
+using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;
 
 namespace Slp.Evi.Storage.Sparql.Builder
 {
@@ -27,6 +32,17 @@ namespace Slp.Evi.Storage.Sparql.Builder
     /// </summary>
     public class SparqlBuilder
     {
+        private readonly ILogger<SparqlBuilder> _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SparqlBuilder"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public SparqlBuilder(ILogger<SparqlBuilder> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Processes the specified context.
         /// </summary>
@@ -35,25 +51,35 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <exception cref="System.Exception">Cannot handle unknown query type</exception>
         public ISparqlQuery Process(IQueryContext context)
         {
+            ISparqlQuery result;
+
             switch (context.OriginalQuery.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    return ProcessAsk(context);
+                    result = ProcessAsk(context);
+                    break;
                 case SparqlQueryType.Construct:
-                    return ProcessConstruct(context);
+                    result = ProcessConstruct(context);
+                    break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    return ProcessDescribe(context);
+                    result = ProcessDescribe(context);
+                    break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    return ProcessSelect(context);
+                    result = ProcessSelect(context);
+                    break;
                 default:
                     throw new Exception("Cannot handle unknown query type");
             }
+
+            context.DebugLogging.LogTransformation(_logger, context.OriginalQuery, result);
+
+            return result;
         }
 
         /// <summary>
@@ -85,7 +111,30 @@ namespace Slp.Evi.Storage.Sparql.Builder
         /// <exception cref="System.NotImplementedException"></exception>
         private ISparqlQuery ProcessDescribe(IQueryContext context)
         {
-            throw new NotImplementedException();
+            var algebra = ProcessAlgebra(context.OriginalAlgebra, context);
+
+            if (!(algebra is SelectModifier selectModifier) ||
+                !(selectModifier.InnerQuery is IGraphPattern graphPattern))
+            {
+                throw new NotImplementedException();
+            }
+
+            var variables = selectModifier.Variables.ToList();
+            if (variables.Count != 1)
+            {
+                throw new NotSupportedException();
+            }
+
+            variables.Add(context.CreateSparqlVariable());
+            variables.Add(context.CreateSparqlVariable());
+
+            var newInnerQuery = new JoinPattern(new IGraphPattern[]
+            {
+                graphPattern,
+                new TriplePattern(new VariablePattern(variables[0]), new VariablePattern(variables[1]), new VariablePattern(variables[2]))
+            });
+
+            return new SelectModifier(newInnerQuery, variables);
         }
 
         /// <summary>
@@ -174,6 +223,11 @@ namespace Slp.Evi.Storage.Sparql.Builder
                 int? offset = (slice.Offset != 0) ? (int?) slice.Offset : null;
 
                 return new SliceModifier(inner, inner.Variables, limit, offset);
+            }
+            else if (originalAlgebra is Distinct distinct)
+            {
+                var inner = ProcessAlgebra(distinct.InnerAlgebra, context);
+                return new DistinctModifier(inner);
             }
 
             throw new NotImplementedException();
@@ -353,6 +407,63 @@ namespace Slp.Evi.Storage.Sparql.Builder
             else if (expression is ConstantTerm constantTerm)
             {
                 return new NodeExpression(constantTerm.Node());
+            }
+            else if (expression is AdditionExpression additionExpression)
+            {
+                var left = ProcessExpression(additionExpression.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(additionExpression.Arguments.ElementAt(1), context);
+
+                return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Add);
+            }
+            else if (expression is SubtractionExpression subtractionExpression)
+            {
+                var left = ProcessExpression(subtractionExpression.Arguments.ElementAt(0), context);
+                var right = ProcessExpression(subtractionExpression.Arguments.ElementAt(1), context);
+
+                return new BinaryArithmeticExpression(left, right, ArithmeticOperation.Subtract);
+            }
+            else if (expression is RegexFunction regexFunction)
+            {
+                var arguments = regexFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 2)
+                {
+                    return new RegexExpression(arguments[0], arguments[1]);
+                }
+                else if (arguments.Count == 3)
+                {
+                    return new RegexExpression(arguments[0], arguments[1], arguments[2]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
+            }
+            else if (expression is LangMatchesFunction langMatchesFunction)
+            {
+                var arguments = langMatchesFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 2)
+                {
+                    return new LangMatchesExpression(arguments[0], arguments[1]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
+            }
+            else if (expression is LangFunction langFunction)
+            {
+                var arguments = langFunction.Arguments.Select(x => ProcessExpression(x, context)).ToList();
+
+                if (arguments.Count == 1)
+                {
+                    return new LangExpression(arguments[0]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid count of parameters", nameof(expression));
+                }
             }
 
             throw new NotImplementedException();

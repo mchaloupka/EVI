@@ -6,7 +6,7 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
     /// <summary>
     /// Class representing condition: equal for two <see cref="ICalculusVariable"/>
     /// </summary>
-    public class EqualVariablesCondition 
+    public class EqualVariablesCondition
         : IFilterCondition
     {
         /// <summary>

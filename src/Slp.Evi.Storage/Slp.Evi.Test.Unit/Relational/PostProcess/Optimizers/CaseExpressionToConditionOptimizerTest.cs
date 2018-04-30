@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
@@ -16,7 +17,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
         [TestInitialize]
         public void TestInitialization()
         {
-            _optimizer = new CaseExpressionToConditionOptimizer();
+            _optimizer = new CaseExpressionToConditionOptimizer(NullLogger<CaseExpressionToConditionOptimizer>.Instance);
         }
 
         [TestMethod]

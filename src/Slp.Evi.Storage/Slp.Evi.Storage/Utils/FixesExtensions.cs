@@ -53,8 +53,15 @@ namespace Slp.Evi.Storage.Utils
         /// <returns>ITriplesMapConfiguration.</returns>
         public static ITriplesMapConfiguration GetTriplesMapConfiguration(this IMapBase mapBase)
         {
-            var property = typeof(BaseConfiguration).GetProperty("TriplesMap", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
-            return (ITriplesMapConfiguration)property.GetValue(mapBase);
+            if (mapBase is BaseConfiguration)
+            {
+                var property = typeof(BaseConfiguration).GetProperty("TriplesMap", BindingFlags.NonPublic | BindingFlags.GetProperty | BindingFlags.Default | BindingFlags.Instance);
+                return (ITriplesMapConfiguration)property.GetValue(mapBase);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 

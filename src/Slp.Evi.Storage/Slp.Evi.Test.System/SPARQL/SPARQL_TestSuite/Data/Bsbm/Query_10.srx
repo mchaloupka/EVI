@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="offer"/>
+    <variable name="price"/>
+  </head>
+  <results>
+    <result>
+      <binding name="offer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer23</uri>
+      </binding>
+      <binding name="price">
+        <literal type="xsd:double">283.44</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="offer">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
+      </binding>
+      <binding name="price">
+        <literal type="xsd:double">2718.37</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

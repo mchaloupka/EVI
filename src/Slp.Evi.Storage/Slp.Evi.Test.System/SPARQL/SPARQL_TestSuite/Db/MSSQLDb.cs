@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage;
 using Slp.Evi.Storage.Bootstrap;
@@ -33,7 +37,14 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
 
         private static IEviQueryableStorageFactory GetStorageFactory()
         {
-            return new DefaultEviQueryableStorageFactory();
+            var loggerFactory = new LoggerFactory();
+
+            if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
+            {
+                loggerFactory.AddConsole(LogLevel.Trace);
+            }
+
+            return new DefaultEviQueryableStorageFactory(loggerFactory);
         }
 
         protected override EviQueryableStorage GetStorage(string storageName)

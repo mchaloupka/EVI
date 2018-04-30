@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
@@ -18,8 +19,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Initializes a new instance of the <see cref="CaseExpressionToConditionOptimizer"/> class.
         /// </summary>
-        public CaseExpressionToConditionOptimizer() 
-            : base(new CaseExpressionToConditionOptimizerImplementation())
+        public CaseExpressionToConditionOptimizer(ILogger<CaseExpressionToConditionOptimizer> logger)
+            : base(new CaseExpressionToConditionOptimizerImplementation(), logger)
         { }
 
         /// <summary>

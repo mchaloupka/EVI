@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="property"/>
+    <variable name="hasValue"/>
+    <variable name="isValueOf"/>
+  </head>
+  <results>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/product</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/producer</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/vendor</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/price</uri>
+      </binding>
+      <binding name="hasValue">
+        <literal type="xsd:double">283.44</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validFrom</uri>
+      </binding>
+      <binding name="hasValue">
+        <literal type="xsd:dateTime">2008-02-21T00:00:00Z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validTo</uri>
+      </binding>
+      <binding name="hasValue">
+        <literal type="xsd:dateTime">2008-08-12T00:00:00Z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/deliveryDays</uri>
+      </binding>
+      <binding name="hasValue">
+        <literal type="xsd:integer">3</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/offerWebpage</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer23/</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://purl.org/dc/elements/1.1/publisher</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://purl.org/dc/elements/1.1/date</uri>
+      </binding>
+      <binding name="hasValue">
+        <literal type="xsd:dateTime">2008-05-20T00:00:00Z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="property">
+        <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      </binding>
+      <binding name="hasValue">
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Offer</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

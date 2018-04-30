@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping;
@@ -23,6 +24,17 @@ namespace Slp.Evi.Storage.Bootstrap
     public class DefaultEviQueryableStorageFactory
         : IEviQueryableStorageFactory
     {
+        private readonly ILoggerFactory _loggerFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultEviQueryableStorageFactory"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public DefaultEviQueryableStorageFactory(ILoggerFactory loggerFactory)
+        {
+            _loggerFactory = loggerFactory;
+        }
+
         /// <summary>
         /// Creates the query processor.
         /// </summary>
@@ -39,7 +51,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="mapping">The mapping.</param>
         public virtual IMappingProcessor CreateMappingProcessor(IR2RML mapping)
         {
-            return new MappingProcessor(mapping);
+            return new MappingProcessor(mapping, _loggerFactory);
         }
 
         /// <summary>
@@ -47,7 +59,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         public virtual SparqlBuilder CreateSparqlBuilder()
         {
-            return new SparqlBuilder();
+            return new SparqlBuilder(_loggerFactory.CreateLogger<SparqlBuilder>());
         }
 
         /// <summary>
@@ -70,7 +82,7 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <returns>The relational builder.</returns>
         public virtual RelationalBuilder CreateRelationalBuilder()
         {
-            return new RelationalBuilder();
+            return new RelationalBuilder(_loggerFactory.CreateLogger<RelationalBuilder>());
         }
 
         /// <summary>
@@ -78,11 +90,11 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         public virtual IEnumerable<IRelationalPostProcess> GetRelationalPostProcesses()
         {
-            yield return new CaseExpressionToConditionOptimizer();
-            yield return new ConcatenationInEqualConditionOptimizer();
-            yield return new ConstantExpressionEqualityOptimizer();
-            yield return new IsNullOptimizer();
-            yield return new SelfJoinOptimizer();
+            yield return new CaseExpressionToConditionOptimizer(_loggerFactory.CreateLogger<CaseExpressionToConditionOptimizer>());
+            yield return new ConcatenationInEqualConditionOptimizer(_loggerFactory.CreateLogger<ConcatenationInEqualConditionOptimizer>());
+            yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
+            yield return new SelfJoinOptimizer(_loggerFactory.CreateLogger<SelfJoinOptimizer>());
         }
 
         /// <summary>
@@ -91,10 +103,10 @@ namespace Slp.Evi.Storage.Bootstrap
         /// <param name="mapping">Used mapping processor</param>
         public IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping)
         {
-            yield return new AscendFilterPattern();
+            yield return new AscendFilterPattern(_loggerFactory.CreateLogger<AscendFilterPattern>());
             yield return mapping.GetMappingTransformer();
-            yield return new TriplePatternOptimizer();
-            yield return new UnionJoinOptimizer();
+            yield return new TriplePatternOptimizer(_loggerFactory.CreateLogger<TriplePatternOptimizer>());
+            yield return new UnionJoinOptimizer(_loggerFactory.CreateLogger<UnionJoinOptimizer>());
         }
     }
 }

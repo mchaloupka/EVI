@@ -33,7 +33,10 @@ namespace Slp.Evi.Storage.Relational.Query
     public interface IAssignmentCondition
         : ICondition, IVisitable<IAssignmentConditionVisitor>
     {
-
+        /// <summary>
+        /// Gets the variable.
+        /// </summary>
+        ICalculusVariable Variable { get; }
     }
 
     /// <summary>

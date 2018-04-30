@@ -26,6 +26,17 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         }
 
         /// <summary>
+        /// Evaluates the specified filter condition.
+        /// </summary>
+        /// <param name="filterCondition">The expression.</param>
+        /// <param name="rowData">The row data.</param>
+        /// <param name="context">The context.</param>
+        public bool Evaluate(IFilterCondition filterCondition, IQueryResultRow rowData, IQueryContext context)
+        {
+            return (bool)filterCondition.Accept(this, new StaticEvaluatorParameter(rowData, context));
+        }
+
+        /// <summary>
         /// Helper class representing passed parameter
         /// </summary>
         private class StaticEvaluatorParameter
@@ -66,7 +77,7 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
             var param = (StaticEvaluatorParameter) data;
             var columnName = param.Context.QueryNamingHelpers.GetVariableName(null, columnExpression.CalculusVariable);
             var column = param.RowData.GetColumn(columnName);
-            return column.StringValue;
+            return column.GetValue();
         }
 
         /// <summary>
@@ -144,6 +155,27 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         public object Visit(NullExpression nullExpression, object data)
         {
             return null;
+        }
+
+        /// <inheritdoc />
+        public object Visit(BinaryNumericExpression binaryNumericExpression, object data)
+        {
+            var left = Convert.ToDecimal(binaryNumericExpression.LeftOperand.Accept(this, data));
+            var right = Convert.ToDecimal(binaryNumericExpression.RightOperand.Accept(this, data));
+
+            switch (binaryNumericExpression.Operator)
+            {
+                case ArithmeticOperation.Add:
+                    return left + right;
+                case ArithmeticOperation.Subtract:
+                    return left - right;
+                case ArithmeticOperation.Divide:
+                    return left / right;
+                case ArithmeticOperation.Multiply:
+                    return left * right;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -279,6 +311,18 @@ namespace Slp.Evi.Storage.Relational.Query.Utils
         {
             var inner = (bool)negationCondition.InnerCondition.Accept(this, data);
             return !inner;
+        }
+
+        /// <inheritdoc />
+        public object Visit(LikeCondition likeCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            throw new NotImplementedException();
         }
     }
 }

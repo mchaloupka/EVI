@@ -20,12 +20,14 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// <param name="ordering">The ordering.</param>
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
-        public ModifiedCalculusModel(CalculusModel innerModel, IEnumerable<OrderingPart> ordering, int? limit, int? offset)
+        /// <param name="isDistinct">Flag whether the values should be distinct</param>
+        public ModifiedCalculusModel(CalculusModel innerModel, IEnumerable<OrderingPart> ordering, int? limit, int? offset, bool isDistinct)
         {
             InnerModel = innerModel;
             Ordering = ordering;
             Limit = limit;
             Offset = offset;
+            IsDistinct = isDistinct;
         }
 
         /// <summary>
@@ -36,12 +38,17 @@ namespace Slp.Evi.Storage.Relational.Query.Sources
         /// <summary>
         /// Gets or sets the limit.
         /// </summary>
-        public int? Limit { get; set; }
+        public int? Limit { get; }
 
         /// <summary>
         /// Gets or sets the offset.
         /// </summary>
-        public int? Offset { get; set; }
+        public int? Offset { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is distinct.
+        /// </summary>
+        public bool IsDistinct { get; }
 
         /// <summary>
         /// Gets the inner model.

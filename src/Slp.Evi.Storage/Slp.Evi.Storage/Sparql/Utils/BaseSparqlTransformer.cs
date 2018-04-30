@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
@@ -18,12 +20,40 @@ namespace Slp.Evi.Storage.Sparql.Utils
         : BaseSparqlExpressionTransformerG<T, ISparqlExpression, IGraphPattern, ISparqlQuery>
     {
         /// <summary>
+        /// The logger
+        /// </summary>
+        protected readonly ILogger _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseSparqlTransformer{T}"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public BaseSparqlTransformer(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="ISparqlQuery" />.
+        /// </summary>
+        /// <param name="instance">The instance to transform.</param>
+        /// <param name="data">The passed data.</param>
+        /// <param name="context">The query context</param>
+        /// <returns>The transformed calculus source.</returns>
+        public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data, IQueryContext context)
+        {
+            ISparqlQuery result = TransformSparqlQuery(instance, data);
+            context.DebugLogging.LogTransformation(_logger, instance, result);
+            return result;
+        }
+
+        /// <summary>
         /// Transforms the <see cref="ISparqlQuery" />.
         /// </summary>
         /// <param name="instance">The instance to transform.</param>
         /// <param name="data">The passed data.</param>
         /// <returns>The transformed calculus source.</returns>
-        public ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
+        protected ISparqlQuery TransformSparqlQuery(ISparqlQuery instance, T data)
         {
             if (instance is IModifier modifier)
             {
@@ -164,6 +194,26 @@ namespace Slp.Evi.Storage.Sparql.Utils
                 {
                     return toTransform;
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlQuery Transform(DistinctModifier toTransform, T data)
+        {
+            var newInner = TransformSparqlQuery(toTransform.InnerQuery, data);
+
+            if (newInner is DistinctModifier)
+            {
+                return newInner;
+            }
+            // TODO: ELSE IF REDUCED
+            else if (newInner != toTransform.InnerQuery)
+            {
+                return new DistinctModifier(newInner);
+            }
+            else
+            {
+                return toTransform;
             }
         }
 
@@ -674,6 +724,71 @@ namespace Slp.Evi.Storage.Sparql.Utils
             else if (changed)
             {
                 return new DisjunctionExpression(conditions);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(BinaryArithmeticExpression toTransform, T data)
+        {
+            var newLeft = TransformSparqlExpression(toTransform.LeftOperand, data);
+            var newRight = TransformSparqlExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new BinaryArithmeticExpression(newLeft, newRight, toTransform.Operation);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(RegexExpression toTransform, T data)
+        {
+            var newText = TransformSparqlExpression(toTransform.Text, data);
+            var newPattern = TransformSparqlExpression(toTransform.Pattern, data);
+            var newFlags = (toTransform.Flags != null) ? TransformSparqlExpression(toTransform.Flags, data) : null;
+
+            if (newText != toTransform.Text || newPattern != toTransform.Pattern || newFlags != toTransform.Flags)
+            {
+                return new RegexExpression(newText, newPattern, newFlags);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(LangMatchesExpression toTransform, T data)
+        {
+            var newLanguageExpression = TransformSparqlExpression(toTransform.LanguageExpression, data);
+            var newLanguageRangeExpression = TransformSparqlExpression(toTransform.LanguageRangeExpression, data);
+
+            if (newLanguageExpression != toTransform.LanguageExpression ||
+                newLanguageRangeExpression != toTransform.LanguageRangeExpression)
+            {
+                return new LangMatchesExpression(newLanguageExpression, newLanguageRangeExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ISparqlExpression Transform(LangExpression toTransform, T data)
+        {
+            var newExpression = TransformSparqlExpression(toTransform.SparqlExpression, data);
+
+            if (newExpression != toTransform.SparqlExpression)
+            {
+                return new LangExpression(newExpression);
             }
             else
             {

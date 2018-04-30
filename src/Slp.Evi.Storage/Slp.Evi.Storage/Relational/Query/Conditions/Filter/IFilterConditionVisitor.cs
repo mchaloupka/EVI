@@ -70,5 +70,21 @@ namespace Slp.Evi.Storage.Relational.Query.Conditions.Filter
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
         object Visit(NegationCondition negationCondition, object data);
+
+        /// <summary>
+        /// Visits <see cref="LikeCondition"/>
+        /// </summary>
+        /// <param name="likeCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(LikeCondition likeCondition, object data);
+
+        /// <summary>
+        /// Visits <see cref="LangMatchesCondition"/>
+        /// </summary>
+        /// <param name="langMatchesCondition">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        object Visit(LangMatchesCondition langMatchesCondition, object data);
     }
 }

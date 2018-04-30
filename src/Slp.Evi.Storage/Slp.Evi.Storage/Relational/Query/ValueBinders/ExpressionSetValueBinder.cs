@@ -28,14 +28,15 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             VariableName = variableName;
             ExpressionSet = expressionSet;
             NeededCalculusVariables =
-                expressionSet.TypeCategoryExpression.UsedCalculusVariables
+                expressionSet.IsNotErrorCondition.UsedCalculusVariables
+                    .Union(expressionSet.TypeCategoryExpression.UsedCalculusVariables)
                     .Union(expressionSet.TypeExpression.UsedCalculusVariables)
                     .Union(expressionSet.StringExpression.UsedCalculusVariables)
                     .Union(expressionSet.NumericExpression.UsedCalculusVariables)
                     .Union(expressionSet.BooleanExpression.UsedCalculusVariables)
                     .Union(expressionSet.DateTimeExpression.UsedCalculusVariables)
                     .Distinct()
-                    .ToList();
+                    .ToArray();
         }
 
         /// <summary>
@@ -60,52 +61,54 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         {
             // TODO: Correct type
             var staticEvaluator = new StaticEvaluator();
-            var typeIndex = staticEvaluator.Evaluate(ExpressionSet.TypeExpression, rowData, context) as int?;
-
-            if (!typeIndex.HasValue)
+            var isNotError = staticEvaluator.Evaluate(ExpressionSet.IsNotErrorCondition, rowData, context);
+            if (!isNotError)
             {
                 return null;
             }
-            else
+
+            if (!(staticEvaluator.Evaluate(ExpressionSet.TypeExpression, rowData, context) is int typeIndex))
             {
-                var type = context.TypeCache.GetValueType(typeIndex.Value);
-                switch (type.Category)
-                {
-                    case TypeCategories.BlankNode:
-                        var blankNodeId = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context);
-                        return context.GetBlankNodeForValue(nodeFactory, blankNodeId);
-                    case TypeCategories.IRI:
-                        var iri = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
-                        return nodeFactory.CreateUriNode(new Uri(iri));
-                    case TypeCategories.SimpleLiteral:
-                        var litValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
-                        return nodeFactory.CreateLiteralNode(litValue);
-                    case TypeCategories.NumericLiteral:
-                        var numValue = staticEvaluator.Evaluate(ExpressionSet.NumericExpression, rowData, context).ToString();
-                        return nodeFactory.CreateLiteralNode(numValue, ((LiteralValueType) type).LiteralType);
-                    case TypeCategories.StringLiteral:
-                        var stringValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
-                        return nodeFactory.CreateLiteralNode(stringValue, ((LiteralValueType)type).LiteralType);
-                    case TypeCategories.BooleanLiteral:
-                        var booleanValue = staticEvaluator.Evaluate(ExpressionSet.BooleanExpression, rowData, context).ToString();
-                        return nodeFactory.CreateLiteralNode(booleanValue, ((LiteralValueType)type).LiteralType);
-                    case TypeCategories.DateTimeLiteral:
-                        var dateTimeValue = staticEvaluator.Evaluate(ExpressionSet.DateTimeExpression, rowData, context).ToString();
-                        return nodeFactory.CreateLiteralNode(dateTimeValue, ((LiteralValueType)type).LiteralType);
-                    case TypeCategories.OtherLiterals:
-                        var otherValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
-                        var literalValueType = (LiteralValueType) type;
-                        if (literalValueType.LanguageTag == null)
-                        {
-                            return nodeFactory.CreateLiteralNode(otherValue, ((LiteralValueType)type).LiteralType);
-                        }
-                        else
-                        {
-                            return nodeFactory.CreateLiteralNode(otherValue, literalValueType.LanguageTag);
-                        }
-                    default:
-                        throw new ArgumentException($"The type category {type.Category} is not supported");
-                }
+                return null;
+            }
+
+            var type = context.TypeCache.GetValueType(typeIndex);
+            switch (type.Category)
+            {
+                case TypeCategories.BlankNode:
+                    var blankNodeId = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context);
+                    return context.GetBlankNodeForValue(nodeFactory, blankNodeId);
+                case TypeCategories.IRI:
+                    var iri = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
+                    return nodeFactory.CreateUriNode(new Uri(iri));
+                case TypeCategories.SimpleLiteral:
+                    var litValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
+                    return nodeFactory.CreateLiteralNode(litValue);
+                case TypeCategories.NumericLiteral:
+                    var numValue = staticEvaluator.Evaluate(ExpressionSet.NumericExpression, rowData, context).ToString();
+                    return nodeFactory.CreateLiteralNode(numValue, ((LiteralValueType) type).LiteralType);
+                case TypeCategories.StringLiteral:
+                    var stringValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
+                    return nodeFactory.CreateLiteralNode(stringValue, ((LiteralValueType)type).LiteralType);
+                case TypeCategories.BooleanLiteral:
+                    var booleanValue = staticEvaluator.Evaluate(ExpressionSet.BooleanExpression, rowData, context).ToString();
+                    return nodeFactory.CreateLiteralNode(booleanValue, ((LiteralValueType)type).LiteralType);
+                case TypeCategories.DateTimeLiteral:
+                    var dateTimeValue = staticEvaluator.Evaluate(ExpressionSet.DateTimeExpression, rowData, context).ToString();
+                    return nodeFactory.CreateLiteralNode(dateTimeValue, ((LiteralValueType)type).LiteralType);
+                case TypeCategories.OtherLiterals:
+                    var otherValue = staticEvaluator.Evaluate(ExpressionSet.StringExpression, rowData, context).ToString();
+                    var literalValueType = (LiteralValueType) type;
+                    if (literalValueType.LanguageTag == null)
+                    {
+                        return nodeFactory.CreateLiteralNode(otherValue, ((LiteralValueType)type).LiteralType);
+                    }
+                    else
+                    {
+                        return nodeFactory.CreateLiteralNode(otherValue, literalValueType.LanguageTag);
+                    }
+                default:
+                    throw new ArgumentException($"The type category {type.Category} is not supported");
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Xml;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
@@ -87,7 +88,7 @@ namespace Slp.Evi.Storage.Relational.Builder
             Func<IFilterCondition, Func<ExpressionsSet, IExpression>, IFilterCondition> columnCondition = (condition, column) => new ConjunctionCondition(new IFilterCondition[]
             {
                 condition,
-                new ComparisonCondition(column(leftOperand), column(rightOperand), ComparisonTypes.EqualTo) 
+                new ComparisonCondition(column(leftOperand), column(rightOperand), ComparisonTypes.EqualTo)
             });
 
             return new ConjunctionCondition(new IFilterCondition[] {
@@ -99,7 +100,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                         columnCondition(isOfTypeCondition(TypeCategories.DateTimeLiteral), x => x.DateTimeExpression),
                         columnCondition(isOfTypeCondition(TypeCategories.NumericLiteral), x => x.NumericExpression),
                         columnCondition(isOfTypeCondition(TypeCategories.BooleanLiteral), x => x.BooleanExpression),
-                    }), 
+                    }),
                 });
         }
 
@@ -224,9 +225,10 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var category = iriType.Category;
 
                 return new ExpressionsSet(
+                    new AlwaysTrueCondition(),
                     new ConstantExpression(type, context),
-                    new ConstantExpression((int) category, context), 
-                    new ConstantExpression(uriNode.Uri, context), 
+                    new ConstantExpression((int)category, context),
+                    new ConstantExpression(uriNode.Uri, context),
                     null,
                     null,
                     null,
@@ -274,6 +276,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var category = iriType.Category;
 
                 return new ExpressionsSet(
+                    new AlwaysTrueCondition(),
                     new ConstantExpression(type, context),
                     new ConstantExpression((int)category, context),
                     new ConstantExpression(node.Value, context),
@@ -289,8 +292,9 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var category = iriType.Category;
 
                 return new ExpressionsSet(
+                    new AlwaysTrueCondition(),
                     new ConstantExpression(type, context),
-                    new ConstantExpression((int) category, context),
+                    new ConstantExpression((int)category, context),
                     new ConstantExpression(node.Value, context),
                     null,
                     null,
@@ -317,6 +321,9 @@ namespace Slp.Evi.Storage.Relational.Builder
                     case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                     case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                         numericExpression = new ConstantExpression(double.Parse(node.Value, CultureInfo.InvariantCulture), context);
+                        break;
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        dateTimeExpression = new ConstantExpression(XmlConvert.ToDateTime(node.Value, XmlDateTimeSerializationMode.Utc), context);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -351,6 +358,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 }
 
                 return new ExpressionsSet(
+                    new AlwaysTrueCondition(),
                     new ConstantExpression(type, context),
                     new ConstantExpression((int)category, context),
                     stringExpression,

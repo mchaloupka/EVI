@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
@@ -9,7 +10,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 {
     [TestClass]
-    public class ConcatenationInEqualConditionTest 
+    public class ConcatenationInEqualConditionTest
         : BaseOptimizerTest<object>
     {
         private ConcatenationInEqualConditionOptimizer _optimizer;
@@ -17,9 +18,9 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
         [TestInitialize]
         public void TestInitialization()
         {
-            _optimizer = new ConcatenationInEqualConditionOptimizer();
+            _optimizer = new ConcatenationInEqualConditionOptimizer(NullLogger<ConcatenationInEqualConditionOptimizer>.Instance);
         }
-            
+
         [TestMethod]
         public void ConcatenationToConstEscaped_Prefix()
         {
@@ -40,7 +41,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 
             var expected = new ComparisonCondition(
                 new ColumnExpression(dummyColumn1, true),
-                new ConstantExpression("12", queryContext), 
+                new ConstantExpression("12", queryContext),
                 ComparisonTypes.EqualTo);
 
             AssertFilterConditionsEqual(expected, result);

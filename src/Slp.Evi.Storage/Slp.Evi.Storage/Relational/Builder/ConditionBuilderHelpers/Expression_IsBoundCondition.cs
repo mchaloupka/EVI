@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -82,8 +83,8 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         {
             return
                 new DisjunctionCondition(
-                    caseExpression.Statements.Select(s => 
-                    new ConjunctionCondition(new IFilterCondition[]
+                    caseExpression.Statements.Select(s =>
+                    new ConjunctionCondition(new[]
                     {
                         s.Condition,
                         (IFilterCondition)s.Expression.Accept(this, data)
@@ -107,6 +108,16 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         public object Visit(NullExpression nullExpression, object data)
         {
             return new AlwaysFalseCondition();
+        }
+
+        /// <inheritdoc />
+        public object Visit(BinaryNumericExpression binaryNumericExpression, object data)
+        {
+            return new ConjunctionCondition(new[]
+            {
+                (IFilterCondition) binaryNumericExpression.LeftOperand.Accept(this, data),
+                (IFilterCondition) binaryNumericExpression.RightOperand.Accept(this, data)
+            });
         }
     }
 }

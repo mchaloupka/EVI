@@ -27,17 +27,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
             return (TR)instance.Accept(this, data);
         }
         /// <summary>
-        /// Decides whether we should use standard or fallback transformation for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool CommonShouldTransform(ISparqlExpression toTransform, T data)
-        {
-            return true;
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -47,17 +36,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR CommonPostTransform(TR transformed, ISparqlExpression toTransform, T data)
         {
             return transformed;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR CommonFallbackTransform(ISparqlExpression toTransform, T data)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -77,17 +55,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(IsBoundExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(IsBoundExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -99,17 +70,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(IsBoundExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(IsBoundExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -119,17 +79,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, IsBoundExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(IsBoundExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -149,17 +98,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(BooleanTrueExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(BooleanTrueExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -171,17 +113,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(BooleanTrueExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(BooleanTrueExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -191,17 +122,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, BooleanTrueExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(BooleanTrueExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -221,17 +141,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(BooleanFalseExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(BooleanFalseExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -243,17 +156,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(BooleanFalseExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(BooleanFalseExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -263,17 +165,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, BooleanFalseExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(BooleanFalseExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -293,17 +184,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(NegationExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(NegationExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -315,17 +199,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(NegationExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(NegationExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -335,17 +208,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, NegationExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(NegationExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -365,17 +227,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(VariableExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(VariableExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -387,17 +242,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(VariableExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(VariableExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -407,17 +251,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, VariableExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(VariableExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -437,17 +270,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(ConjunctionExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(ConjunctionExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -459,17 +285,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(ConjunctionExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(ConjunctionExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -479,17 +294,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, ConjunctionExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(ConjunctionExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -509,17 +313,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(ComparisonExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(ComparisonExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -531,17 +328,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(ComparisonExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(ComparisonExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -551,17 +337,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, ComparisonExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(ComparisonExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -581,17 +356,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(NodeExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(NodeExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -603,17 +371,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected abstract TR Transform(NodeExpression toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(NodeExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -623,17 +380,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, NodeExpression toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(NodeExpression toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
         /// <summary>
@@ -653,17 +399,10 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(DisjunctionExpression toVisit, T data) 
+        protected virtual TR ProcessVisit(DisjunctionExpression toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -673,17 +412,6 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected abstract TR Transform(DisjunctionExpression toTransform, T data);
-
-        /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(DisjunctionExpression toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
 
         /// <summary>
         /// Post-process for the transformation.
@@ -698,14 +426,175 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
-        /// Fallback variant for the transformation.
+        /// Visits <see cref="BinaryArithmeticExpression" />
         /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(DisjunctionExpression toTransform, T data)
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(BinaryArithmeticExpression toVisit, object data)
         {
-            return CommonFallbackTransform(toTransform, data);
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="BinaryArithmeticExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(BinaryArithmeticExpression toVisit, T data)
+        {
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
+        }
+
+        /// <summary>
+        /// Process the <see cref="BinaryArithmeticExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(BinaryArithmeticExpression toTransform, T data);
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, BinaryArithmeticExpression toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="RegexExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(RegexExpression toVisit, object data)
+        {
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="RegexExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(RegexExpression toVisit, T data)
+        {
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
+        }
+
+        /// <summary>
+        /// Process the <see cref="RegexExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(RegexExpression toTransform, T data);
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, RegexExpression toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="LangMatchesExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(LangMatchesExpression toVisit, object data)
+        {
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="LangMatchesExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(LangMatchesExpression toVisit, T data)
+        {
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
+        }
+
+        /// <summary>
+        /// Process the <see cref="LangMatchesExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(LangMatchesExpression toTransform, T data);
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, LangMatchesExpression toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
+        }
+
+        /// <summary>
+        /// Visits <see cref="LangExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        public object Visit(LangExpression toVisit, object data)
+        {
+            return ProcessVisit(toVisit, (T)data);
+        }
+
+        /// <summary>
+        /// Processes the visit of <see cref="LangExpression" />
+        /// </summary>
+        /// <param name="toVisit">The visited instance</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The returned data</returns>
+        protected virtual TR ProcessVisit(LangExpression toVisit, T data)
+        {
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
+        }
+
+        /// <summary>
+        /// Process the <see cref="LangExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected abstract TR Transform(LangExpression toTransform, T data);
+
+        /// <summary>
+        /// Post-process for the transformation.
+        /// </summary>
+        /// <param name="transformed">The transformation result.</param>
+        /// <param name="toTransform">The transformed instance</param>
+        /// <param name="data">The passed data.</param>
+        /// <returns>The post-processed transformation result</returns>
+        protected virtual TR PostTransform(TR transformed, LangExpression toTransform, T data)
+        {
+            return CommonPostTransform(transformed, toTransform, data);
         }
 
     }

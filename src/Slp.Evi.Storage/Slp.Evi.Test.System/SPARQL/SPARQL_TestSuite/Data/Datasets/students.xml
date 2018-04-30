@@ -82,7 +82,7 @@
       ];
       rr:predicateObjectMap [
         rr:predicate ex:enrollment;
-        rr:refObjectMap [
+        rr:objectMap [
           rr:parentTriplesMap <#Enrollments>;
           rr:joinCondition [
             rr:child "id";
@@ -108,7 +108,7 @@
       ];
       rr:predicateObjectMap [
         rr:predicate ex:enrollment;
-        rr:refObjectMap [
+        rr:objectMap [
           rr:parentTriplesMap <#Enrollments>;
           rr:joinCondition [
             rr:child "id";
@@ -134,7 +134,7 @@
       ];
       rr:predicateObjectMap [
         rr:predicate ex:student;
-        rr:refObjectMap [
+        rr:objectMap [
           rr:parentTriplesMap <#Students>;
           rr:joinCondition [
             rr:child "studentId";
@@ -144,7 +144,7 @@
       ];
       rr:predicateObjectMap [
         rr:predicate ex:course;
-        rr:refObjectMap [
+        rr:objectMap [
           rr:parentTriplesMap <#Courses>;
           rr:joinCondition [
             rr:child "courseId";

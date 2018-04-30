@@ -46,7 +46,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             _variables = new Dictionary<string, ICalculusVariable>();
             _loadNodeFunc = null;
             Type = typeCache.GetValueType(termMap);
-            
+
             if (termMap.IsConstantValued)
             {
                 // No columns needed
@@ -92,6 +92,28 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             foreach (var variableName in baseValueBinder._variables.Keys)
             {
                 _variables.Add(variableName, calculusVariableSelection(baseValueBinder._variables[variableName]));
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseValueBinder"/> class by copying another <see cref="BaseValueBinder"/>
+        /// while replacing some of its columns
+        /// </summary>
+        /// <param name="baseValueBinder">The other base value binder.</param>
+        /// <param name="calculusVariableSelection">The calculus variable selection function.</param>
+        public BaseValueBinder(BaseValueBinder baseValueBinder, Func<string, ICalculusVariable> calculusVariableSelection)
+        {
+            VariableName = baseValueBinder.VariableName;
+            TermMap = baseValueBinder.TermMap;
+            TemplateParts = baseValueBinder.TemplateParts;
+            Type = baseValueBinder.Type;
+
+            _variables = new Dictionary<string, ICalculusVariable>();
+            _loadNodeFunc = null;
+
+            foreach (var variableName in baseValueBinder._variables.Keys)
+            {
+                _variables.Add(variableName, calculusVariableSelection(variableName));
             }
         }
 
@@ -409,9 +431,6 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </exception>
         private Expression GenerateTermForLiteralFunc(ParameterExpression factory, ParameterExpression value)
         {
-            if (value == null)
-                return null;
-
             if (!(Type is ILiteralValueType))
                 throw new InvalidOperationException("It is not possible to generate literal for non literal type");
 

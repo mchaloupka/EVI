@@ -21,6 +21,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# BagEqualTest("simple.xml", "Simple", "bind"); #>
 <# BagEqualTest("simple.xml", "Simple", "nested_optional"); #>
 <# BagEqualTest("simple.xml", "Simple", "nested_filter"); #>
+<# BagEqualTest("simple.xml", "Simple", "distinct"); #>
 
 <# BagEqualTest("simple.xml", @"Simple\Filter", "bound"); #>
 <# BagEqualTest("simple.xml", @"Simple\Filter", "not_bound"); #>
@@ -51,6 +52,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 <# EqualTest("students.xml", "Students", "student_names_order_offset_limit"); #>
 
 <# EqualTest("bsbm.xml", "Bsbm", "ProductType_OrderBy"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_01"); #>
+<# BagEqualTest("bsbm.xml", "Bsbm", "Query_02"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_03"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_04"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_05"); #>
+<# BagEqualTest("bsbm.xml", "Bsbm", "Query_06"); #>
+<# BagEqualTest("bsbm.xml", "Bsbm", "Query_07"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_08"); #>
+<# DoesNotCrashTest("bsbm.xml", "Bsbm", "Query_09"); #>
+<# EqualTest("bsbm.xml", "Bsbm", "Query_10"); #>
+<# BagEqualTest("bsbm.xml", "Bsbm", "Query_11"); #>
+<# DoesNotCrashTest("bsbm.xml", "Bsbm", "Query_12"); #>
 
         protected abstract EviQueryableStorage GetStorage(string storageName);
 
@@ -135,6 +148,27 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
             AssertEqual(expected, result);
+        }
+
+<#+
+    }
+
+    void DoesNotCrashTest(string dataset, string folder, string name)
+    {
+        if (!datasetNames.Contains(dataset))
+        {
+            datasetNames.Add(dataset);
+        }
+
+#>
+        [TestMethod]
+        public void <#= GetTestName(folder, name) #>()
+        {
+            var storage = GetStorage("<#= dataset #>");
+            var queryFile = @"Data\\<#= folder #>\\<#= name #>.rq";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            Assert.IsNotNull(result);
         }
 
 <#+

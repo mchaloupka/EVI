@@ -116,6 +116,18 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
+        [TestMethod]
+        public void Simple_distinct()
+        {
+            var storage = GetStorage("simple.xml");
+            var queryFile = @"Data\Simple\distinct.rq";
+            var resultFile = @"Data\Simple\distinct.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
 
         [TestMethod]
         public void Simple_Filter_bound()
@@ -419,6 +431,146 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             var result = storage.Query(query);
             var expected = GetExpected(resultFile);
             AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_01()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_01.rq";
+            var resultFile = @"Data\Bsbm\Query_01.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_02()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_02.rq";
+            var resultFile = @"Data\Bsbm\Query_02.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_03()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_03.rq";
+            var resultFile = @"Data\Bsbm\Query_03.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_04()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_04.rq";
+            var resultFile = @"Data\Bsbm\Query_04.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_05()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_05.rq";
+            var resultFile = @"Data\Bsbm\Query_05.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_06()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_06.rq";
+            var resultFile = @"Data\Bsbm\Query_06.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_07()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_07.rq";
+            var resultFile = @"Data\Bsbm\Query_07.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_08()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_08.rq";
+            var resultFile = @"Data\Bsbm\Query_08.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_09()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_09.rq";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_10()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_10.rq";
+            var resultFile = @"Data\Bsbm\Query_10.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_11()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_11.rq";
+            var resultFile = @"Data\Bsbm\Query_11.srx";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            var expected = GetExpected(resultFile);
+            AssertBagEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Bsbm_Query_12()
+        {
+            var storage = GetStorage("bsbm.xml");
+            var queryFile = @"Data\Bsbm\Query_12.rq";
+            var query = GetQuery(queryFile);
+            var result = storage.Query(query);
+            Assert.IsNotNull(result);
         }
 
 

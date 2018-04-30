@@ -16,12 +16,14 @@
     <dependency id="dotNetRDF" version="1.0.12" />
     <dependency id="r2rml4net" version="0.4.0.0-pre01" />
     <dependency id="DatabaseSchemaReader" version="2.3.1" />
+    <dependency id="System.ValueTuple" version="4.4.0" />
+    <dependency id="Microsoft.Extensions.Logging.Abstractions" version="2.0.0" />
   </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Slp.Evi.Storage.dll" target="lib\net45" />
-    <file src="bin\Release\Slp.Evi.Storage.xml" target="lib\net45" />
-    <file src="bin\Release\Slp.Evi.Storage.pdb" target="lib\net45" />
+    <file src="bin\Release\Slp.Evi.Storage.dll" target="lib\net462" />
+    <file src="bin\Release\Slp.Evi.Storage.xml" target="lib\net462" />
+    <file src="bin\Release\Slp.Evi.Storage.pdb" target="lib\net462" />
     <file src="**\*.cs" target="src" />
   </files>
 </package>

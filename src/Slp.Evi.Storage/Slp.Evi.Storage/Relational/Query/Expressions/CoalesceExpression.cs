@@ -18,8 +18,8 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         public CoalesceExpression(IEnumerable<IExpression> innerExpressions)
         {
             InnerExpressions = innerExpressions.ToArray();
-            SqlType = innerExpressions.First().SqlType; // TODO: Better find SQL type
-            UsedCalculusVariables = innerExpressions.SelectMany(x => x.UsedCalculusVariables).Distinct().ToArray();
+            SqlType = InnerExpressions.First().SqlType; // TODO: Better find SQL type
+            UsedCalculusVariables = InnerExpressions.SelectMany(x => x.UsedCalculusVariables).Distinct().ToArray();
         }
 
         /// <summary>

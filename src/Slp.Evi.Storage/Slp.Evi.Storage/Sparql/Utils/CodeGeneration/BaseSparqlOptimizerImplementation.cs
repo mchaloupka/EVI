@@ -138,6 +138,50 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="BinaryArithmeticExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(BinaryArithmeticExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="RegexExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(RegexExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="LangMatchesExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(LangMatchesExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="LangExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlExpression Transform(LangExpression toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="EmptyPattern"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -287,6 +331,17 @@ namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
         /// <param name="data">The passed data</param>
         /// <returns>The transformation result</returns>
         protected override ISparqlQuery Transform(SliceModifier toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="DistinctModifier"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override ISparqlQuery Transform(DistinctModifier toTransform, BaseSparqlOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }

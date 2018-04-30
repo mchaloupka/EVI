@@ -10,7 +10,7 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 
 namespace Slp.Evi.Test.Unit.Relational.Utilities
 {
-    public class SqlAlgebraEqualityChecker 
+    public class SqlAlgebraEqualityChecker
         : IConditionVisitor, IExpressionVisitor
     {
         public object Visit(AlwaysFalseCondition condition, object data)
@@ -152,6 +152,18 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
+        public object Visit(LikeCondition likeCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public object Visit(LangMatchesCondition langMatchesCondition, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public object Visit(TupleFromSourceCondition tupleFromSourceCondition, object data)
         {
             throw new NotImplementedException();
@@ -222,6 +234,12 @@ namespace Slp.Evi.Test.Unit.Relational.Utilities
         }
 
         public object Visit(NullExpression nullExpression, object data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public object Visit(BinaryNumericExpression binaryNumericExpression, object data)
         {
             throw new NotImplementedException();
         }

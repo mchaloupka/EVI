@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Xml;
 
 namespace Slp.Evi.Storage.Database.Reader
 {
@@ -233,6 +234,10 @@ namespace Slp.Evi.Storage.Database.Reader
                     {
                         return dVal.ToString(CultureInfo.InvariantCulture);
                     }
+                    else if (_value is DateTime dateTime)
+                    {
+                        return XmlConvert.ToString(dateTime, XmlDateTimeSerializationMode.Utc);
+                    }
                     else
                     {
                         return _value.ToString();
@@ -267,6 +272,12 @@ namespace Slp.Evi.Storage.Database.Reader
             public int? GetIntegerValue()
             {
                 return _value as int?;
+            }
+
+            /// <inheritdoc />
+            public object GetValue()
+            {
+                return _value;
             }
         }
     }

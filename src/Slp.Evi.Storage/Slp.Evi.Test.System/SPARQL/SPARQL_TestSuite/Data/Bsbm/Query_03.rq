@@ -6,16 +6,16 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?product ?label
 WHERE {
  ?product rdfs:label ?label .
- ?product a %ProductType% .
-	?product bsbm:productFeature %ProductFeature1% .
+ ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType5> .
+	?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3> .
 	?product bsbm:productPropertyNumeric1 ?p1 .
-	FILTER ( ?p1 > %x% ) 
+	FILTER ( ?p1 > 400 )
 	?product bsbm:productPropertyNumeric3 ?p3 .
-	FILTER (?p3 < %y% )
- OPTIONAL { 
- ?product bsbm:productFeature %ProductFeature2% .
+	FILTER (?p3 < 800 )
+ OPTIONAL {
+ ?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature44> .
  ?product rdfs:label ?testVar }
- FILTER (!bound(?testVar)) 
+ FILTER (!bound(?testVar))
 }
 ORDER BY ?label
 LIMIT 10

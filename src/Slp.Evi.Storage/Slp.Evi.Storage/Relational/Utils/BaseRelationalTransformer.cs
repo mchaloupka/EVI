@@ -137,7 +137,7 @@ namespace Slp.Evi.Storage.Relational.Utils
 
             if (changed || newInner != toTransform.InnerModel)
             {
-                return new ModifiedCalculusModel(newInner, ordering, toTransform.Limit, toTransform.Offset);
+                return new ModifiedCalculusModel(newInner, ordering, toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
             }
             else
             {
@@ -367,6 +367,38 @@ namespace Slp.Evi.Storage.Relational.Utils
             }
         }
 
+        /// <inheritdoc />
+        protected override IFilterCondition Transform(LikeCondition toTransform, T data)
+        {
+            var newExpression = TransformExpression(toTransform.Expression, data);
+
+            if (newExpression != toTransform.Expression)
+            {
+                return new LikeCondition(newExpression, toTransform.Pattern);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IFilterCondition Transform(LangMatchesCondition toTransform, T data)
+        {
+            var newLanguageExpression = TransformExpression(toTransform.LanguageExpression, data);
+            var newLanguageRangeExpression = TransformExpression(toTransform.LanguageRangeExpression, data);
+
+            if (newLanguageRangeExpression != toTransform.LanguageExpression ||
+                newLanguageRangeExpression != toTransform.LanguageRangeExpression)
+            {
+                return new LangMatchesCondition(newLanguageExpression, newLanguageRangeExpression);
+            }
+            else
+            {
+                return toTransform;
+            }
+        }
+
         /// <summary>
         /// Process the <see cref="TupleFromSourceCondition"/>
         /// </summary>
@@ -529,6 +561,12 @@ namespace Slp.Evi.Storage.Relational.Utils
                 var newCondition = TransformFilterCondition(statement.Condition, data);
                 var newExpression = TransformExpression(statement.Expression, data);
 
+                if (newCondition is AlwaysFalseCondition)
+                {
+                    changed = true;
+                    continue;
+                }
+
                 if (newCondition != statement.Condition || newExpression != statement.Expression)
                 {
                     changed = true;
@@ -538,9 +576,23 @@ namespace Slp.Evi.Storage.Relational.Utils
                 {
                     newStatements.Add(statement);
                 }
+
+                if (newCondition is AlwaysTrueCondition)
+                {
+                    changed = true;
+                    break;
+                }
             }
 
-            if (changed)
+            if (newStatements.Count == 0)
+            {
+                return new NullExpression(toTransform.SqlType);
+            }
+            else if (newStatements.Count == 1 && newStatements[0].Condition is AlwaysTrueCondition)
+            {
+                return newStatements[0].Expression;
+            }
+            else if (changed)
             {
                 return new CaseExpression(newStatements);
             }
@@ -565,7 +617,16 @@ namespace Slp.Evi.Storage.Relational.Utils
             {
                 var newExpression = TransformExpression(innerExpression, data);
 
-                if (newExpression != innerExpression)
+                if (newExpression is NullExpression)
+                {
+                    changed = true;
+                }
+                else if (newExpression is CoalesceExpression coalesce)
+                {
+                    changed = true;
+                    newInnerExpressions.AddRange(coalesce.InnerExpressions);
+                }
+                else if (newExpression != innerExpression)
                 {
                     changed = true;
                     newInnerExpressions.Add(newExpression);
@@ -576,7 +637,15 @@ namespace Slp.Evi.Storage.Relational.Utils
                 }
             }
 
-            if (changed)
+            if (newInnerExpressions.Count == 0)
+            {
+                return new NullExpression(toTransform.SqlType);
+            }
+            else if (newInnerExpressions.Count == 1)
+            {
+                return newInnerExpressions.First();
+            }
+            else if (changed)
             {
                 return new CoalesceExpression(newInnerExpressions);
             }
@@ -590,6 +659,22 @@ namespace Slp.Evi.Storage.Relational.Utils
         protected override IExpression Transform(NullExpression toTransform, T data)
         {
             return toTransform;
+        }
+
+        /// <inheritdoc />
+        protected override IExpression Transform(BinaryNumericExpression toTransform, T data)
+        {
+            var newLeft = TransformExpression(toTransform.LeftOperand, data);
+            var newRight = TransformExpression(toTransform.RightOperand, data);
+
+            if (newLeft != toTransform.LeftOperand || newRight != toTransform.RightOperand)
+            {
+                return new BinaryNumericExpression(newLeft, newRight, toTransform.Operator, toTransform.SqlType);
+            }
+            else
+            {
+                return toTransform;
+            }
         }
 
         /// <summary>

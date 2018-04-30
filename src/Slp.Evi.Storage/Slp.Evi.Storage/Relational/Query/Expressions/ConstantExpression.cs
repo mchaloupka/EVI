@@ -10,7 +10,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
     /// <summary>
     /// Class ConstantExpression.
     /// </summary>
-    public class ConstantExpression 
+    public class ConstantExpression
         : IExpression
     {
         /// <summary>
@@ -83,6 +83,19 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
             SqlString = number.ToString(CultureInfo.InvariantCulture);
             _context = context;
             SqlType = context.Db.SqlTypeForDouble;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstantExpression"/> class.
+        /// </summary>
+        /// <param name="toDateTime">To date time.</param>
+        /// <param name="context">The context.</param>
+        public ConstantExpression(DateTime toDateTime, IQueryContext context)
+        {
+            Value = toDateTime;
+            SqlString = $"\'{toDateTime:yyyy-MM-dd HH:mm:ss.fff}\'";
+            _context = context;
+            SqlType = context.Db.SqlTypeForDateTime;
         }
 
         /// <summary>

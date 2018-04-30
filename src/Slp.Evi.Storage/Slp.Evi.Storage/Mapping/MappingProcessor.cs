@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Sparql.PostProcess;
+﻿using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping
@@ -8,12 +9,16 @@ namespace Slp.Evi.Storage.Mapping
     /// </summary>
     public class MappingProcessor : IMappingProcessor
     {
+        private readonly ILoggerFactory _loggerFactory;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingProcessor"/> class.
         /// </summary>
         /// <param name="mapping">The R2RML mapping.</param>
-        public MappingProcessor(IR2RML mapping)
+        /// <param name="loggerFactory">The logger factory</param>
+        public MappingProcessor(IR2RML mapping, ILoggerFactory loggerFactory)
         {
+            _loggerFactory = loggerFactory;
             Mapping = mapping;
             Cache = new R2RMLCache();
         }
@@ -35,7 +40,7 @@ namespace Slp.Evi.Storage.Mapping
         /// </summary>
         public ISparqlPostProcess GetMappingTransformer()
         {
-            return new MappingTransformer(this);
+            return new MappingTransformer(this, _loggerFactory.CreateLogger<MappingTransformer>());
         }
     }
 }

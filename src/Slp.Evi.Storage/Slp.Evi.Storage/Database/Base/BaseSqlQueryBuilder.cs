@@ -50,7 +50,7 @@ namespace Slp.Evi.Storage.Database.Base
                 StringBuilder = stringBuilder;
                 Context = context;
                 RelationalQuery = relationalQuery;
-                modelsStack = new Stack<CalculusModel>();
+                _modelsStack = new Stack<CalculusModel>();
             }
 
             /// <summary>
@@ -75,7 +75,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// Gets the current calculus model.
             /// </summary>
             /// <value>The current calculus model (<c>null</c> if you are topmost).</value>
-            public CalculusModel CurrentCalculusModel => (modelsStack.Count > 0) ? modelsStack.Peek() : null;
+            public CalculusModel CurrentCalculusModel => (_modelsStack.Count > 0) ? _modelsStack.Peek() : null;
 
             /// <summary>
             /// Enters the calculus model.
@@ -83,7 +83,7 @@ namespace Slp.Evi.Storage.Database.Base
             /// <param name="model">The model.</param>
             public void EnterCalculusModel(CalculusModel model)
             {
-                modelsStack.Push(model);
+                _modelsStack.Push(model);
             }
 
             /// <summary>
@@ -91,13 +91,13 @@ namespace Slp.Evi.Storage.Database.Base
             /// </summary>
             public void LeaveCalculusModel()
             {
-                modelsStack.Pop();
+                _modelsStack.Pop();
             }
 
             /// <summary>
             /// The models stack
             /// </summary>
-            private readonly Stack<CalculusModel> modelsStack;
+            private readonly Stack<CalculusModel> _modelsStack;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <returns>The transformation result</returns>
         protected override object Transform(ModifiedCalculusModel toTransform, VisitorContext data)
         {
-            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering, toTransform.Limit, toTransform.Offset);
+            WriteCalculusModel(toTransform.InnerModel, data, toTransform.Ordering.ToList(), toTransform.Limit, toTransform.Offset, toTransform.IsDistinct);
             return null;
         }
 
@@ -132,7 +132,8 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="ordering">The ordering.</param>
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
-        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, IEnumerable<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset)
+        /// <param name="isDistinct">The flag whether the result should be distinct.</param>
+        private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data, List<ModifiedCalculusModel.OrderingPart> ordering, int? limit, int? offset, bool isDistinct)
         {
             foreach (var sourceCondition in toTransform.SourceConditions)
             {
@@ -157,7 +158,18 @@ namespace Slp.Evi.Storage.Database.Base
                 neededVariables.AddRange(sourceInParent.CalculusVariables);
             }
 
+            if (isDistinct && ordering.Count > 0)
+            {
+                // The ORDER BY and DISTINCT may cause issue if it is in the same query level
+                data.StringBuilder.Append("SELECT * FROM (");
+            }
+
             data.StringBuilder.Append("SELECT");
+
+            if (isDistinct)
+            {
+                data.StringBuilder.Append(" DISTINCT ");
+            }
 
             if (limit.HasValue && !offset.HasValue)
             {
@@ -175,7 +187,10 @@ namespace Slp.Evi.Storage.Database.Base
                     }
 
                     data.StringBuilder.Append(' ');
+
+                    data.EnterCalculusModel(toTransform);
                     WriteCalculusVariable(neededVariables[i], toTransform, data);
+                    data.LeaveCalculusModel();
 
                     data.StringBuilder.Append(" AS ");
 
@@ -248,6 +263,12 @@ namespace Slp.Evi.Storage.Database.Base
 
             data.LeaveCalculusModel();
 
+            if (isDistinct && ordering.Count > 0)
+            {
+                // The ORDER BY and DISTINCT may cause issue if it is in the same query lavel
+                data.StringBuilder.Append(") AS o");
+            }
+
             bool firstOrderBy = true;
             foreach (var orderingPart in ordering.Where(x => !x.Expression.HasAlwaysTheSameValue))
             {
@@ -291,7 +312,7 @@ namespace Slp.Evi.Storage.Database.Base
 
         private void WriteCalculusModel(CalculusModel toTransform, VisitorContext data)
         {
-            WriteCalculusModel(toTransform, data, new List<ModifiedCalculusModel.OrderingPart>(), null, null);
+            WriteCalculusModel(toTransform, data, new List<ModifiedCalculusModel.OrderingPart>(), null, null, false);
         }
 
         /// <summary>
@@ -392,7 +413,7 @@ namespace Slp.Evi.Storage.Database.Base
         {
             TransformComparisonCondition(() => TransformExpression(toTransform.LeftOperand, data),
                 () => TransformExpression(toTransform.RightOperand, data), x => data.StringBuilder.Append(x),
-                toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, toTransform.ComparisonType);
+                toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, toTransform.ComparisonType, data);
 
             return null;
         }
@@ -410,7 +431,7 @@ namespace Slp.Evi.Storage.Database.Base
 
             TransformComparisonCondition(() => WriteCalculusVariable(leftExpr, data.CurrentCalculusModel, data),
                 () => WriteCalculusVariable(rightExpr, data.CurrentCalculusModel, data),
-                x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType, ComparisonTypes.EqualTo);
+                x => data.StringBuilder.Append(x), leftExpr.SqlType, rightExpr.SqlType, ComparisonTypes.EqualTo, data);
 
             return null;
         }
@@ -424,7 +445,8 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="leftDataType">Type of the left data.</param>
         /// <param name="rightDataType">Type of the right data.</param>
         /// <param name="comparisonType">Comparison type</param>
-        protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType)
+        /// <param name="context">The query context</param>
+        protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType, VisitorContext context)
         {
             GetCommonTypeForComparison(leftDataType, rightDataType, out string leftCast, out string rightCast);
 
@@ -451,6 +473,60 @@ namespace Slp.Evi.Storage.Database.Base
                 writeRight();
                 writeText($" AS {rightCast})");
             }
+        }
+
+        /// <inheritdoc />
+        protected override object Transform(BinaryNumericExpression toTransform, VisitorContext data)
+        {
+            var commonType = data.Context.Db.GetCommonTypeForComparison(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType).TypeName;
+
+            var leftCast = toTransform.LeftOperand.SqlType.TypeName != commonType;
+
+            if (leftCast)
+            {
+                data.StringBuilder.Append("CAST((");
+            }
+
+            toTransform.LeftOperand.Accept(this, data);
+
+            if (leftCast)
+            {
+                data.StringBuilder.Append($") AS {commonType})");
+            }
+
+            switch (toTransform.Operator)
+            {
+                case ArithmeticOperation.Add:
+                    data.StringBuilder.Append("+");
+                    break;
+                case ArithmeticOperation.Subtract:
+                    data.StringBuilder.Append("-");
+                    break;
+                case ArithmeticOperation.Divide:
+                    data.StringBuilder.Append("/");
+                    break;
+                case ArithmeticOperation.Multiply:
+                    data.StringBuilder.Append("*");
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            var rightCast = toTransform.RightOperand.SqlType.TypeName != commonType;
+
+            if (rightCast)
+            {
+                data.StringBuilder.Append("CAST((");
+            }
+
+            toTransform.RightOperand.Accept(this, data);
+
+            if (rightCast)
+            {
+                data.StringBuilder.Append($") AS {commonType})");
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -508,6 +584,25 @@ namespace Slp.Evi.Storage.Database.Base
         {
             data.StringBuilder.Append("NOT ");
             TransformFilterCondition(toTransform.InnerCondition, data);
+            return null;
+        }
+
+        /// <inheritdoc />
+        protected override object Transform(LikeCondition toTransform, VisitorContext data)
+        {
+            TransformExpression(toTransform.Expression, data);
+            data.StringBuilder.Append($" LIKE \'{toTransform.Pattern}\'");
+            return null;
+        }
+
+        /// <inheritdoc />
+        protected override object Transform(LangMatchesCondition toTransform, VisitorContext data)
+        {
+            data.StringBuilder.Append("LOWER(");
+            TransformExpression(toTransform.LanguageExpression, data);
+            data.StringBuilder.Append(") LIKE LOWER(");
+            TransformExpression(toTransform.LanguageRangeExpression, data); // TODO: * should be handled so the language matching will work properly
+            data.StringBuilder.Append(")");
             return null;
         }
 
@@ -808,10 +903,5 @@ namespace Slp.Evi.Storage.Database.Base
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Gets the nearest type these two types could be casted to for comparison.
-        /// </summary>
-        protected abstract void GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
     }
 }

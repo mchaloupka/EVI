@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
@@ -14,13 +15,21 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
         : BaseSparqlTransformer<object>, ISparqlPostProcess
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="AscendFilterPattern"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public AscendFilterPattern(ILogger<AscendFilterPattern> logger)
+         : base(logger)
+        { }
+
+        /// <summary>
         /// Optimizes the specified query.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="context">The context.</param>
         public ISparqlQuery Process(ISparqlQuery query, IQueryContext context)
         {
-            return TransformSparqlQuery(query, null);
+            return TransformSparqlQuery(query, null, context);
         }
 
         /// <summary>
@@ -72,7 +81,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.SafeAlgebra
                     changed = true;
                     innerFilter = (FilterPattern)newInner;
                 }
-                if (newInner != joinedGraphPattern)
+                else if (newInner != joinedGraphPattern)
                 {
                     changed = true;
                     newInnerPatterns.Add(newInner);

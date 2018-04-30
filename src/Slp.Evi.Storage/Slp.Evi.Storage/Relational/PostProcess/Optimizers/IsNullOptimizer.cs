@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Query;
+﻿using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -21,8 +22,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// Constructs an instance of <see cref="IsNullOptimizer"/>
         /// </summary>
-        public IsNullOptimizer()
-            : base(new IsNullOptimizerImplementation(new IsNullCalculator()))
+        public IsNullOptimizer(ILogger<IsNullOptimizer> logger)
+            : base(new IsNullOptimizerImplementation(new IsNullCalculator()), logger)
         { }
 
         /// <summary>

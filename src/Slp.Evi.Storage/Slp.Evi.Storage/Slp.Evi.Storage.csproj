@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Slp.Evi.Storage</RootNamespace>
     <AssemblyName>Slp.Evi.Storage</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -45,11 +45,12 @@
     </Reference>
     <Reference Include="dotNetRDF, Version=1.0.12.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
       <HintPath>..\packages\dotNetRDF.1.0.12\lib\net40\dotNetRDF.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -57,24 +58,27 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TCode.r2rml4net, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\r2rml4net.0.4.0.0-pre01\lib\net40\TCode.r2rml4net.dll</HintPath>
     </Reference>
     <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <HintPath>..\packages\VDS.Common.1.6.4\lib\net40-client\VDS.Common.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\DefaultEviQueryableStorageFactory.cs" />
     <Compile Include="Bootstrap\ISqlDbFactory.cs" />
     <Compile Include="Bootstrap\IEviQueryableStorageFactory.cs" />
+    <Compile Include="Common\Algebra\ArithmeticOperation.cs" />
     <Compile Include="Common\Algebra\ComparisonTypes.cs" />
     <Compile Include="Common\Optimization\PatternMatching\CompareResult.cs" />
     <Compile Include="Common\Optimization\PatternMatching\MatchCondition.cs" />
@@ -92,12 +96,31 @@
     <Compile Include="Database\Vendor\MsSql\MsSqlQueryBuilder.cs" />
     <Compile Include="DBSchema\DbSchemaProvider.cs" />
     <Compile Include="DBSchema\IDbSchemaProvider.cs" />
+    <Compile Include="Query\DebugLogger.cs" />
     <Compile Include="Query\IQueryContext.cs" />
+    <Compile Include="Query\Logging\RelationalQueryRepresentation.cs" />
+    <Compile Include="Query\Logging\SparqlQueryRepresentation.cs" />
+    <Compile Include="Relational\Builder\CodeGeneration\BaseRelationalBuilder.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseRelationalBuilder.tt</DependentUpon>
+    </Compile>
     <Compile Include="Relational\Builder\ConditionBuilderHelpers\ConditionPart.cs" />
+    <Compile Include="Relational\Builder\ConditionBuilderHelpers\PossibleTypesExtractor.cs" />
+    <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderAligner.cs" />
+    <Compile Include="Relational\Builder\ValueBinderHelpers\ValueBinderFlattener.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\LangMatchesCondition.cs" />
+    <Compile Include="Relational\Query\Conditions\Filter\LikeCondition.cs" />
     <Compile Include="Relational\Query\ExpressionsSet.cs" />
+    <Compile Include="Relational\Query\Expressions\BinaryNumericExpression.cs" />
     <Compile Include="Relational\Query\Expressions\NullExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\BinaryArithmeticExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\LangExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\LangMatchesExpression.cs" />
+    <Compile Include="Sparql\Algebra\Expressions\RegexExpression.cs" />
     <Compile Include="Types\ITypeCache.cs" />
     <Compile Include="Types\TypeCategories.cs" />
+    <Compile Include="Sparql\Algebra\Modifiers\DistinctModifier.cs" />
     <Compile Include="Utils\CacheDictionary.cs" />
     <Compile Include="Mapping\ClassObjectMap.cs" />
     <Compile Include="Mapping\ClassPredicateMap.cs" />
@@ -274,6 +297,7 @@
     <Compile Include="Utils\FixesExtensions.cs" />
     <Compile Include="Utils\IVisitable.cs" />
     <Compile Include="Utils\IVisitor.cs" />
+    <Compile Include="Utils\MappingExtensions.cs" />
     <Compile Include="Utils\UriExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +340,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Relational\Builder\CodeGeneration\BaseRelationalBuilder.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalBuilder.cs</LastGenOutput>
+    </Content>
     <Content Include="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>

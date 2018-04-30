@@ -74,8 +74,24 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
             return toTransform;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Process the <see cref="NullExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
         protected override IExpression Transform(NullExpression toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="BinaryNumericExpression"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IExpression Transform(BinaryNumericExpression toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return toTransform;
         }
@@ -213,6 +229,28 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         }
 
         /// <summary>
+        /// Process the <see cref="LikeCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IFilterCondition Transform(LikeCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
+        /// Process the <see cref="LangMatchesCondition"/>
+        /// </summary>
+        /// <param name="toTransform">The instance to process</param>
+        /// <param name="data">The passed data</param>
+        /// <returns>The transformation result</returns>
+        protected override IFilterCondition Transform(LangMatchesCondition toTransform, BaseRelationalOptimizer<T>.OptimizationContext data)
+        {
+            return toTransform;
+        }
+
+        /// <summary>
         /// Process the <see cref="CalculusModel"/>
         /// </summary>
         /// <param name="toTransform">The instance to process</param>
@@ -250,6 +288,7 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         public ExpressionsSet TransformExpressionSet(ExpressionsSet expressionSet, BaseRelationalOptimizer<T>.OptimizationContext data)
         {
             return new ExpressionsSet(
+                TransformFilterCondition(expressionSet.IsNotErrorCondition, data),
                 TransformExpression(expressionSet.TypeExpression, data),
                 TransformExpression(expressionSet.TypeCategoryExpression, data),
                 TransformExpression(expressionSet.StringExpression, data),

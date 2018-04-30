@@ -57,7 +57,8 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <summary>
         /// Template column part
         /// </summary>
-        public class ColumnTemplatePart : ITemplatePart
+        public class ColumnTemplatePart
+            : ITemplatePart
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="ColumnTemplatePart"/> class.
@@ -91,16 +92,32 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// </summary>
             /// <value>The text.</value>
             /// <exception cref="System.Exception">Asked for text on ColumnTemplatePart</exception>
-            public string Text
+            public string Text => throw new Exception("Asked for text on ColumnTemplatePart");
+
+            /// <inheritdoc />
+            public bool IsSimilarTo(ITemplatePart otherTemplatePart, Dictionary<string, string> variableMapping)
             {
-                get { throw new Exception("Asked for text on ColumnTemplatePart"); }
+                if (ReferenceEquals(null, otherTemplatePart)) return false;
+                if (ReferenceEquals(this, otherTemplatePart)) return true;
+                if (otherTemplatePart.GetType() != typeof(ColumnTemplatePart)) return false;
+
+                if (variableMapping.TryGetValue(Column, out var preexistingValue))
+                {
+                    return otherTemplatePart.Column == preexistingValue;
+                }
+                else
+                {
+                    variableMapping.Add(Column, otherTemplatePart.Column);
+                    return true;
+                }
             }
         }
 
         /// <summary>
         /// Template text part
         /// </summary>
-        public class TextTemplatePart : ITemplatePart
+        public class TextTemplatePart
+            : ITemplatePart
         {
             /// <summary>
             /// Initializes a new instance of the <see cref="TextTemplatePart"/> class.
@@ -116,6 +133,15 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// </summary>
             /// <value>The text.</value>
             public string Text { get; }
+
+            /// <inheritdoc />
+            public bool IsSimilarTo(ITemplatePart otherTemplatePart, Dictionary<string, string> variableMapping)
+            {
+                if (ReferenceEquals(null, otherTemplatePart)) return false;
+                if (ReferenceEquals(this, otherTemplatePart)) return true;
+                if (otherTemplatePart.GetType() != typeof(TextTemplatePart)) return false;
+                return string.Equals(Text, otherTemplatePart.Text);
+            }
 
             /// <summary>
             /// Gets a value indicating whether this instance is column.
@@ -134,10 +160,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             /// </summary>
             /// <value>The column.</value>
             /// <exception cref="System.Exception">Asked for column on TextTemplatePart</exception>
-            public string Column
-            {
-                get { throw new Exception("Asked for column on TextTemplatePart"); }
-            }
+            public string Column => throw new Exception("Asked for column on TextTemplatePart");
         }
     }
 
@@ -169,5 +192,14 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </summary>
         /// <value>The text.</value>
         string Text { get; }
+
+        /// <summary>
+        /// Determines whether this template part is similar to <paramref name="otherTemplatePart"/> (that means equals, except
+        /// used variable names).
+        /// </summary>
+        /// <param name="otherTemplatePart">The other template part.</param>
+        /// <param name="variableMapping">The variable names mapping.</param>
+        /// <returns><c>true</c> if provided template parts are similar; <c>false</c> otherwise.</returns>
+        bool IsSimilarTo(ITemplatePart otherTemplatePart, Dictionary<string, string> variableMapping);
     }
 }

@@ -114,7 +114,12 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
         /// <returns>The returned data</returns>
         public object Visit(ExpressionSetValueBinder expressionSetValueBinder, object data)
         {
-            return _conditionBuilder.CreateIsBoundCondition(expressionSetValueBinder.ExpressionSet.TypeExpression, (IQueryContext) data);
+            return new ConjunctionCondition(new[]
+            {
+                expressionSetValueBinder.ExpressionSet.IsNotErrorCondition,
+                _conditionBuilder.CreateIsBoundCondition(expressionSetValueBinder.ExpressionSet.TypeExpression,
+                    (IQueryContext) data)
+            });
         }
     }
 }

@@ -1,0 +1,4 @@
+﻿PREFIX rev: <http://purl.org/stuff/rev#>
+
+DESCRIBE ?x
+WHERE { <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Review25> rev:reviewer ?x }

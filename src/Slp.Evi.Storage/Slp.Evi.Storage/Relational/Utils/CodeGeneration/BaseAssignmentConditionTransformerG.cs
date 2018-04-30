@@ -27,17 +27,6 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
             return (TR)instance.Accept(this, data);
         }
         /// <summary>
-        /// Decides whether we should use standard or fallback transformation for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should process standardly, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool CommonShouldTransform(IAssignmentCondition toTransform, T data)
-        {
-            return true;
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -47,17 +36,6 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         protected virtual TR CommonPostTransform(TR transformed, IAssignmentCondition toTransform, T data)
         {
             return transformed;
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR CommonFallbackTransform(IAssignmentCondition toTransform, T data)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -77,17 +55,10 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         /// <param name="toVisit">The visited instance</param>
         /// <param name="data">The passed data</param>
         /// <returns>The returned data</returns>
-        protected virtual TR ProcessVisit(AssignmentFromExpressionCondition toVisit, T data) 
+        protected virtual TR ProcessVisit(AssignmentFromExpressionCondition toVisit, T data)
         {
-            if(ShouldTransform(toVisit, data))
-            {
-                var transformed = Transform(toVisit, data);
-                return PostTransform(transformed, toVisit, data);
-            }
-            else
-            {
-                return FallbackTransform(toVisit, data);
-            }
+            var transformed = Transform(toVisit, data);
+            return PostTransform(transformed, toVisit, data);
         }
 
         /// <summary>
@@ -99,17 +70,6 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         protected abstract TR Transform(AssignmentFromExpressionCondition toTransform, T data);
 
         /// <summary>
-        /// Pre-process for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed</param>
-        /// <param name="data">The passed data</param>
-        /// <returns><c>true</c> if transformation should continue, <c>false</c> the fallback should be used.</returns>
-        protected virtual bool ShouldTransform(AssignmentFromExpressionCondition toTransform, T data)
-        {
-            return CommonShouldTransform(toTransform, data);
-        }
-
-        /// <summary>
         /// Post-process for the transformation.
         /// </summary>
         /// <param name="transformed">The transformation result.</param>
@@ -119,17 +79,6 @@ namespace Slp.Evi.Storage.Relational.Utils.CodeGeneration
         protected virtual TR PostTransform(TR transformed, AssignmentFromExpressionCondition toTransform, T data)
         {
             return CommonPostTransform(transformed, toTransform, data);
-        }
-
-        /// <summary>
-        /// Fallback variant for the transformation.
-        /// </summary>
-        /// <param name="toTransform">Instance to be transformed.</param>
-        /// <param name="data">The passed data.</param>
-        /// <returns>The transformation result</returns>
-        protected virtual TR FallbackTransform(AssignmentFromExpressionCondition toTransform, T data)
-        {
-            return CommonFallbackTransform(toTransform, data);
         }
 
     }

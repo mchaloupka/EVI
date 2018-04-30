@@ -49,6 +49,7 @@ namespace Slp.Evi.Storage.Query
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
             QueryPostProcesses = new QueryPostProcesses(factory, this);
+            DebugLogging = new DebugLogger(this);
         }
 
         /// <summary>
@@ -102,6 +103,9 @@ namespace Slp.Evi.Storage.Query
         /// The type cache
         /// </summary>
         public ITypeCache TypeCache { get; }
+
+        /// <inheritdoc />
+        public DebugLogger DebugLogging { get; }
 
         /// <summary>
         /// Gets the blank node subject for value.
