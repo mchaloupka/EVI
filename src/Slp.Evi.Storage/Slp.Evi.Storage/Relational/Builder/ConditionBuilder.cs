@@ -269,7 +269,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="node">The node.</param>
         private ExpressionsSet CreateLiteralExpression(IQueryContext context, LiteralNode node)
         {
-            if (node.DataType == null && node.Language == null)
+            if (node.DataType == null && string.IsNullOrEmpty(node.Language))
             {
                 var iriType = context.TypeCache.SimpleLiteralValueType;
                 var type = context.TypeCache.GetIndex(iriType);
