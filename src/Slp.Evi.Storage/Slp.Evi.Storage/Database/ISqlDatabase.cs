@@ -86,6 +86,6 @@ namespace Slp.Evi.Storage.Database
         /// <summary>
         /// Gets the nearest type these two types could be casted to for operations.
         /// </summary>
-        DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
+        DataType GetCommonTypeForTwoColumns(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
     }
 }

@@ -109,7 +109,7 @@ namespace Slp.Evi.Storage.Database.Base
         public abstract Uri GetNaturalRdfType(string dbType);
 
         /// <inheritdoc />
-        public abstract DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft,
+        public abstract DataType GetCommonTypeForTwoColumns(DataType leftDataType, DataType rightDataType, out string neededCastLeft,
             out string neededCastRight);
     }
 }

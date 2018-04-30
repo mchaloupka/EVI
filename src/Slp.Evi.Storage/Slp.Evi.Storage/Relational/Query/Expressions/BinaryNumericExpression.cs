@@ -43,7 +43,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
             IQueryContext context)
             : this(leftOperand, rightOperand, oper, (DataType)null)
         {
-            SqlType = context.Db.GetCommonTypeForComparison(leftOperand.SqlType, rightOperand.SqlType, out _, out _);
+            SqlType = context.Db.GetCommonTypeForTwoColumns(leftOperand.SqlType, rightOperand.SqlType, out _, out _);
         }
 
         /// <summary>

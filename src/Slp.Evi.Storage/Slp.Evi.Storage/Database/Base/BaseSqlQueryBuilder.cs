@@ -448,7 +448,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="context">The query context</param>
         protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType, VisitorContext context)
         {
-            context.Context.Db.GetCommonTypeForComparison(leftDataType, rightDataType, out string leftCast, out string rightCast);
+            context.Context.Db.GetCommonTypeForTwoColumns(leftDataType, rightDataType, out string leftCast, out string rightCast);
 
             if(string.IsNullOrEmpty(leftCast))
             {
@@ -478,7 +478,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <inheritdoc />
         protected override object Transform(BinaryNumericExpression toTransform, VisitorContext data)
         {
-            data.Context.Db.GetCommonTypeForComparison(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, out string leftCast, out string rightCast);
+            data.Context.Db.GetCommonTypeForTwoColumns(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, out string leftCast, out string rightCast);
 
             if (string.IsNullOrEmpty(leftCast))
             {

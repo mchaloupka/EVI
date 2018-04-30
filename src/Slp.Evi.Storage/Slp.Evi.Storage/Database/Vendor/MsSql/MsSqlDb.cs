@@ -179,7 +179,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         }
 
         /// <inheritdoc />
-        public override DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight)
+        public override DataType GetCommonTypeForTwoColumns(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight)
         {
             neededCastLeft = null;
             neededCastRight = null;
