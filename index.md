@@ -3,7 +3,7 @@ EVI project is implementation of SPARQL to SQL translation. The library can be u
 
 # How to get EVI?
 
-* Nuget package: [https://www.nuget.org/packages/slp.evi/0.0.4-prealpha](https://www.nuget.org/packages/slp.evi/0.0.4-prealpha)
+* Nuget package: [https://www.nuget.org/packages/slp.evi](https://www.nuget.org/packages/slp.evi)
 * Sample endpoint implementation: [https://github.com/mchaloupka/EVI-SampleServer](https://github.com/mchaloupka/EVI-SampleServer)
 
 # Details
