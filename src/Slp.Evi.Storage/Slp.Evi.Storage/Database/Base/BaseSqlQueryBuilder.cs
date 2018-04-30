@@ -448,7 +448,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="context">The query context</param>
         protected virtual void TransformComparisonCondition(Action writeLeft, Action writeRight, Action<string> writeText, DataType leftDataType, DataType rightDataType, ComparisonTypes comparisonType, VisitorContext context)
         {
-            GetCommonTypeForComparison(leftDataType, rightDataType, out string leftCast, out string rightCast);
+            context.Context.Db.GetCommonTypeForComparison(leftDataType, rightDataType, out string leftCast, out string rightCast);
 
             if(string.IsNullOrEmpty(leftCast))
             {
@@ -478,20 +478,17 @@ namespace Slp.Evi.Storage.Database.Base
         /// <inheritdoc />
         protected override object Transform(BinaryNumericExpression toTransform, VisitorContext data)
         {
-            var commonType = data.Context.Db.GetCommonTypeForComparison(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType).TypeName;
+            data.Context.Db.GetCommonTypeForComparison(toTransform.LeftOperand.SqlType, toTransform.RightOperand.SqlType, out string leftCast, out string rightCast);
 
-            var leftCast = toTransform.LeftOperand.SqlType.TypeName != commonType;
-
-            if (leftCast)
+            if (string.IsNullOrEmpty(leftCast))
             {
-                data.StringBuilder.Append("CAST((");
+                toTransform.LeftOperand.Accept(this, data);
             }
-
-            toTransform.LeftOperand.Accept(this, data);
-
-            if (leftCast)
+            else
             {
-                data.StringBuilder.Append($") AS {commonType})");
+                data.StringBuilder.Append("CAST(");
+                toTransform.LeftOperand.Accept(this, data);
+                data.StringBuilder.Append($" AS {leftCast})");
             }
 
             switch (toTransform.Operator)
@@ -512,18 +509,15 @@ namespace Slp.Evi.Storage.Database.Base
                     throw new NotImplementedException();
             }
 
-            var rightCast = toTransform.RightOperand.SqlType.TypeName != commonType;
-
-            if (rightCast)
+            if (string.IsNullOrEmpty(rightCast))
             {
-                data.StringBuilder.Append("CAST((");
+                toTransform.RightOperand.Accept(this, data);
             }
-
-            toTransform.RightOperand.Accept(this, data);
-
-            if (rightCast)
+            else
             {
-                data.StringBuilder.Append($") AS {commonType})");
+                data.StringBuilder.Append("CAST(");
+                toTransform.RightOperand.Accept(this, data);
+                data.StringBuilder.Append($" AS {rightCast})");
             }
 
             return null;

@@ -39,9 +39,12 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
         /// <param name="rightOperand">The right operand.</param>
         /// <param name="oper">The operator.</param>
         /// <param name="context">The context.</param>
-        public BinaryNumericExpression(IExpression leftOperand, IExpression rightOperand, ArithmeticOperation oper, IQueryContext context)
-            : this(leftOperand, rightOperand, oper, context.Db.GetCommonTypeForComparison(leftOperand.SqlType, rightOperand.SqlType))
-        { }
+        public BinaryNumericExpression(IExpression leftOperand, IExpression rightOperand, ArithmeticOperation oper,
+            IQueryContext context)
+            : this(leftOperand, rightOperand, oper, (DataType)null)
+        {
+            SqlType = context.Db.GetCommonTypeForComparison(leftOperand.SqlType, rightOperand.SqlType, out _, out _);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryNumericExpression"/> class.

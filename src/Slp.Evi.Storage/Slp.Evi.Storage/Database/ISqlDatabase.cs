@@ -84,8 +84,8 @@ namespace Slp.Evi.Storage.Database
         Uri GetNaturalRdfType(string dbType);
 
         /// <summary>
-        /// Gets the nearest type these two types could be casted to for comparison.
+        /// Gets the nearest type these two types could be casted to for operations.
         /// </summary>
-        DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType);
+        DataType GetCommonTypeForComparison(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
     }
 }
