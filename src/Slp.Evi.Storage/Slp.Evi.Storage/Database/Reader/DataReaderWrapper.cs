@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Xml;
 
 namespace Slp.Evi.Storage.Database.Reader
 {
@@ -235,7 +236,7 @@ namespace Slp.Evi.Storage.Database.Reader
                     }
                     else if (_value is DateTime dateTime)
                     {
-                        return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        return XmlConvert.ToString(dateTime, XmlDateTimeSerializationMode.Utc);
                     }
                     else
                     {

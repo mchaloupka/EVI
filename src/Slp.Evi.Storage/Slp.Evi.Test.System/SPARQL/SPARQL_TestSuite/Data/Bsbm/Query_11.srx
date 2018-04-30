@@ -46,7 +46,7 @@
         <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validFrom</uri>
       </binding>
       <binding name="hasValue">
-        <literal type="xsd:dateTime">2008-02-21 00:00:00.000</literal>
+        <literal type="xsd:dateTime">2008-02-21T00:00:00Z</literal>
       </binding>
     </result>
     <result>
@@ -54,7 +54,7 @@
         <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validTo</uri>
       </binding>
       <binding name="hasValue">
-        <literal type="xsd:dateTime">2008-08-12 00:00:00.000</literal>
+        <literal type="xsd:dateTime">2008-08-12T00:00:00Z</literal>
       </binding>
     </result>
     <result>
@@ -86,7 +86,7 @@
         <uri>http://purl.org/dc/elements/1.1/date</uri>
       </binding>
       <binding name="hasValue">
-        <literal type="xsd:dateTime">2008-05-20 00:00:00.000</literal>
+        <literal type="xsd:dateTime">2008-05-20T00:00:00Z</literal>
       </binding>
     </result>
     <result>
