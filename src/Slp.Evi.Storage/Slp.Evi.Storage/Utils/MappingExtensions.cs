@@ -26,14 +26,19 @@ namespace Slp.Evi.Storage.Utils
                 // TODO: Remove this, replace by better solution, it happens only in tests
                 return x => null;
             }
-            else if (triplesMap.TableName != null)
-            {
-                var tableInfo = context.SchemaProvider.GetTableInfo(triplesMap.TableName);
-                return x => tableInfo.FindColumn(x).DataType;
-            }
             else
             {
-                throw new NotImplementedException();
+                var tableName = context.Mapping.Cache.GetSqlTable(triplesMap);
+
+                if (tableName != null)
+                {
+                    var tableInfo = context.SchemaProvider.GetTableInfo(tableName);
+                    return x => tableInfo.FindColumn(x).DataType;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
     }

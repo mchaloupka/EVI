@@ -27,15 +27,18 @@ namespace Slp.Evi.Storage.Query.Logging
         : IModifierVisitor, IGraphPatternVisitor, ISparqlExpressionVisitor
     {
         private readonly Func<object, long> _getObjectIndex;
+        private readonly IQueryContext _queryContext;
         private readonly StringBuilder _sb = new StringBuilder();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SparqlQueryRepresentation"/> class.
         /// </summary>
         /// <param name="getObjectIndex">Index of the get object function.</param>
-        public SparqlQueryRepresentation(Func<object, long> getObjectIndex)
+        /// <param name="queryContext">The query context</param>
+        public SparqlQueryRepresentation(Func<object, long> getObjectIndex, IQueryContext queryContext)
         {
             _getObjectIndex = getObjectIndex;
+            _queryContext = queryContext;
         }
 
         /// <inheritdoc />
@@ -262,10 +265,12 @@ namespace Slp.Evi.Storage.Query.Logging
             Process(restrictedTriplePattern.ObjectPattern);
             _sb.Append(") From (");
 
-            if (!string.IsNullOrEmpty(restrictedTriplePattern.TripleMap.TableName))
+            var tableName = _queryContext.Mapping.Cache.GetSqlTable(restrictedTriplePattern.TripleMap);
+
+            if (!string.IsNullOrEmpty(tableName))
             {
                 _sb.Append("Table: ");
-                _sb.Append(restrictedTriplePattern.TripleMap.TableName);
+                _sb.Append(tableName);
             }
             else
             {

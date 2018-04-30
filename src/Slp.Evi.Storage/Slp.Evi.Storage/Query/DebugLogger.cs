@@ -14,8 +14,18 @@ namespace Slp.Evi.Storage.Query
     /// </summary>
     public class DebugLogger
     {
+        private readonly IQueryContext _queryContext;
         readonly Dictionary<object, long> _objectIndexes = new Dictionary<object, long>();
         private long _maxIndex = 0;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DebugLogger"/> class.
+        /// </summary>
+        /// <param name="queryContext">The query context.</param>
+        public DebugLogger(IQueryContext queryContext)
+        {
+            _queryContext = queryContext;
+        }
 
         /// <summary>
         /// Logs the transformation.
@@ -72,7 +82,7 @@ namespace Slp.Evi.Storage.Query
 
         private string GetStringRepresentation(ISparqlQuery sparqlQuery)
         {
-            var representation = new SparqlQueryRepresentation(GetObjectIndex);
+            var representation = new SparqlQueryRepresentation(GetObjectIndex, _queryContext);
             return representation.GetRepresentation(sparqlQuery);
         }
 

@@ -49,7 +49,7 @@ namespace Slp.Evi.Storage.Query
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
             QueryPostProcesses = new QueryPostProcesses(factory, this);
-            DebugLogging = new DebugLogger();
+            DebugLogging = new DebugLogger(this);
         }
 
         /// <summary>
