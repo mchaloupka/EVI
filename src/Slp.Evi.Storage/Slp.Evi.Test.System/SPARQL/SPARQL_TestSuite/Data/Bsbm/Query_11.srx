@@ -22,7 +22,7 @@
         <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/producer</uri>
       </binding>
       <binding name="hasValue">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Producer1</uri>
       </binding>
     </result>
     <result>
@@ -30,7 +30,7 @@
         <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/vendor</uri>
       </binding>
       <binding name="hasValue">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
       </binding>
     </result>
     <result>
@@ -78,7 +78,7 @@
         <uri>http://purl.org/dc/elements/1.1/publisher</uri>
       </binding>
       <binding name="hasValue">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
       </binding>
     </result>
     <result>

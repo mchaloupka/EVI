@@ -10,7 +10,7 @@
   <results>
     <result>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer23</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer23</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">283.44</literal>
@@ -18,7 +18,7 @@
     </result>
     <result>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>

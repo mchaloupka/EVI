@@ -62,10 +62,8 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
                 var templateProcessor = new TemplateProcessor();
                 TemplateParts = templateProcessor.ParseTemplate(template).ToArray();
 
-                foreach (var part in TemplateParts.Where(x => x.IsColumn))
-                {
-                    _variables.Add(part.Column, source.GetVariable(part.Column));
-                }
+                _variables = TemplateParts.Where(x => x.IsColumn).Select(x => x.Column).Distinct()
+                    .ToDictionary(x => x, source.GetVariable);
             }
             else
             {

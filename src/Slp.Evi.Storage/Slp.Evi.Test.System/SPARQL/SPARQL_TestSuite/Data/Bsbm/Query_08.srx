@@ -26,7 +26,7 @@
         <literal type="xsd:dateTime">2008-05-28T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Eyana-Aurelianus</literal>
@@ -49,7 +49,7 @@
         <literal type="xsd:dateTime">2008-04-04T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Ruggiero-Delane</literal>
@@ -78,7 +78,7 @@
         <literal type="xsd:dateTime">2008-01-14T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Eyana-Aurelianus</literal>
@@ -101,7 +101,7 @@
         <literal type="xsd:dateTime">2007-12-16T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Ruggiero-Delane</literal>
@@ -118,7 +118,7 @@
         <literal type="xsd:dateTime">2007-09-02T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Ruggiero-Delane</literal>
@@ -141,7 +141,7 @@
         <literal type="xsd:dateTime">2007-08-15T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Ruggiero-Delane</literal>
@@ -167,7 +167,7 @@
         <literal type="xsd:dateTime">2007-07-24T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Eyana-Aurelianus</literal>
@@ -193,7 +193,7 @@
         <literal type="xsd:dateTime">2007-07-07T00:00:00Z</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Site1/Reviewer3</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer3</uri>
       </binding>
       <binding name="reviewerName">
         <literal>Danijela-Adalbrand</literal>
