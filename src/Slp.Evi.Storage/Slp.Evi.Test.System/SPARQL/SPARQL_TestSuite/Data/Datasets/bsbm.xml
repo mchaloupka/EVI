@@ -140,7 +140,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}";
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
@@ -174,7 +174,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}";
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/StandardizationInstitution{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
@@ -362,7 +362,7 @@ rr:predicateObjectMap [
   rr:objectMap [ rr:column "comment"; ];
 ];
 rr:predicateObjectMap [
-  rr:predicate bsbm:homepage;
+  rr:predicate foaf:homepage;
   rr:objectMap [
     rr:column "homepage";
     rr:termType rr:IRI;
@@ -393,7 +393,7 @@ rr:predicateObjectMap [
 <#Offer> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "offer" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor{publisher}/Offer{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor{vendor}/Offer{nr}";
   rr:class bsbm:Offer;
 ];
 rr:predicateObjectMap [
@@ -487,7 +487,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}";
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
@@ -567,7 +567,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}";
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
