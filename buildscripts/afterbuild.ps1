@@ -50,4 +50,4 @@ if($nugetversion)
 	Push-AppveyorArtifact $zipFolderName
 }
 
-fake.cmd build -t AfterBuild
+.\fake.cmd build -t AfterBuild
