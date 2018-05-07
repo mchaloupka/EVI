@@ -12,10 +12,9 @@ open Fake.DotNet
 open Fake.BuildServer
 open System
 
-// Add support for AppVeyor
-if AppVeyor.detect() then
-  Trace.log " --- AppVeyor detected --- "
-  AppVeyor.install false
+BuildServer.install [
+  AppVeyor.Installer
+]
 
 // Common stuff for the build
 module Common =
