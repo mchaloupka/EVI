@@ -20,8 +20,9 @@ build/
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
 
-# Enable build folder in the root
+# Enable build folder in the root, but the FAKE folder is not needed
 !/build
+.fake
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
