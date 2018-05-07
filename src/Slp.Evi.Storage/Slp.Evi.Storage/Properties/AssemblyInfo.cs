@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Slp.Evi.Storage")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Miloš Chaloupka")]
 [assembly: AssemblyProduct("Slp.Evi.Storage")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright (c) 2018")]
+[assembly: AssemblyTrademark("Copyright (c) 2015")]
 [assembly: AssemblyCulture("")]
 
 [assembly: InternalsVisibleTo("Slp.r2rml4net.Test.Unit")]

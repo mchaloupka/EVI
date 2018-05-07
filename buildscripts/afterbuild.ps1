@@ -49,5 +49,3 @@ if($nugetversion)
 	ZipFolder $zipFolderName ($env:APPVEYOR_BUILD_FOLDER + '\src\Slp.Evi.Storage\Slp.Evi.Storage\bin\' + $env:CONFIGURATION)
 	Push-AppveyorArtifact $zipFolderName
 }
-
-.\fake.cmd build -t AfterBuild
