@@ -17,10 +17,9 @@ build:
 after_build:
   - ps: ./buildscripts/afterbuild.ps1
 test_script:
-  - ps: >-
-    ./buildscripts/beforetest.ps1
-    ./buildscripts/test.ps1
-    ./buildscripts/aftertest.ps1
+  - ps: ./buildscripts/beforetest.ps1
+  - ps: ./buildscripts/test.ps1
+  - ps: ./buildscripts/aftertest.ps1
 deploy:
   - provider: NuGet
     api_key:
