@@ -16,9 +16,11 @@ build:
   verbosity: minimal
 after_build:
   - ps: ./buildscripts/afterbuild.ps1
-test_script:
+before_test:
   - ps: ./buildscripts/beforetest.ps1
+test_script:
   - ps: ./buildscripts/test.ps1
+after_test:
   - ps: ./buildscripts/aftertest.ps1
 deploy:
   - provider: NuGet
