@@ -12,6 +12,7 @@ services:
 before_build:
   - ps: ./buildscripts/beforebuild.ps1
 build:
+  project: src/Slp.Evi.Storage/Slp.Evi.Storage.sln
   parallel: true
   verbosity: minimal
 after_build:
