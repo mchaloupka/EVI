@@ -105,7 +105,9 @@ Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
 
   (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
-  |> RestoreMSSolutionPackages id
+  |> RestoreMSSolutionPackages (fun p ->
+    { p with OutputPath = (Common.baseDirectory + "/src/Slp.Evi.Storage/packages") }
+  )
 )
 
 Target.create "Build" (fun _ ->
