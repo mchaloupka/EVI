@@ -11,6 +11,7 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.BuildServer
 open System
+open System.IO
 
 BuildServer.install [
   AppVeyor.Installer
@@ -18,7 +19,8 @@ BuildServer.install [
 
 // Common stuff for the build
 module Common =
-  let baseDirectory = __SOURCE_DIRECTORY__
+  let private scriptDirectory = __SOURCE_DIRECTORY__
+  let baseDirectory = Directory.GetParent scriptDirectory
 
 // Logic related to build version retrieval
 module VersionLogic =
