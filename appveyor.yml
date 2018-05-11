@@ -11,10 +11,8 @@ services:
   - mssql2014
 before_build:
   - ps: ./buildscripts/beforebuild.ps1
-build:
-  project: src/Slp.Evi.Storage/Slp.Evi.Storage.sln
-  parallel: true
-  verbosity: minimal
+build_script:
+  - ps: ./build/fake.cmd build
 after_build:
   - ps: ./buildscripts/afterbuild.ps1
 before_test:

@@ -5,7 +5,7 @@
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
-    nuget Nuget.CommandLine //"
+    nuget Fake.DotNet.MSBuild //"
 
 open System
 open System.IO
@@ -112,6 +112,19 @@ Target.create "RestorePackages" (fun _ ->
 
 Target.create "Build" (fun _ ->
   Trace.log " --- Building the app --- "
+
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  |> MSBuild.build (fun p ->
+    { p with
+        Verbosity = Some MSBuildVerbosity.Quiet
+        Targets = ["Build"]
+        Properties = 
+          [
+            "Configuration", "Release"
+          ]
+        MaxCpuCount = Some None
+    }
+  )
 )
 
 Target.create "Package" (fun _ ->
