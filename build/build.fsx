@@ -1,4 +1,5 @@
 #r "paket: 
+open System.Web.UI.WebControls
     nuget Fake.Core.Target 
     nuget Fake.Core.Environment
     nuget Fake.IO.FileSystem
@@ -18,6 +19,7 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.BuildServer
 open Fake.DotNet.NuGet.Restore
+open Fake.DotNet.NuGet.NuGet
 open Fake.Windows
 open Fake.Testing
 
@@ -182,8 +184,19 @@ Target.create "EndSonarQube" (fun _ ->
 )
 
 Target.create "Package" (fun _ ->
-  Trace.log " --- Packaging app --- "
-
+  match VersionLogic.version.NugetVersion with
+  | Some version ->
+    Trace.log " --- Packaging app --- "
+    !! (Common.baseDirectory + "/src/**/*.nuspec")
+    |> Seq.iter(fun x ->
+      x
+      |> NuGetPack (fun p ->
+          { p with
+              Version = version
+          }
+        ) 
+    )
+  | None -> Trace.log "Skipping nuget packaging"
 )
 
 Target.create "PublishArtifacts" (fun _ ->
