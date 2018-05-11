@@ -3,47 +3,50 @@
     nuget Fake.Core.Environment
     nuget Fake.IO.FileSystem
     nuget Fake.DotNet.AssemblyInfoFile
-    nuget Fake.BuildServer.AppVeyor //"
+    nuget Fake.BuildServer.AppVeyor
+    nuget Fake.DotNet.Nuget
+    nuget Nuget.CommandLine //"
 
+open System
+open System.IO
+open System.Text.RegularExpressions
 open Fake.Core
 open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.BuildServer
-open System
-open System.IO
-open System.Text.RegularExpressions
+open Fake.DotNet.NuGet.Restore
 
 BuildServer.install [
   AppVeyor.Installer
 ]
 
-// Common stuff for the build
+// *** Common stuff for the build ***
 module Common =
   let private scriptDirectory = __SOURCE_DIRECTORY__
 
-  let baseDirectory = Directory.GetParent scriptDirectory
+  let baseDirectory = (Directory.GetParent scriptDirectory).FullName
 
   let (|Regex|_|) pattern input =
     let m = Regex.Match(input, pattern)
     if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
     else None
 
-// Logic related to build version retrieval
+// *** Logic related to build version retrieval ***
 module VersionLogic =
   type VersionInformation = { Version: string; InformationalVersion: string; NugetVersion: string option }
 
-  let buildNumber =
+  let private buildNumber =
     let b = AppVeyor.Environment.BuildNumber
     if String.IsNullOrEmpty b then "1"
     else b
 
-  let branch =
+  let private branch =
     let b = AppVeyor.Environment.RepoBranch
     if String.IsNullOrEmpty b then "local"
     else b
 
-  let tagVersion =
+  let private tagVersion =
     if AppVeyor.Environment.RepoTag then
       let tag = AppVeyor.Environment.RepoTagName
 
@@ -86,7 +89,7 @@ Target.create "UpdateAssemblyInfo" (fun _ ->
   Trace.log " --- Updating assembly info --- "
   Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
   
-  !! "src/**/AssemblyInfo.cs"
+  !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
   |> Seq.iter(fun asmInfo ->
     let version = VersionLogic.version
     [
@@ -98,8 +101,11 @@ Target.create "UpdateAssemblyInfo" (fun _ ->
   )
 )
 
-Target.create "BeforeBuild" (fun _ ->
-  Trace.log " --- Before build starting --- "
+Target.create "RestorePackages" (fun _ ->
+  Trace.log "--- Restore packages starting ---"
+
+  !! (Common.baseDirectory + "/**/packages.config")
+  |> Seq.iter (RestorePackage id)
 )
 
 Target.create "Build" (fun _ ->
@@ -114,8 +120,12 @@ open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "UpdateAssemblyInfo"
-  ==> "BeforeBuild"
   ==> "Build"
+
+"RestorePackages"
+  ==> "Build"
+
+"Build"
   ==> "Package"
 
 // *** Start Build ***
