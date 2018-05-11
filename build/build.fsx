@@ -5,7 +5,8 @@
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
-    nuget Fake.DotNet.MSBuild //"
+    nuget Fake.DotNet.MSBuild
+    nuget Fake.Windows.Chocolatey //"
 
 open System
 open System.IO
@@ -16,6 +17,7 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.BuildServer
 open Fake.DotNet.NuGet.Restore
+open Fake.Windows
 
 BuildServer.install [
   AppVeyor.Installer
@@ -26,6 +28,11 @@ module Common =
   let private scriptDirectory = __SOURCE_DIRECTORY__
 
   let baseDirectory = (Directory.GetParent scriptDirectory).FullName
+
+  let branch =
+    let b = AppVeyor.Environment.RepoBranch
+    if String.IsNullOrEmpty b then "local"
+    else b
 
   let (|Regex|_|) pattern input =
     let m = Regex.Match(input, pattern)
@@ -41,16 +48,11 @@ module VersionLogic =
     if String.IsNullOrEmpty b then "1"
     else b
 
-  let private branch =
-    let b = AppVeyor.Environment.RepoBranch
-    if String.IsNullOrEmpty b then "local"
-    else b
-
   let private tagVersion =
     if AppVeyor.Environment.RepoTag then
       let tag = AppVeyor.Environment.RepoTagName
 
-      Trace.log (sprintf "This is a tag build (tag: %s, branch: %s, build: %s)" tag branch buildNumber)
+      Trace.log (sprintf "This is a tag build (tag: %s, branch: %s, build: %s)" tag Common.branch buildNumber)
 
       match tag with
       | Common.Regex @"v([0-9]*)\.([0-9]*)\.([0-9]*)" [ major; minor; patch ] -> Some (major, minor, patch, None)
@@ -71,7 +73,7 @@ module VersionLogic =
       { Version = version; InformationalVersion = version; NugetVersion = Some nuget }
     | None ->
       let suffix =
-        match branch with
+        match Common.branch with
         | "develop" -> Some "alpha"
         | "master" -> Some "beta"
         | _ -> None
@@ -88,6 +90,7 @@ module VersionLogic =
 Target.create "UpdateAssemblyInfo" (fun _ ->
   Trace.log " --- Updating assembly info --- "
   Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
+  let copyrightYear = DateTime.Now.Year
   
   !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
   |> Seq.iter(fun asmInfo ->
@@ -96,7 +99,7 @@ Target.create "UpdateAssemblyInfo" (fun _ ->
       AssemblyInfo.Version version.Version
       AssemblyInfo.FileVersion version.Version
       AssemblyInfo.InformationalVersion version.InformationalVersion
-      AssemblyInfo.Copyright (sprintf "Copyright (c) %d" DateTime.Now.Year)
+      AssemblyInfo.Copyright (sprintf "Copyright (c) %d" copyrightYear)
     ] |> AssemblyInfoFile.updateAttributes asmInfo
   )
 )
@@ -127,6 +130,22 @@ Target.create "Build" (fun _ ->
   )
 )
 
+Target.create "InstallDependencies" (fun _ ->
+  Trace.log " --- Installing dependencies --- "
+  let toInstall =
+    match Common.branch with
+    | "local" -> []
+    | "develop" -> 
+      [ 
+        "msbuild-sonarqube-runner"
+        "opencover"
+      ]
+    | _ -> [ "opencover" ]
+  
+  toInstall
+  |> Seq.iter (Choco.install id)
+)
+
 Target.create "Package" (fun _ ->
   Trace.log " --- Packaging app --- "
 )
@@ -138,6 +157,9 @@ open Fake.Core.TargetOperators
   ==> "Build"
 
 "RestorePackages"
+  ==> "Build"
+
+"InstallDependencies"
   ==> "Build"
 
 "Build"
