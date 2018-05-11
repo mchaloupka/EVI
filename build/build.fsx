@@ -173,11 +173,11 @@ Target.create "RunTests" (fun _ ->
 Target.create "EndSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Exiting SonarQube analyzer --- "
-    SonarQube.finish (fun p ->
+    SonarQube.finish (Some (fun p ->
       { p with
           Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
       }
-    )
+    ))
   else Trace.log "SonarQube end skipped (not develop branch)"
 )
 
