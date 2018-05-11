@@ -104,8 +104,8 @@ Target.create "UpdateAssemblyInfo" (fun _ ->
 Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
 
-  !! (Common.baseDirectory + "/**/packages.config")
-  |> Seq.iter (RestorePackage id)
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  |> RestoreMSSolutionPackages id
 )
 
 Target.create "Build" (fun _ ->
