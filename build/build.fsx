@@ -6,7 +6,8 @@
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
     nuget Fake.DotNet.MSBuild
-    nuget Fake.Windows.Chocolatey //"
+    nuget Fake.Windows.Chocolatey
+    nuget Fake.Testing.SonarQube //"
 
 open System
 open System.IO
@@ -18,6 +19,7 @@ open Fake.DotNet
 open Fake.BuildServer
 open Fake.DotNet.NuGet.Restore
 open Fake.Windows
+open Fake.Testing
 
 BuildServer.install [
   AppVeyor.Installer
@@ -146,24 +148,58 @@ Target.create "InstallDependencies" (fun _ ->
   |> Seq.iter (Choco.install id)
 )
 
+Target.create "BeginSonarQube" (fun _ ->
+  if Common.branch = "develop" then
+    Trace.log " --- Starting SonarQube analyzer --- "
+    SonarQube.start (fun p ->
+      { p with
+          Key = "EVI"
+          Settings =
+            [
+              "sonar.host.url=https://sonarcloud.io"
+              ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
+              "sonar.organization=mchaloupka-github"
+              "sonar.cs.opencover.reportsPaths=coverage.xml"
+            ]
+      }
+    )
+  else Trace.log "SonarQube start skipped (not develop branch)"
+)
+
+Target.create "RunTests" (fun _ ->
+  Trace.log " --- Running tests --- "
+)
+
+Target.create "EndSonarQube" (fun _ ->
+  if Common.branch = "develop" then
+    Trace.log " --- Exiting SonarQube analyzer --- "
+    SonarQube.finish (fun p ->
+      { p with
+          Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
+      }
+    )
+  else Trace.log "SonarQube end skipped (not develop branch)"
+)
+
 Target.create "Package" (fun _ ->
   Trace.log " --- Packaging app --- "
+
+)
+
+Target.create "PublishArtifacts" (fun _ ->
+  Trace.log " --- Publishing artifacts --- "
 )
 
 open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
-"UpdateAssemblyInfo"
-  ==> "Build"
-
-"RestorePackages"
-  ==> "Build"
-
 "InstallDependencies"
-  ==> "Build"
-
-"Build"
-  ==> "Package"
+ ==> "UpdateAssemblyInfo" <=> "RestorePackages"
+ ==> "BeginSonarQube"
+ ==> "Build"
+ ==> "EndSonarQube"
+ ==> "Package"
+ ==> "PublishArtifacts"
 
 // *** Start Build ***
 Target.runOrDefault "Package"

@@ -9,8 +9,6 @@ environment:
     secure: TkNT/U61mrXkNbtNjTxKXnBmF3wzp8YcFqAiboRXi8bj61fYHdogm/DxHxIJEtiH
 services: 
   - mssql2014
-before_build:
-  - ps: ./buildscripts/beforebuild.ps1
 build_script:
   - ps: ./build/fake.cmd build
 after_build:
