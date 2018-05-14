@@ -203,8 +203,9 @@ Target.create "Package" (fun _ ->
 
 Target.create "PrepareDatabase" (fun _ ->
   match Common.branch with
-  | "local" -> ()
+  | "local" -> Trace.log "Skipping database preparation "
   | _ ->
+    Trace.log " --- Preparing database --- "
     let sqlInstance = "(local)\\SQL2014";
     let dbName = "R2RMLTestStore";
     let connectionString = sprintf "Server=%s;Database=%s;User ID=sa;Password=Password12!" sqlInstance dbName
@@ -220,7 +221,8 @@ Target.create "PrepareDatabase" (fun _ ->
     |> Seq.iter updateConfig
 
     Trace.log (sprintf "Creating database in %s" sqlInstance)
-    Shell.Exec "sqlcmd" [ "-S"; sqlInstance; "-Q"; (sprintf "\"Use [master]; CREATE DATABASE [%s]\"" dbName) ]
+    let result = Shell.Exec("sqlcmd", sprintf "-S \"%s\" -Q \"USE [master]; CREATE DATABASE [%s]\"" sqlInstance dbName)
+    if result <> 0 then failwith "Database creation failed"
 )
 
 Target.create "PublishArtifacts" (fun _ ->
