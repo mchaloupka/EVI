@@ -1,7 +1,8 @@
 #r "paket: 
-open System.Web.UI.WebControls
     nuget Fake.Core.Target 
     nuget Fake.Core.Environment
+    nuget Fake.Core.Xml
+    nuget Fake.Core.Process
     nuget Fake.IO.FileSystem
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
@@ -12,6 +13,7 @@ open System.Web.UI.WebControls
 
 open System
 open System.IO
+open System.Xml
 open System.Text.RegularExpressions
 open Fake.Core
 open Fake.IO
@@ -199,6 +201,28 @@ Target.create "Package" (fun _ ->
   | None -> Trace.log "Skipping nuget packaging"
 )
 
+Target.create "PrepareDatabase" (fun _ ->
+  match Common.branch with
+  | "local" -> ()
+  | _ ->
+    let sqlInstance = "(local)\\SQL2014";
+    let dbName = "R2RMLTestStore";
+    let connectionString = sprintf "Server=%s;Database=%s;User ID=sa;Password=Password12!" sqlInstance dbName
+
+    let updateConfig file =
+      Trace.log (sprintf "Updating connection string in: %s" file)
+      let doc = new XmlDocument()
+      doc.LoadXml file
+      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" "" doc
+      doc.Save file
+
+    !! (Common.baseDirectory + "/src/**/Slp.Evi.Test.System.dll.config")
+    |> Seq.iter updateConfig
+
+    Trace.log (sprintf "Creating database in %s" sqlInstance)
+    Shell.Exec "sqlcmd" [ "-S"; sqlInstance; "-Q"; (sprintf "\"Use [master]; CREATE DATABASE [%s]\"" dbName) ]
+)
+
 Target.create "PublishArtifacts" (fun _ ->
   Trace.log " --- Publishing artifacts --- "
 )
@@ -210,6 +234,7 @@ open Fake.Core.TargetOperators
  ==> "UpdateAssemblyInfo" <=> "RestorePackages"
  ==> "BeginSonarQube"
  ==> "Build"
+ ==> "PrepareDatabase"
  ==> "EndSonarQube"
  ==> "Package"
  ==> "PublishArtifacts"
