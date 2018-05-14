@@ -197,7 +197,7 @@ Target.create "Package" (fun _ ->
     |> Seq.iter(fun x ->
       NuGetPack (fun p ->
         { p with
-            Version = "0.0.2"
+            Version = version
             WorkingDir = Path.GetDirectoryName(x)
             OutputPath = (Common.baseDirectory + "/nuget")
             SymbolPackage = NugetSymbolPackage.Nuspec
