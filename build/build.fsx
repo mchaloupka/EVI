@@ -212,7 +212,7 @@ Target.create "PrepareDatabase" (fun _ ->
       Trace.log (sprintf "Updating connection string in: %s" file)
       let doc = new XmlDocument()
       doc.Load file
-      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" connectionString doc
+      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" connectionString doc |> ignore
       doc.Save file
 
     !! (Common.baseDirectory + "/src/**/Slp.Evi.Test.System.dll.config")
@@ -233,7 +233,7 @@ Target.create "RunTests" (fun _ ->
     | "local" ->
       Shell.Exec(target, dlls)
     | _ ->
-      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"..\\coverage.xml\"" target dlls Common.baseDirectory)
+      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"..\\coverage.xml\"" target dlls)
   
   if result <> 0 then failwithf "Tests failed (exit code %d)" result
 )
@@ -243,7 +243,7 @@ Target.create "UploadCodeCov" (fun _ ->
   | "local" -> Trace.log "Skipping uploading coverage results"
   | _ ->
     Trace.log " --- Uploading CodeCov --- "  
-    Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash"
+    Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash" |> ignore
     let result = Shell.Exec("bash", sprintf "codecov.sh -f \"coverage.xml\" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
