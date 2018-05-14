@@ -4,6 +4,7 @@
     nuget Fake.Core.Xml
     nuget Fake.Core.Process
     nuget Fake.IO.FileSystem
+    nuget Fake.Net.Http
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
@@ -19,6 +20,7 @@ open Fake.Core
 open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
+open Fake.Net
 open Fake.BuildServer
 open Fake.DotNet.NuGet.Restore
 open Fake.DotNet.NuGet.NuGet
@@ -231,9 +233,19 @@ Target.create "RunTests" (fun _ ->
     | "local" ->
       Shell.Exec(target, dlls)
     | _ ->
-      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"..\\coverage.xml\"" target dlls)
+      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\".\\coverage.xml\"" target dlls)
   
   if result <> 0 then failwithf "Tests failed (exit code %d)" result
+)
+
+Target.create "UploadCodeCov" (fun _ ->
+  match Common.branch with
+  | "local" -> Trace.log "Skipping uploading coverage results"
+  | _ ->
+    Trace.log " --- Uploading CodeCov --- "  
+    Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash"
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f \".\\coverage.xml\" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
 Target.create "PublishArtifacts" (fun _ ->
@@ -250,6 +262,7 @@ open Fake.Core.TargetOperators
  ==> "PrepareDatabase"
  ==> "RunTests"
  ==> "EndSonarQube"
+ ==> "UploadCodeCov"
  ==> "Package"
  ==> "PublishArtifacts"
 
