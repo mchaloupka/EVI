@@ -213,8 +213,8 @@ Target.create "PrepareDatabase" (fun _ ->
     let updateConfig file =
       Trace.log (sprintf "Updating connection string in: %s" file)
       let doc = new XmlDocument()
-      doc.LoadXml file
-      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" "" doc
+      doc.Load file
+      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" connectionString doc
       doc.Save file
 
     !! (Common.baseDirectory + "/src/**/Slp.Evi.Test.System.dll.config")
