@@ -231,7 +231,7 @@ Target.create "RunTests" (fun _ ->
     | "local" ->
       Shell.Exec(target, dlls)
     | _ ->
-      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\".\\coverage.xml\"" target dlls)
+      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"..\\coverage.xml\"" target dlls)
   
   if result <> 0 then failwithf "Tests failed (exit code %d)" result
 )
