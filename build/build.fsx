@@ -168,6 +168,7 @@ Target.create "BeginSonarQube" (fun _ ->
               "sonar.organization=mchaloupka-github"
               "sonar.cs.opencover.reportsPaths=..\\coverage.xml"
             ]
+          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\msbuild-sonarqube-runner\\tools\\MSBuild.SonarQube.Runner.exe"
       }
     )
   else Trace.log "SonarQube start skipped (not develop branch)"
@@ -179,6 +180,7 @@ Target.create "EndSonarQube" (fun _ ->
     SonarQube.finish (Some (fun p ->
       { p with
           Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
+          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\msbuild-sonarqube-runner\\tools\\MSBuild.SonarQube.Runner.exe"
       }
     ))
   else Trace.log "SonarQube end skipped (not develop branch)"
