@@ -200,6 +200,7 @@ Target.create "Package" (fun _ ->
             Version = "0.0.2"
             WorkingDir = Path.GetDirectoryName(x)
             OutputPath = (Common.baseDirectory + "/nuget")
+            SymbolPackage = NugetSymbolPackage.Nuspec
         }
       ) x
     )
