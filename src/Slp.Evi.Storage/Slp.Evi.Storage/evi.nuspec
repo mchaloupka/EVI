@@ -3,10 +3,10 @@
   <metadata>
     <id>slp.evi</id>
     <title>EVI</title>
-    <version>0.0.1.1</version>
+    <version>0.0.1</version>
     <authors>Miloš Chaloupka</authors>
     <owners>Miloš Chaloupka</owners>
-    <projectUrl>https://github.com/mchaloupka/DotNetR2RMLStore</projectUrl>
+    <projectUrl>https://github.com/mchaloupka/EVI</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</description>
     <copyright>Copyright 2016 Miloš Chaloupka</copyright>

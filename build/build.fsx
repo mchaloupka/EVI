@@ -190,14 +190,18 @@ Target.create "Package" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log " --- Packaging app --- "
+
+    DirectoryInfo.ensure (DirectoryInfo.ofPath (Common.baseDirectory + "/nuget"))
+
     !! (Common.baseDirectory + "/src/**/*.nuspec")
     |> Seq.iter(fun x ->
-      x
-      |> NuGetPack (fun p ->
-          { p with
-              Version = version
-          }
-        )
+      NuGetPack (fun p ->
+        { p with
+            Version = "0.0.2"
+            WorkingDir = Path.GetDirectoryName(x)
+            OutputPath = (Common.baseDirectory + "/nuget")
+        }
+      ) x
     )
   | None -> Trace.log "Skipping nuget packaging"
 )
@@ -255,8 +259,7 @@ Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log " --- Publishing artifacts --- "
-    !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
-    !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
     [
       "Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
