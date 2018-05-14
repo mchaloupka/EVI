@@ -165,7 +165,7 @@ Target.create "BeginSonarQube" (fun _ ->
               "sonar.host.url=https://sonarcloud.io"
               ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
               "sonar.organization=mchaloupka-github"
-              "sonar.cs.opencover.reportsPaths=coverage.xml"
+              "sonar.cs.opencover.reportsPaths=..\\coverage.xml"
             ]
       }
     )
@@ -244,7 +244,7 @@ Target.create "UploadCodeCov" (fun _ ->
   | _ ->
     Trace.log " --- Uploading CodeCov --- "  
     Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash"
-    let result = Shell.Exec("bash", sprintf "codecov.sh -f \"coverage.xml\" -t %s" Common.baseDirectory (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f \"coverage.xml\" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
