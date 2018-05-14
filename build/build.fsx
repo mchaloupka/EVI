@@ -170,10 +170,6 @@ Target.create "BeginSonarQube" (fun _ ->
   else Trace.log "SonarQube start skipped (not develop branch)"
 )
 
-Target.create "RunTests" (fun _ ->
-  Trace.log " --- Running tests --- "
-)
-
 Target.create "EndSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Exiting SonarQube analyzer --- "
@@ -226,8 +222,9 @@ Target.create "PrepareDatabase" (fun _ ->
 )
 
 Target.create "RunTests" (fun _ ->
+  Trace.log " --- Running tests --- "  
   let target = "vstest.console.exe"
-  let dlls = !! (Common.baseDirectory + "/src/**/*.Test.*.dll") |> Seq.fold (fun r s -> r + " " + s) ""
+  let dlls = !! (Common.baseDirectory + "/src/**/bin/Release/*.Test.*.dll") |> Seq.fold (fun r s -> r + " " + s) ""
   
   let result =
     match Common.branch with
@@ -236,7 +233,7 @@ Target.create "RunTests" (fun _ ->
     | _ ->
       Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\".\\coverage.xml\"" target dlls)
   
-  if result <> 0 then failWithf "Tests failed (exit code %d)" result
+  if result <> 0 then failwithf "Tests failed (exit code %d)" result
 )
 
 Target.create "PublishArtifacts" (fun _ ->
