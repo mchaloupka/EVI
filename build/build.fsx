@@ -249,7 +249,17 @@ Target.create "UploadCodeCov" (fun _ ->
 )
 
 Target.create "PublishArtifacts" (fun _ ->
-  Trace.log " --- Publishing artifacts --- "
+  match VersionLogic.version.NugetVersion with
+  | Some version ->
+    Trace.log " --- Publishing artifacts --- "
+    !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+
+    !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
+    |> Zip.createZip (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release") (sprintf "Binaries-%s.zip" version) 9 false
+
+    !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+  | None -> Trace.log "Skipping artifacts publishing"
 )
 
 open Fake.Core.TargetOperators
