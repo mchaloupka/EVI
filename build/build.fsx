@@ -4,6 +4,7 @@
     nuget Fake.Core.Xml
     nuget Fake.Core.Process
     nuget Fake.IO.FileSystem
+    nuget Fake.IO.Zip
     nuget Fake.Net.Http
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
@@ -255,8 +256,11 @@ Target.create "PublishArtifacts" (fun _ ->
     !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
     !! (Common.baseDirectory + "/src/**/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
-    !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
-    |> Zip.createZip (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release") (sprintf "Binaries-%s.zip" version) 9 false
+    [
+      "Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
+      "Tests/System/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/Release/*")
+      "Tests/Unit/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.Unit/bin/Release/*")
+    ] |> Zip.zipOfIncludes (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
 
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
   | None -> Trace.log "Skipping artifacts publishing"
@@ -277,4 +281,4 @@ open Fake.Core.TargetOperators
  ==> "PublishArtifacts"
 
 // *** Start Build ***
-Target.runOrDefault "Package"
+Target.runOrDefault "PublishArtifacts"
