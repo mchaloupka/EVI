@@ -225,6 +225,20 @@ Target.create "PrepareDatabase" (fun _ ->
     if result <> 0 then failwith "Database creation failed"
 )
 
+Target.create "RunTests" (fun _ ->
+  let target = "vstest.console.exe"
+  let dlls = !! (Common.baseDirectory + "/src/**/*.Test.*.dll") |> Seq.fold (fun r s -> r + " " + s) ""
+  
+  let result =
+    match Common.branch with
+    | "local" ->
+      Shell.Exec(target, dlls)
+    | _ ->
+      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\".\\coverage.xml\"" target dlls)
+  
+  if result <> 0 then failWithf "Tests failed (exit code %d)" result
+)
+
 Target.create "PublishArtifacts" (fun _ ->
   Trace.log " --- Publishing artifacts --- "
 )
@@ -237,6 +251,7 @@ open Fake.Core.TargetOperators
  ==> "BeginSonarQube"
  ==> "Build"
  ==> "PrepareDatabase"
+ ==> "RunTests"
  ==> "EndSonarQube"
  ==> "Package"
  ==> "PublishArtifacts"
