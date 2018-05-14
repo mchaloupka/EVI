@@ -11,6 +11,7 @@ services:
   - mssql2014
 build_script:
   - ps: ./build/fake.cmd build
+test: off
 after_test:
   - ps: ./buildscripts/aftertest.ps1
 deploy:
