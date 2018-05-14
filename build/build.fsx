@@ -197,7 +197,7 @@ Target.create "Package" (fun _ ->
           { p with
               Version = version
           }
-        ) 
+        )
     )
   | None -> Trace.log "Skipping nuget packaging"
 )
