@@ -276,6 +276,7 @@ Target.create "PublishArtifacts" (fun _ ->
           Project = "slp.evi"
           Version = version
           OutputPath = Common.baseDirectory + "/nuget"
+          WorkingDir = Common.baseDirectory + "/nuget"
       })
   | None -> Trace.log "Skipping artifacts publishing"
 )
