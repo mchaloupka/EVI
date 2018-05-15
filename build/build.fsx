@@ -197,6 +197,7 @@ Target.create "Package" (fun _ ->
     |> Seq.iter(fun x ->
       NuGetPack (fun p ->
         { p with
+            Project = "slp.evi"
             Version = version
             WorkingDir = Path.GetDirectoryName(x)
             OutputPath = (Common.baseDirectory + "/nuget")
@@ -260,8 +261,6 @@ Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log " --- Publishing artifacts --- "
-    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
-
     [
       "Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
       "Tests/System/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/Release/*")
@@ -269,6 +268,17 @@ Target.create "PublishArtifacts" (fun _ ->
     ] |> Zip.zipOfIncludes (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
 
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+
+    NugetPublish (fun p ->
+      { p with
+          AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+          Project = "slp.evi"
+          Version = version
+          OutputPath = Common.baseDirectory + "/nuget"
+      })
+      
+    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> NugetPublish Trace.publish ImportData.BuildArtifact f)
+
   | None -> Trace.log "Skipping artifacts publishing"
 )
 
