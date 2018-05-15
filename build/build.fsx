@@ -268,6 +268,7 @@ Target.create "PublishArtifacts" (fun _ ->
     ] |> Zip.zipOfIncludes (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
 
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
     NuGetPublish (fun p ->
       { p with
@@ -276,9 +277,6 @@ Target.create "PublishArtifacts" (fun _ ->
           Version = version
           OutputPath = Common.baseDirectory + "/nuget"
       })
-
-    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> NugetPublish Trace.publish ImportData.BuildArtifact f)
-
   | None -> Trace.log "Skipping artifacts publishing"
 )
 
