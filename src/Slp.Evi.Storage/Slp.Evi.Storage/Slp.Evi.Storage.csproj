@@ -1,7 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <RootNamespace>Slp.Evi.Storage</RootNamespace>
+    <AssemblyName>Slp.Evi.Storage</AssemblyName>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <Authors>Miloš Chaloupka</Authors>
+    <Product>EVI</Product>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DatabaseSchemaReader" Version="2.5.1" />
+    <PackageReference Include="dotNetRDF" Version="2.0.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="2.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
+  </ItemGroup>
 
 </Project>
