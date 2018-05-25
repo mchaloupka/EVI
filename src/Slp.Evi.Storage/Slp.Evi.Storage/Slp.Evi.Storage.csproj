@@ -12,12 +12,18 @@
     <Product>EVI</Product>
   </PropertyGroup>
 
+  <!-- Hack to get local nuget working -->
+  <PropertyGroup>
+    <RestoreSources>$(RestoreSources);../localnugets</RestoreSources>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DatabaseSchemaReader" Version="2.5.1" />
     <PackageReference Include="dotNetRDF" Version="2.0.1" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.7.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
+    <PackageReference Include="TCode.r2rml4net" Version="0.5.0-vs2017-0001" />
   </ItemGroup>
 
 </Project>
