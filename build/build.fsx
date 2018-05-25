@@ -15,6 +15,10 @@
     nuget Fake.Windows.Chocolatey
     nuget Fake.Testing.SonarQube //"
 
+#if !FAKE
+#load ".fake/build.fsx/intellisense.fsx"
+#endif
+
 open System
 open System.IO
 open System.Xml
