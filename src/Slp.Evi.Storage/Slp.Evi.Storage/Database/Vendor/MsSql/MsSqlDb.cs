@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
@@ -63,7 +64,11 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
             sqlConnection.Open();
 
             var reader = command.ExecuteReader();
-            return new DataReaderWrapper(this, reader, () => sqlConnection.State == ConnectionState.Open, () => sqlConnection.Close());
+            return new DataReaderWrapper(this, reader, () => sqlConnection.State == ConnectionState.Open, () =>
+            {
+                sqlConnection.Close();
+                sqlConnection.Dispose();
+            });
         }
 
         /// <summary>
@@ -258,6 +263,12 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
 
                 return new DataType("nvarchar(MAX)", "System.String");
             }
+        }
+
+        /// <inheritdoc />
+        public override DbConnection CreateConnection()
+        {
+            return new SqlConnection(ConnectionString);
         }
     }
 }

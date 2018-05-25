@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Query;
@@ -53,13 +54,13 @@ namespace Slp.Evi.Storage.Database.Base
         /// Gets the connection string.
         /// </summary>
         /// <value>The connection string.</value>
-        public string ConnectionString { get; }
+        protected string ConnectionString { get; }
 
         /// <summary>
         /// Gets the type of the SQL connection.
         /// </summary>
         /// <value>The type of the SQL.</value>
-        public SqlType SqlType { get; }
+        protected SqlType SqlType { get; }
 
         /// <summary>
         /// Gets the unquoted table name.
@@ -111,5 +112,8 @@ namespace Slp.Evi.Storage.Database.Base
         /// <inheritdoc />
         public abstract DataType GetCommonTypeForTwoColumns(DataType leftDataType, DataType rightDataType, out string neededCastLeft,
             out string neededCastRight);
+
+        /// <inheritdoc />
+        public abstract DbConnection CreateConnection();
     }
 }

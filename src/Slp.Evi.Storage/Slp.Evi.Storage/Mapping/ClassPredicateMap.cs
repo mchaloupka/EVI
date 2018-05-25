@@ -90,6 +90,9 @@ namespace Slp.Evi.Storage.Mapping
         /// <value>The base URI.</value>
         public Uri BaseUri { get; }
 
+        /// <inheritdoc />
+        public ITriplesMap TriplesMap => null;
+
         /// <summary>
         /// The node representing this <see cref="T:TCode.r2rml4net.Mapping.IMapBase" />
         /// </summary>

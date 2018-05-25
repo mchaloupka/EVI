@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Database;
@@ -33,12 +34,17 @@ namespace Slp.Evi.Storage.DBSchema
         /// </summary>
         private void ReadDatabaseSchema()
         {
-            var dbReader = new DatabaseReader(_db.ConnectionString, _db.SqlType);
-            var schema = dbReader.ReadAll();
-
-            foreach (var table in schema.Tables)
+            using (var connection = _db.CreateConnection())
+            using (var dbReader = new DatabaseReader(connection))
             {
-                _tableCache.Add(table.Name, table);
+                var schema = dbReader.ReadAll();
+
+                foreach (var table in schema.Tables)
+                {
+                    _tableCache.Add(table.Name, table);
+                }
+
+                connection.Close();
             }
         }
 

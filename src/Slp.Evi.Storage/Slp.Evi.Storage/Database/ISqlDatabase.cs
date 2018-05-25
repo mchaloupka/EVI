@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
@@ -24,16 +25,6 @@ namespace Slp.Evi.Storage.Database
         /// <param name="query">The query.</param>
         /// <returns>The query result reader.</returns>
         IQueryResultReader ExecuteQuery(string query);
-
-        /// <summary>
-        /// Gets the connection string.
-        /// </summary>
-        string ConnectionString { get; }
-
-        /// <summary>
-        /// Gets the type of the SQL connection.
-        /// </summary>
-        SqlType SqlType { get; }
 
         /// <summary>
         /// Gets the unquoted table name.
@@ -87,5 +78,10 @@ namespace Slp.Evi.Storage.Database
         /// Gets the nearest type these two types could be casted to for operations.
         /// </summary>
         DataType GetCommonTypeForTwoColumns(DataType leftDataType, DataType rightDataType, out string neededCastLeft, out string neededCastRight);
+
+        /// <summary>
+        /// Creates the connection to the database.
+        /// </summary>
+        DbConnection CreateConnection();
     }
 }
