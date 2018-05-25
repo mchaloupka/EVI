@@ -99,7 +99,8 @@ module VersionLogic =
 Target.create "UpdateAssemblyInfo" (fun _ ->
   Trace.log " --- Updating assembly info --- "
   Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
-  let copyrightYear = DateTime.Now.Year
+  let date = DateTime.Now
+  let copyrightYear = date.Year
   
   !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
   |> Seq.iter(fun asmInfo ->
