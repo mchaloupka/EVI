@@ -260,7 +260,7 @@ Target.create "PrepareDatabase" (fun _ ->
       let newContent = Newtonsoft.Json.JsonConvert.SerializeObject contentObj
       File.WriteAllText(file, newContent)
 
-    !! (Common.baseDirectory + "/src/**/bin/**/database.json")
+    !! (Common.baseDirectory + "/src/**/database.json")
     |> Seq.iter updateConfig
 
     Trace.log (sprintf "Creating database in %s" sqlInstance)
