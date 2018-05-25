@@ -19,7 +19,7 @@ namespace Slp.Evi.Storage.Utils
         /// </summary>
         public static Func<string, DataType> GetTypeResolver(this ITermMap termMap, IQueryContext context)
         {
-            var triplesMap = termMap.GetTriplesMapConfiguration();
+            var triplesMap = termMap.TriplesMap;
 
             if (triplesMap == null)
             {

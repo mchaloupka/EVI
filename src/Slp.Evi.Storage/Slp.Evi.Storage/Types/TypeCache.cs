@@ -189,7 +189,7 @@ namespace Slp.Evi.Storage.Types
                 else if (objectMap.IsColumnValued)
                 {
                     var columnName = objectMap.ColumnName;
-                    var triplesMap = objectMap.GetTriplesMapConfiguration();
+                    var triplesMap = objectMap.TriplesMap;
                     var tableName = _cache.GetSqlTable(triplesMap);
 
                     if (tableName != null)
