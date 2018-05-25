@@ -27,4 +27,119 @@
     <PackageReference Include="TCode.r2rml4net" Version="0.5.0-vs2017-0001" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Relational\Builder\CodeGeneration\BaseRelationalBuilder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseRelationalBuilder.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseAssignmentConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseExpressionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseFilterConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseRelationalOptimizerImplementation.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseSourceConditionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Relational\Utils\CodeGeneration\BaseSourceTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseSourceTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseGraphPatternTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseModifierTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseSparqlExpressionTransformerG.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BaseSparqlOptimizerImplementation.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Relational\Builder\CodeGeneration\BaseRelationalBuilder.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalBuilder.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseAssignmentConditionTransformerG.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseAssignmentConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseExpressionTransformerG.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseExpressionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseFilterConditionTransformerG.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseFilterConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseRelationalOptimizerImplementation.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseRelationalOptimizerImplementation.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseSourceConditionTransformerG.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSourceConditionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Relational\Utils\CodeGeneration\BaseSourceTransformerG.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSourceTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Sparql\Utils\CodeGeneration\BaseGraphPatternTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseGraphPatternTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Sparql\Utils\CodeGeneration\BaseModifierTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseModifierTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Sparql\Utils\CodeGeneration\BaseSparqlExpressionTransformerG.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSparqlExpressionTransformerG.cs</LastGenOutput>
+    </None>
+    <None Update="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BaseSparqlOptimizerImplementation.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>
