@@ -1,27 +1,20 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 {
-    [TestClass]
     public class ConcatenationInEqualConditionTest
         : BaseOptimizerTest<object>
     {
-        private ConcatenationInEqualConditionOptimizer _optimizer;
+        private ConcatenationInEqualConditionOptimizer _optimizer = new ConcatenationInEqualConditionOptimizer(NullLogger<ConcatenationInEqualConditionOptimizer>.Instance);
 
-        [TestInitialize]
-        public void TestInitialization()
-        {
-            _optimizer = new ConcatenationInEqualConditionOptimizer(NullLogger<ConcatenationInEqualConditionOptimizer>.Instance);
-        }
-
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstEscaped_Prefix()
         {
             var queryContext = GenerateQueryContext();
@@ -47,7 +40,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstEscaped_Suffix()
         {
             var queryContext = GenerateQueryContext();
@@ -72,7 +65,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstEscaped_Both()
         {
             var queryContext = GenerateQueryContext();
@@ -98,7 +91,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstEscaped_TwoColumns()
         {
             var queryContext = GenerateQueryContext();
@@ -133,7 +126,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstNotEscaped_Prefix()
         {
             var queryContext = GenerateQueryContext();
@@ -158,7 +151,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstNotEscaped_Suffix()
         {
             var queryContext = GenerateQueryContext();
@@ -183,7 +176,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstNotEscaped_Both()
         {
             var queryContext = GenerateQueryContext();
@@ -209,7 +202,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConcatenationToConstNotEscaped_TwoColumns()
         {
             var queryContext = GenerateQueryContext();

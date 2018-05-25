@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -8,22 +7,16 @@ using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using Slp.Evi.Storage.Types;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
 {
-    [TestClass]
     public class UnionJoinOptimizerTest
         : BaseOptimizerTest
     {
-        private UnionJoinOptimizer.UnionJoinOptimizerImplementation _optimizerImplementation;
+        private readonly UnionJoinOptimizer.UnionJoinOptimizerImplementation _optimizerImplementation = new UnionJoinOptimizer.UnionJoinOptimizerImplementation();
 
-        [TestInitialize]
-        public void TestInitialization()
-        {
-            _optimizerImplementation = new UnionJoinOptimizer.UnionJoinOptimizerImplementation();
-        }
-
-        [TestMethod]
+        [Fact]
         public void JoinOfUnionToUnionOfJoins()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
@@ -56,7 +49,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             return queryContext;
         }
 
-        [TestMethod]
+        [Fact]
         public void JoinOfUnionToJoin()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
@@ -77,7 +70,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             AssertPatternsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void JoinOfUnionToUnionOfJoin()
         {
             var p1 = CreateTemplatedRestrictedTriplePattern("v1", "p1", "v3", "http://test.com/{id}", "http://test.com/{id}", "http://test.com/{id}");
@@ -104,8 +97,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             AssertPatternsEqual(expected, result);
         }
 
-        [TestMethod]
-        [Ignore]
+        [Fact(Skip="The test is not yet implemented")]
         public void TestMatchVariants()
         {
             throw new NotImplementedException();

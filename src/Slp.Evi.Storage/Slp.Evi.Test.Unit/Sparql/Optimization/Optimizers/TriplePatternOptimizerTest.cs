@@ -1,29 +1,21 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using Slp.Evi.Storage.Types;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
 {
-    [TestClass]
     public class TriplePatternOptimizerTest
         : BaseOptimizerTest
     {
-        private TriplePatternOptimizer.TriplePatternOptimizerImplementation _optimizerImplementation;
-        private Mock<IQueryContext> _queryContext;
+        private TriplePatternOptimizer.TriplePatternOptimizerImplementation _optimizerImplementation = new TriplePatternOptimizer.TriplePatternOptimizerImplementation();
+        private Mock<IQueryContext> _queryContext = new Mock<IQueryContext>();
 
-        [TestInitialize]
-        public void TestInitialization()
-        {
-            _optimizerImplementation = new TriplePatternOptimizer.TriplePatternOptimizerImplementation();
-            _queryContext = new Mock<IQueryContext>();
-        }
-
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_Match()
         {
             var node = new Mock<IUriNode>();
@@ -35,10 +27,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsTrue(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.True(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_NoMatch_DifferentSuffix()
         {
             var node = new Mock<IUriNode>();
@@ -50,7 +42,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
         private static Mock<ITermType> GetUriType()
@@ -69,7 +61,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             return uriType;
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_NoMatch_DifferentUri()
         {
             var node = new Mock<IUriNode>();
@@ -81,10 +73,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_NoMatch_NotUri()
         {
             var node = new Mock<IUriNode>();
@@ -97,10 +89,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_Match_Object()
         {
             var node = new Mock<IUriNode>();
@@ -112,10 +104,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsTrue(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.True(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Uri_NoMatch_ObjectDifferentUri()
         {
             var node = new Mock<IUriNode>();
@@ -127,10 +119,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new IRIValueType(), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Literal_Match()
         {
             var node = new Mock<ILiteralNode>();
@@ -143,10 +135,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);
 
-            Assert.IsTrue(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
+            Assert.True(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Literal_NoMatch_NotLiteral()
         {
             var node = new Mock<ILiteralNode>();
@@ -158,10 +150,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Literal_NoMatch_UriMap()
         {
             var node = new Mock<ILiteralNode>();
@@ -173,10 +165,10 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
         }
 
-        [TestMethod]
+        [Fact]
         public void MatchConstantMap_Literal_NoMatch_Different()
         {
             var node = new Mock<ILiteralNode>();
@@ -189,14 +181,13 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);
 
-            Assert.IsFalse(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
+            Assert.False(_optimizerImplementation.CanMatch(node.Object, map.Object, new LiteralValueType(null, null), _queryContext.Object));
         }
 
-        [TestMethod]
-        [Ignore]
+        [Fact(Skip = "The test is not yet implemented")]
         public void MatchPatternMap()
         {
-            Assert.IsTrue(false);
+            Assert.True(false);
         }
     }
 }

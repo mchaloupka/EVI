@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using DatabaseSchemaReader.DataSchema;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
@@ -16,6 +15,7 @@ using Slp.Evi.Test.Unit.Mocks;
 using Slp.Evi.Test.Unit.Relational.Utilities;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Relational.PostProcess
 {
@@ -25,7 +25,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
         {
             var equalityAssert = new SqlAlgebraEqualityChecker();
             var checkResult = expected.Accept(equalityAssert, actual);
-            Assert.IsTrue((bool)checkResult, "The conditions are not equal");
+            Assert.True((bool)checkResult, "The conditions are not equal");
         }
 
         protected virtual ISqlDatabase GetDb()

@@ -1,26 +1,19 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
 {
-    [TestClass]
     public class CaseExpressionToConditionOptimizerTest
         : BaseOptimizerTest<object>
     {
-        private CaseExpressionToConditionOptimizer _optimizer;
+        private readonly CaseExpressionToConditionOptimizer _optimizer = new CaseExpressionToConditionOptimizer(NullLogger<CaseExpressionToConditionOptimizer>.Instance);
 
-        [TestInitialize]
-        public void TestInitialization()
-        {
-            _optimizer = new CaseExpressionToConditionOptimizer(NullLogger<CaseExpressionToConditionOptimizer>.Instance);
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestNoChange()
         {
             var queryContext = GenerateQueryContext();
@@ -33,7 +26,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(condition, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestLeftCase()
         {
             var queryContext = GenerateQueryContext();
@@ -75,7 +68,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestRightCase()
         {
             var queryContext = GenerateQueryContext();
@@ -117,7 +110,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess.Optimizers
             AssertFilterConditionsEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestNestedLeftCase()
         {
             var queryContext = GenerateQueryContext();

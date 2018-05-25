@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Slp.Evi.Storage.Bootstrap;
+﻿using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using Xunit;
 
 namespace Slp.Evi.Test.Unit.Sparql.Optimization
 {
@@ -17,7 +17,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization
 
         protected void AssertPatternsEqual(IGraphPattern expected, IGraphPattern result)
         {
-            Assert.IsTrue(ArePattersEqual(expected, result));
+            Assert.True(ArePattersEqual(expected, result));
         }
 
         private bool ArePattersEqual(IGraphPattern left, IGraphPattern right)
