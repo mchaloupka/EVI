@@ -165,15 +165,20 @@ Target.create "Build" (fun _ ->
 
 Target.create "InstallDependencies" (fun _ ->
   Trace.log " --- Installing dependencies --- "
+  match Common.branch with
+  | "local" -> ()
+  | _ ->
+    let zipLocation = Common.baseDirectory + "/build/opencover.zip"
+    Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
+    Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
+
   let toInstall =
     match Common.branch with
-    | "local" -> []
     | "develop" ->
       [
         "msbuild-sonarqube-runner"
-        "opencover"
       ]
-    | _ -> [ "opencover" ]
+    | _ -> []
 
   toInstall
   |> Seq.iter (Choco.install id)
@@ -262,8 +267,9 @@ Target.create "RunTests" (fun _ ->
     match Common.branch with
     | "local" -> proj |> DotNet.test id
     | _ ->  
-      Shell.Exec("OpenCover.Console.exe", "-version") |> ignore  
-      let result = Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:dotnet -targetargs:\"test %s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+      let console = Common.baseDirectory + "/build/opencover/OpenCover.Console.exe"
+      Shell.Exec(console, "-version") |> ignore
+      let result = Shell.Exec(console, sprintf "-register:user -returntargetcode -target:dotnet -targetargs:\"test %s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
       if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
 
