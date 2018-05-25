@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
 </Project>

@@ -1,14 +1,26 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage;
+using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.Storage.Database;
+using Xunit;
 
 namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 {
     public abstract class TestSuite
-        : BaseSPARQLTestSuite
+        : BaseSparqlTestSuite
     {
-        [TestMethod]
+        private readonly BaseSparqlFixture _fixture;
+
+        protected TestSuite(BaseSparqlFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
+        [Fact]
         public void Simple_single()
         {
             var storage = GetStorage("simple.xml");
@@ -20,7 +32,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_join()
         {
             var storage = GetStorage("simple.xml");
@@ -32,7 +44,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_union()
         {
             var storage = GetStorage("simple.xml");
@@ -44,7 +56,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_empty()
         {
             var storage = GetStorage("simple.xml");
@@ -56,7 +68,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_null()
         {
             var storage = GetStorage("simple.xml");
@@ -68,7 +80,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_optional()
         {
             var storage = GetStorage("simple.xml");
@@ -80,7 +92,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_bind()
         {
             var storage = GetStorage("simple.xml");
@@ -92,7 +104,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_nested_optional()
         {
             var storage = GetStorage("simple.xml");
@@ -104,7 +116,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_nested_filter()
         {
             var storage = GetStorage("simple.xml");
@@ -116,7 +128,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_distinct()
         {
             var storage = GetStorage("simple.xml");
@@ -129,7 +141,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_bound()
         {
             var storage = GetStorage("simple.xml");
@@ -141,7 +153,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_not_bound()
         {
             var storage = GetStorage("simple.xml");
@@ -153,7 +165,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_gt()
         {
             var storage = GetStorage("simple.xml");
@@ -165,7 +177,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_ge()
         {
             var storage = GetStorage("simple.xml");
@@ -177,7 +189,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_lt()
         {
             var storage = GetStorage("simple.xml");
@@ -189,7 +201,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_le()
         {
             var storage = GetStorage("simple.xml");
@@ -201,7 +213,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_eq()
         {
             var storage = GetStorage("simple.xml");
@@ -213,7 +225,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_comparison_neq()
         {
             var storage = GetStorage("simple.xml");
@@ -225,7 +237,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_disjunction()
         {
             var storage = GetStorage("simple.xml");
@@ -237,7 +249,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Filter_conjunction()
         {
             var storage = GetStorage("simple.xml");
@@ -250,7 +262,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_int()
         {
             var storage = GetStorage("simple.xml");
@@ -262,7 +274,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_double()
         {
             var storage = GetStorage("simple.xml");
@@ -274,7 +286,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_type_equal()
         {
             var storage = GetStorage("simple.xml");
@@ -286,7 +298,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_type_comp_eq()
         {
             var storage = GetStorage("simple.xml");
@@ -298,7 +310,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_type_comp_eq2()
         {
             var storage = GetStorage("simple.xml");
@@ -310,7 +322,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_type_comp_gt()
         {
             var storage = GetStorage("simple.xml");
@@ -322,7 +334,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Simple_Type_type_join_different()
         {
             var storage = GetStorage("simple.xml");
@@ -335,7 +347,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Students_no_result()
         {
             var storage = GetStorage("students.xml");
@@ -347,7 +359,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names()
         {
             var storage = GetStorage("students.xml");
@@ -360,7 +372,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names_order()
         {
             var storage = GetStorage("students.xml");
@@ -372,7 +384,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names_order_desc()
         {
             var storage = GetStorage("students.xml");
@@ -384,7 +396,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names_order_limit()
         {
             var storage = GetStorage("students.xml");
@@ -396,7 +408,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names_order_offset()
         {
             var storage = GetStorage("students.xml");
@@ -408,7 +420,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Students_student_names_order_offset_limit()
         {
             var storage = GetStorage("students.xml");
@@ -421,7 +433,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_ProductType_OrderBy()
         {
             var storage = GetStorage("bsbm.xml");
@@ -433,7 +445,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_01()
         {
             var storage = GetStorage("bsbm.xml");
@@ -445,7 +457,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_02()
         {
             var storage = GetStorage("bsbm.xml");
@@ -457,7 +469,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_03()
         {
             var storage = GetStorage("bsbm.xml");
@@ -469,7 +481,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_04()
         {
             var storage = GetStorage("bsbm.xml");
@@ -481,7 +493,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_05()
         {
             var storage = GetStorage("bsbm.xml");
@@ -493,7 +505,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_06()
         {
             var storage = GetStorage("bsbm.xml");
@@ -505,7 +517,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_07()
         {
             var storage = GetStorage("bsbm.xml");
@@ -517,7 +529,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_08()
         {
             var storage = GetStorage("bsbm.xml");
@@ -529,17 +541,17 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_09()
         {
             var storage = GetStorage("bsbm.xml");
             var queryFile = @"Data\Bsbm\Query_09.rq";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_10()
         {
             var storage = GetStorage("bsbm.xml");
@@ -551,7 +563,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_11()
         {
             var storage = GetStorage("bsbm.xml");
@@ -563,22 +575,25 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
             AssertBagEqual(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Bsbm_Query_12()
         {
             var storage = GetStorage("bsbm.xml");
             var queryFile = @"Data\Bsbm\Query_12.rq";
             var query = GetQuery(queryFile);
             var result = storage.Query(query);
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
         }
 
 
-        protected abstract EviQueryableStorage GetStorage(string storageName);
+        private EviQueryableStorage GetStorage(string storageName)
+        {
+            return _fixture.GetStorage(storageName);
+        }
 
         private XDocument GetExpected(string resultFile)
         {
-            var doc = XDocument.Load(GetPath(resultFile));
+            var doc = XDocument.Load(SparqlTestHelpers.GetPath(resultFile));
             return doc;
         }
 
@@ -586,7 +601,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
         {
             var query = string.Empty;
 
-            using (var fsr = new FileStream(GetPath(queryFile), FileMode.Open, FileAccess.Read))
+            using (var fsr = new FileStream(SparqlTestHelpers.GetPath(queryFile), FileMode.Open, FileAccess.Read))
             using (var sr = new StreamReader(fsr))
             {
                 query = sr.ReadToEnd();
@@ -594,7 +609,40 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 
             return query;
         }
+    }
 
-        protected static readonly string[] StorageNames = { "simple.xml", "students.xml", "bsbm.xml" };
+    public abstract class BaseSparqlFixture
+    {
+        private readonly Dictionary<string, EviQueryableStorage> _storages = new Dictionary<string, EviQueryableStorage>();
+
+        protected BaseSparqlFixture()
+        {
+            var storageNames = new string[] { "simple.xml", "students.xml", "bsbm.xml" };
+
+            foreach (var dataset in storageNames)
+            {
+                var storage = SparqlTestHelpers.InitializeDataset(dataset, GetSqlDb(), GetStorageFactory());
+                _storages.Add(dataset, storage);
+            }
+        }
+
+        private IEviQueryableStorageFactory GetStorageFactory()
+        {
+            var loggerFactory = new LoggerFactory();
+
+            if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
+            {
+                loggerFactory.AddConsole(LogLevel.Trace);
+            }
+
+            return new DefaultEviQueryableStorageFactory(loggerFactory);
+        }
+
+        public EviQueryableStorage GetStorage(string storageName)
+        {
+            return _storages[storageName];
+        }
+
+        protected abstract ISqlDatabase GetSqlDb();
     }
 }
