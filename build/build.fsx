@@ -13,7 +13,9 @@
     nuget Fake.DotNet.Nuget
     nuget Fake.DotNet.MSBuild
     nuget Fake.Windows.Chocolatey
-    nuget Fake.Testing.SonarQube //"
+    nuget Fake.Testing.SonarQube
+    nuget System.Reactive 3.1.1
+    nuget Newtonsoft.Json //"
 
 #if !FAKE
 #load ".fake/build.fsx/intellisense.fsx"
@@ -115,7 +117,6 @@ module VersionLogic =
         let rnVersion = sprintf "%s.%s.%s" rnMajor rnMinor rnPatch
         ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
       { Version = version; InformationalVersion = informational; NugetVersion = nuget}
-
 
 // *** Define Targets ***
 Target.create "UpdateAssemblyInfo" (fun _ ->
@@ -248,12 +249,13 @@ Target.create "PrepareDatabase" (fun _ ->
 
     let updateConfig file =
       Trace.log (sprintf "Updating connection string in: %s" file)
-      let doc = new XmlDocument()
-      doc.Load file
-      Xml.replaceXPath "//connectionStrings/add[@name=\"mssql_connection\"]/@connectionString" connectionString doc |> ignore
-      doc.Save file
+      let content = File.ReadAllText file
+      let contentObj = Newtonsoft.Json.JsonConvert.DeserializeObject content :?> Newtonsoft.Json.Linq.JToken
+      contentObj.["ConnectionStrings"].["mssql"] <- Newtonsoft.Json.Linq.JValue connectionString
+      let newContent = Newtonsoft.Json.JsonConvert.SerializeObject contentObj
+      File.WriteAllText(file, newContent)
 
-    !! (Common.baseDirectory + "/src/**/Slp.Evi.Test.System.dll.config")
+    !! (Common.baseDirectory + "/src/**/bin/**/database.json")
     |> Seq.iter updateConfig
 
     Trace.log (sprintf "Creating database in %s" sqlInstance)

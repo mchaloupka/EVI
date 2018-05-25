@@ -151,6 +151,8 @@ NUGET
       FSharp.Core (>= 4.2.3)
       System.Reactive (>= 3.1.1)
     FSharp.Core (4.3.4)
+    FSharp.Data (2.4.6)
+      Zlib.Portable (>= 1.11)
     Microsoft.NETCore.Platforms (2.0.2)
     Microsoft.NETCore.Targets (2.0)
     Microsoft.Win32.Primitives (4.3)
@@ -514,3 +516,4 @@ NUGET
       System.Xml.ReaderWriter (>= 4.3)
       System.Xml.XmlDocument (>= 4.3)
       System.Xml.XPath (>= 4.3)
+    Zlib.Portable (1.11)
