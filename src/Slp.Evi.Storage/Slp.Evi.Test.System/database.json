@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "mssql": "Data Source=.;Initial Catalog=R2RMLTestDatabase;Integrated Security=True"
+  }
+}
