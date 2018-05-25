@@ -14,7 +14,7 @@
 
   <!-- Hack to get local nuget working -->
   <PropertyGroup>
-    <RestoreSources>$(RestoreSources);../localnugets</RestoreSources>
+    <RestoreSources>$(RestoreSources);../localnugets;https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
