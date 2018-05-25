@@ -10,6 +10,7 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <Authors>Miloš Chaloupka</Authors>
     <Product>EVI</Product>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <!-- Hack to get local nuget working -->
