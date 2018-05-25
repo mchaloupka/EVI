@@ -8,15 +8,10 @@ environment:
     secure: jD8yc9tSVznJZlP2a70DtOy4/eC6Ld4A0J1GH/7xjs7mWrrlKqeTIWk6BGR7eFv0
   CODECOV_TOKEN:
     secure: TkNT/U61mrXkNbtNjTxKXnBmF3wzp8YcFqAiboRXi8bj61fYHdogm/DxHxIJEtiH
+  NUGET_TOKEN:
+    secure: osLMSCVxKNTsqSX5/7N1A1YRWeGVShtYhco2cdiTfPIahSN5zrEUqpmJu1QCRr0Z
 services: 
   - mssql2014
 build_script:
   - ps: ./build/fake.cmd build
 test: off
-deploy:
-  - provider: NuGet
-    api_key:
-      secure: osLMSCVxKNTsqSX5/7N1A1YRWeGVShtYhco2cdiTfPIahSN5zrEUqpmJu1QCRr0Z
-    artifact: /.*\.nupkg/
-    on:
-      branch: master

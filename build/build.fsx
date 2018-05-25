@@ -3,6 +3,7 @@
     nuget Fake.Core.Environment
     nuget Fake.Core.Xml
     nuget Fake.Core.Process
+    nuget Fake.Core.ReleaseNotes
     nuget Fake.IO.FileSystem
     nuget Fake.IO.Zip
     nuget Fake.Net.Http
@@ -69,7 +70,23 @@ module VersionLogic =
       | _ -> None
     else None
   
+  let private releaseNotesVersion =
+    ReleaseNotes.load (Common.baseDirectory + "/RELEASE_NOTES.md")
+    |> (fun x -> 
+      match x.AssemblyVersion with
+      | Common.Regex @"([0-9]*)\.([0-9]*)\.([0-9]*)" [ major; minor; patch ] -> (major, minor, patch)
+      | _ -> failwith "Failed to read release notes"
+    )
+
   let version =
+    let (rnMajor, rnMinor, rnPatch) = releaseNotesVersion
+
+    match tagVersion with
+    | Some (major, minor, patch, _) ->
+      if (major <> rnMajor || minor <> rnMinor || patch <> rnPatch) then
+        failwith "The tag version differs from the version in release notes"
+    | None -> ()
+
     match tagVersion with
     | Some (major, minor, patch, Some suffix) ->
       let version = sprintf "%s.%s.%s.%s" major minor patch buildNumber
@@ -87,10 +104,12 @@ module VersionLogic =
         | "master" -> Some "beta"
         | _ -> None
       let (version, informational, nuget) =
+        let rnVersion = sprintf "%s.%s.%s" rnMajor rnMinor rnPatch
+
         match suffix with
-        | Some s -> ((sprintf "0.0.1.%s" buildNumber), (sprintf "0.0.1.%s-%s" buildNumber s), Some (sprintf "0.0.1-%s%s" s buildNumber))
+        | Some s -> ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber s), Some (sprintf "%s-%s%s" rnVersion s buildNumber))
         | None ->
-          let v = sprintf "0.0.1.%s" buildNumber
+          let v = sprintf "%s.%s" rnVersion buildNumber
           (v, v, None)
       { Version = version; InformationalVersion = informational; NugetVersion = nuget} 
   
@@ -198,6 +217,7 @@ Target.create "Package" (fun _ ->
     |> Seq.iter(fun x ->
       NuGetPack (fun p ->
         { p with
+            Project = "slp.evi"
             Version = version
             WorkingDir = Path.GetDirectoryName(x)
             OutputPath = (Common.baseDirectory + "/nuget")
@@ -261,8 +281,6 @@ Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log " --- Publishing artifacts --- "
-    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
-
     [
       "Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
       "Tests/System/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/Release/*")
@@ -270,6 +288,16 @@ Target.create "PublishArtifacts" (fun _ ->
     ] |> Zip.zipOfIncludes (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
 
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+
+    NuGetPublish (fun p ->
+      { p with
+          AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+          Project = "slp.evi"
+          Version = version
+          OutputPath = Common.baseDirectory + "/nuget"
+          WorkingDir = Common.baseDirectory + "/nuget"
+      })
   | None -> Trace.log "Skipping artifacts publishing"
 )
 
