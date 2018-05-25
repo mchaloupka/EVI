@@ -1,5 +1,5 @@
-#r "paket: 
-    nuget Fake.Core.Target 
+#r "paket:
+    nuget Fake.Core.Target
     nuget Fake.Core.Environment
     nuget Fake.Core.Xml
     nuget Fake.Core.Process
@@ -70,10 +70,10 @@ module VersionLogic =
       | Common.Regex @"v([0-9]*)\.([0-9]*)\.([0-9]*)(-[a-z]+)" [ major; minor; patch; suffix ] -> Some (major, minor, patch, Some suffix)
       | _ -> None
     else None
-  
+
   let private releaseNotesVersion =
     ReleaseNotes.load (Common.baseDirectory + "/RELEASE_NOTES.md")
-    |> (fun x -> 
+    |> (fun x ->
       match x.AssemblyVersion with
       | Common.Regex @"([0-9]*)\.([0-9]*)\.([0-9]*)" [ major; minor; patch ] -> (major, minor, patch)
       | _ -> failwith "Failed to read release notes"
@@ -112,18 +112,19 @@ module VersionLogic =
         | None ->
           let v = sprintf "%s.%s" rnVersion buildNumber
           (v, v, None)
-      { Version = version; InformationalVersion = informational; NugetVersion = nuget} 
-  
+      { Version = version; InformationalVersion = informational; NugetVersion = nuget}
+
 
 // *** Define Targets ***
 Target.create "UpdateAssemblyInfo" (fun _ ->
   match Common.branch with
   | "local" -> Trace.log "Skipping assembly info update"
-  | _ ->  
+  | _ ->
     Trace.log " --- Updating assembly info --- "
     Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
-    let copyrightYear = DateTime.Now.Year
-    
+    let date = DateTime.Now
+    let copyrightYear = date.Year
+
     !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
     |> Seq.iter(fun asmInfo ->
       let version = VersionLogic.version
@@ -156,7 +157,7 @@ Target.create "Build" (fun _ ->
     { p with
         Verbosity = Some MSBuildVerbosity.Quiet
         Targets = ["Build"]
-        Properties = 
+        Properties =
           [
             "Configuration", "Release"
           ]
@@ -170,13 +171,13 @@ Target.create "InstallDependencies" (fun _ ->
   let toInstall =
     match Common.branch with
     | "local" -> []
-    | "develop" -> 
-      [ 
+    | "develop" ->
+      [
         "msbuild-sonarqube-runner"
         "opencover"
       ]
     | _ -> [ "opencover" ]
-  
+
   toInstall
   |> Seq.iter (Choco.install id)
 )
@@ -259,17 +260,17 @@ Target.create "PrepareDatabase" (fun _ ->
 )
 
 Target.create "RunTests" (fun _ ->
-  Trace.log " --- Running tests --- "  
+  Trace.log " --- Running tests --- "
   let target = "vstest.console.exe"
   let dlls = !! (Common.baseDirectory + "/src/**/bin/Release/*.Test.*.dll") |> Seq.fold (fun r s -> r + " " + s) ""
-  
+
   let result =
     match Common.branch with
     | "local" ->
       Shell.Exec(target, dlls)
     | _ ->
       Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"%s/build/coverage.xml\"" target dlls Common.baseDirectory)
-  
+
   if result <> 0 then failwithf "Tests failed (exit code %d)" result
 )
 
@@ -277,7 +278,7 @@ Target.create "UploadCodeCov" (fun _ ->
   match Common.branch with
   | "local" -> Trace.log "Skipping uploading coverage results"
   | _ ->
-    Trace.log " --- Uploading CodeCov --- "  
+    Trace.log " --- Uploading CodeCov --- "
     Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash" |> ignore
     let result = Shell.Exec("bash", sprintf "codecov.sh -f \"%s/build/coverage.xml\" -t %s" Common.baseDirectory (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
