@@ -7,6 +7,7 @@
     nuget Fake.IO.FileSystem
     nuget Fake.IO.Zip
     nuget Fake.Net.Http
+    nuget Fake.DotNet.Cli
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
@@ -116,24 +117,30 @@ module VersionLogic =
 
 // *** Define Targets ***
 Target.create "UpdateAssemblyInfo" (fun _ ->
-  Trace.log " --- Updating assembly info --- "
-  Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
-  let copyrightYear = DateTime.Now.Year
-  
-  !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
-  |> Seq.iter(fun asmInfo ->
-    let version = VersionLogic.version
-    [
-      AssemblyInfo.Version version.Version
-      AssemblyInfo.FileVersion version.Version
-      AssemblyInfo.InformationalVersion version.InformationalVersion
-      AssemblyInfo.Copyright (sprintf "Copyright (c) %d" copyrightYear)
-    ] |> AssemblyInfoFile.updateAttributes asmInfo
-  )
+  match Common.branch with
+  | "local" -> Trace.log "Skipping assembly info update"
+  | _ ->  
+    Trace.log " --- Updating assembly info --- "
+    Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
+    let copyrightYear = DateTime.Now.Year
+    
+    !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
+    |> Seq.iter(fun asmInfo ->
+      let version = VersionLogic.version
+      [
+        AssemblyInfo.Version version.Version
+        AssemblyInfo.FileVersion version.Version
+        AssemblyInfo.InformationalVersion version.InformationalVersion
+        AssemblyInfo.Copyright (sprintf "Copyright (c) %d" copyrightYear)
+      ] |> AssemblyInfoFile.updateAttributes asmInfo
+    )
 )
 
 Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
+
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  |> DotNet.restore id
 
   (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
   |> RestoreMSSolutionPackages (fun p ->
