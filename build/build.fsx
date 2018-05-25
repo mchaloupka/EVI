@@ -108,7 +108,9 @@ module VersionLogic =
         | "develop" -> "alpha"
         | "master" -> "beta"
         | "local" -> "local"
-        | _ -> DateTime.Now.ToString "yyyyMMdd" |> sprintf "ci-%s"
+        | _ -> 
+          let date = DateTime.Now
+          date.ToString "yyyyMMdd" |> sprintf "ci-%s"
       let (version, informational, nuget) =
         let rnVersion = sprintf "%s.%s.%s" rnMajor rnMinor rnPatch
         ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
@@ -142,11 +144,6 @@ Target.create "RestorePackages" (fun _ ->
 
   (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
   |> DotNet.restore id
-
-  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
-  |> RestoreMSSolutionPackages (fun p ->
-    { p with OutputPath = (Common.baseDirectory + "/src/Slp.Evi.Storage/packages") }
-  )
 )
 
 Target.create "Build" (fun _ ->
@@ -261,17 +258,16 @@ Target.create "PrepareDatabase" (fun _ ->
 
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
-  let target = "vstest.console.exe"
-  let dlls = !! (Common.baseDirectory + "/src/**/bin/Release/*.Test.*.dll") |> Seq.fold (fun r s -> r + " " + s) ""
-
-  let result =
+  let exec proj =
     match Common.branch with
-    | "local" ->
-      Shell.Exec(target, dlls)
-    | _ ->
-      Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"%s\" -targetargs:\"%s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -output:\"%s/build/coverage.xml\"" target dlls Common.baseDirectory)
+    | "local" -> proj |> DotNet.test id
+    | _ ->    
+      let result = Shell.Exec("OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:dotnet -targetargs:\"test %s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\"" proj Common.baseDirectory)
+      if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
-  if result <> 0 then failwithf "Tests failed (exit code %d)" result
+
+  !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
+  |> Seq.iter exec
 )
 
 Target.create "UploadCodeCov" (fun _ ->
