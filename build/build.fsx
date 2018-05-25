@@ -269,7 +269,7 @@ Target.create "RunTests" (fun _ ->
     | _ ->  
       let console = Common.baseDirectory + "/build/opencover/OpenCover.Console.exe"
       Shell.Exec(console, "-version") |> ignore
-      let result = Shell.Exec(console, sprintf "-register:user -returntargetcode -target:dotnet -targetargs:\"test %s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+      let result = Shell.Exec(console, sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s /logger:AppVeyor\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
       if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
 
