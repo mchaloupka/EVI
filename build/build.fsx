@@ -105,17 +105,13 @@ module VersionLogic =
     | None ->
       let suffix =
         match Common.branch with
-        | "develop" -> Some "alpha"
-        | "master" -> Some "beta"
-        | _ -> None
+        | "develop" -> "alpha"
+        | "master" -> "beta"
+        | "local" -> "local"
+        | _ -> DateTime.Now.ToString "yyyyMMdd" |> sprintf "ci-%s"
       let (version, informational, nuget) =
         let rnVersion = sprintf "%s.%s.%s" rnMajor rnMinor rnPatch
-
-        match suffix with
-        | Some s -> ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber s), Some (sprintf "%s-%s%s" rnVersion s buildNumber))
-        | None ->
-          let v = sprintf "%s.%s" rnVersion buildNumber
-          (v, v, None)
+        ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
       { Version = version; InformationalVersion = informational; NugetVersion = nuget}
 
 
@@ -301,14 +297,18 @@ Target.create "PublishArtifacts" (fun _ ->
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
     !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
-    NuGetPublish (fun p ->
-      { p with
-          AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
-          Project = "slp.evi"
-          Version = version
-          OutputPath = Common.baseDirectory + "/nuget"
-          WorkingDir = Common.baseDirectory + "/nuget"
-      })
+
+    match Common.branch with
+    | "develop" | "master" ->
+      NuGetPublish (fun p ->
+        { p with
+            AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+            Project = "slp.evi"
+            Version = version
+            OutputPath = Common.baseDirectory + "/nuget"
+            WorkingDir = Common.baseDirectory + "/nuget"
+        })
+    | _ -> ()
   | None -> Trace.log "Skipping artifacts publishing"
 )
 
