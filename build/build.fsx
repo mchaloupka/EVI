@@ -150,18 +150,23 @@ Target.create "RestorePackages" (fun _ ->
 Target.create "Build" (fun _ ->
   Trace.log " --- Building the app --- "
 
-  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
-  |> MSBuild.build (fun p ->
-    { p with
-        Verbosity = Some MSBuildVerbosity.Quiet
-        Targets = ["Build"]
-        Properties =
-          [
-            "Configuration", "Release"
-          ]
-        MaxCpuCount = Some None
-    }
-  )
+  let project = (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  let build conf =
+    project
+    |> MSBuild.build (fun p ->
+      { p with
+          Verbosity = Some MSBuildVerbosity.Quiet
+          Targets = ["Build"]
+          Properties =
+            [
+              "Configuration", conf
+            ]
+          MaxCpuCount = Some None
+      }
+    )
+
+  build "Debug"
+  build "Release"
 )
 
 Target.create "InstallDependencies" (fun _ ->
