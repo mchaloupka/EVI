@@ -13,11 +13,6 @@
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
-  <!-- Hack to get local nuget working -->
-  <PropertyGroup>
-    <RestoreSources>$(RestoreSources);../localnugets;https://api.nuget.org/v3/index.json</RestoreSources>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="DatabaseSchemaReader" Version="2.5.1" />
     <PackageReference Include="dotNetRDF" Version="2.0.1" />
@@ -25,7 +20,7 @@
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.8.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.2" />
-    <PackageReference Include="TCode.r2rml4net" Version="0.5.0-vs2017-0001" />
+    <PackageReference Include="TCode.r2rml4net" Version="0.5.0-beta" />
   </ItemGroup>
 
   <ItemGroup>
