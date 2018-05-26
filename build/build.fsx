@@ -303,11 +303,23 @@ Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log " --- Publishing artifacts --- "
+
     [
-      "Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage/bin/Release/*")
-      "Tests/System/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/Release/*")
-      "Tests/Unit/Release", !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.Unit/bin/Release/*")
-    ] |> Zip.zipOfIncludes (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
+      !! (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Storage\bin\**\*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Storage\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Library"
+      !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/**/*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Test.System\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Tests/System"
+      !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.Unit/bin/**/*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Test.Unit\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Tests/Unit"
+    ]
+    |> Seq.concat
+    |> Zip.zipSpec (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
 
     !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
     !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
