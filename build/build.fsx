@@ -228,18 +228,19 @@ Target.create "Package" (fun _ ->
 
     DirectoryInfo.ensure (DirectoryInfo.ofPath (Common.baseDirectory + "/nuget"))
 
-    !! (Common.baseDirectory + "/src/**/*.nuspec")
-    |> Seq.iter(fun x ->
-      NuGetPack (fun p ->
-        { p with
-            Project = "slp.evi"
-            Version = version
-            WorkingDir = Path.GetDirectoryName(x)
-            OutputPath = (Common.baseDirectory + "/nuget")
-            SymbolPackage = NugetSymbolPackage.Nuspec
-        }
-      ) x
+    (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+    |> DotNet.pack (fun p ->
+      { p with
+          NoBuild = true
+          OutputPath = Some (Common.baseDirectory + "/nuget")
+          Configuration = DotNet.BuildConfiguration.Release
+          Common =
+            { p.Common with 
+                CustomParams = Some ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
+            }
+      }
     )
+
   | None -> Trace.log "Skipping nuget packaging"
 )
 
