@@ -273,9 +273,16 @@ Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
   let exec proj =
     match Common.branch with
-    | "local" -> proj |> DotNet.test id
+    | "local" ->
+      proj 
+      |> DotNet.test (fun p -> {
+        { p with
+            NoRestore = true
+            NoBuild = true
+        }
+      })
     | _ ->  
-      let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+      let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --no-restore --no-build\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
       if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
 
