@@ -6,7 +6,7 @@ using Xunit;
 namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
 {
     public sealed class MsSqlDbFixture
-        : BaseSparqlFixture
+        : SparqlFixture
     {
         protected override ISqlDatabase GetSqlDb()
         {
@@ -22,7 +22,7 @@ namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
     }
 
     public class MsSqlDb
-        : TestSuite, IClassFixture<MsSqlDbFixture>
+        : SparqlTestSuite, IClassFixture<MsSqlDbFixture>
     {
         public MsSqlDb(MsSqlDbFixture fixture)
             : base(fixture)

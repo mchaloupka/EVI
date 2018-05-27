@@ -317,22 +317,10 @@
     <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_offset_limit.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\TestSuite.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestSuite.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="SPARQL\SPARQL_TestSuite\TestSuite.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TestSuite.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 
 </Project>
