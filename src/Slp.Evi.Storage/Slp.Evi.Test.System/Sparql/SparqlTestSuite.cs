@@ -69,7 +69,6 @@ namespace Slp.Evi.Test.System.Sparql
         public static IEnumerable<object[]> TestData => new List<object[]>
         {
             new object[] {"simple", "single", QueryVerificationType.BagEqual},
-            new object[] {"simple", "single", QueryVerificationType.BagEqual},
             new object[] {"simple", "join", QueryVerificationType.BagEqual},
             new object[] {"simple", "union", QueryVerificationType.BagEqual},
             new object[] {"simple", "empty", QueryVerificationType.BagEqual},
