@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -10,18 +11,7 @@ namespace Slp.Evi.Test.System.Sparql
 {
     public abstract class SparqlFixture
     {
-        private readonly Dictionary<string, EviQueryableStorage> _storages = new Dictionary<string, EviQueryableStorage>();
-
-        protected SparqlFixture()
-        {
-            var storageNames = SparqlTestSuite.TestData.Select(x => x[0]).Cast<string>().Distinct();
-
-            foreach (var dataset in storageNames)
-            {
-                var storage = SparqlTestHelpers.InitializeDataset(dataset, GetSqlDb(), GetStorageFactory());
-                _storages.Add(dataset, storage);
-            }
-        }
+        private readonly ConcurrentDictionary<string, EviQueryableStorage> _storages = new ConcurrentDictionary<string, EviQueryableStorage>();
 
         private IEviQueryableStorageFactory GetStorageFactory()
         {
@@ -37,7 +27,12 @@ namespace Slp.Evi.Test.System.Sparql
 
         public EviQueryableStorage GetStorage(string storageName)
         {
-            return _storages[storageName];
+            return _storages.GetOrAdd(storageName, CreateStorage);
+        }
+
+        private EviQueryableStorage CreateStorage(string storageName)
+        {
+            return SparqlTestHelpers.InitializeDataset(storageName, GetSqlDb(), GetStorageFactory());
         }
 
         protected abstract ISqlDatabase GetSqlDb();
