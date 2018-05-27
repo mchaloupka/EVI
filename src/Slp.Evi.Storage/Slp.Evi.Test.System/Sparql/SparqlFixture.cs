@@ -17,10 +17,10 @@ namespace Slp.Evi.Test.System.Sparql
         {
             var loggerFactory = new LoggerFactory();
 
-            if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
-            {
-                loggerFactory.AddConsole(LogLevel.Trace);
-            }
+            //if (Environment.GetEnvironmentVariable("APPVEYOR") != "True")
+            //{
+            //    loggerFactory.AddConsole(LogLevel.Trace);
+            //}
 
             return new DefaultEviQueryableStorageFactory(loggerFactory);
         }
