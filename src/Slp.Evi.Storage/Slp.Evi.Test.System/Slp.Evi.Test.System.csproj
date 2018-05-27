@@ -26,295 +26,295 @@
     <None Update="database.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\ProductType_OrderBy.rq">
+    <None Update="Sparql\Data\Bsbm\ProductType_OrderBy.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\ProductType_OrderBy.srx">
+    <None Update="Sparql\Data\Bsbm\ProductType_OrderBy.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_01.rq">
+    <None Update="Sparql\Data\Bsbm\Query_01.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_01.srx">
+    <None Update="Sparql\Data\Bsbm\Query_01.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_02.rq">
+    <None Update="Sparql\Data\Bsbm\Query_02.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_02.srx">
+    <None Update="Sparql\Data\Bsbm\Query_02.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_03.rq">
+    <None Update="Sparql\Data\Bsbm\Query_03.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_03.srx">
+    <None Update="Sparql\Data\Bsbm\Query_03.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_04.rq">
+    <None Update="Sparql\Data\Bsbm\Query_04.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_04.srx">
+    <None Update="Sparql\Data\Bsbm\Query_04.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_05.rq">
+    <None Update="Sparql\Data\Bsbm\Query_05.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_05.srx">
+    <None Update="Sparql\Data\Bsbm\Query_05.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_06.rq">
+    <None Update="Sparql\Data\Bsbm\Query_06.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_06.srx">
+    <None Update="Sparql\Data\Bsbm\Query_06.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_07.rq">
+    <None Update="Sparql\Data\Bsbm\Query_07.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_07.srx">
+    <None Update="Sparql\Data\Bsbm\Query_07.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_08.rq">
+    <None Update="Sparql\Data\Bsbm\Query_08.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_08.srx">
+    <None Update="Sparql\Data\Bsbm\Query_08.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_09.rq">
+    <None Update="Sparql\Data\Bsbm\Query_09.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_09.srx">
+    <None Update="Sparql\Data\Bsbm\Query_09.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_10.rq">
+    <None Update="Sparql\Data\Bsbm\Query_10.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_10.srx">
+    <None Update="Sparql\Data\Bsbm\Query_10.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_11.rq">
+    <None Update="Sparql\Data\Bsbm\Query_11.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_11.srx">
+    <None Update="Sparql\Data\Bsbm\Query_11.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_12.rq">
+    <None Update="Sparql\Data\Bsbm\Query_12.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Bsbm\Query_12.srx">
+    <None Update="Sparql\Data\Bsbm\Query_12.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Datasets\bsbm.xml">
+    <None Update="Sparql\Data\Datasets\bsbm.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Datasets\simple.xml">
+    <None Update="Sparql\Data\Datasets\simple.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Datasets\students.xml">
+    <None Update="Sparql\Data\Datasets\students.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\bind.rq">
+    <None Update="Sparql\Data\Simple\bind.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\bind.srx">
+    <None Update="Sparql\Data\Simple\bind.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\distinct.rq">
+    <None Update="Sparql\Data\Simple\distinct.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\distinct.srx">
+    <None Update="Sparql\Data\Simple\distinct.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\empty.rq">
+    <None Update="Sparql\Data\Simple\empty.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\empty.srx">
+    <None Update="Sparql\Data\Simple\empty.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\bound.rq">
+    <None Update="Sparql\Data\Simple\Filter\bound.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\bound.srx">
+    <None Update="Sparql\Data\Simple\Filter\bound.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_eq.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_eq.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_eq.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_eq.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_ge.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_ge.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_ge.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_ge.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_gt.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_gt.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_gt.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_gt.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_le.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_le.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_le.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_le.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_lt.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_lt.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_lt.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_lt.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_neq.rq">
+    <None Update="Sparql\Data\Simple\Filter\comparison_neq.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\comparison_neq.srx">
+    <None Update="Sparql\Data\Simple\Filter\comparison_neq.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\conjunction.rq">
+    <None Update="Sparql\Data\Simple\Filter\conjunction.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\conjunction.srx">
+    <None Update="Sparql\Data\Simple\Filter\conjunction.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\disjunction.rq">
+    <None Update="Sparql\Data\Simple\Filter\disjunction.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\disjunction.srx">
+    <None Update="Sparql\Data\Simple\Filter\disjunction.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\not_bound.rq">
+    <None Update="Sparql\Data\Simple\Filter\not_bound.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Filter\not_bound.srx">
+    <None Update="Sparql\Data\Simple\Filter\not_bound.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\join.rq">
+    <None Update="Sparql\Data\Simple\join.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\join.srx">
+    <None Update="Sparql\Data\Simple\join.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\nested_filter.rq">
+    <None Update="Sparql\Data\Simple\nested_filter.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\nested_filter.srx">
+    <None Update="Sparql\Data\Simple\nested_filter.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\nested_optional.rq">
+    <None Update="Sparql\Data\Simple\nested_optional.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\nested_optional.srx">
+    <None Update="Sparql\Data\Simple\nested_optional.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\null.rq">
+    <None Update="Sparql\Data\Simple\null.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\null.srx">
+    <None Update="Sparql\Data\Simple\null.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\optional.rq">
+    <None Update="Sparql\Data\Simple\optional.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\optional.srx">
+    <None Update="Sparql\Data\Simple\optional.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\single.rq">
+    <None Update="Sparql\Data\Simple\single.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\single.srx">
+    <None Update="Sparql\Data\Simple\single.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\double.rq">
+    <None Update="Sparql\Data\Simple\Type\double.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\double.srx">
+    <None Update="Sparql\Data\Simple\Type\double.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\int.rq">
+    <None Update="Sparql\Data\Simple\Type\int.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\int.srx">
+    <None Update="Sparql\Data\Simple\Type\int.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_eq.rq">
+    <None Update="Sparql\Data\Simple\Type\type_comp_eq.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_eq.srx">
+    <None Update="Sparql\Data\Simple\Type\type_comp_eq.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_eq2.rq">
+    <None Update="Sparql\Data\Simple\Type\type_comp_eq2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_eq2.srx">
+    <None Update="Sparql\Data\Simple\Type\type_comp_eq2.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_gt.rq">
+    <None Update="Sparql\Data\Simple\Type\type_comp_gt.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_comp_gt.srx">
+    <None Update="Sparql\Data\Simple\Type\type_comp_gt.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_equal.rq">
+    <None Update="Sparql\Data\Simple\Type\type_equal.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_equal.srx">
+    <None Update="Sparql\Data\Simple\Type\type_equal.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_join_different.rq">
+    <None Update="Sparql\Data\Simple\Type\type_join_different.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\Type\type_join_different.srx">
+    <None Update="Sparql\Data\Simple\Type\type_join_different.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\union.rq">
+    <None Update="Sparql\Data\Simple\union.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Simple\union.srx">
+    <None Update="Sparql\Data\Simple\union.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\no_result.rq">
+    <None Update="Sparql\Data\Students\no_result.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\no_result.srx">
+    <None Update="Sparql\Data\Students\no_result.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names.rq">
+    <None Update="Sparql\Data\Students\student_names.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names.srx">
+    <None Update="Sparql\Data\Students\student_names.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order.rq">
+    <None Update="Sparql\Data\Students\student_names_order.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order.srx">
+    <None Update="Sparql\Data\Students\student_names_order.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_desc.rq">
+    <None Update="Sparql\Data\Students\student_names_order_desc.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_desc.srx">
+    <None Update="Sparql\Data\Students\student_names_order_desc.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_limit.rq">
+    <None Update="Sparql\Data\Students\student_names_order_limit.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_limit.srx">
+    <None Update="Sparql\Data\Students\student_names_order_limit.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_offset.rq">
+    <None Update="Sparql\Data\Students\student_names_order_offset.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_offset.srx">
+    <None Update="Sparql\Data\Students\student_names_order_offset.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_offset_limit.rq">
+    <None Update="Sparql\Data\Students\student_names_order_offset_limit.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SPARQL\SPARQL_TestSuite\Data\Students\student_names_order_offset_limit.srx">
+    <None Update="Sparql\Data\Students\student_names_order_offset_limit.srx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

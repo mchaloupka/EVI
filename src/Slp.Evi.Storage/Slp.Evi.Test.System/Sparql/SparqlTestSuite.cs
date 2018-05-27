@@ -8,7 +8,7 @@ using Xunit;
 namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
 {
     public abstract class SparqlTestSuite
-        : BaseSparqlTestSuite
+        : BaseTestSuite
     {
         private readonly SparqlFixture _fixture;
 

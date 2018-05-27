@@ -9,9 +9,9 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using Xunit;
 
-namespace Slp.Evi.Test.System.SPARQL
+namespace Slp.Evi.Test.System
 {
-    public abstract class BaseSparqlTestSuite
+    public abstract class BaseTestSuite
     {
         protected void AssertBagEqual(XDocument expected, object result)
         {
