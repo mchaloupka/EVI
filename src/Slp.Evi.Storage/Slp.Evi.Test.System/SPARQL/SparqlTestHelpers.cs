@@ -7,7 +7,7 @@ using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
 using TCode.r2rml4net.Mapping.Fluent;
 
-namespace Slp.Evi.Test.System.SPARQL
+namespace Slp.Evi.Test.System.Sparql
 {
     public static class SparqlTestHelpers
     {

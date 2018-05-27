@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml.Linq;
 using Xunit;
 
-namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
+namespace Slp.Evi.Test.System.Sparql
 {
     public abstract class SparqlTestSuite
         : BaseTestSuite

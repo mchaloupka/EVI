@@ -3,7 +3,7 @@ using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Database.Vendor.MsSql;
 using Xunit;
 
-namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite.Db
+namespace Slp.Evi.Test.System.Sparql.Vendor
 {
     public sealed class MsSqlDbFixture
         : SparqlFixture

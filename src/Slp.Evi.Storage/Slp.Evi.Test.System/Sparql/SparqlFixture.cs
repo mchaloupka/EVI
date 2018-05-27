@@ -6,7 +6,7 @@ using Slp.Evi.Storage;
 using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
 
-namespace Slp.Evi.Test.System.SPARQL.SPARQL_TestSuite
+namespace Slp.Evi.Test.System.Sparql
 {
     public abstract class SparqlFixture
     {
