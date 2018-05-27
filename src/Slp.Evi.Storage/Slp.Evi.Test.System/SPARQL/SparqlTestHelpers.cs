@@ -13,13 +13,13 @@ namespace Slp.Evi.Test.System.Sparql
     {
         public static string GetPath(string dataFile)
         {
-            var path = $".\\SPARQL\\SPARQL_TestSuite\\{dataFile}";
+            var path = $".\\Sparql\\{dataFile}";
             return path;
         }
 
         public static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IEviQueryableStorageFactory storageFactory)
         {
-            var datasetFile = GetPath(@"Data\Datasets\" + dataset);
+            var datasetFile = GetPath($@"Data\{dataset}\_dataset.xml");
 
             var doc = XDocument.Load(datasetFile);
             var sqlCommands = doc.Root

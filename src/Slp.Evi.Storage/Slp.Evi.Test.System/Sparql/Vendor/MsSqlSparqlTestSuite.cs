@@ -1,13 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Linq;
+using Microsoft.Extensions.Configuration;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Database.Vendor.MsSql;
 using Xunit;
 
 namespace Slp.Evi.Test.System.Sparql.Vendor
 {
-    public sealed class MsSqlSparqlTestSuite
+    public sealed class MsSqlSparqlFixture
         : SparqlFixture
     {
+        public MsSqlSparqlFixture()
+        {
+            // Prepare all databases beforehand
+            var bootUp = SparqlTestSuite.TestData.Select(x => x[0]).Cast<string>().Distinct()
+                .Select(x => base.GetStorage(x));
+        }
+
         protected override ISqlDatabase GetSqlDb()
         {
             var builder = new ConfigurationBuilder()
@@ -21,10 +29,10 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
         }
     }
 
-    public class MsSqlDb
-        : SparqlTestSuite, IClassFixture<MsSqlSparqlTestSuite>
+    public class MsSqlSparqlTestSuite
+        : SparqlTestSuite, IClassFixture<MsSqlSparqlFixture>
     {
-        public MsSqlDb(MsSqlSparqlTestSuite fixture)
+        public MsSqlSparqlTestSuite(MsSqlSparqlFixture fixture)
             : base(fixture)
         {
         }

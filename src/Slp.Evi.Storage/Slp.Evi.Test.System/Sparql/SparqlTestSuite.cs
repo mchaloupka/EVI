@@ -18,11 +18,14 @@ namespace Slp.Evi.Test.System.Sparql
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void TestQuery(string storagePath, string folder, string testName, QueryVerificationType verificationType)
+        public void TestQuery(string dataset, string testName, QueryVerificationType verificationType)
         {
-            var storage = _fixture.GetStorage(storagePath);
-            var query = GetQuery($"Data\\{folder}\\{testName}.rq");
-            var expected = GetExpected($"Data\\{folder}\\{testName}.srx");
+            var storage = _fixture.GetStorage(dataset);
+
+            var path = $"Data\\{dataset}\\{testName}";
+
+            var query = GetQuery($"{path}.rq");
+            var expected = GetExpected($"{path}.srx");
             var result = storage.Query(query);
 
             switch (verificationType)
@@ -53,7 +56,7 @@ namespace Slp.Evi.Test.System.Sparql
 
         private static string GetQuery(string queryFile)
         {
-            var query = string.Empty;
+            string query;
 
             using (var sr = new StreamReader(new FileStream(SparqlTestHelpers.GetPath(queryFile), FileMode.Open, FileAccess.Read)))
             {
@@ -65,58 +68,58 @@ namespace Slp.Evi.Test.System.Sparql
 
         public static IEnumerable<object[]> TestData => new List<object[]>
         {
-            new object[] {"simple.xml", "Simple", "single", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "single", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "join", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "union", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "empty", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "null", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "optional", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "bind", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "nested_optional", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "nested_filter", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", "Simple", "distinct", QueryVerificationType.BagEqual},
+            new object[] {"simple", "single", QueryVerificationType.BagEqual},
+            new object[] {"simple", "single", QueryVerificationType.BagEqual},
+            new object[] {"simple", "join", QueryVerificationType.BagEqual},
+            new object[] {"simple", "union", QueryVerificationType.BagEqual},
+            new object[] {"simple", "empty", QueryVerificationType.BagEqual},
+            new object[] {"simple", "null", QueryVerificationType.BagEqual},
+            new object[] {"simple", "optional", QueryVerificationType.BagEqual},
+            new object[] {"simple", "bind", QueryVerificationType.BagEqual},
+            new object[] {"simple", "nested_optional", QueryVerificationType.BagEqual},
+            new object[] {"simple", "nested_filter", QueryVerificationType.BagEqual},
+            new object[] {"simple", "distinct", QueryVerificationType.BagEqual},
 
-            new object[] {"simple.xml", @"Simple\Filter", "bound", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "not_bound", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_gt", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_ge", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_lt", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_le", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_eq", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "comparison_neq", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "disjunction", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Filter", "conjunction", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\bound", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\not_bound", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_gt", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_ge", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_lt", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_le", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_eq", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\comparison_neq", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\disjunction", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"filter\conjunction", QueryVerificationType.BagEqual},
 
-            new object[] {"simple.xml", @"Simple\Type", "int", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "double", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "type_equal", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "type_comp_eq", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "type_comp_eq2", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "type_comp_gt", QueryVerificationType.BagEqual},
-            new object[] {"simple.xml", @"Simple\Type", "type_join_different", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\int", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\double", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\type_equal", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\type_comp_eq", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\type_comp_eq2", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\type_comp_gt", QueryVerificationType.BagEqual},
+            new object[] {"simple", @"type\type_join_different", QueryVerificationType.BagEqual},
 
-            new object[] {"students.xml", "Students", "no_result", QueryVerificationType.BagEqual},
-            new object[] {"students.xml", "Students", "student_names", QueryVerificationType.BagEqual},
-            new object[] {"students.xml", "Students", "student_names_order", QueryVerificationType.Equal},
-            new object[] {"students.xml", "Students", "student_names_order_desc", QueryVerificationType.Equal},
-            new object[] {"students.xml", "Students", "student_names_order_limit", QueryVerificationType.Equal},
-            new object[] {"students.xml", "Students", "student_names_order_offset", QueryVerificationType.Equal},
-            new object[] {"students.xml", "Students", "student_names_order_offset_limit", QueryVerificationType.Equal},
+            new object[] {"students", "no_result", QueryVerificationType.BagEqual},
+            new object[] {"students", "student_names", QueryVerificationType.BagEqual},
+            new object[] {"students", "student_names_order", QueryVerificationType.Equal},
+            new object[] {"students", "student_names_order_desc", QueryVerificationType.Equal},
+            new object[] {"students", "student_names_order_limit", QueryVerificationType.Equal},
+            new object[] {"students", "student_names_order_offset", QueryVerificationType.Equal},
+            new object[] {"students", "student_names_order_offset_limit", QueryVerificationType.Equal},
 
-            new object[] {"bsbm.xml", "Bsbm", "ProductType_OrderBy", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_01", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_02", QueryVerificationType.BagEqual},
-            new object[] {"bsbm.xml", "Bsbm", "Query_03", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_04", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_05", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_06", QueryVerificationType.BagEqual},
-            new object[] {"bsbm.xml", "Bsbm", "Query_07", QueryVerificationType.BagEqual},
-            new object[] {"bsbm.xml", "Bsbm", "Query_08", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_09", QueryVerificationType.None},
-            new object[] {"bsbm.xml", "Bsbm", "Query_10", QueryVerificationType.Equal},
-            new object[] {"bsbm.xml", "Bsbm", "Query_11", QueryVerificationType.BagEqual},
-            new object[] {"bsbm.xml", "Bsbm", "Query_12", QueryVerificationType.None}
+            new object[] {"bsbm", "ProductType_OrderBy", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_01", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_02", QueryVerificationType.BagEqual},
+            new object[] {"bsbm", "Query_03", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_04", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_05", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_06", QueryVerificationType.BagEqual},
+            new object[] {"bsbm", "Query_07", QueryVerificationType.BagEqual},
+            new object[] {"bsbm", "Query_08", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_09", QueryVerificationType.None},
+            new object[] {"bsbm", "Query_10", QueryVerificationType.Equal},
+            new object[] {"bsbm", "Query_11", QueryVerificationType.BagEqual},
+            new object[] {"bsbm", "Query_12", QueryVerificationType.None}
         };
     }
 
