@@ -1,4 +1,6 @@
-﻿using Slp.Evi.Storage.Sparql.PostProcess;
+﻿using System.Collections.Generic;
+using Slp.Evi.Storage.Mapping.Representation;
+using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping
@@ -15,10 +17,10 @@ namespace Slp.Evi.Storage.Mapping
         R2RMLCache Cache { get; }
 
         /// <summary>
-        /// Gets the R2RML mapping.
+        /// Gets the mapping.
         /// </summary>
-        /// <value>The R2RML mapping.</value>
-        IR2RML Mapping { get; }
+        /// <value>Collection of triple maps.</value>
+        IEnumerable<ITriplesMapping> TriplesMaps { get; }
 
         /// <summary>
         /// Gets the mapping transformer.
