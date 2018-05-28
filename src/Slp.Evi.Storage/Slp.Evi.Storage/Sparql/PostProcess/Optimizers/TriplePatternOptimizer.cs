@@ -3,6 +3,7 @@ using System.Linq;
 using DatabaseSchemaReader.DataSchema;
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -114,7 +115,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             private bool CanObjectMatch(RestrictedTriplePattern toTransform, OptimizationContext data)
             {
                 var pattern = toTransform.ObjectPattern;
-                ITermMap r2RmlDef;
+                ITermMapping r2RmlDef;
 
                 if (toTransform.ObjectMap != null)
                 {
@@ -122,8 +123,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
                 else if (toTransform.RefObjectMap != null)
                 {
-                    var parentTriples = toTransform.RefObjectMap.ParentTriplesMap;
-                    r2RmlDef = parentTriples.SubjectMap;
+                    r2RmlDef = toTransform.RefObjectMap.SubjectMap;
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="termMap">The mapping.</param>
             /// <param name="type">The type of <paramref name="termMap"/></param>
             /// <param name="context">The query context.</param>
-            public bool CanMatch(INode node, ITermMap termMap, IValueType type, IQueryContext context)
+            public bool CanMatch(INode node, ITermMapping termMap, IValueType type, IQueryContext context)
             {
                 if (type.Category == TypeCategories.BlankNode)
                 {
@@ -190,7 +190,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
             /// <param name="context">The query context</param>
-            private bool CanMatchValue(INode node, ITermMap termMap, IQueryContext context)
+            private bool CanMatchValue(INode node, ITermMapping termMap, IQueryContext context)
             {
                 if (node.NodeType == NodeType.Uri)
                 {
@@ -225,7 +225,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="pattern">The pattern.</param>
             /// <param name="termMap">The term map.</param>
             /// <param name="context">The query context</param>
-            private bool CanMatch(Pattern pattern, ITermMap termMap, IQueryContext context)
+            private bool CanMatch(Pattern pattern, ITermMapping termMap, IQueryContext context)
             {
                 bool isIriEscaped = !termMap.TermType.IsLiteral;
 

@@ -1,4 +1,5 @@
-﻿using Slp.Evi.Storage.Mapping.Representation;
+﻿using System;
+using Slp.Evi.Storage.Mapping.Representation;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
@@ -7,7 +8,7 @@ namespace Slp.Evi.Storage.Mapping
     /// <summary>
     /// Predicate map for class
     /// </summary>
-    class ClassPredicateMap
+    public class ClassPredicateMap
         : IPredicateMapping
     {
         /// <summary>
@@ -16,6 +17,34 @@ namespace Slp.Evi.Storage.Mapping
         public ClassPredicateMap()
         {
             //URI = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+            // TODO: Implement this class
         }
+
+        /// <inheritdoc />
+        public bool IsConstantValued { get; }
+
+        /// <inheritdoc />
+        public bool IsColumnValued { get; }
+
+        /// <inheritdoc />
+        public bool IsTemplateValued { get; }
+
+        /// <inheritdoc />
+        public string ColumnName { get; }
+
+        /// <inheritdoc />
+        public string Template { get; }
+
+        /// <inheritdoc />
+        public Uri BaseUri { get; }
+
+        /// <inheritdoc />
+        public Uri URI { get; }
+
+        /// <inheritdoc />
+        public ITriplesMapping TriplesMap { get; }
+
+        /// <inheritdoc />
+        public ITermTypeInformation TermType { get; }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
@@ -39,7 +40,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="termMap">The term map.</param>
         /// <param name="source">The source.</param>
         /// <param name="typeCache">The type cache.</param>
-        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source, ITypeCache typeCache)
+        public BaseValueBinder(string variableName, ITermMapping termMap, ISqlCalculusSource source, ITypeCache typeCache)
         {
             VariableName = variableName;
             TermMap = termMap;
@@ -119,7 +120,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the term map.
         /// </summary>
         /// <value>The term map.</value>
-        public ITermMap TermMap { get; }
+        public ITermMapping TermMap { get; }
 
         /// <summary>
         /// Gets the name of the variable.

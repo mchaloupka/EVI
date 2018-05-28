@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping
 {
@@ -23,7 +22,6 @@ namespace Slp.Evi.Storage.Mapping
         public MappingProcessor(IR2RML mapping, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
-            Cache = new R2RMLCache();
             TriplesMaps = CreateMappingRepresentation(mapping).ToArray();
         }
 
@@ -38,12 +36,6 @@ namespace Slp.Evi.Storage.Mapping
         /// </summary>
         /// <value>Collection of triple maps.</value>
         public IEnumerable<ITriplesMapping> TriplesMaps { get; }
-
-        /// <summary>
-        /// Gets the R2RML cache.
-        /// </summary>
-        /// <value>The R2RML cache.</value>
-        public R2RMLCache Cache { get; }
 
         /// <summary>
         /// Gets the mapping transformer.

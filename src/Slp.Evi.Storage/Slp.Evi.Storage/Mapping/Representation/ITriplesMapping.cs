@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation
@@ -10,7 +11,8 @@ namespace Slp.Evi.Storage.Mapping.Representation
     {
         ISubjectMapping SubjectMap { get; }
         IEnumerable<IPredicateObjectMapping> PredicateObjectMaps { get; }
-        Uri BaseUri { get; }
+        string TableName { get; }
+        string SqlStatement { get; }
     }
 
     public interface IPredicateObjectMapping
@@ -21,25 +23,73 @@ namespace Slp.Evi.Storage.Mapping.Representation
         IEnumerable<IRefObjectMapping> RefObjectMaps { get; }
     }
 
-    public interface IRefObjectMapping
+    public interface IBaseMapping
     {
+        ITriplesMapping TriplesMap { get; }
+        ITermTypeInformation TermType { get; }
+    }
+
+    public interface ITermTypeInformation
+    {
+        bool IsBlankNode { get; }
+        bool IsURI { get; }
+        bool IsLiteral { get; }
+        Uri DataTypeURI { get; }
+        string Language { get; }
+    }
+
+    public interface ITermMapping
+        : IBaseMapping
+    {
+        bool IsConstantValued { get; }
+        bool IsColumnValued { get; }
+        bool IsTemplateValued { get; }
+        string ColumnName { get; }
+        string Template { get; }
+        Uri BaseUri { get; }
+    }
+
+    public interface IIriValuedTermMapping
+        : ITermMapping
+    {
+        Uri URI { get; }
+    }
+
+    public interface IRefObjectMapping
+        : IBaseMapping
+    {
+        IEnumerable<IJoinCondition> JoinConditions { get; }
+        ISubjectMapping SubjectMap { get; }
+    }
+
+    public interface IJoinCondition
+    {
+        string ChildColumn { get; }
+        string ParentColumn { get; }
     }
 
     public interface IObjectMapping
+        : ITermMapping
     {
+        ParsedLiteralParts Literal { get; }
     }
 
     public interface IPredicateMapping
+        : IIriValuedTermMapping
     {
+
     }
 
     public interface ISubjectMapping
+        : IIriValuedTermMapping
     {
         IEnumerable<IGraphMapping> GraphMaps { get; }
         IEnumerable<Uri> Classes { get; }
     }
 
     public interface IGraphMapping
+        : IIriValuedTermMapping
     {
+
     }
 }

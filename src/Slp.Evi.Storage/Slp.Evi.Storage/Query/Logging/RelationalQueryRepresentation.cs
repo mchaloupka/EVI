@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -101,15 +102,15 @@ namespace Slp.Evi.Storage.Query.Logging
             }
         }
 
-        private void StringRepresentationOfMap(ITermMap termMap)
+        private void StringRepresentationOfMap(ITermMapping termMap)
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IUriValuedTermMap uriTermMap)
+                if (termMap is IIriValuedTermMapping uriTermMap)
                 {
                     _sb.Append($"<{uriTermMap.URI}>");
                 }
-                else if (termMap is IObjectMap objectMap)
+                else if (termMap is IObjectMapping objectMap)
                 {
                     _sb.Append(objectMap.Literal);
                 }

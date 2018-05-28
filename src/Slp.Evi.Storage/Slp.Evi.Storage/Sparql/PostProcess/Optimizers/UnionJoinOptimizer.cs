@@ -4,6 +4,7 @@ using System.Linq;
 using DatabaseSchemaReader.DataSchema;
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -190,7 +191,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 public CartesianResult()
                 {
-                    _variables = new Dictionary<string, List<ITermMap>>();
+                    _variables = new Dictionary<string, List<ITermMapping>>();
                     Queries = new List<IGraphPattern>();
                     _patternComparer = new PatternComparer();
                 }
@@ -210,7 +211,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
 
                     foreach (var variable in _variables.Keys)
                     {
-                        cr._variables[variable] = new List<ITermMap>();
+                        cr._variables[variable] = new List<ITermMapping>();
 
                         foreach (var termMap in _variables[variable])
                         {
@@ -225,7 +226,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// Gets the variables mappings.
                 /// </summary>
                 /// <value>The variables.</value>
-                private readonly Dictionary<string, List<ITermMap>> _variables;
+                private readonly Dictionary<string, List<ITermMapping>> _variables;
 
                 /// <summary>
                 /// Gets the queries.
@@ -248,8 +249,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     else if (triplePattern.RefObjectMap != null)
                     {
-                        var parentMap = triplePattern.RefObjectMap.ParentTriplesMap;
-                        AddPatternInfo(triplePattern.ObjectPattern, parentMap.SubjectMap);
+                        AddPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap);
                     }
                     else
                     {
@@ -262,7 +262,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="pattern">The pattern</param>
                 /// <param name="termMap">The mapping for the pattern</param>
-                private void AddPatternInfo(PatternItem pattern, ITermMap termMap)
+                private void AddPatternInfo(PatternItem pattern, ITermMapping termMap)
                 {
                     if (pattern is VariablePattern variablePattern)
                     {
@@ -279,11 +279,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="variableName">The variable name</param>
                 /// <param name="termMap">The mapping for the variable</param>
-                private void AddVariableInfo(string variableName, ITermMap termMap)
+                private void AddVariableInfo(string variableName, ITermMapping termMap)
                 {
                     if (!_variables.ContainsKey(variableName))
                     {
-                        _variables.Add(variableName, new List<ITermMap>());
+                        _variables.Add(variableName, new List<ITermMapping>());
                     }
 
                     _variables[variableName].Add(termMap);
@@ -309,8 +309,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                         }
                         else if (triplePattern.RefObjectMap != null)
                         {
-                            var parentMap = triplePattern.RefObjectMap.ParentTriplesMap;
-                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, parentMap.SubjectMap, data.Context);
+                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, data.Context);
                         }
                         else
                         {
@@ -327,7 +326,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="pattern">The pattern</param>
                 /// <param name="termMap">The mapping for the pattern</param>
                 /// <param name="context">The query context</param>
-                private bool VerifyPatternInfo(PatternItem pattern, ITermMap termMap, IQueryContext context)
+                private bool VerifyPatternInfo(PatternItem pattern, ITermMapping termMap, IQueryContext context)
                 {
                     if (pattern is VariablePattern variablePattern)
                     {
@@ -349,7 +348,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="variableName">The variable name</param>
                 /// <param name="termMap">The mapping for the variable</param>
                 /// <param name="context">The query context.</param>
-                private bool VerifyVariableInfo(string variableName, ITermMap termMap, IQueryContext context)
+                private bool VerifyVariableInfo(string variableName, ITermMapping termMap, IQueryContext context)
                 {
                     if (_variables.ContainsKey(variableName))
                     {
@@ -381,7 +380,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(ITermMap first, ITermMap second, IQueryContext context)
+                private bool CanMatch(ITermMapping first, ITermMapping second, IQueryContext context)
                 {
                     var firstType = context.TypeCache.GetValueType(first);
                     var secondType = context.TypeCache.GetValueType(second);
@@ -407,7 +406,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanTemplateMatch(ITermMap first, ITermMap second, IQueryContext context)
+                private bool CanTemplateMatch(ITermMapping first, ITermMapping second, IQueryContext context)
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => CanMatchTemplate(x, first, context),
@@ -422,7 +421,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="first">The first column mapping.</param>
                 /// <param name="second">The second mapping.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanColumnMatch(ITermMap first, ITermMap second)
+                private bool CanColumnMatch(ITermMapping first, ITermMapping second)
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => CanColumnMatchUri(first),
@@ -438,7 +437,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(string literal, ITermMap second, IQueryContext context)
+                private bool CanMatch(string literal, ITermMapping second, IQueryContext context)
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => false,
@@ -455,7 +454,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(Uri uri, ITermMap second, IQueryContext context)
+                private bool CanMatch(Uri uri, ITermMapping second, IQueryContext context)
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => CanMatch(uri, x),
@@ -493,7 +492,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="secondTemplateTermMap">The second template mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if the template mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanTemplatesMatch(ITermMap firstTemplateTermMap, ITermMap secondTemplateTermMap,
+                private bool CanTemplatesMatch(ITermMapping firstTemplateTermMap, ITermMapping secondTemplateTermMap,
                     IQueryContext context)
                 {
                     if ((firstTemplateTermMap.TermType.IsLiteral && secondTemplateTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondTemplateTermMap.TermType.IsLiteral))
@@ -508,7 +507,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="firstTemplateTermMap">The first template mapping.</param>
                 /// <param name="secondColumnTermMap">The second column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanTemplateMatchColumn(ITermMap firstTemplateTermMap, ITermMap secondColumnTermMap)
+                private bool CanTemplateMatchColumn(ITermMapping firstTemplateTermMap, ITermMapping secondColumnTermMap)
                 {
                     if ((firstTemplateTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral))
                         return false;
@@ -523,7 +522,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="templateTermMap">The template mapping.</param>
                 /// <param name="context"></param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatchTemplate(string literal, ITermMap templateTermMap, IQueryContext context)
+                private bool CanMatchTemplate(string literal, ITermMapping templateTermMap, IQueryContext context)
                 {
                     if (templateTermMap.TermType.IsURI)
                         return false;
@@ -538,7 +537,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="templateTermMap">The template mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatchTemplate(Uri uri, ITermMap templateTermMap, IQueryContext context)
+                private bool CanMatchTemplate(Uri uri, ITermMapping templateTermMap, IQueryContext context)
                 {
                     if (templateTermMap.TermType.IsLiteral)
                         return false;
@@ -552,7 +551,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="firstColumnTermMap">The first column mapping.</param>
                 /// <param name="secondColumnTermMap">The second column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanColumnsMatch(ITermMap firstColumnTermMap, ITermMap secondColumnTermMap)
+                private bool CanColumnsMatch(ITermMapping firstColumnTermMap, ITermMapping secondColumnTermMap)
                 {
                     bool ok = !(firstColumnTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstColumnTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral);
 
@@ -566,7 +565,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="columnTermMap">The column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanColumnMatchLiteral(ITermMap columnTermMap)
+                private bool CanColumnMatchLiteral(ITermMapping columnTermMap)
                 {
                     if (columnTermMap.TermType.IsLiteral)
                         return true;
@@ -579,7 +578,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// </summary>
                 /// <param name="columnTermMap">The column mapping.</param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanColumnMatchUri(ITermMap columnTermMap)
+                private bool CanColumnMatchUri(ITermMapping columnTermMap)
                 {
                     if (columnTermMap.TermType.IsURI)
                         return true;
@@ -603,7 +602,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// or
                 /// Term must be constant, column or template valued
                 /// </exception>
-                private T CanMatchFunction<T>(ITermMap decider, Func<Uri, T> constantUriFunc, Func<string, T> constantLiteralFunc, Func<ITermMap, T> columnFunc, Func<ITermMap, T> templateFunc)
+                private T CanMatchFunction<T>(ITermMapping decider, Func<Uri, T> constantUriFunc, Func<string, T> constantLiteralFunc, Func<ITermMapping, T> columnFunc, Func<ITermMapping, T> templateFunc)
                 {
                     if (decider.IsConstantValued)
                     {

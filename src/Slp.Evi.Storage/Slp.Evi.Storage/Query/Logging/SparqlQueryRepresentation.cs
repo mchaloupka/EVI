@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
@@ -265,7 +266,7 @@ namespace Slp.Evi.Storage.Query.Logging
             Process(restrictedTriplePattern.ObjectPattern);
             _sb.Append(") From (");
 
-            var tableName = _queryContext.Mapping.Cache.GetSqlTable(restrictedTriplePattern.TripleMap);
+            var tableName = restrictedTriplePattern.TripleMap.TableName;
 
             if (!string.IsNullOrEmpty(tableName))
             {
@@ -297,11 +298,11 @@ namespace Slp.Evi.Storage.Query.Logging
             return null;
         }
 
-        private void StringRepresentationOfMap(ITermMap termMap)
+        private void StringRepresentationOfMap(ITermMapping termMap)
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IUriValuedTermMap uriTermMap)
+                if (termMap is IIriValuedTermMapping uriTermMap)
                 {
                     _sb.Append($"<{uriTermMap.URI}>");
                 }
@@ -328,10 +329,10 @@ namespace Slp.Evi.Storage.Query.Logging
             }
         }
 
-        private void StringRepresentationOfMap(IRefObjectMap refMap)
+        private void StringRepresentationOfMap(IRefObjectMapping refMap)
         {
             _sb.Append("ref:");
-            _sb.Append(refMap.ParentTriplesMap.Node);
+            _sb.Append(_getObjectIndex(refMap.SubjectMap.TriplesMap));
         }
 
         /// <inheritdoc />

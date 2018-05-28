@@ -92,8 +92,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="variables">The variables list.</param>
         private void AddToVariables(PatternItem pattern, List<string> variables)
         {
-            var variablePattern = pattern as VariablePattern;
-            if (variablePattern != null)
+            if (pattern is VariablePattern variablePattern)
             {
                 variables.Add(variablePattern.VariableName);
             }

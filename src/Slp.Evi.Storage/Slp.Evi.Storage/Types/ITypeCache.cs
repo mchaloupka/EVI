@@ -1,4 +1,5 @@
 ﻿using System;
+using Slp.Evi.Storage.Mapping.Representation;
 using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Types
@@ -21,7 +22,7 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Gets the <see cref="IValueType"/> for <paramref name="termMap"/>
         /// </summary>
-        IValueType GetValueType(IMapBase termMap);
+        IValueType GetValueType(IBaseMapping termMap);
 
         /// <summary>
         /// Gets the <see cref="IValueType"/> for IRI

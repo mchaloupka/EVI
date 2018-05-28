@@ -11,12 +11,6 @@ namespace Slp.Evi.Storage.Mapping
     public interface IMappingProcessor
     {
         /// <summary>
-        /// Gets the R2RML cache.
-        /// </summary>
-        /// <value>The R2RML cache.</value>
-        R2RMLCache Cache { get; }
-
-        /// <summary>
         /// Gets the mapping.
         /// </summary>
         /// <value>Collection of triple maps.</value>
