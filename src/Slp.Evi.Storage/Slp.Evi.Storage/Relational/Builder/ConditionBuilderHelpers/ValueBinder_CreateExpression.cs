@@ -123,7 +123,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
                             null,
-                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsIri),
                             null,
                             null,
                             context);
@@ -134,7 +134,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             new ConstantExpression((int)type.Category, context),
                             null,
                             null,
-                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsIri),
                             null,
                             context);
                     case TypeCategories.DateTimeLiteral:
@@ -145,14 +145,14 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                             null,
                             null,
                             null,
-                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsIri),
                             context);
                     default:
                         return new ExpressionsSet(
                             new AlwaysTrueCondition(),
                             new ConstantExpression(context.TypeCache.GetIndex(type), context),
                             new ConstantExpression((int)type.Category, context),
-                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsURI),
+                            new ColumnExpression(baseValueBinder.GetCalculusVariable(map.ColumnName), map.TermType.IsIri),
                             null,
                             null,
                             null,
@@ -169,7 +169,7 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
                     {
                         // TODO: Add safe IRI handling if needed
                         parts.Add(new ColumnExpression(baseValueBinder.GetCalculusVariable(templatePart.Column),
-                            map.TermType.IsURI));
+                            map.TermType.IsIri));
                     }
                     else if (templatePart.IsText)
                     {

@@ -23,8 +23,8 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.NodeType).Returns(NodeType.Uri);
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com"));
 
-            var map = new Mock<IIriValuedTermMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test.com"));
+            var map = new Mock<ITermMapping>();
+            map.Setup(x => x.Iri).Returns(new Uri("http://test.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -38,8 +38,8 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.NodeType).Returns(NodeType.Uri);
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com/Product"));
 
-            var map = new Mock<IIriValuedTermMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test.com/ProductType"));
+            var map = new Mock<ITermMapping>();
+            map.Setup(x => x.Iri).Returns(new Uri("http://test.com/ProductType"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -49,7 +49,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
         private static Mock<ITermTypeInformation> GetUriType()
         {
             var uriType = new Mock<ITermTypeInformation>();
-            uriType.Setup(x => x.IsURI).Returns(true);
+            uriType.Setup(x => x.IsIri).Returns(true);
             uriType.Setup(x => x.IsLiteral).Returns(false);
             return uriType;
         }
@@ -57,7 +57,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
         private static Mock<ITermTypeInformation> GetLiteralType()
         {
             var uriType = new Mock<ITermTypeInformation>();
-            uriType.Setup(x => x.IsURI).Returns(false);
+            uriType.Setup(x => x.IsIri).Returns(false);
             uriType.Setup(x => x.IsLiteral).Returns(true);
             return uriType;
         }
@@ -69,8 +69,8 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.NodeType).Returns(NodeType.Uri);
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com"));
 
-            var map = new Mock<IIriValuedTermMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test2.com"));
+            var map = new Mock<ITermMapping>();
+            map.Setup(x => x.Iri).Returns(new Uri("http://test2.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -85,7 +85,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com"));
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns((Uri)null);
+            map.Setup(x => x.Iri).Returns((Uri)null);
             map.Setup(x => x.Literal).Returns(new ParsedLiteralParts("http://test2.com", null, string.Empty));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);
@@ -101,7 +101,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com"));
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test.com"));
+            map.Setup(x => x.Iri).Returns(new Uri("http://test.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -116,7 +116,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Uri).Returns(new Uri("http://test.com"));
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test2.com"));
+            map.Setup(x => x.Iri).Returns(new Uri("http://test2.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -131,7 +131,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Value).Returns("http://test.com");
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns((Uri)null);
+            map.Setup(x => x.Iri).Returns((Uri)null);
             map.Setup(x => x.Literal).Returns(new ParsedLiteralParts("http://test.com", null, string.Empty));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);
@@ -147,7 +147,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Value).Returns("http://test.com");
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test.com"));
+            map.Setup(x => x.Iri).Returns(new Uri("http://test.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -161,8 +161,8 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.NodeType).Returns(NodeType.Literal);
             node.Setup(x => x.Value).Returns("http://test.com");
 
-            var map = new Mock<IIriValuedTermMapping>();
-            map.Setup(x => x.URI).Returns(new Uri("http://test.com"));
+            var map = new Mock<ITermMapping>();
+            map.Setup(x => x.Iri).Returns(new Uri("http://test.com"));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetUriType().Object);
 
@@ -177,7 +177,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             node.Setup(x => x.Value).Returns("http://test.com");
 
             var map = new Mock<IObjectMapping>();
-            map.Setup(x => x.URI).Returns((Uri)null);
+            map.Setup(x => x.Iri).Returns((Uri)null);
             map.Setup(x => x.Literal).Returns(new ParsedLiteralParts("http://test2.com", null, string.Empty));
             map.Setup(x => x.IsConstantValued).Returns(true);
             map.Setup(x => x.TermType).Returns(GetLiteralType().Object);

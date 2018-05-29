@@ -244,7 +244,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             List<Expression> expressions = new List<Expression>
             {
                 Expression.Assign(valVar,
-                    GenerateReplaceColumnReferencesFunc(row, TermMap.TermType.IsURI, queryContext)),
+                    GenerateReplaceColumnReferencesFunc(row, TermMap.TermType.IsIri, queryContext)),
                 Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof (string))),
                     Expression.Constant(null, typeof (INode)),
                     GenerateTermForValueFunc(nodeFactory, valVar, context))
@@ -377,14 +377,14 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 
             var termType = TermMap.TermType;
 
-            if (termType.IsURI)
+            if (termType.IsIri)
             {
                 expressions.Add(Expression.Assign(nodeVar,
                     Expression.Call(typeof(BaseValueBinder), nameof(GenerateUriTermForValue), new Type[0],
                         value,
                         factory,
                         context,
-                        Expression.Constant(TermMap.BaseUri, typeof(Uri)))));
+                        Expression.Constant(TermMap.BaseIri, typeof(Uri)))));
             }
             else if (termType.IsBlankNode)
             {

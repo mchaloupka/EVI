@@ -249,7 +249,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     else if (triplePattern.RefObjectMap != null)
                     {
-                        AddPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap);
+                        AddPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.TargetSubjectMap);
                     }
                     else
                     {
@@ -309,7 +309,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                         }
                         else if (triplePattern.RefObjectMap != null)
                         {
-                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, data.Context);
+                            ok = VerifyPatternInfo(triplePattern.ObjectPattern, triplePattern.RefObjectMap.TargetSubjectMap, data.Context);
                         }
                         else
                         {
@@ -495,10 +495,10 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 private bool CanTemplatesMatch(ITermMapping firstTemplateTermMap, ITermMapping secondTemplateTermMap,
                     IQueryContext context)
                 {
-                    if ((firstTemplateTermMap.TermType.IsLiteral && secondTemplateTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondTemplateTermMap.TermType.IsLiteral))
+                    if ((firstTemplateTermMap.TermType.IsLiteral && secondTemplateTermMap.TermType.IsIri) || (firstTemplateTermMap.TermType.IsIri && secondTemplateTermMap.TermType.IsLiteral))
                         return false;
 
-                    return TemplatesMatchCheck(firstTemplateTermMap.Template, secondTemplateTermMap.Template, firstTemplateTermMap.TermType.IsURI, firstTemplateTermMap.GetTypeResolver(context), secondTemplateTermMap.GetTypeResolver(context));
+                    return TemplatesMatchCheck(firstTemplateTermMap.Template, secondTemplateTermMap.Template, firstTemplateTermMap.TermType.IsIri, firstTemplateTermMap.GetTypeResolver(context), secondTemplateTermMap.GetTypeResolver(context));
                 }
 
                 /// <summary>
@@ -509,7 +509,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
                 private bool CanTemplateMatchColumn(ITermMapping firstTemplateTermMap, ITermMapping secondColumnTermMap)
                 {
-                    if ((firstTemplateTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstTemplateTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral))
+                    if ((firstTemplateTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsIri) || (firstTemplateTermMap.TermType.IsIri && secondColumnTermMap.TermType.IsLiteral))
                         return false;
 
                     return true;
@@ -524,7 +524,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
                 private bool CanMatchTemplate(string literal, ITermMapping templateTermMap, IQueryContext context)
                 {
-                    if (templateTermMap.TermType.IsURI)
+                    if (templateTermMap.TermType.IsIri)
                         return false;
 
                     return TemplateMatchCheck(templateTermMap.Template, literal, false, templateTermMap.GetTypeResolver(context));
@@ -553,7 +553,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
                 private bool CanColumnsMatch(ITermMapping firstColumnTermMap, ITermMapping secondColumnTermMap)
                 {
-                    bool ok = !(firstColumnTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsURI) || (firstColumnTermMap.TermType.IsURI && secondColumnTermMap.TermType.IsLiteral);
+                    bool ok = !(firstColumnTermMap.TermType.IsLiteral && secondColumnTermMap.TermType.IsIri) || (firstColumnTermMap.TermType.IsIri && secondColumnTermMap.TermType.IsLiteral);
 
                     // NOTE: Maybe type checking
 
@@ -580,7 +580,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
                 private bool CanColumnMatchUri(ITermMapping columnTermMap)
                 {
-                    if (columnTermMap.TermType.IsURI)
+                    if (columnTermMap.TermType.IsIri)
                         return true;
                     else
                         return false;

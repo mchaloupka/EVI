@@ -122,36 +122,22 @@ namespace Slp.Evi.Storage.Types
         {
             if (map is ITermMapping termMap)
             {
-                if (termMap is IIriValuedTermMapping)
+                if (termMap.TermType.IsBlankNode)
                 {
-                    if (map.TermType.IsBlankNode)
-                    {
-                        return _typesIndexDictionary[2];
-                    }
-                    else
-                    {
-                        return _typesIndexDictionary[1];
-                    }
+                    return _typesIndexDictionary[2];
                 }
-                else if (termMap is IObjectMapping objectMap)
+                else if (termMap.TermType.IsIri)
                 {
-                    if (termMap.TermType.IsBlankNode)
-                    {
-                        return _typesIndexDictionary[2];
-                    }
-                    else if (termMap.TermType.IsURI)
-                    {
-                        return _typesIndexDictionary[1];
-                    }
-                    else if (termMap.TermType.IsLiteral)
-                    {
-                        return ResolveLiteralType(objectMap);
-                    }
+                    return _typesIndexDictionary[1];
+                }
+                else if (termMap.TermType.IsLiteral)
+                {
+                    return ResolveLiteralType((IObjectMapping)termMap);
                 }
             }
             else if (map is IRefObjectMapping refObjectMap)
             {
-                return ResolveType(refObjectMap.SubjectMap);
+                return ResolveType(refObjectMap.TargetSubjectMap);
             }
 
             throw new NotSupportedException("Unsupported ITermMap type");
@@ -165,7 +151,7 @@ namespace Slp.Evi.Storage.Types
             string languageTag = null;
             Uri dataType = null;
 
-            dataType = objectMap.TermType.DataTypeURI;
+            dataType = objectMap.TermType.DataTypeIri;
             languageTag = objectMap.TermType.Language;
 
             if (dataType == null && languageTag == null)

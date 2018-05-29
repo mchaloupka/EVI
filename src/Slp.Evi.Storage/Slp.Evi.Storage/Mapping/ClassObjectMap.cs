@@ -37,10 +37,10 @@ namespace Slp.Evi.Storage.Mapping
         public string Template { get; }
 
         /// <inheritdoc />
-        public Uri BaseUri { get; }
+        public Uri BaseIri { get; }
 
         /// <inheritdoc />
-        public Uri URI { get; }
+        public Uri Iri { get; }
 
         /// <inheritdoc />
         public ITriplesMapping TriplesMap { get; }

@@ -302,11 +302,11 @@ namespace Slp.Evi.Storage.Query.Logging
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IIriValuedTermMapping uriTermMap)
+                if (termMap.Iri != null)
                 {
-                    _sb.Append($"<{uriTermMap.URI}>");
+                    _sb.Append($"<{termMap.Iri}>");
                 }
-                else if (termMap is IObjectMap objectMap)
+                else if (termMap is IObjectMapping objectMap)
                 {
                     _sb.Append(objectMap.Literal);
                 }
@@ -332,7 +332,7 @@ namespace Slp.Evi.Storage.Query.Logging
         private void StringRepresentationOfMap(IRefObjectMapping refMap)
         {
             _sb.Append("ref:");
-            _sb.Append(_getObjectIndex(refMap.SubjectMap.TriplesMap));
+            _sb.Append(_getObjectIndex(refMap.TargetSubjectMap.TriplesMap));
         }
 
         /// <inheritdoc />

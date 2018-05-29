@@ -106,9 +106,9 @@ namespace Slp.Evi.Storage.Query.Logging
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IIriValuedTermMapping uriTermMap)
+                if(termMap.Iri != null)
                 {
-                    _sb.Append($"<{uriTermMap.URI}>");
+                    _sb.Append($"<{termMap.Iri}>");
                 }
                 else if (termMap is IObjectMapping objectMap)
                 {

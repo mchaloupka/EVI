@@ -137,7 +137,7 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
             var termType = new Mock<ITermTypeInformation>();
             termType.Setup(x => x.IsBlankNode).Returns(false);
             termType.Setup(x => x.IsLiteral).Returns(false);
-            termType.Setup(x => x.IsURI).Returns(true);
+            termType.Setup(x => x.IsIri).Returns(true);
             return termType.Object;
         }
     }

@@ -525,12 +525,12 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             if (triplePattern.RefObjectMap != null)
             {
-                refSource = GetTripleMapSource(triplePattern.RefObjectMap.SubjectMap.TriplesMap, context);
+                refSource = GetTripleMapSource(triplePattern.RefObjectMap.TargetSubjectMap.TriplesMap, context);
 
                 foreach (var joinCondition in triplePattern.RefObjectMap.JoinConditions)
                 {
                     var sourceCalculusVariable = source.GetVariable(joinCondition.ChildColumn);
-                    var refSourceCalculusVariable = refSource.GetVariable(joinCondition.ParentColumn);
+                    var refSourceCalculusVariable = refSource.GetVariable(joinCondition.TargetColumn);
 
                     conditions.Add(new EqualVariablesCondition(sourceCalculusVariable, refSourceCalculusVariable));
                 }
@@ -691,7 +691,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The query context.</param>
         private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource refSource, IQueryContext context)
         {
-            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
+            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.TargetSubjectMap, conditions, valueBinders, refSource, context);
         }
     }
 }

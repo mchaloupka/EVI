@@ -123,7 +123,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
                 else if (toTransform.RefObjectMap != null)
                 {
-                    r2RmlDef = toTransform.RefObjectMap.SubjectMap;
+                    r2RmlDef = toTransform.RefObjectMap.TargetSubjectMap;
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             {
                 if (node.NodeType == NodeType.Uri)
                 {
-                    if (!termMap.TermType.IsURI)
+                    if (!termMap.TermType.IsIri)
                     {
                         return false;
                     }
@@ -240,9 +240,9 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 {
                     if (termMap is IObjectMapping objectMap)
                     {
-                        if (objectMap.URI != null)
+                        if (objectMap.Iri != null)
                         {
-                            var termPattern = new Pattern(true, new[] { new PatternItem(objectMap.URI.AbsoluteUri) });
+                            var termPattern = new Pattern(true, new[] { new PatternItem(objectMap.Iri.AbsoluteUri) });
                             return CanMatch(pattern, termPattern);
                         }
                         else if (objectMap.Literal != null)
@@ -257,7 +257,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     else
                     {
-                        var termPattern = new Pattern(true, new[] {new PatternItem(termMap.URI.AbsoluteUri)});
+                        var termPattern = new Pattern(true, new[] {new PatternItem(termMap.Iri.AbsoluteUri)});
                         return CanMatch(pattern, termPattern);
                     }
                 }
