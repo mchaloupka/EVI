@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Mapping.Representation;
+using Slp.Evi.Storage.Mapping.Representation.Implementation;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 

@@ -1,23 +1,19 @@
-using System;
-using Slp.Evi.Storage.Mapping.Representation;
-using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
-using VDS.RDF;
+﻿using System;
 
-namespace Slp.Evi.Storage.Mapping
+namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
     /// <summary>
-    /// Object map for class
+    /// Predicate map for class
     /// </summary>
-    public class ClassObjectMap
-        : IObjectMapping
+    public class ClassPredicateMap
+        : IPredicateMapping
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassObjectMap"/> class.
+        /// Initializes a new instance of the <see cref="ClassPredicateMap"/> class.
         /// </summary>
-        /// <param name="classUri">The class URI.</param>
-        public ClassObjectMap(Uri classUri)
+        public ClassPredicateMap()
         {
+            //URI = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
             // TODO: Implement this class
         }
 
@@ -47,8 +43,5 @@ namespace Slp.Evi.Storage.Mapping
 
         /// <inheritdoc />
         public ITermTypeInformation TermType { get; }
-
-        /// <inheritdoc />
-        public ParsedLiteralParts Literal { get; }
     }
 }
