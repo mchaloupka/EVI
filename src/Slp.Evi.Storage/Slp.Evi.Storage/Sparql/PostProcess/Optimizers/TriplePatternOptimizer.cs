@@ -238,21 +238,16 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
                 if (termMap.IsConstantValued)
                 {
-                    if (termMap is IUriValuedTermMap uriValued)
-                    {
-                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.AbsoluteUri)});
-                        return CanMatch(pattern, termPattern);
-                    }
-                    else if (termMap is IObjectMap objectMap)
+                    if (termMap is IObjectMapping objectMap)
                     {
                         if (objectMap.URI != null)
                         {
-                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.AbsoluteUri)});
+                            var termPattern = new Pattern(true, new[] { new PatternItem(objectMap.URI.AbsoluteUri) });
                             return CanMatch(pattern, termPattern);
                         }
                         else if (objectMap.Literal != null)
                         {
-                            var termPattern = new Pattern(false, new[] {new PatternItem(objectMap.Literal)});
+                            var termPattern = new Pattern(false, new[] { new PatternItem(objectMap.Literal.Value) });
                             return CanMatch(pattern, termPattern);
                         }
                         else
@@ -262,7 +257,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     else
                     {
-                        throw new InvalidOperationException("ITermMap has to be IUriValuedTermMap or an IObjectMap");
+                        var termPattern = new Pattern(true, new[] {new PatternItem(termMap.URI.AbsoluteUri)});
+                        return CanMatch(pattern, termPattern);
                     }
                 }
                 else if (termMap.IsTemplateValued)

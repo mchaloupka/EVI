@@ -40,6 +40,9 @@ namespace Slp.Evi.Storage.Mapping
         public Uri BaseUri { get; }
 
         /// <inheritdoc />
+        public Uri URI { get; }
+
+        /// <inheritdoc />
         public ITriplesMapping TriplesMap { get; }
 
         /// <inheritdoc />

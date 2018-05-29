@@ -47,12 +47,13 @@ namespace Slp.Evi.Storage.Mapping.Representation
         string ColumnName { get; }
         string Template { get; }
         Uri BaseUri { get; }
+        Uri URI { get; }
     }
 
     public interface IIriValuedTermMapping
         : ITermMapping
     {
-        Uri URI { get; }
+
     }
 
     public interface IRefObjectMapping
