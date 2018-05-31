@@ -151,8 +151,8 @@ namespace Slp.Evi.Storage.Types
             string languageTag = null;
             Uri dataType = null;
 
-            dataType = objectMap.TermType.DataTypeIri;
-            languageTag = objectMap.TermType.Language;
+            dataType = objectMap.DataTypeIri;
+            languageTag = objectMap.Language;
 
             if (dataType == null && languageTag == null)
             {

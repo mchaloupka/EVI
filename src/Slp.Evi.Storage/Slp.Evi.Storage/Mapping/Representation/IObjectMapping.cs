@@ -20,7 +20,7 @@ namespace Slp.Evi.Storage.Mapping.Representation
         /// <summary>
         /// Gets the datatype URI of the RDF term generated from this term map
         /// </summary>
-        Uri DataTypeIRI { get; }
+        Uri DataTypeIri { get; }
 
         /// <summary>
         /// Gets the language tag of the RDF term generated from this term map

@@ -47,5 +47,11 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 
         /// <inheritdoc />
         public ParsedLiteralParts Literal { get; }
+
+        /// <inheritdoc />
+        public Uri DataTypeIri { get; }
+
+        /// <inheritdoc />
+        public string Language { get; }
     }
 }
