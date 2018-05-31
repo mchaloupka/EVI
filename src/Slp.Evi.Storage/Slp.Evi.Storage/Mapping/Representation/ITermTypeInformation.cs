@@ -21,15 +21,5 @@ namespace Slp.Evi.Storage.Mapping.Representation
         /// Gets whether the term is a literal
         /// </summary>
         bool IsLiteral { get; }
-
-        /// <summary>
-        /// Gets the data-type IRI (if it is a literal)
-        /// </summary>
-        Uri DataTypeIri { get; }
-
-        /// <summary>
-        /// Gets the language (it it is a literal)
-        /// </summary>
-        string Language { get; }
     }
 }
