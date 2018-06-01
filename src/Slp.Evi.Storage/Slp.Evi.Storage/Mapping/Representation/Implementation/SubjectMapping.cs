@@ -28,6 +28,7 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
                 triplesMapSubjectMap.GraphMaps.Select(
                     x => GraphMapping.Create(x, parentTriplesMapping, creationContext)).ToArray();
             sm.Classes = triplesMapSubjectMap.Classes;
+            creationContext.RegisterSubjectMapping(triplesMapSubjectMap, sm);
             return sm;
         }
 
