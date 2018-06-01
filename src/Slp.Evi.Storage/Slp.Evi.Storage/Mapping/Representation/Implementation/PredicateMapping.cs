@@ -1,12 +1,11 @@
-﻿using System;
-using TCode.r2rml4net.Mapping;
+﻿using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
     public class PredicateMapping
         : TermMapping, IPredicateMapping
     {
-        private PredicateMapping() { }
+        protected PredicateMapping() { }
 
         public static IPredicateMapping Create(IPredicateMap predicateMap, TriplesMapping tr, RepresentationCreationContext creationContext)
         {

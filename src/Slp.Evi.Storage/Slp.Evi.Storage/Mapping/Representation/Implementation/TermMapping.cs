@@ -45,30 +45,30 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
         }
 
         /// <inheritdoc />
-        public ITriplesMapping TriplesMap { get; private set; }
+        public ITriplesMapping TriplesMap { get; protected set; }
 
         /// <inheritdoc />
-        public ITermTypeInformation TermType { get; private set; }
+        public ITermTypeInformation TermType { get; protected set; }
 
         /// <inheritdoc />
-        public bool IsConstantValued { get; private set; }
+        public bool IsConstantValued { get; protected set; }
 
         /// <inheritdoc />
-        public bool IsColumnValued { get; private set; }
+        public bool IsColumnValued { get; protected set; }
 
         /// <inheritdoc />
-        public bool IsTemplateValued { get; private set; }
+        public bool IsTemplateValued { get; protected set; }
 
         /// <inheritdoc />
-        public string ColumnName { get; private set; }
+        public string ColumnName { get; protected set; }
 
         /// <inheritdoc />
-        public string Template { get; private set; }
+        public string Template { get; protected set; }
 
         /// <inheritdoc />
-        public Uri BaseIri { get; private set; }
+        public Uri BaseIri { get; protected set; }
 
         /// <inheritdoc />
-        public Uri Iri { get; private set; }
+        public Uri Iri { get; protected set; }
     }
 }

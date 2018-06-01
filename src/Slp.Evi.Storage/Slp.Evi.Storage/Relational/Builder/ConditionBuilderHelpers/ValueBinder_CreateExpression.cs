@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Types;
-using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
-using VDS.RDF;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {
@@ -57,49 +55,37 @@ namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 
             if (map.IsConstantValued)
             {
-                if (map is IUriValuedTermMap uriValuedTermMap)
+                if (map.Iri != null)
                 {
                     return new ExpressionsSet(
                         new AlwaysTrueCondition(),
                         new ConstantExpression(context.TypeCache.GetIndex(type), context),
                         new ConstantExpression((int)type.Category, context),
-                        new ConstantExpression(uriValuedTermMap.URI, context),
+                        new ConstantExpression(map.Iri, context),
                         null,
                         null,
                         null,
                         context);
                 }
-                else if (map is IObjectMap objectMap)
+                else if (map is IObjectMapping objectMap)
                 {
-                    if (objectMap.URI != null)
+                    if (objectMap.Literal != null)
                     {
-                        return new ExpressionsSet(
-                            new AlwaysTrueCondition(),
-                            new ConstantExpression(context.TypeCache.GetIndex(type), context),
-                            new ConstantExpression((int)type.Category, context),
-                            new ConstantExpression(objectMap.URI, context),
-                            null,
-                            null,
-                            null,
-                            context);
-                    }
-                    else if (objectMap.Literal != null)
-                    {
-                        var parsed = objectMap.Parsed();
+                        var literal = objectMap.Literal;
 
-                        if (parsed.Type != null)
+                        if (literal.Type != null)
                         {
-                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value, parsed.Type);
+                            var node = context.NodeFactory.CreateLiteralNode(literal.Value, literal.Type);
                             return _conditionBuilder.CreateExpression(context, node);
                         }
-                        else if (parsed.LanguageTag != null)
+                        else if (literal.LanguageTag != null)
                         {
-                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value, parsed.LanguageTag);
+                            var node = context.NodeFactory.CreateLiteralNode(literal.Value, literal.LanguageTag);
                             return _conditionBuilder.CreateExpression(context, node);
                         }
                         else
                         {
-                            var node = context.NodeFactory.CreateLiteralNode(parsed.Value);
+                            var node = context.NodeFactory.CreateLiteralNode(literal.Value);
                             return _conditionBuilder.CreateExpression(context, node);
                         }
                     }

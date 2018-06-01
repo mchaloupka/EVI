@@ -1,4 +1,5 @@
 ﻿using System;
+using VDS.RDF;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
@@ -6,42 +7,20 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
     /// Predicate map for class
     /// </summary>
     public class ClassPredicateMap
-        : IPredicateMapping
+        : PredicateMapping
     {
+        private const string ClassIri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassPredicateMap"/> class.
         /// </summary>
-        public ClassPredicateMap()
+        public ClassPredicateMap(Uri baseUri, ITriplesMapping parentTriplesMapping)
         {
-            //URI = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-            // TODO: Implement this class
+            TriplesMap = parentTriplesMapping;
+            TermType = TermTypeInformation.CreateIriTermType();
+            IsConstantValued = true;
+            Iri = UriFactory.Create(ClassIri);
+            BaseIri = baseUri;
         }
-
-        /// <inheritdoc />
-        public bool IsConstantValued { get; }
-
-        /// <inheritdoc />
-        public bool IsColumnValued { get; }
-
-        /// <inheritdoc />
-        public bool IsTemplateValued { get; }
-
-        /// <inheritdoc />
-        public string ColumnName { get; }
-
-        /// <inheritdoc />
-        public string Template { get; }
-
-        /// <inheritdoc />
-        public Uri BaseIri { get; }
-
-        /// <inheritdoc />
-        public Uri Iri { get; }
-
-        /// <inheritdoc />
-        public ITriplesMapping TriplesMap { get; }
-
-        /// <inheritdoc />
-        public ITermTypeInformation TermType { get; }
     }
 }

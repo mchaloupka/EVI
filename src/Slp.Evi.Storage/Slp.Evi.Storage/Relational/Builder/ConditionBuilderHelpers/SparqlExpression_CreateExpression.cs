@@ -11,7 +11,6 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
-using VDS.RDF.Parsing;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {

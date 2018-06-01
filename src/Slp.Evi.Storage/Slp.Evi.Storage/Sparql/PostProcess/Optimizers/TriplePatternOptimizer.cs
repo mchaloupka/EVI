@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using DatabaseSchemaReader.DataSchema;
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Mapping.Representation;
@@ -12,7 +11,6 @@ using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Extensions;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 using PatternItem = Slp.Evi.Storage.Common.Optimization.PatternMatching.PatternItem;

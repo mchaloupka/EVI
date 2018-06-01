@@ -1,7 +1,4 @@
-using System;
 using System.Globalization;
-using DatabaseSchemaReader.DataSchema;
-using Slp.Evi.Storage.Query;
 
 namespace Slp.Evi.Storage.Common.Optimization.PatternMatching
 {

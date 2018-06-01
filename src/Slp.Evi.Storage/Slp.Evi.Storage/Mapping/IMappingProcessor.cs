@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Sparql.PostProcess;
-using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Mapping
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Slp.Evi.Storage.Mapping.Representation
+﻿namespace Slp.Evi.Storage.Mapping.Representation
 {
     /// <summary>
     /// An information about type

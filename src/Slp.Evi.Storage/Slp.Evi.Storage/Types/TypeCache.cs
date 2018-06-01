@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
-using Slp.Evi.Storage.Mapping;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Types
 {

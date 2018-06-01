@@ -1,5 +1,4 @@
-﻿using System;
-using TCode.r2rml4net.Mapping;
+﻿using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
@@ -37,5 +36,16 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 
         /// <inheritdoc />
         public bool IsLiteral { get; private set; }
+
+        public static ITermTypeInformation CreateIriTermType()
+        {
+            var res = new TermTypeInformation
+            {
+                IsBlankNode = false,
+                IsIri = true,
+                IsLiteral = false
+            };
+            return res;
+        }
     }
 }

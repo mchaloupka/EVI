@@ -1,6 +1,4 @@
-﻿using Slp.Evi.Storage.Bootstrap;
-using Slp.Evi.Storage.Query;
-using Slp.Evi.Storage.Sparql.Algebra;
+﻿using Slp.Evi.Storage.Sparql.Algebra;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using Xunit;

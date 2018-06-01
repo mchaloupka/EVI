@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Slp.Evi.Storage.Mapping.Representation
 {
@@ -32,5 +33,10 @@ namespace Slp.Evi.Storage.Mapping.Representation
         /// Either <see cref="TableName"/> or <see cref="SqlStatement"/> should be set.
         /// </remarks>
         string SqlStatement { get; }
+
+        /// <summary>
+        /// The base IRI for this triple map
+        /// </summary>
+        Uri BaseIri { get; }
     }
 }

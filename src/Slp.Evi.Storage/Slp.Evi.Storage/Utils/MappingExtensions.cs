@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;

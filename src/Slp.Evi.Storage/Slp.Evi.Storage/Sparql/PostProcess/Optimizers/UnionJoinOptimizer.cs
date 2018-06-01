@@ -10,7 +10,6 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
-using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;

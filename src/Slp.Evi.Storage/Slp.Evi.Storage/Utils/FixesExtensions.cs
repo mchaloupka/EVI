@@ -1,14 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using TCode.r2rml4net.Extensions;
 using TCode.r2rml4net.Mapping;
-using TCode.r2rml4net.Mapping.Fluent;
 using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace Slp.Evi.Storage.Utils

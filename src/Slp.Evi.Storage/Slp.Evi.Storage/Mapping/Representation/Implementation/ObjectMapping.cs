@@ -7,7 +7,7 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
     public class ObjectMapping
         : TermMapping, IObjectMapping
     {
-        private ObjectMapping() { }
+        protected ObjectMapping() { }
 
         public static IObjectMapping Create(IObjectMap objectMap, TriplesMapping tr, RepresentationCreationContext creationContext)
         {

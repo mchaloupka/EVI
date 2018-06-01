@@ -1,5 +1,5 @@
 ﻿// This is generated code, do not edit!!!
-using System;
+
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query;

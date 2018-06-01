@@ -1,6 +1,5 @@
 ﻿using System;
 using Slp.Evi.Storage.Mapping.Representation;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Types
 {

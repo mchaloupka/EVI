@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Slp.Evi.Storage.Mapping.Representation;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Patterns

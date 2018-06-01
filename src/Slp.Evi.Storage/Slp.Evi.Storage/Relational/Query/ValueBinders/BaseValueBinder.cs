@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using System.Text;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Types;
-using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Extensions;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
 namespace Slp.Evi.Storage.Relational.Query.ValueBinders
@@ -333,19 +330,16 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </exception>
         private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
-            if (TermMap is IUriValuedTermMap uriValuedTermMap)
+            if (TermMap.Iri != null)
             {
-                var uri = uriValuedTermMap.URI;
+                var uri = TermMap.Iri;
                 return (fact, row, context) => fact.CreateUriNode(uri);
             }
-            else if (TermMap is IObjectMap objectMap)
+            else if (TermMap is IObjectMapping objectMap)
             {
-                if (objectMap.URI != null)
-                    return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
-                else if (objectMap.Literal != null)
+                if (objectMap.Literal != null)
                 {
-                    var parsedParts = objectMap.Parsed();
-                    var value = parsedParts.Value;
+                    var value = objectMap.Literal.Value;
                     return (fact, row, context) => ((ILiteralValueType)Type).CreateLiteralNode(fact, value);
                 }
                 else
@@ -412,7 +406,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="context">The query context.</param>
         private Expression GenerateBlankNodeForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
-            if (TermMap is ISubjectMap)
+            if (TermMap is ISubjectMapping)
                 return Expression.Call(context, "GetBlankNodeSubjectForValue", new Type[0], factory, value);
             else
                 return Expression.Call(context, "GetBlankNodeObjectForValue", new Type[0], factory, value);

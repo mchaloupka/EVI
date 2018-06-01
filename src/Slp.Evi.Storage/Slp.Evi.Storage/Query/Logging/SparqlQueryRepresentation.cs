@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Mapping.Representation;
@@ -7,11 +6,7 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
-using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using GraphPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.GraphPattern;
 using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;

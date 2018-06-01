@@ -1,5 +1,4 @@
 using System;
-using Slp.Evi.Storage.Utils;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
@@ -7,51 +6,21 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
     /// Object map for class
     /// </summary>
     public class ClassObjectMap
-        : IObjectMapping
+        : ObjectMapping
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassObjectMap"/> class.
         /// </summary>
         /// <param name="classUri">The class URI.</param>
-        public ClassObjectMap(Uri classUri)
+        /// <param name="baseUri"></param>
+        /// <param name="parentTriplesMapping"></param>
+        public ClassObjectMap(Uri classUri, Uri baseUri, ITriplesMapping parentTriplesMapping)
         {
-            // TODO: Implement this class
+            TriplesMap = parentTriplesMapping;
+            TermType = TermTypeInformation.CreateIriTermType();
+            IsConstantValued = true;
+            Iri = classUri;
+            BaseIri = baseUri;
         }
-
-        /// <inheritdoc />
-        public bool IsConstantValued { get; }
-
-        /// <inheritdoc />
-        public bool IsColumnValued { get; }
-
-        /// <inheritdoc />
-        public bool IsTemplateValued { get; }
-
-        /// <inheritdoc />
-        public string ColumnName { get; }
-
-        /// <inheritdoc />
-        public string Template { get; }
-
-        /// <inheritdoc />
-        public Uri BaseIri { get; }
-
-        /// <inheritdoc />
-        public Uri Iri { get; }
-
-        /// <inheritdoc />
-        public ITriplesMapping TriplesMap { get; }
-
-        /// <inheritdoc />
-        public ITermTypeInformation TermType { get; }
-
-        /// <inheritdoc />
-        public ParsedLiteralParts Literal { get; }
-
-        /// <inheritdoc />
-        public Uri DataTypeIri { get; }
-
-        /// <inheritdoc />
-        public string Language { get; }
     }
 }

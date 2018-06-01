@@ -105,16 +105,16 @@ namespace Slp.Evi.Storage.Mapping
                 patterns.AddRange(graphMaps.Select(graphMap =>
                     new RestrictedTriplePattern(triplePattern.SubjectPattern,
                         triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
-                        subjectMap, new ClassPredicateMap(),
-                        new ClassObjectMap(classUri), null, graphMap)));
+                        subjectMap, new ClassPredicateMap(tripleMap.BaseIri, tripleMap),
+                        new ClassObjectMap(classUri, tripleMap.BaseIri, tripleMap), null, graphMap)));
             }
             else
             {
                 patterns.Add(
                     new RestrictedTriplePattern(triplePattern.SubjectPattern,
                     triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
-                    subjectMap, new ClassPredicateMap(),
-                    new ClassObjectMap(classUri),
+                    subjectMap, new ClassPredicateMap(tripleMap.BaseIri, tripleMap),
+                    new ClassObjectMap(classUri, tripleMap.BaseIri, tripleMap),
                     null, null));
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TCode.r2rml4net.Mapping;
 
@@ -27,6 +28,7 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
                 triplesMap.PredicateObjectMaps.Select(x => PredicateObjectMapping.Create(x, tr, creationContext)).ToArray();
             tr.TableName = triplesMap.TableName;
             tr.SqlStatement = triplesMap.SqlQuery;
+            tr.BaseIri = triplesMap.BaseUri;
             return tr;
         }
 
@@ -41,6 +43,9 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 
         /// <inheritdoc />
         public string SqlStatement { get; private set; }
+
+        /// <inheritdoc />
+        public Uri BaseIri { get; private set; }
     }
 }
 

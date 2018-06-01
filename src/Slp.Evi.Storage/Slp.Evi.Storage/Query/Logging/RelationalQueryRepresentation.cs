@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Relational.Query;
@@ -12,7 +11,6 @@ using Slp.Evi.Storage.Relational.Query.Conditions.Source;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Query.Logging
 {
