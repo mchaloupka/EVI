@@ -11,7 +11,6 @@ using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 using SlpPatternItem = Slp.Evi.Storage.Common.Optimization.PatternMatching.PatternItem;
 using PatternItem = VDS.RDF.Query.Patterns.PatternItem;
@@ -436,7 +435,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="second">The second mapping.</param>
                 /// <param name="context">The query context.</param>
                 /// <returns><c>true</c> if first mapping can match the second one; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(string literal, ITermMapping second, IQueryContext context)
+                private bool CanMatch(ParsedLiteralParts literal, ITermMapping second, IQueryContext context)
                 {
                     return CanMatchFunction(second,
                         constantUriFunc: x => false,
@@ -479,7 +478,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="firstLiteral">The first literal.</param>
                 /// <param name="secondLiteral">The second literal.</param>
                 /// <returns><c>true</c> if the literals can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatch(string firstLiteral, string secondLiteral)
+                private bool CanMatch(ParsedLiteralParts firstLiteral, ParsedLiteralParts secondLiteral)
                 {
                     return firstLiteral == secondLiteral;
                 }
@@ -521,12 +520,12 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// <param name="templateTermMap">The template mapping.</param>
                 /// <param name="context"></param>
                 /// <returns><c>true</c> if the mappings can match; otherwise, <c>false</c>.</returns>
-                private bool CanMatchTemplate(string literal, ITermMapping templateTermMap, IQueryContext context)
+                private bool CanMatchTemplate(ParsedLiteralParts literal, ITermMapping templateTermMap, IQueryContext context)
                 {
                     if (templateTermMap.TermType.IsIri)
                         return false;
 
-                    return TemplateMatchCheck(templateTermMap.Template, literal, false, templateTermMap.GetTypeResolver(context));
+                    return TemplateMatchCheck(templateTermMap.Template, literal.Value, false, templateTermMap.GetTypeResolver(context));
                 }
 
                 /// <summary>
@@ -601,22 +600,18 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 /// or
                 /// Term must be constant, column or template valued
                 /// </exception>
-                private T CanMatchFunction<T>(ITermMapping decider, Func<Uri, T> constantUriFunc, Func<string, T> constantLiteralFunc, Func<ITermMapping, T> columnFunc, Func<ITermMapping, T> templateFunc)
+                private T CanMatchFunction<T>(ITermMapping decider, Func<Uri, T> constantUriFunc, Func<ParsedLiteralParts, T> constantLiteralFunc, Func<ITermMapping, T> columnFunc, Func<ITermMapping, T> templateFunc)
                 {
                     if (decider.IsConstantValued)
                     {
-                        if (decider is IUriValuedTermMap uriValuedTermMap)
+                        if (decider.Iri != null)
                         {
-                            var uri = uriValuedTermMap.URI;
+                            var uri = decider.Iri;
                             return constantUriFunc(uri);
                         }
-                        else if (decider is IObjectMap oMap)
+                        else if (decider is IObjectMapping oMap)
                         {
-                            if (oMap.URI != null)
-                            {
-                                return constantUriFunc(oMap.URI);
-                            }
-                            else if (oMap.Literal != null)
+                            if (oMap.Literal != null)
                             {
                                 return constantLiteralFunc(oMap.Literal);
                             }
