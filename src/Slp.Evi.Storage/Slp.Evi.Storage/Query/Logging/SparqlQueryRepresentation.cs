@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
-using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
 using GraphPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.GraphPattern;
 using TriplePattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.TriplePattern;
@@ -265,7 +261,7 @@ namespace Slp.Evi.Storage.Query.Logging
             Process(restrictedTriplePattern.ObjectPattern);
             _sb.Append(") From (");
 
-            var tableName = _queryContext.Mapping.Cache.GetSqlTable(restrictedTriplePattern.TripleMap);
+            var tableName = restrictedTriplePattern.TripleMap.TableName;
 
             if (!string.IsNullOrEmpty(tableName))
             {
@@ -297,15 +293,15 @@ namespace Slp.Evi.Storage.Query.Logging
             return null;
         }
 
-        private void StringRepresentationOfMap(ITermMap termMap)
+        private void StringRepresentationOfMap(ITermMapping termMap)
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IUriValuedTermMap uriTermMap)
+                if (termMap.Iri != null)
                 {
-                    _sb.Append($"<{uriTermMap.URI}>");
+                    _sb.Append($"<{termMap.Iri}>");
                 }
-                else if (termMap is IObjectMap objectMap)
+                else if (termMap is IObjectMapping objectMap)
                 {
                     _sb.Append(objectMap.Literal);
                 }
@@ -328,10 +324,10 @@ namespace Slp.Evi.Storage.Query.Logging
             }
         }
 
-        private void StringRepresentationOfMap(IRefObjectMap refMap)
+        private void StringRepresentationOfMap(IRefObjectMapping refMap)
         {
             _sb.Append("ref:");
-            _sb.Append(refMap.ParentTriplesMap.Node);
+            _sb.Append(_getObjectIndex(refMap.TargetSubjectMap.TriplesMap));
         }
 
         /// <inheritdoc />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using DatabaseSchemaReader;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Database;

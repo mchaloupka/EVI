@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Mapping.Representation;
+using Slp.Evi.Storage.Mapping.Representation.Implementation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using Slp.Evi.Storage.Sparql.Utils;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping
 {
@@ -52,14 +53,14 @@ namespace Slp.Evi.Storage.Mapping
         {
             List<RestrictedTriplePattern> patterns = new List<RestrictedTriplePattern>();
 
-            foreach (var tripleMap in _mappingProcessor.Mapping.TriplesMaps)
+            foreach (var tripleMap in _mappingProcessor.TriplesMaps)
             {
                 var subjectMap = tripleMap.SubjectMap;
                 var graphMaps = subjectMap.GraphMaps.ToList();
 
                 foreach (var predicateObjectMap in tripleMap.PredicateObjectMaps)
                 {
-                    var graphList = new List<IGraphMap>(graphMaps);
+                    var graphList = new List<IGraphMapping>(graphMaps);
                     graphList.AddRange(predicateObjectMap.GraphMaps);
 
                     foreach (var predicateMap in predicateObjectMap.PredicateMaps)
@@ -96,24 +97,24 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="classUri">The class URI.</param>
         /// <param name="graphMaps">The graph maps.</param>
         private void ConstrainTriplePattern(TriplePattern triplePattern,
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
-            System.Uri classUri, List<IGraphMap> graphMaps)
+            List<RestrictedTriplePattern> patterns, ITriplesMapping tripleMap, ISubjectMapping subjectMap,
+            System.Uri classUri, List<IGraphMapping> graphMaps)
         {
             if (graphMaps.Any())
             {
                 patterns.AddRange(graphMaps.Select(graphMap =>
                     new RestrictedTriplePattern(triplePattern.SubjectPattern,
                         triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
-                        subjectMap, new ClassPredicateMap(tripleMap.BaseUri),
-                        new ClassObjectMap(tripleMap.BaseUri, classUri), null, graphMap)));
+                        subjectMap, new ClassPredicateMap(tripleMap.BaseIri, tripleMap),
+                        new ClassObjectMap(classUri, tripleMap.BaseIri, tripleMap), null, graphMap)));
             }
             else
             {
                 patterns.Add(
                     new RestrictedTriplePattern(triplePattern.SubjectPattern,
                     triplePattern.PredicatePattern, triplePattern.ObjectPattern, tripleMap,
-                    subjectMap, new ClassPredicateMap(tripleMap.BaseUri),
-                    new ClassObjectMap(tripleMap.BaseUri, classUri),
+                    subjectMap, new ClassPredicateMap(tripleMap.BaseIri, tripleMap),
+                    new ClassObjectMap(classUri, tripleMap.BaseIri, tripleMap),
                     null, null));
             }
         }
@@ -129,8 +130,8 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="refObjectMap">The reference object map.</param>
         /// <param name="graphMaps">The graph maps.</param>
         private void ConstrainTriplePattern(TriplePattern triplePattern,
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
-            IPredicateMap predicateMap, IRefObjectMap refObjectMap, List<IGraphMap> graphMaps)
+            List<RestrictedTriplePattern> patterns, ITriplesMapping tripleMap, ISubjectMapping subjectMap,
+            IPredicateMapping predicateMap, IRefObjectMapping refObjectMap, List<IGraphMapping> graphMaps)
         {
             if (graphMaps.Any())
             {
@@ -159,8 +160,8 @@ namespace Slp.Evi.Storage.Mapping
         /// <param name="objectMap">The object map.</param>
         /// <param name="graphMaps">The graph maps.</param>
         private void ConstrainTriplePattern(TriplePattern triplePattern,
-            List<RestrictedTriplePattern> patterns, ITriplesMap tripleMap, ISubjectMap subjectMap,
-            IPredicateMap predicateMap, IObjectMap objectMap, List<IGraphMap> graphMaps)
+            List<RestrictedTriplePattern> patterns, ITriplesMapping tripleMap, ISubjectMapping subjectMap,
+            IPredicateMapping predicateMap, IObjectMapping objectMap, List<IGraphMapping> graphMaps)
         {
             if (graphMaps.Any())
             {

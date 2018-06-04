@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Mapping.Representation;
+using Slp.Evi.Storage.Mapping.Representation.Implementation;
 using Slp.Evi.Storage.Sparql.PostProcess;
 using TCode.r2rml4net;
 
@@ -19,21 +23,20 @@ namespace Slp.Evi.Storage.Mapping
         public MappingProcessor(IR2RML mapping, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
-            Mapping = mapping;
-            Cache = new R2RMLCache();
+            TriplesMaps = CreateMappingRepresentation(mapping).ToArray();
+        }
+
+        private IEnumerable<ITriplesMapping> CreateMappingRepresentation(IR2RML mapping)
+        {
+            var creationContext = new RepresentationCreationContext();
+            return mapping.TriplesMaps.Select(x => TriplesMapping.Create(x, creationContext));
         }
 
         /// <summary>
-        /// Gets the R2RML mapping.
+        /// Gets the mapping.
         /// </summary>
-        /// <value>The R2RML mapping.</value>
-        public IR2RML Mapping { get; }
-
-        /// <summary>
-        /// Gets the R2RML cache.
-        /// </summary>
-        /// <value>The R2RML cache.</value>
-        public R2RMLCache Cache { get; }
+        /// <value>Collection of triple maps.</value>
+        public IEnumerable<ITriplesMapping> TriplesMaps { get; }
 
         /// <summary>
         /// Gets the mapping transformer.

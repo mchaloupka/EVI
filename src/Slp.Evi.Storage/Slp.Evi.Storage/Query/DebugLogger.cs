@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query.Logging;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.Builder;
 using VDS.RDF.Query;
 
 namespace Slp.Evi.Storage.Query

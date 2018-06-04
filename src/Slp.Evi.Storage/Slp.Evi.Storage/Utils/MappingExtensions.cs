@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Utils
 {
@@ -15,9 +11,9 @@ namespace Slp.Evi.Storage.Utils
     public static class MappingExtensions
     {
         /// <summary>
-        /// Gets type resolver for passed <see cref="ITermMap"/>.
+        /// Gets type resolver for passed <see cref="ITermMapping"/>.
         /// </summary>
-        public static Func<string, DataType> GetTypeResolver(this ITermMap termMap, IQueryContext context)
+        public static Func<string, DataType> GetTypeResolver(this ITermMapping termMap, IQueryContext context)
         {
             var triplesMap = termMap.TriplesMap;
 
@@ -28,7 +24,7 @@ namespace Slp.Evi.Storage.Utils
             }
             else
             {
-                var tableName = context.Mapping.Cache.GetSqlTable(triplesMap);
+                var tableName = triplesMap.TableName;
 
                 if (tableName != null)
                 {

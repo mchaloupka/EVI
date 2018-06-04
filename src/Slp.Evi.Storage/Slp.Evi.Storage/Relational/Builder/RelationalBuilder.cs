@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Builder.CodeGeneration;
 using Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers;
@@ -15,7 +16,6 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 using FilterPattern = Slp.Evi.Storage.Sparql.Algebra.Patterns.FilterPattern;
@@ -524,12 +524,12 @@ namespace Slp.Evi.Storage.Relational.Builder
 
             if (triplePattern.RefObjectMap != null)
             {
-                refSource = GetTripleMapSource(triplePattern.RefObjectMap.ParentTriplesMap, context);
+                refSource = GetTripleMapSource(triplePattern.RefObjectMap.TargetSubjectMap.TriplesMap, context);
 
                 foreach (var joinCondition in triplePattern.RefObjectMap.JoinConditions)
                 {
                     var sourceCalculusVariable = source.GetVariable(joinCondition.ChildColumn);
-                    var refSourceCalculusVariable = refSource.GetVariable(joinCondition.ParentColumn);
+                    var refSourceCalculusVariable = refSource.GetVariable(joinCondition.TargetColumn);
 
                     conditions.Add(new EqualVariablesCondition(sourceCalculusVariable, refSourceCalculusVariable));
                 }
@@ -543,10 +543,10 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The context.</param>
         /// <returns>ISqlCalculusSource.</returns>
         /// <exception cref="System.ArgumentException">Unknown source;tripleMap</exception>
-        private static ISqlCalculusSource GetTripleMapSource(ITriplesMap tripleMap, IQueryContext context)
+        private static ISqlCalculusSource GetTripleMapSource(ITriplesMapping tripleMap, IQueryContext context)
         {
-            var sqlTableName = context.Mapping.Cache.GetSqlTable(tripleMap);
-            var sqlStatement = context.Mapping.Cache.GetSqlStatement(tripleMap);
+            var sqlTableName = tripleMap.TableName;
+            var sqlStatement = tripleMap.SqlStatement;
 
             if (!string.IsNullOrEmpty(sqlStatement))
             {
@@ -584,7 +584,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternItem(PatternItem pattern, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
+        private void ProcessTriplePatternItem(PatternItem pattern, ITermMapping termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             if (pattern is VariablePattern)
             {
@@ -615,7 +615,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="conditions">The conditions.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternCondition(INode node, ITermMap termMap, List<ICondition> conditions, ISqlCalculusSource source, IQueryContext context)
+        private void ProcessTriplePatternCondition(INode node, ITermMapping termMap, List<ICondition> conditions, ISqlCalculusSource source, IQueryContext context)
         {
             var valueBinder = new BaseValueBinder(null, termMap, source, context.TypeCache);
             var notNullCondition = _conditionBuilder.CreateIsBoundCondition(valueBinder, context);
@@ -634,7 +634,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="valueBinders">The value binders.</param>
         /// <param name="source">The source.</param>
         /// <param name="context">The context.</param>
-        private void ProcessTriplePatternVariable(string variableName, ITermMap termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
+        private void ProcessTriplePatternVariable(string variableName, ITermMapping termMap, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource source, IQueryContext context)
         {
             var valueBinder = new BaseValueBinder(variableName, termMap, source, context.TypeCache);
 
@@ -690,7 +690,7 @@ namespace Slp.Evi.Storage.Relational.Builder
         /// <param name="context">The query context.</param>
         private void ProcessTriplePatternRefObject(RestrictedTriplePattern triplePattern, List<ICondition> conditions, List<IValueBinder> valueBinders, ISqlCalculusSource refSource, IQueryContext context)
         {
-            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.SubjectMap, conditions, valueBinders, refSource, context);
+            ProcessTriplePatternItem(triplePattern.ObjectPattern, triplePattern.RefObjectMap.TargetSubjectMap, conditions, valueBinders, refSource, context);
         }
     }
 }

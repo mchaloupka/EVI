@@ -1,5 +1,4 @@
 ﻿// This is generated code, do not edit!!!
-using System;
 
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Sources;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using TCode.r2rml4net.Mapping;
+using Slp.Evi.Storage.Mapping.Representation;
 using VDS.RDF.Query.Patterns;
 
 namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
@@ -23,10 +23,10 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="objectMap">The object map.</param>
         /// <param name="refObjectMap">The reference object map</param>
         /// <param name="graphMap">The graph map.</param>
-        public RestrictedTriplePattern(PatternItem subjectPattern, PatternItem predicatePattern, 
-            PatternItem objectPattern, ITriplesMap tripleMap, ISubjectMap subjectMap, 
-            IPredicateMap predicateMap, IObjectMap objectMap, IRefObjectMap refObjectMap,
-            IGraphMap graphMap)
+        public RestrictedTriplePattern(PatternItem subjectPattern, PatternItem predicatePattern,
+            PatternItem objectPattern, ITriplesMapping tripleMap, ISubjectMapping subjectMap,
+            IPredicateMapping predicateMap, IObjectMapping objectMap, IRefObjectMapping refObjectMap,
+            IGraphMapping graphMap)
         {
             SubjectPattern = subjectPattern;
             PredicatePattern = predicatePattern;
@@ -52,37 +52,37 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// Gets the graph map.
         /// </summary>
         /// <value>The graph map.</value>
-        public IGraphMap GraphMap { get; private set; }
+        public IGraphMapping GraphMap { get; private set; }
 
         /// <summary>
         /// Gets the object map.
         /// </summary>
         /// <value>The object map.</value>
-        public IObjectMap ObjectMap { get; private set; }
+        public IObjectMapping ObjectMap { get; private set; }
 
         /// <summary>
         /// Gets the reference object map.
         /// </summary>
         /// <value>The reference object map.</value>
-        public IRefObjectMap RefObjectMap { get; private set; }
+        public IRefObjectMapping RefObjectMap { get; private set; }
 
         /// <summary>
         /// Gets the predicate map.
         /// </summary>
         /// <value>The predicate map.</value>
-        public IPredicateMap PredicateMap { get; private set; }
+        public IPredicateMapping PredicateMap { get; private set; }
 
         /// <summary>
         /// Gets or sets the subject map.
         /// </summary>
         /// <value>The subject map.</value>
-        public ISubjectMap SubjectMap { get; private set; }
+        public ISubjectMapping SubjectMap { get; private set; }
 
         /// <summary>
         /// Gets the triple map.
         /// </summary>
         /// <value>The triple map.</value>
-        public ITriplesMap TripleMap { get; private set; }
+        public ITriplesMapping TripleMap { get; private set; }
 
         /// <summary>
         /// Adds to variables list.
@@ -91,8 +91,7 @@ namespace Slp.Evi.Storage.Sparql.Algebra.Patterns
         /// <param name="variables">The variables list.</param>
         private void AddToVariables(PatternItem pattern, List<string> variables)
         {
-            var variablePattern = pattern as VariablePattern;
-            if (variablePattern != null)
+            if (pattern is VariablePattern variablePattern)
             {
                 variables.Add(variablePattern.VariableName);
             }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
-using Slp.Evi.Storage.Mapping;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Utils;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Types
 {
@@ -13,8 +12,6 @@ namespace Slp.Evi.Storage.Types
     /// </summary>
     public class TypeCache : ITypeCache
     {
-        private readonly R2RMLCache _cache;
-
         /// <summary>
         /// The database schema provider
         /// </summary>
@@ -28,7 +25,7 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// The types dictionary
         /// </summary>
-        private readonly CacheDictionary<IMapBase, IValueType> _typesDictionary;
+        private readonly CacheDictionary<IBaseMapping, IValueType> _typesDictionary;
 
         /// <summary>
         /// The type to index dictionary
@@ -62,12 +59,11 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeCache"/> class.
         /// </summary>
-        public TypeCache(R2RMLCache r2rmlCache, IDbSchemaProvider dbSchemaProvider, ISqlDatabase database)
+        public TypeCache(IDbSchemaProvider dbSchemaProvider, ISqlDatabase database)
         {
-            _cache = r2rmlCache;
             _dbSchemaProvider = dbSchemaProvider;
             _database = database;
-            _typesDictionary = new CacheDictionary<IMapBase, IValueType>(ResolveType);
+            _typesDictionary = new CacheDictionary<IBaseMapping, IValueType>(ResolveType);
             _typesIndexDictionary = new Dictionary<int, IValueType>();
             _typeIndexesDictionary = new Dictionary<IValueType, int>();
             _createdFullTypesIndexes = new Dictionary<string, Dictionary<string, int>>();
@@ -103,7 +99,7 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Gets the <see cref="IValueType"/> for <paramref name="termMap"/>
         /// </summary>
-        public IValueType GetValueType(IMapBase termMap) => _typesDictionary.GetValueFor(termMap);
+        public IValueType GetValueType(IBaseMapping termMap) => _typesDictionary.GetValueFor(termMap);
 
         /// <inheritdoc />
         public IValueType IRIValueType => _typesIndexDictionary[1];
@@ -120,40 +116,26 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Resolves the type for <paramref name="map"/>.
         /// </summary>
-        private IValueType ResolveType(IMapBase map)
+        private IValueType ResolveType(IBaseMapping map)
         {
-            if (map is ITermMap termMap)
+            if (map is ITermMapping termMap)
             {
-                if ((termMap is ISubjectMap) || (termMap is IPredicateMap))
+                if (termMap.TermType.IsBlankNode)
                 {
-                    if (termMap.TermType.IsBlankNode)
-                    {
-                        return _typesIndexDictionary[2];
-                    }
-                    else
-                    {
-                        return _typesIndexDictionary[1];
-                    }
+                    return _typesIndexDictionary[2];
                 }
-                else if (termMap is IObjectMap objectMap)
+                else if (termMap.TermType.IsIri)
                 {
-                    if (termMap.TermType.IsBlankNode)
-                    {
-                        return _typesIndexDictionary[2];
-                    }
-                    else if (termMap.TermType.IsURI)
-                    {
-                        return _typesIndexDictionary[1];
-                    }
-                    else if (termMap.TermType.IsLiteral)
-                    {
-                        return ResolveLiteralType(objectMap);
-                    }
+                    return _typesIndexDictionary[1];
+                }
+                else if (termMap.TermType.IsLiteral)
+                {
+                    return ResolveLiteralType((IObjectMapping)termMap);
                 }
             }
-            else if (map is IRefObjectMap refObjectMap)
+            else if (map is IRefObjectMapping refObjectMap)
             {
-                return ResolveType(refObjectMap.ParentTriplesMap.SubjectMap);
+                return ResolveType(refObjectMap.TargetSubjectMap);
             }
 
             throw new NotSupportedException("Unsupported ITermMap type");
@@ -162,12 +144,12 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// Resolves the type for <paramref name="objectMap"/>.
         /// </summary>
-        private IValueType ResolveLiteralType(IObjectMap objectMap)
+        private IValueType ResolveLiteralType(IObjectMapping objectMap)
         {
             string languageTag = null;
             Uri dataType = null;
 
-            dataType = objectMap.DataTypeURI;
+            dataType = objectMap.DataTypeIri;
             languageTag = objectMap.Language;
 
             if (dataType == null && languageTag == null)
@@ -176,8 +158,7 @@ namespace Slp.Evi.Storage.Types
                 {
                     if (objectMap.Literal != null)
                     {
-                        var literal = objectMap.Parsed();
-
+                        var literal = objectMap.Literal;
                         languageTag = literal.LanguageTag;
                         dataType = literal.Type;
                     }
@@ -190,7 +171,7 @@ namespace Slp.Evi.Storage.Types
                 {
                     var columnName = objectMap.ColumnName;
                     var triplesMap = objectMap.TriplesMap;
-                    var tableName = _cache.GetSqlTable(triplesMap);
+                    var tableName = triplesMap.TableName;
 
                     if (tableName != null)
                     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Slp.Evi.Storage.Relational.Query;
+﻿using Slp.Evi.Storage.Relational.Query;
 
 namespace Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers
 {

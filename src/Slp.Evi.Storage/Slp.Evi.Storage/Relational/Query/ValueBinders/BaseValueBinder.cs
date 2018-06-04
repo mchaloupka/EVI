@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using System.Text;
 using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Types;
-using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net;
 using TCode.r2rml4net.Extensions;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 
 namespace Slp.Evi.Storage.Relational.Query.ValueBinders
@@ -39,7 +37,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="termMap">The term map.</param>
         /// <param name="source">The source.</param>
         /// <param name="typeCache">The type cache.</param>
-        public BaseValueBinder(string variableName, ITermMap termMap, ISqlCalculusSource source, ITypeCache typeCache)
+        public BaseValueBinder(string variableName, ITermMapping termMap, ISqlCalculusSource source, ITypeCache typeCache)
         {
             VariableName = variableName;
             TermMap = termMap;
@@ -119,7 +117,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// Gets the term map.
         /// </summary>
         /// <value>The term map.</value>
-        public ITermMap TermMap { get; }
+        public ITermMapping TermMap { get; }
 
         /// <summary>
         /// Gets the name of the variable.
@@ -243,7 +241,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
             List<Expression> expressions = new List<Expression>
             {
                 Expression.Assign(valVar,
-                    GenerateReplaceColumnReferencesFunc(row, TermMap.TermType.IsURI, queryContext)),
+                    GenerateReplaceColumnReferencesFunc(row, TermMap.TermType.IsIri, queryContext)),
                 Expression.Condition(Expression.Equal(valVar, Expression.Constant(null, typeof (string))),
                     Expression.Constant(null, typeof (INode)),
                     GenerateTermForValueFunc(nodeFactory, valVar, context))
@@ -332,19 +330,16 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// </exception>
         private Expression<Func<INodeFactory, IQueryResultRow, IQueryContext, INode>> GenerateLoadNodeFuncFromConstant()
         {
-            if (TermMap is IUriValuedTermMap uriValuedTermMap)
+            if (TermMap.Iri != null)
             {
-                var uri = uriValuedTermMap.URI;
+                var uri = TermMap.Iri;
                 return (fact, row, context) => fact.CreateUriNode(uri);
             }
-            else if (TermMap is IObjectMap objectMap)
+            else if (TermMap is IObjectMapping objectMap)
             {
-                if (objectMap.URI != null)
-                    return (fact, row, context) => fact.CreateUriNode(objectMap.URI);
-                else if (objectMap.Literal != null)
+                if (objectMap.Literal != null)
                 {
-                    var parsedParts = objectMap.Parsed();
-                    var value = parsedParts.Value;
+                    var value = objectMap.Literal.Value;
                     return (fact, row, context) => ((ILiteralValueType)Type).CreateLiteralNode(fact, value);
                 }
                 else
@@ -376,14 +371,14 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
 
             var termType = TermMap.TermType;
 
-            if (termType.IsURI)
+            if (termType.IsIri)
             {
                 expressions.Add(Expression.Assign(nodeVar,
                     Expression.Call(typeof(BaseValueBinder), nameof(GenerateUriTermForValue), new Type[0],
                         value,
                         factory,
                         context,
-                        Expression.Constant(TermMap.BaseUri, typeof(Uri)))));
+                        Expression.Constant(TermMap.BaseIri, typeof(Uri)))));
             }
             else if (termType.IsBlankNode)
             {
@@ -411,7 +406,7 @@ namespace Slp.Evi.Storage.Relational.Query.ValueBinders
         /// <param name="context">The query context.</param>
         private Expression GenerateBlankNodeForValueFunc(ParameterExpression factory, ParameterExpression value, ParameterExpression context)
         {
-            if (TermMap is ISubjectMap)
+            if (TermMap is ISubjectMapping)
                 return Expression.Call(context, "GetBlankNodeSubjectForValue", new Type[0], factory, value);
             else
                 return Expression.Call(context, "GetBlankNodeObjectForValue", new Type[0], factory, value);

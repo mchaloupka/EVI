@@ -7,19 +7,19 @@ using Slp.Evi.Storage.Bootstrap;
 using Slp.Evi.Storage.Database;
 using TCode.r2rml4net.Mapping.Fluent;
 
-namespace Slp.Evi.Test.System.SPARQL
+namespace Slp.Evi.Test.System.Sparql
 {
     public static class SparqlTestHelpers
     {
         public static string GetPath(string dataFile)
         {
-            var path = $".\\SPARQL\\SPARQL_TestSuite\\{dataFile}";
+            var path = $".\\Sparql\\{dataFile}";
             return path;
         }
 
         public static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IEviQueryableStorageFactory storageFactory)
         {
-            var datasetFile = GetPath(@"Data\Datasets\" + dataset);
+            var datasetFile = GetPath($@"Data\{dataset}\_dataset.xml");
 
             var doc = XDocument.Load(datasetFile);
             var sqlCommands = doc.Root

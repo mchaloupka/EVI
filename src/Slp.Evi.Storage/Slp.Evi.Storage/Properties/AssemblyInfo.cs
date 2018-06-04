@@ -1,8 +1,4 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-[assembly: InternalsVisibleTo("Slp.r2rml4net.Test.Unit")]
 
 // Version information for an assembly consists of the following four values:
 //

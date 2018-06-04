@@ -1,11 +1,11 @@
 ﻿using System;
 using Moq;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.PostProcess.Optimizers;
 using Slp.Evi.Storage.Types;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF.Query.Patterns;
 using Xunit;
 
@@ -106,21 +106,21 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
         private RestrictedTriplePattern CreateTemplatedRestrictedTriplePattern(string subjectVariable, string predicateVariable,
             string objectVariable, string subjectTemplate, string predicateTemplate, string objectTemplate)
         {
-            var subjectMap = new Mock<ISubjectMap>();
+            var subjectMap = new Mock<ISubjectMapping>();
             subjectMap.Setup(x => x.Template).Returns(subjectTemplate);
             subjectMap.Setup(x => x.IsTemplateValued).Returns(true);
             subjectMap.Setup(x => x.IsColumnValued).Returns(false);
             subjectMap.Setup(x => x.IsColumnValued).Returns(false);
             subjectMap.Setup(x => x.TermType).Returns(CreateURITermType());
 
-            var predicateMap = new Mock<IPredicateMap>();
+            var predicateMap = new Mock<IPredicateMapping>();
             predicateMap.Setup(x => x.Template).Returns(predicateTemplate);
             predicateMap.Setup(x => x.IsTemplateValued).Returns(true);
             predicateMap.Setup(x => x.IsColumnValued).Returns(false);
             predicateMap.Setup(x => x.IsColumnValued).Returns(false);
             predicateMap.Setup(x => x.TermType).Returns(CreateURITermType());
 
-            var objectMap = new Mock<IObjectMap>();
+            var objectMap = new Mock<IObjectMapping>();
             objectMap.Setup(x => x.Template).Returns(objectTemplate);
             objectMap.Setup(x => x.IsTemplateValued).Returns(true);
             objectMap.Setup(x => x.IsColumnValued).Returns(false);
@@ -131,12 +131,12 @@ namespace Slp.Evi.Test.Unit.Sparql.Optimization.Optimizers
                 new VariablePattern(objectVariable), null, subjectMap.Object, predicateMap.Object, objectMap.Object, null, null);
         }
 
-        private ITermType CreateURITermType()
+        private ITermTypeInformation CreateURITermType()
         {
-            var termType = new Mock<ITermType>();
+            var termType = new Mock<ITermTypeInformation>();
             termType.Setup(x => x.IsBlankNode).Returns(false);
             termType.Setup(x => x.IsLiteral).Returns(false);
-            termType.Setup(x => x.IsURI).Returns(true);
+            termType.Setup(x => x.IsIri).Returns(true);
             return termType.Object;
         }
     }

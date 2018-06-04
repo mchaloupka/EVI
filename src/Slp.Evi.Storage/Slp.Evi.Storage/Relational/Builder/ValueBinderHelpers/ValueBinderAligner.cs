@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
 using Slp.Evi.Storage.Query;
@@ -12,7 +11,6 @@ using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Types;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
 {
@@ -318,20 +316,13 @@ namespace Slp.Evi.Storage.Relational.Builder.ValueBinderHelpers
                 }
                 else if (termMap.IsConstantValued)
                 {
-                    if (termMap is IUriValuedTermMap uriValuedTermMap)
+                    if(termMap.Iri != null)
                     {
-                        templateParts.Add(new PatternItem(uriValuedTermMap.URI.AbsoluteUri));
+                        templateParts.Add(new PatternItem(termMap.Iri.AbsoluteUri));
                     }
-                    else if (termMap is IObjectMap objectMap)
+                    else
                     {
-                        if (objectMap.URI != null)
-                        {
-                            templateParts.Add(new PatternItem(objectMap.URI.AbsoluteUri));
-                        }
-                        else
-                        {
-                            throw new Exception("Should never happen for IRI value binders");
-                        }
+                        throw new Exception("Should never happen for IRI value binders");
                     }
                 }
                 else

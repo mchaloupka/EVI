@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using DatabaseSchemaReader.DataSchema;
 using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Common.Optimization.PatternMatching;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
 using Slp.Evi.Storage.Sparql.Algebra;
@@ -11,7 +11,6 @@ using Slp.Evi.Storage.Sparql.Utils.CodeGeneration;
 using Slp.Evi.Storage.Types;
 using Slp.Evi.Storage.Utils;
 using TCode.r2rml4net.Extensions;
-using TCode.r2rml4net.Mapping;
 using VDS.RDF;
 using VDS.RDF.Query.Patterns;
 using PatternItem = Slp.Evi.Storage.Common.Optimization.PatternMatching.PatternItem;
@@ -114,7 +113,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             private bool CanObjectMatch(RestrictedTriplePattern toTransform, OptimizationContext data)
             {
                 var pattern = toTransform.ObjectPattern;
-                ITermMap r2RmlDef;
+                ITermMapping r2RmlDef;
 
                 if (toTransform.ObjectMap != null)
                 {
@@ -122,8 +121,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
                 else if (toTransform.RefObjectMap != null)
                 {
-                    var parentTriples = toTransform.RefObjectMap.ParentTriplesMap;
-                    r2RmlDef = parentTriples.SubjectMap;
+                    r2RmlDef = toTransform.RefObjectMap.TargetSubjectMap;
                 }
                 else
                 {
@@ -145,7 +143,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="termMap">The mapping.</param>
             /// <param name="type">The type of <paramref name="termMap"/></param>
             /// <param name="context">The query context.</param>
-            public bool CanMatch(INode node, ITermMap termMap, IValueType type, IQueryContext context)
+            public bool CanMatch(INode node, ITermMapping termMap, IValueType type, IQueryContext context)
             {
                 if (type.Category == TypeCategories.BlankNode)
                 {
@@ -190,11 +188,11 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="node">The match pattern node.</param>
             /// <param name="termMap">The mapping.</param>
             /// <param name="context">The query context</param>
-            private bool CanMatchValue(INode node, ITermMap termMap, IQueryContext context)
+            private bool CanMatchValue(INode node, ITermMapping termMap, IQueryContext context)
             {
                 if (node.NodeType == NodeType.Uri)
                 {
-                    if (!termMap.TermType.IsURI)
+                    if (!termMap.TermType.IsIri)
                     {
                         return false;
                     }
@@ -225,7 +223,7 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <param name="pattern">The pattern.</param>
             /// <param name="termMap">The term map.</param>
             /// <param name="context">The query context</param>
-            private bool CanMatch(Pattern pattern, ITermMap termMap, IQueryContext context)
+            private bool CanMatch(Pattern pattern, ITermMapping termMap, IQueryContext context)
             {
                 bool isIriEscaped = !termMap.TermType.IsLiteral;
 
@@ -238,21 +236,16 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                 }
                 if (termMap.IsConstantValued)
                 {
-                    if (termMap is IUriValuedTermMap uriValued)
+                    if (termMap is IObjectMapping objectMap)
                     {
-                        var termPattern = new Pattern(true, new[] {new PatternItem(uriValued.URI.AbsoluteUri)});
-                        return CanMatch(pattern, termPattern);
-                    }
-                    else if (termMap is IObjectMap objectMap)
-                    {
-                        if (objectMap.URI != null)
+                        if (objectMap.Iri != null)
                         {
-                            var termPattern = new Pattern(true, new[] {new PatternItem(objectMap.URI.AbsoluteUri)});
+                            var termPattern = new Pattern(true, new[] { new PatternItem(objectMap.Iri.AbsoluteUri) });
                             return CanMatch(pattern, termPattern);
                         }
                         else if (objectMap.Literal != null)
                         {
-                            var termPattern = new Pattern(false, new[] {new PatternItem(objectMap.Literal)});
+                            var termPattern = new Pattern(false, new[] { new PatternItem(objectMap.Literal.Value) });
                             return CanMatch(pattern, termPattern);
                         }
                         else
@@ -262,7 +255,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
                     }
                     else
                     {
-                        throw new InvalidOperationException("ITermMap has to be IUriValuedTermMap or an IObjectMap");
+                        var termPattern = new Pattern(true, new[] {new PatternItem(termMap.Iri.AbsoluteUri)});
+                        return CanMatch(pattern, termPattern);
                     }
                 }
                 else if (termMap.IsTemplateValued)

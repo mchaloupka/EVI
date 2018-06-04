@@ -74,7 +74,7 @@ namespace Slp.Evi.Storage.Query
             _sparqlBuilder = factory.CreateSparqlBuilder();
             _relationalBuilder = factory.CreateRelationalBuilder();
 
-            _typeCache = new TypeCache(_mapping.Cache, _schemaProvider, db);
+            _typeCache = new TypeCache(_schemaProvider, db);
         }
 
         /// <summary>

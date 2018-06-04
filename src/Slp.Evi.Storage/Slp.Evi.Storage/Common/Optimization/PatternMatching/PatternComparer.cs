@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DatabaseSchemaReader.DataSchema;
-using Slp.Evi.Storage.Query;
-using Slp.Evi.Storage.Sparql.Algebra;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.Common.Optimization.PatternMatching

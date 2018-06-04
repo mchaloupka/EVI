@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DatabaseSchemaReader.DataSchema;
 using Slp.Evi.Storage.Common.Algebra;
 using Slp.Evi.Storage.Query;

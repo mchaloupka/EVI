@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Slp.Evi.Storage.Common.Algebra;
+using Slp.Evi.Storage.Mapping.Representation;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;
 using Slp.Evi.Storage.Relational.Query.Conditions.Filter;
@@ -11,7 +11,6 @@ using Slp.Evi.Storage.Relational.Query.Conditions.Source;
 using Slp.Evi.Storage.Relational.Query.Expressions;
 using Slp.Evi.Storage.Relational.Query.Sources;
 using Slp.Evi.Storage.Relational.Query.ValueBinders;
-using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Query.Logging
 {
@@ -101,15 +100,15 @@ namespace Slp.Evi.Storage.Query.Logging
             }
         }
 
-        private void StringRepresentationOfMap(ITermMap termMap)
+        private void StringRepresentationOfMap(ITermMapping termMap)
         {
             if (termMap.IsConstantValued)
             {
-                if (termMap is IUriValuedTermMap uriTermMap)
+                if(termMap.Iri != null)
                 {
-                    _sb.Append($"<{uriTermMap.URI}>");
+                    _sb.Append($"<{termMap.Iri}>");
                 }
-                else if (termMap is IObjectMap objectMap)
+                else if (termMap is IObjectMapping objectMap)
                 {
                     _sb.Append(objectMap.Literal);
                 }
