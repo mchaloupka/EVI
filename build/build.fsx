@@ -201,7 +201,7 @@ Target.create "BeginSonarQube" (fun _ ->
               "sonar.host.url=https://sonarcloud.io"
               ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
               "sonar.organization=mchaloupka-github"
-              "sonar.cs.opencover.reportsPaths=..\\coverage.xml"
+              (sprintf "sonar.cs.opencover.reportsPaths=\"%s\\build\\coverage.xml\"" Common.baseDirectory)
             ]
           ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\msbuild-sonarqube-runner\\tools\\SonarScanner.MSBuild.exe"
       }
