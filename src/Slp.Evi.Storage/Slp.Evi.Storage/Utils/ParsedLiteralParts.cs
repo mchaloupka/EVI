@@ -67,11 +67,17 @@ namespace Slp.Evi.Storage.Utils
             }
         }
 
+        /// <summary>
+        /// Standard equality operator implemented using <see cref="Equals(ParsedLiteralParts)"/>.
+        /// </summary>
         public static bool operator ==(ParsedLiteralParts left, ParsedLiteralParts right)
         {
             return Equals(left, right);
         }
 
+        /// <summary>
+        /// Standard equality operator implemented using <see cref="Equals(ParsedLiteralParts)"/>.
+        /// </summary>
         public static bool operator !=(ParsedLiteralParts left, ParsedLiteralParts right)
         {
             return !Equals(left, right);

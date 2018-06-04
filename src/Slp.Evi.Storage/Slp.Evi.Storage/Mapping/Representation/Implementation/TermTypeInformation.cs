@@ -37,6 +37,9 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
         /// <inheritdoc />
         public bool IsLiteral { get; private set; }
 
+        /// <summary>
+        /// Creates a <see cref="ITermTypeInformation"/> for an IRI
+        /// </summary>
         public static ITermTypeInformation CreateIriTermType()
         {
             var res = new TermTypeInformation

@@ -4,11 +4,24 @@ using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
+    /// <summary>
+    /// Implementation of <see cref="IPredicateObjectMapping"/>
+    /// </summary>
     public class PredicateObjectMapping
         : IPredicateObjectMapping
     {
+        /// <summary>
+        /// Creates an instance of <see cref="PredicateObjectMapping"/>.
+        /// </summary>
         private PredicateObjectMapping() { }
 
+        /// <summary>
+        /// Creates an instance of <see cref="IPredicateObjectMapping"/> from <see cref="IPredicateObjectMap"/>.
+        /// </summary>
+        /// <param name="predicateObjectMap"></param>
+        /// <param name="tr"></param>
+        /// <param name="creationContext"></param>
+        /// <returns></returns>
         public static IPredicateObjectMapping Create(IPredicateObjectMap predicateObjectMap, TriplesMapping tr, RepresentationCreationContext creationContext)
         {
             var res = new PredicateObjectMapping();

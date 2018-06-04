@@ -9,32 +9,41 @@ namespace Slp.Evi.Storage.Mapping.Representation.Implementation
     /// </summary>
     public class RepresentationCreationContext
     {
-        private readonly Dictionary<ISubjectMap, ISubjectMapping> createdMappings = new Dictionary<ISubjectMap, ISubjectMapping>();
-        private readonly Dictionary<ISubjectMap, List<Action<ISubjectMapping>>> storeFunctions = new Dictionary<ISubjectMap, List<Action<ISubjectMapping>>>();
+        private readonly Dictionary<ISubjectMap, ISubjectMapping> _createdMappings = new Dictionary<ISubjectMap, ISubjectMapping>();
+        private readonly Dictionary<ISubjectMap, List<Action<ISubjectMapping>>> _storeFunctions = new Dictionary<ISubjectMap, List<Action<ISubjectMapping>>>();
 
+        /// <summary>
+        /// For <see cref="ISubjectMap"/> gets the <see cref="ISubjectMapping"/> as soon as it is available
+        /// and returns it by calling <paramref name="storeFunction"/>.
+        /// </summary>
         public void GetSubjectMap(ISubjectMap subjectMap, Action<ISubjectMapping> storeFunction)
         {
-            if (createdMappings.TryGetValue(subjectMap, out var createdMapping))
+            if (_createdMappings.TryGetValue(subjectMap, out var createdMapping))
             {
                 storeFunction(createdMapping);
             }
             else
             {
-                if (!storeFunctions.TryGetValue(subjectMap, out var actionList))
+                if (!_storeFunctions.TryGetValue(subjectMap, out var actionList))
                 {
                     actionList = new List<Action<ISubjectMapping>>();
-                    storeFunctions.Add(subjectMap, actionList);
+                    _storeFunctions.Add(subjectMap, actionList);
                 }
 
                 actionList.Add(storeFunction);
             }
         }
 
-        public void RegisterSubjectMapping(ISubjectMap subjectMap, SubjectMapping createdMapping)
+        /// <summary>
+        /// Registers created subject mapping.
+        /// </summary>
+        /// <param name="subjectMap">For which <see cref="ISubjectMap"/> was <paramref name="createdMapping"/> created.</param>
+        /// <param name="createdMapping">The created <see cref="ISubjectMapping"/>.</param>
+        public void RegisterSubjectMapping(ISubjectMap subjectMap, ISubjectMapping createdMapping)
         {
-            createdMappings.Add(subjectMap, createdMapping);
+            _createdMappings.Add(subjectMap, createdMapping);
 
-            if (storeFunctions.TryGetValue(subjectMap, out var actionList))
+            if (_storeFunctions.TryGetValue(subjectMap, out var actionList))
             {
                 foreach (var action in actionList)
                 {

@@ -4,11 +4,20 @@ using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
+    /// <summary>
+    /// Implementation of <see cref="IObjectMapping"/>.
+    /// </summary>
     public class ObjectMapping
         : TermMapping, IObjectMapping
     {
+        /// <summary>
+        /// Creates an instance of <see cref="ObjectMapping"/>.
+        /// </summary>
         protected ObjectMapping() { }
 
+        /// <summary>
+        /// Creates an instance of <see cref="IObjectMapping"/> from <see cref="IObjectMap"/>.
+        /// </summary>
         public static IObjectMapping Create(IObjectMap objectMap, TriplesMapping tr, RepresentationCreationContext creationContext)
         {
             var res = new ObjectMapping();
