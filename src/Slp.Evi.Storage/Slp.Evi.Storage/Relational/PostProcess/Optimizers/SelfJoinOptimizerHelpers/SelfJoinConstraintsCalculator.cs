@@ -121,30 +121,22 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
                 var leftOperand = comparisonCondition.LeftOperand;
                 var rightOperand = comparisonCondition.RightOperand;
 
-                if (leftOperand is ColumnExpression)
-                { }
-                else if (rightOperand is ColumnExpression)
+                if (leftOperand is ColumnExpression leftColumnExpression && leftColumnExpression.CalculusVariable is SqlColumn leftVariable)
                 {
-                    leftOperand = rightOperand;
-                    rightOperand = comparisonCondition.LeftOperand;
-                }
-                else
-                {
-                    return satisfactionMap;
+                    ProcessRestrictionByValue(satisfactionMap, leftVariable, rightOperand);
                 }
 
-                var leftVariable = ((ColumnExpression)leftOperand).CalculusVariable as SqlColumn;
-
-                if (leftVariable != null)
+                if (rightOperand is ColumnExpression rightColumnExpression &&
+                    rightColumnExpression.CalculusVariable is SqlColumn rightVariable)
                 {
-                    foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(leftVariable.Table))
+                    foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(rightVariable.Table))
                     {
                         if (satisfaction.IsSatisfied)
                         {
                             continue;
                         }
 
-                        satisfaction.ProcessVariableEqualToVariablesCondition(leftVariable, rightOperand);
+                        satisfaction.ProcessVariableEqualToValueCondition(rightVariable, leftOperand);
 
                         if (satisfaction.IsSatisfied)
                         {
@@ -155,6 +147,24 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
             }
 
             return satisfactionMap;
+        }
+
+        private static void ProcessRestrictionByValue(SatisfactionMap satisfactionMap, SqlColumn variable, IExpression value)
+        {
+            foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(variable.Table))
+            {
+                if (satisfaction.IsSatisfied)
+                {
+                    continue;
+                }
+
+                satisfaction.ProcessVariableEqualToValueCondition(variable, value);
+
+                if (satisfaction.IsSatisfied)
+                {
+                    satisfactionMap.MarkAsSatisfied(satisfaction);
+                }
+            }
         }
 
         /// <summary>
@@ -183,6 +193,16 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
                         satisfactionMap.MarkAsSatisfied(satisfaction);
                     }
                 }
+            }
+
+            if (leftVariable != null)
+            {
+                ProcessRestrictionByValue(satisfactionMap, leftVariable, new ColumnExpression(equalVariablesCondition.RightVariable, false));
+            }
+
+            if (rightVariable != null)
+            {
+                ProcessRestrictionByValue(satisfactionMap, rightVariable, new ColumnExpression(equalVariablesCondition.LeftVariable, false));
             }
 
             return satisfactionMap;

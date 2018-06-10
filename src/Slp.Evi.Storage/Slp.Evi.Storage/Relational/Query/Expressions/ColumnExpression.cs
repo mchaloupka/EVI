@@ -7,7 +7,7 @@ namespace Slp.Evi.Storage.Relational.Query.Expressions
     /// <summary>
     /// Column expression
     /// </summary>
-    public class ColumnExpression 
+    public class ColumnExpression
         : IExpression
     {
         /// <summary>
