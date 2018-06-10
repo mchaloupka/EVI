@@ -17,3 +17,4 @@ build_script:
 test: off
 cache:
   - '%USERPROFILE%\.nuget\packages -> src\**\*.csproj'
+  - C:\ProgramData\chocolatey\lib -> build\build.fsx
