@@ -171,12 +171,10 @@ Target.create "Build" (fun _ ->
 
 Target.create "InstallDependencies" (fun _ ->
   Trace.log " --- Installing dependencies --- "
-  match Common.branch with
-  | "local" -> ()
-  | _ ->
-    let zipLocation = Common.baseDirectory + "/build/opencover.zip"
-    Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
-    Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
+  
+  let zipLocation = Common.baseDirectory + "/build/opencover.zip"
+  Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
+  Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
 
   let toInstall =
     match Common.branch with
@@ -272,18 +270,8 @@ Target.create "PrepareDatabase" (fun _ ->
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
   let exec proj =
-    match Common.branch with
-    | "local" ->
-      proj 
-      |> DotNet.test (fun p ->
-        { p with
-            NoRestore = true
-            NoBuild = true
-        }
-      )
-    | _ ->  
-      let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
-      if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
+    let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+    if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
   !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
   |> Seq.iter exec
@@ -295,7 +283,7 @@ Target.create "UploadCodeCov" (fun _ ->
   | _ ->
     Trace.log " --- Uploading CodeCov --- "
     Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash" |> ignore
-    let result = Shell.Exec("bash", sprintf "codecov.sh -f \"%s/build/coverage.xml\" -t %s" Common.baseDirectory (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f \".\\coverage.xml\" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
