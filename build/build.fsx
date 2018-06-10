@@ -282,8 +282,8 @@ Target.create "UploadCodeCov" (fun _ ->
   | "local" -> Trace.log "Skipping uploading coverage results"
   | _ ->
     Trace.log " --- Uploading CodeCov --- "
-    Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash" |> ignore
-    let result = Shell.Exec("bash", sprintf "codecov.sh -f \".\\coverage.xml\" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    Http.downloadFile "codecov.sh" "https://codecov.io/bash" |> ignore
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f coverage.xml" -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
