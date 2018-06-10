@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Slp.Evi.Storage.Query;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpers;
 using Slp.Evi.Storage.Relational.Query;
@@ -45,8 +46,30 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <param name="optimizationContext">The optimization context.</param>
         protected override RelationalQuery OptimizeRelationalQuery(RelationalQuery relationalQuery, OptimizationContext optimizationContext)
         {
-            // TODO: Optimize value binders
-            return base.OptimizeRelationalQuery(relationalQuery, optimizationContext);
+            var valueBinderOptimizer =
+                new IsNullValueBinderOptimizer((IsNullOptimizerImplementation) OptimizerImplementation);
+
+            List<IValueBinder> newValueBinders = new List<IValueBinder>();
+            bool changed = false;
+            foreach (var valueBinder in relationalQuery.ValueBinders)
+            {
+                var newValueBinder = (IValueBinder) valueBinder.Accept(valueBinderOptimizer, optimizationContext);
+                if (newValueBinder != valueBinder)
+                {
+                    changed = true;
+                }
+                newValueBinders.Add(newValueBinder);
+            }
+
+            if (changed)
+            {
+                var newRelationalQuery = new RelationalQuery(relationalQuery.Model, newValueBinders);
+                return base.OptimizeRelationalQuery(newRelationalQuery, optimizationContext);
+            }
+            else
+            {
+                return base.OptimizeRelationalQuery(relationalQuery, optimizationContext);
+            }
         }
 
         /// <summary>
@@ -94,13 +117,9 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
         /// <summary>
         /// The implementation of <see cref="IsNullOptimizer"/>
         /// </summary>
-        private class IsNullOptimizerImplementation
+        public class IsNullOptimizerImplementation
             : BaseRelationalOptimizerImplementation<IsNullOptimizerAnalyzeResult>
         {
-            /// <summary>
-            /// The <see cref="IsNullOptimizerHelpers.IsNullCalculator"/> instance for this optimizer
-            /// </summary>
-            private readonly IsNullCalculator _isNullCalculator;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="IsNullOptimizerImplementation"/> class.
@@ -108,13 +127,13 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
             /// <param name="isNullCalculator">The is null calculator.</param>
             public IsNullOptimizerImplementation(IsNullCalculator isNullCalculator)
             {
-                _isNullCalculator = isNullCalculator;
+                IsNullCalculator = isNullCalculator;
             }
 
             /// <summary>
             /// The <see cref="IsNullOptimizerHelpers.IsNullCalculator"/> instance for this optimizer
             /// </summary>
-            public IsNullCalculator IsNullCalculator => _isNullCalculator;
+            public IsNullCalculator IsNullCalculator { get; }
 
             /// <summary>
             /// Checks whether the analysis result is present.
@@ -128,7 +147,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers
                 if (!analyzeResult.HasValueForSource(source))
                 {
                     var newAnalyzeResult = new IsNullOptimizerAnalyzeResult(source);
-                    _isNullCalculator.TransformCalculusSource(source, new IsNullCalculator.IsNullCalculatorParameter(newAnalyzeResult, context));
+                    IsNullCalculator.TransformCalculusSource(source, new IsNullCalculator.IsNullCalculatorParameter(newAnalyzeResult, context));
                     newAnalyzeResult.CopyTo(analyzeResult);
                 }
             }

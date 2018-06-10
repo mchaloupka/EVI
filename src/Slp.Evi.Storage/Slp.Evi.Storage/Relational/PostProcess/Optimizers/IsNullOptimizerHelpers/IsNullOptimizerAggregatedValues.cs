@@ -152,7 +152,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpe
         }
 
         /// <summary>
-        /// Determines whether the column is in "is not null list".
+        /// Determines whether the column is in "is null list".
         /// </summary>
         /// <param name="calculusVariable">The calculus variable.</param>
         public bool IsInNullConditions(ICalculusVariable calculusVariable)
