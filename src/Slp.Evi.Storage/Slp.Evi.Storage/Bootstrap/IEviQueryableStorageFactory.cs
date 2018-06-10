@@ -64,5 +64,10 @@ namespace Slp.Evi.Storage.Bootstrap
         /// </summary>
         /// <param name="mapping">Used mapping processor</param>
         IEnumerable<ISparqlPostProcess> GetSparqlPostProcesses(IMappingProcessor mapping);
+
+        /// <summary>
+        /// Gets the relational post processes used inside of join processing.
+        /// </summary>
+        IEnumerable<IRelationalPostProcess> GetRelationalInnerJoinProcesses();
     }
 }

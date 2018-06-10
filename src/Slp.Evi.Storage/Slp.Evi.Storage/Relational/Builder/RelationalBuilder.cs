@@ -166,6 +166,7 @@ namespace Slp.Evi.Storage.Relational.Builder
                 var calculusModel = new CalculusModel(neededVariables, conditions);
 
                 currentQuery = new RelationalQuery(calculusModel, finalValueBinders);
+                currentQuery = context.QueryPostProcesses.InnerJoinProcess(currentQuery);
             }
 
             return currentQuery;

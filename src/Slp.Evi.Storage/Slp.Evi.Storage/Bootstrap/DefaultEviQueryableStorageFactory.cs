@@ -108,5 +108,12 @@ namespace Slp.Evi.Storage.Bootstrap
             yield return new TriplePatternOptimizer(_loggerFactory.CreateLogger<TriplePatternOptimizer>());
             yield return new UnionJoinOptimizer(_loggerFactory.CreateLogger<UnionJoinOptimizer>());
         }
+
+        /// <inheritdoc />
+        public IEnumerable<IRelationalPostProcess> GetRelationalInnerJoinProcesses()
+        {
+            yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
+        }
     }
 }

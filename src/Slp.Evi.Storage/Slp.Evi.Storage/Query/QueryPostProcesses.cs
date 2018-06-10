@@ -29,6 +29,11 @@ namespace Slp.Evi.Storage.Query
         private readonly List<ISparqlPostProcess> _sparqlPostprocesses;
 
         /// <summary>
+        /// The relational optimizers to be used during join processing
+        /// </summary>
+        private readonly List<IRelationalPostProcess> _innerJoinProcesses;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="QueryPostProcesses" /> class.
         /// </summary>
         /// <param name="factory">The factory.</param>
@@ -38,6 +43,7 @@ namespace Slp.Evi.Storage.Query
             _context = context;
             _relationalPostprocesses = new List<IRelationalPostProcess>(factory.GetRelationalPostProcesses());
             _sparqlPostprocesses = new List<ISparqlPostProcess>(factory.GetSparqlPostProcesses(context.Mapping));
+            _innerJoinProcesses = new List<IRelationalPostProcess>(factory.GetRelationalInnerJoinProcesses());
         }
 
         /// <summary>
@@ -58,6 +64,16 @@ namespace Slp.Evi.Storage.Query
         public ISparqlQuery PostProcess(ISparqlQuery algebra)
         {
             return _sparqlPostprocesses.Aggregate(algebra, (current, processor) => processor.Process(current, _context));
+        }
+
+        /// <summary>
+        /// Optimizes the algebra on the fly (to be used during join processing).
+        /// </summary>
+        /// <param name="algebra">The algebra.</param>
+        /// <returns>The optimized algebra.</returns>
+        public RelationalQuery InnerJoinProcess(RelationalQuery algebra)
+        {
+            return _innerJoinProcesses.Aggregate(algebra, (current, processor) => processor.Process(current, _context));
         }
     }
 }
