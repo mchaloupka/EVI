@@ -127,16 +127,22 @@ namespace Slp.Evi.Storage.Relational.Builder
         {
             var relationalQueries = instance.JoinedGraphPatterns.Select(x => x.Accept(this, context)).Cast<RelationalQuery>().ToList();
 
-            Dictionary<string, IValueBinder> valueBinders = new Dictionary<string, IValueBinder>();
-            List<ICondition> conditions = new List<ICondition>();
+            var currentQuery = relationalQueries[0];
 
-            foreach (var relationalQuery in relationalQueries)
+            for (int i = 1; i < relationalQueries.Count; i++)
             {
-                if (!(relationalQuery.Model is CalculusModel model))
+                var relationalQuery = relationalQueries[i];
+
+                if (!(relationalQuery.Model is CalculusModel model) || !(currentQuery.Model is CalculusModel currentModel))
                 {
                     throw new Exception($"Only {nameof(CalculusModel)} is expected");
                 }
 
+                var valueBinders = currentQuery.ValueBinders.ToDictionary(x => x.VariableName);
+                var conditions = new List<ICondition>();
+                conditions.AddRange(currentModel.AssignmentConditions);
+                conditions.AddRange(currentModel.FilterConditions);
+                conditions.AddRange(currentModel.SourceConditions);
                 conditions.AddRange(model.AssignmentConditions);
                 conditions.AddRange(model.FilterConditions);
                 conditions.AddRange(model.SourceConditions);
@@ -147,7 +153,6 @@ namespace Slp.Evi.Storage.Relational.Builder
                     {
                         var otherValueBinder = valueBinders[valueBinder.VariableName];
                         conditions.Add(_conditionBuilder.CreateJoinEqualCondition(valueBinder, otherValueBinder, context));
-
                         valueBinders[valueBinder.VariableName] = new CoalesceValueBinder(valueBinder.VariableName, otherValueBinder, valueBinder);
                     }
                     else
@@ -155,13 +160,15 @@ namespace Slp.Evi.Storage.Relational.Builder
                         valueBinders.Add(valueBinder.VariableName, valueBinder);
                     }
                 }
+
+                var finalValueBinders = valueBinders.Values.ToList();
+                var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
+                var calculusModel = new CalculusModel(neededVariables, conditions);
+
+                currentQuery = new RelationalQuery(calculusModel, finalValueBinders);
             }
 
-            var finalValueBinders = valueBinders.Values.ToList();
-            var neededVariables = finalValueBinders.SelectMany(x => x.NeededCalculusVariables).Distinct().ToArray();
-            var calculusModel = new CalculusModel(neededVariables, conditions);
-
-            return new RelationalQuery(calculusModel, finalValueBinders);
+            return currentQuery;
         }
 
         /// <inheritdoc />
