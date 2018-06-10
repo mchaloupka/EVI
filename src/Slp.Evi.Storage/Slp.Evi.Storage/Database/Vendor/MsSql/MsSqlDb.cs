@@ -63,12 +63,28 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
 
             sqlConnection.Open();
 
-            var reader = command.ExecuteReader();
-            return new DataReaderWrapper(this, reader, () => sqlConnection.State == ConnectionState.Open, () =>
+            try
             {
-                sqlConnection.Close();
-                sqlConnection.Dispose();
-            });
+                var reader = command.ExecuteReader();
+                return new DataReaderWrapper(this, reader, () => sqlConnection.State == ConnectionState.Open, () =>
+                {
+                    sqlConnection.Close();
+                    sqlConnection.Dispose();
+                });
+            }
+            catch
+            {
+                try
+                {
+                    sqlConnection.Close();
+                }
+                catch
+                {
+                    // Exception ignored (the previously thrown exception is more important)
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
