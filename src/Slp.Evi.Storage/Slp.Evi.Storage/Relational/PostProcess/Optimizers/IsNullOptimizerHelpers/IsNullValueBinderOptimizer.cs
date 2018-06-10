@@ -6,12 +6,20 @@ using Slp.Evi.Storage.Relational.Query.ValueBinders;
 
 namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.IsNullOptimizerHelpers
 {
+    /// <summary>
+    /// Optimizer of value binders for <see cref="IsNullOptimizer"/>.
+    /// </summary>
+    /// <seealso cref="Slp.Evi.Storage.Relational.Query.ValueBinders.IValueBinderVisitor" />
     public class IsNullValueBinderOptimizer
         : IValueBinderVisitor
     {
         private readonly IsNullOptimizer.IsNullOptimizerImplementation _optimizerImplementation;
         private readonly IsAlwaysBoundChecker _isAlwaysBoundChecker;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsNullValueBinderOptimizer"/> class.
+        /// </summary>
+        /// <param name="optimizerImplementation">The optimizer implementation.</param>
         public IsNullValueBinderOptimizer(IsNullOptimizer.IsNullOptimizerImplementation optimizerImplementation)
         {
             _optimizerImplementation = optimizerImplementation;
