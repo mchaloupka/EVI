@@ -22,25 +22,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review3</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review3</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">inshrining subscript resubmit grandstander pellagras cunts paleographer obsessiveness windlasses songfest inartistically epergnes guarani sonarman</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer1</uri>
       </binding>
       <binding name="revName">
         <literal>Ruggiero-Delane</literal>
@@ -57,25 +57,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review8</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review8</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">dreidl tinfuls foolhardier downloading stuccos interpersonal doggish mislabel lowered solubility beguiler aboil slavey strolling prorating</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer1</uri>
       </binding>
       <binding name="revName">
         <literal>Ruggiero-Delane</literal>
@@ -89,25 +89,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review12</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review12</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">etagere groundswell prosceniums casualness preconceived hearthstones melodramatists reanalyses punctilious flexor draftees vignetting foxed</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer1</uri>
       </binding>
       <binding name="revName">
         <literal>Ruggiero-Delane</literal>
@@ -124,25 +124,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review14</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review14</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">commutable fetterer coagulation midsummer protestations amebae jejunums disallowing membered thermotropic nonfatal jackhammers articulating</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer1</uri>
       </binding>
       <binding name="revName">
         <literal>Ruggiero-Delane</literal>
@@ -159,25 +159,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review16</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review16</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">holdbacks cowling brownies nazifying smelters</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -194,25 +194,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review18</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review18</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">upbraided bureaus reglazed amnionic vociferations acrylics gushing reglosses saner looses foodstuffs aerosolized sightless</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -229,25 +229,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review19</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review19</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">hormones unhooking reiterated hexapodies complimenting overhastiness</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -264,25 +264,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review23</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review23</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">baselines concisely penile clarifies euchred gladlier conveyable</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -296,25 +296,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review25</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review25</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">scurrility uploadable amplifiable postmarking sparkling affaires irrigator turbidities sunup samoans commingled sloths</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -331,25 +331,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review27</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review27</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">gimbals rehire oversevere penuriously topographies wealthier nonages ambushing shadowless rumoring explanted enterer bucklers unconditional</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>
@@ -363,25 +363,25 @@
         <literal>manner gatemen</literal>
       </binding>
       <binding name="offer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Offer32</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer32</uri>
       </binding>
       <binding name="price">
         <literal type="xsd:double">2718.37</literal>
       </binding>
       <binding name="vendor">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor1/Vendor1</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor1</uri>
       </binding>
       <binding name="vendorTitle">
         <literal>reexhibit</literal>
       </binding>
       <binding name="review">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Review28</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review28</uri>
       </binding>
       <binding name="revTitle">
         <literal lang="en">titters bailsman sextuply simitar limitedness trailer vizors sunups typically avowably intercity bacchic ptomaines engrave</literal>
       </binding>
       <binding name="reviewer">
-        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite1/Reviewer2</uri>
+        <uri>http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer2</uri>
       </binding>
       <binding name="revName">
         <literal>Eyana-Aurelianus</literal>

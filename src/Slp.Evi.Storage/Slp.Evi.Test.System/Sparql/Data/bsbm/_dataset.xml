@@ -185,7 +185,7 @@ rr:predicateObjectMap [
 <#Producer> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "producer" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer{nr}/Producer{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Producer{nr}";
   rr:class bsbm:Producer;
 ];
 rr:predicateObjectMap [
@@ -350,7 +350,7 @@ rr:predicateObjectMap [
 <#Vendor> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "vendor" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor{nr}/Vendor{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Vendor{nr}";
   rr:class bsbm:Vendor;
 ];
 rr:predicateObjectMap [
@@ -393,7 +393,7 @@ rr:predicateObjectMap [
 <#Offer> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "offer" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromVendor{vendor}/Offer{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Offer{nr}";
   rr:class bsbm:Offer;
 ];
 rr:predicateObjectMap [
@@ -468,7 +468,7 @@ rr:predicateObjectMap [
 <#Person> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "person" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/Reviewer{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Reviewer{nr}";
   rr:class bsbm:Person;
 ];
 rr:predicateObjectMap [
@@ -487,7 +487,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}"; ];
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/RatingSite{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
@@ -498,7 +498,7 @@ rr:predicateObjectMap [
 <#Review> a rr:TriplesMap;
 rr:logicalTable [ rr:tableName "review" ];
 rr:subjectMap [
-  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/Review{nr}";
+  rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Review{nr}";
   rr:class bsbm:Review;
 ];
 rr:predicateObjectMap [
@@ -567,7 +567,7 @@ rr:predicateObjectMap [
 ];
 rr:predicateObjectMap [
   rr:predicate dc:publisher;
-  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromRatingSite{publisher}/RatingSite{publisher}"; ];
+  rr:objectMap [ rr:template "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/RatingSite{publisher}"; ];
 ];
 rr:predicateObjectMap [
   rr:predicate dc:date;
