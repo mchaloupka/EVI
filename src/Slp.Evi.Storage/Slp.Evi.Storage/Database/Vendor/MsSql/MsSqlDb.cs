@@ -25,8 +25,9 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="connectionString">The connection string.</param>
-        public MsSqlDb(ISqlDbFactory factory, string connectionString)
-            : base(factory, connectionString, SqlType.SqlServer)
+        /// <param name="queryTimeout">The time in seconds to wait for the command to execute.</param>
+        public MsSqlDb(ISqlDbFactory factory, string connectionString, int queryTimeout)
+            : base(factory, connectionString, SqlType.SqlServer, queryTimeout)
         {
 
         }
@@ -58,7 +59,8 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
             {
                 CommandText = query,
                 CommandType = CommandType.Text,
-                Connection = sqlConnection
+                Connection = sqlConnection,
+                CommandTimeout = QueryTimeout
             };
 
             sqlConnection.Open();
