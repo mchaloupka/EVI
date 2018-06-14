@@ -11,7 +11,8 @@ namespace Slp.Evi.Storage.Bootstrap
         /// Creates the SQL database.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        ISqlDatabase CreateSqlDb(string connectionString);
+        /// <param name="queryTimeout">The time in seconds to wait for the command to execute.</param>
+        ISqlDatabase CreateSqlDb(string connectionString, int queryTimeout);
 
         /// <summary>
         /// Creates the SQL query builder.

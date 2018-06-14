@@ -25,7 +25,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
             var config = builder.Build();
             var connectionString = config.GetConnectionString("mssql");
 
-            return (new MsSqlDbFactory()).CreateSqlDb(connectionString);
+            return (new MsSqlDbFactory()).CreateSqlDb(connectionString, 30);
         }
     }
 
