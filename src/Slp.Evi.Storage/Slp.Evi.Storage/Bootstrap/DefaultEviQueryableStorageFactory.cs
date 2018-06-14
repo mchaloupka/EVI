@@ -93,6 +93,7 @@ namespace Slp.Evi.Storage.Bootstrap
             yield return new CaseExpressionToConditionOptimizer(_loggerFactory.CreateLogger<CaseExpressionToConditionOptimizer>());
             yield return new ConcatenationInEqualConditionOptimizer(_loggerFactory.CreateLogger<ConcatenationInEqualConditionOptimizer>());
             yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new NumericComparisonOptimizer(_loggerFactory.CreateLogger<NumericComparisonOptimizer>());
             yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
             yield return new SelfJoinOptimizer(_loggerFactory.CreateLogger<SelfJoinOptimizer>());
         }
