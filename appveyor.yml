@@ -15,5 +15,3 @@ services:
 build_script:
   - ps: ./build/fake.cmd build
 test: off
-cache:
-  - '%USERPROFILE%\.nuget\packages -> src\**\*.csproj'
