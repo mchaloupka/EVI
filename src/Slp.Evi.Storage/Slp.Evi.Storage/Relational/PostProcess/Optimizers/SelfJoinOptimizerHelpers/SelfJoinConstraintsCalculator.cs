@@ -129,20 +129,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
                 if (rightOperand is ColumnExpression rightColumnExpression &&
                     rightColumnExpression.CalculusVariable is SqlColumn rightVariable)
                 {
-                    foreach (var satisfaction in satisfactionMap.GetSatisfactionsFromMap(rightVariable.Table))
-                    {
-                        if (satisfaction.IsSatisfied)
-                        {
-                            continue;
-                        }
-
-                        satisfaction.ProcessVariableEqualToValueCondition(rightVariable, leftOperand);
-
-                        if (satisfaction.IsSatisfied)
-                        {
-                            satisfactionMap.MarkAsSatisfied(satisfaction);
-                        }
-                    }
+                    ProcessRestrictionByValue(satisfactionMap, rightVariable, leftOperand);
                 }
             }
 
