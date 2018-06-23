@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.DBSchema;
 using Slp.Evi.Storage.Mapping.Representation;
@@ -30,26 +32,26 @@ namespace Slp.Evi.Storage.Types
         /// <summary>
         /// The type to index dictionary
         /// </summary>
-        private readonly Dictionary<int, IValueType> _typesIndexDictionary;
+        private readonly ConcurrentDictionary<int, IValueType> _typesIndexDictionary;
 
         /// <summary>
         /// The type to index dictionary
         /// </summary>
-        private readonly Dictionary<IValueType, int> _typeIndexesDictionary;
+        private readonly ConcurrentDictionary<IValueType, int> _typeIndexesDictionary;
 
         /// <summary>
         /// The created full types indexes
         /// </summary>
-        private readonly Dictionary<string, Dictionary<string, int>> _createdFullTypesIndexes;
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, int>> _createdFullTypesIndexes;
 
         /// <summary>
         /// The created language type only indexes
         /// </summary>
-        private readonly Dictionary<string, int> _createdLangOnlyIndexes;
+        private readonly ConcurrentDictionary<string, int> _createdLangOnlyIndexes;
         /// <summary>
         /// The created datatype type only indexes
         /// </summary>
-        private readonly Dictionary<string, int> _createdTypeOnlyIndexes;
+        private readonly ConcurrentDictionary<string, int> _createdTypeOnlyIndexes;
 
         /// <summary>
         /// The next index
@@ -64,26 +66,29 @@ namespace Slp.Evi.Storage.Types
             _dbSchemaProvider = dbSchemaProvider;
             _database = database;
             _typesDictionary = new CacheDictionary<IBaseMapping, IValueType>(ResolveType);
-            _typesIndexDictionary = new Dictionary<int, IValueType>();
-            _typeIndexesDictionary = new Dictionary<IValueType, int>();
-            _createdFullTypesIndexes = new Dictionary<string, Dictionary<string, int>>();
-            _createdLangOnlyIndexes = new Dictionary<string, int>();
-            _createdTypeOnlyIndexes = new Dictionary<string, int>();
+            _createdFullTypesIndexes = new ConcurrentDictionary<string, ConcurrentDictionary<string, int>>();
+            _createdLangOnlyIndexes = new ConcurrentDictionary<string, int>();
+            _createdTypeOnlyIndexes = new ConcurrentDictionary<string, int>();
 
             var iriType = new IRIValueType();
             var blankNodeType = new BlankValueType();
             var noLangNoTypeLiteral = new LiteralValueType(null, null);
 
-            _typesIndexDictionary.Add(1, iriType);
-            _typeIndexesDictionary.Add(iriType, 1);
+            _typesIndexDictionary = new ConcurrentDictionary<int, IValueType>(new[]
+            {
+                new KeyValuePair<int, IValueType>(1, iriType),
+                new KeyValuePair<int, IValueType>(2, blankNodeType),
+                new KeyValuePair<int, IValueType>(3, noLangNoTypeLiteral)
+            });
 
-            _typesIndexDictionary.Add(2, blankNodeType);
-            _typeIndexesDictionary.Add(blankNodeType, 2);
+            _typeIndexesDictionary = new ConcurrentDictionary<IValueType, int>(new[]
+            {
+                new KeyValuePair<IValueType, int>(iriType, 1),
+                new KeyValuePair<IValueType, int>(blankNodeType, 2),
+                new KeyValuePair<IValueType, int>(noLangNoTypeLiteral, 3)
+            });
 
-            _typesIndexDictionary.Add(3, noLangNoTypeLiteral);
-            _typeIndexesDictionary.Add(noLangNoTypeLiteral, 3);
-
-            _index = 4;
+            _index = 3;
         }
 
         /// <summary>
@@ -209,20 +214,16 @@ namespace Slp.Evi.Storage.Types
             }
             else if (dataType == null)
             {
-                int foundIndex;
-                if (!_createdLangOnlyIndexes.TryGetValue(languageTag, out foundIndex))
+                var foundIndex = _createdLangOnlyIndexes.GetOrAdd(languageTag, key =>
                 {
+                    var newIndex = Interlocked.Increment(ref _index);
                     var type = new LiteralValueType(null, languageTag);
-                    _typesIndexDictionary.Add(_index, type);
-                    _typeIndexesDictionary.Add(type, _index);
-                    _createdLangOnlyIndexes.Add(languageTag, _index);
-                    _index++;
-                    return type;
-                }
-                else
-                {
-                    return _typesIndexDictionary[foundIndex];
-                }
+                    _typesIndexDictionary.TryAdd(newIndex, type);
+                    _typeIndexesDictionary.TryAdd(type, newIndex);
+                    return newIndex;
+                });
+
+                return _typesIndexDictionary[foundIndex];
             }
             else
             {
@@ -231,28 +232,19 @@ namespace Slp.Evi.Storage.Types
 
                 if (languageTag != null)
                 {
-                    if (!_createdFullTypesIndexes.ContainsKey(languageTag))
-                    {
-                        _createdFullTypesIndexes.Add(languageTag, new Dictionary<string, int>());
-                    }
-
-                    dictionary = _createdFullTypesIndexes[languageTag];
+                    dictionary = _createdFullTypesIndexes.GetOrAdd(languageTag, key => new ConcurrentDictionary<string, int>());
                 }
 
-                int foundIndex;
-                if (!dictionary.TryGetValue(dataTypeFullUri, out foundIndex))
+                var foundIndex = dictionary.GetOrAdd(dataTypeFullUri, key =>
                 {
+                    var newIndex = Interlocked.Increment(ref _index);
                     var type = new LiteralValueType(dataType, languageTag);
-                    _typesIndexDictionary.Add(_index, type);
-                    _typeIndexesDictionary.Add(type, _index);
-                    dictionary.Add(dataTypeFullUri, _index);
-                    _index++;
-                    return type;
-                }
-                else
-                {
-                    return _typesIndexDictionary[foundIndex];
-                }
+                    _typesIndexDictionary.TryAdd(newIndex, type);
+                    _typeIndexesDictionary.TryAdd(type, newIndex);
+                    return newIndex;
+                });
+
+                return _typesIndexDictionary[foundIndex];
             }
         }
     }
