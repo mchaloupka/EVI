@@ -64,8 +64,8 @@ namespace Slp.Evi.Storage.Sparql.PostProcess.Optimizers
             /// <returns>The transformation result</returns>
             protected override IGraphPattern Transform(RestrictedTriplePattern toTransform, OptimizationContext data)
             {
-                if (!CanObjectMatch(toTransform, data)
-                    || !CanPredicateMatch(toTransform, data)
+                if (!CanPredicateMatch(toTransform, data)
+                    || !CanObjectMatch(toTransform, data)
                     || !CanSubjectMatch(toTransform, data))
                 {
                     return new NotMatchingPattern();

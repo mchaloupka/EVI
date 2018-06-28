@@ -1,4 +1,5 @@
 ﻿// This is generated code, do not edit!!!
+using System;
 
 using Slp.Evi.Storage.Sparql.Algebra;
 using Slp.Evi.Storage.Sparql.Algebra.Modifiers;

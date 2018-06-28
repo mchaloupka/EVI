@@ -93,6 +93,7 @@ namespace Slp.Evi.Storage.Bootstrap
             yield return new CaseExpressionToConditionOptimizer(_loggerFactory.CreateLogger<CaseExpressionToConditionOptimizer>());
             yield return new ConcatenationInEqualConditionOptimizer(_loggerFactory.CreateLogger<ConcatenationInEqualConditionOptimizer>());
             yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new NumericComparisonOptimizer(_loggerFactory.CreateLogger<NumericComparisonOptimizer>());
             yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
             yield return new SelfJoinOptimizer(_loggerFactory.CreateLogger<SelfJoinOptimizer>());
         }
@@ -107,6 +108,13 @@ namespace Slp.Evi.Storage.Bootstrap
             yield return mapping.GetMappingTransformer();
             yield return new TriplePatternOptimizer(_loggerFactory.CreateLogger<TriplePatternOptimizer>());
             yield return new UnionJoinOptimizer(_loggerFactory.CreateLogger<UnionJoinOptimizer>());
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IRelationalPostProcess> GetRelationalInnerJoinProcesses()
+        {
+            yield return new ConstantExpressionEqualityOptimizer(_loggerFactory.CreateLogger<ConstantExpressionEqualityOptimizer>());
+            yield return new IsNullOptimizer(_loggerFactory.CreateLogger<IsNullOptimizer>());
         }
     }
 }

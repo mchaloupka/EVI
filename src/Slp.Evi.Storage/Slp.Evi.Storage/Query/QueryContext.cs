@@ -45,7 +45,6 @@ namespace Slp.Evi.Storage.Query
             Mapping = mapping;
             SchemaProvider = schemaProvider;
             _blankNodes = new Dictionary<string, INode>();
-            _blankNodes = new Dictionary<string, INode>();
             _usedVariables = new HashSet<string>(OriginalAlgebra.Variables);
             QueryNamingHelpers = new QueryNamingHelpers(this);
             QueryPostProcesses = new QueryPostProcesses(factory, this);

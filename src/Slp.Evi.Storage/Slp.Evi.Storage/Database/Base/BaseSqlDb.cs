@@ -24,10 +24,12 @@ namespace Slp.Evi.Storage.Database.Base
         /// <param name="factory">The factory.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="sqlType">Type of the SQL.</param>
-        protected BaseSqlDb(ISqlDbFactory factory, string connectionString, SqlType sqlType)
+        /// <param name="queryTimeout">The time in seconds to wait for the command to execute.</param>
+        protected BaseSqlDb(ISqlDbFactory factory, string connectionString, SqlType sqlType, int queryTimeout)
         {
             SqlType = sqlType;
             ConnectionString = connectionString;
+            QueryTimeout = queryTimeout;
 
             _queryBuilder = factory.CreateSqlQueryBuilder();
         }
@@ -115,5 +117,9 @@ namespace Slp.Evi.Storage.Database.Base
 
         /// <inheritdoc />
         public abstract DbConnection CreateConnection();
+
+        /// <summary>Gets or sets the wait time before terminating the attempt to execute a command and generating an error.</summary>
+        /// <returns>The time in seconds to wait for the command to execute.</returns>
+        public int QueryTimeout { get; }
     }
 }

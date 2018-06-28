@@ -29,12 +29,12 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <summary>
         /// The <see cref="SqlTable"/> map from columns to their equal expressions
         /// </summary>
-        private readonly Dictionary<string, List<ConstantExpression>> _sqlTableColumnsEqualExpressions;
+        private readonly Dictionary<string, List<IExpression>> _sqlTableColumnsEqualExpressions;
 
         /// <summary>
         /// The <see cref="ReplaceByTable"/> map from columns to their equal expressions
         /// </summary>
-        private readonly Dictionary<string, List<ConstantExpression>> _replaceByTableColumnsEqualExpressions;
+        private readonly Dictionary<string, List<IExpression>> _replaceByTableColumnsEqualExpressions;
 
         /// <summary>
         /// Constructs an instance of <see cref="SelfJoinConstraintsSatisfaction"/>
@@ -44,8 +44,8 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
             SqlTable = sqlTable;
             ReplaceByTable = replaceByTable;
 
-            _sqlTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
-            _replaceByTableColumnsEqualExpressions = new Dictionary<string, List<ConstantExpression>>();
+            _sqlTableColumnsEqualExpressions = new Dictionary<string, List<IExpression>>();
+            _replaceByTableColumnsEqualExpressions = new Dictionary<string, List<IExpression>>();
 
             _uniqueConstraints = new List<UniqueConstraint>();
 
@@ -105,35 +105,23 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// </summary>
         /// <param name="leftVariable">The left variable.</param>
         /// <param name="rightOperand">The right operand.</param>
-        public void ProcessVariableEqualToVariablesCondition(SqlColumn leftVariable, IExpression rightOperand)
+        public void ProcessVariableEqualToValueCondition(SqlColumn leftVariable, IExpression rightOperand)
         {
-            if (!(rightOperand is ConstantExpression))
-            {
-                // Currently we support only constant expressions
-                return;
-            }
-
-            var constantExpression = (ConstantExpression)rightOperand;
-
             if (leftVariable.Table == SqlTable)
             {
-                AddExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, constantExpression);
-                if (CheckExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, constantExpression))
+                AddExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, rightOperand);
+                if (CheckExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, rightOperand))
                 {
                     SatisfyConditionsWithVariable(leftVariable.Name);
                 }
             }
             else if (leftVariable.Table == ReplaceByTable)
             {
-                AddExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, constantExpression);
-                if (CheckExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, constantExpression))
+                AddExpression(_replaceByTableColumnsEqualExpressions, leftVariable.Name, rightOperand);
+                if (CheckExpression(_sqlTableColumnsEqualExpressions, leftVariable.Name, rightOperand))
                 {
                     SatisfyConditionsWithVariable(leftVariable.Name);
                 }
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -141,7 +129,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// Checks the expression, whether the same is present also in the map <paramref name="tableColumnsEqualExpressions"/> for the variable
         /// specified by <paramref name="variableName"/>
         /// </summary>
-        private bool CheckExpression(Dictionary<string, List<ConstantExpression>> tableColumnsEqualExpressions, string variableName, ConstantExpression expression)
+        private bool CheckExpression(Dictionary<string, List<IExpression>> tableColumnsEqualExpressions, string variableName, IExpression expression)
         {
             if (tableColumnsEqualExpressions.ContainsKey(variableName))
             {
@@ -154,9 +142,23 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <summary>
         /// Determines whether the expression are equal.
         /// </summary>
-        private static bool AreEqual(ConstantExpression expression, ConstantExpression constantExpression)
+        private static bool AreEqual(IExpression expression, IExpression otherExpression)
         {
-            return expression.Value.Equals(constantExpression.Value);
+            if (expression is ConstantExpression constantExpression &&
+                otherExpression is ConstantExpression otherConstantExpression)
+            {
+                return constantExpression.Value.Equals(otherConstantExpression.Value);
+            }
+            else if (expression is ColumnExpression columnExpression &&
+                     otherExpression is ColumnExpression otherColumnExpression)
+            {
+                return columnExpression.CalculusVariable == otherColumnExpression.CalculusVariable
+                       && (columnExpression.IsUri == otherColumnExpression.IsUri);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -165,11 +167,11 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// <param name="tableColumnsEqualExpressions">The table columns equal expressions map.</param>
         /// <param name="variableName">Name of the variable.</param>
         /// <param name="expression">The expression.</param>
-        private void AddExpression(Dictionary<string, List<ConstantExpression>> tableColumnsEqualExpressions, string variableName, ConstantExpression expression)
+        private void AddExpression(Dictionary<string, List<IExpression>> tableColumnsEqualExpressions, string variableName, IExpression expression)
         {
             if (!tableColumnsEqualExpressions.ContainsKey(variableName))
             {
-                tableColumnsEqualExpressions.Add(variableName, new List<ConstantExpression>());
+                tableColumnsEqualExpressions.Add(variableName, new List<IExpression>());
             }
 
             tableColumnsEqualExpressions[variableName].Add(expression);
@@ -197,7 +199,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// </summary>
         /// <param name="sqlTableColumnsEqualExpressions">The SQL table columns equal expressions.</param>
         /// <param name="otherSqlTableColumnsEqualExpressions">The other SQL table columns equal expressions.</param>
-        private static void IntersectColumnsEqualLists(Dictionary<string, List<ConstantExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<ConstantExpression>> otherSqlTableColumnsEqualExpressions)
+        private static void IntersectColumnsEqualLists(Dictionary<string, List<IExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<IExpression>> otherSqlTableColumnsEqualExpressions)
         {
             foreach (var column in sqlTableColumnsEqualExpressions.Keys)
             {
@@ -243,7 +245,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
         /// </summary>
         /// <param name="sqlTableColumnsEqualExpressions">The SQL table columns equal expressions.</param>
         /// <param name="otherSqlTableColumnsEqualExpressions">The other SQL table columns equal expressions.</param>
-        private void MergeColumnsEqualLists(Dictionary<string, List<ConstantExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<ConstantExpression>> otherSqlTableColumnsEqualExpressions)
+        private void MergeColumnsEqualLists(Dictionary<string, List<IExpression>> sqlTableColumnsEqualExpressions, Dictionary<string, List<IExpression>> otherSqlTableColumnsEqualExpressions)
         {
             foreach (var column in sqlTableColumnsEqualExpressions.Keys)
             {
@@ -266,7 +268,7 @@ namespace Slp.Evi.Storage.Relational.PostProcess.Optimizers.SelfJoinOptimizerHel
             {
                 if (!sqlTableColumnsEqualExpressions.ContainsKey(column))
                 {
-                    sqlTableColumnsEqualExpressions.Add(column, new List<ConstantExpression>(otherSqlTableColumnsEqualExpressions[column]));
+                    sqlTableColumnsEqualExpressions.Add(column, new List<IExpression>(otherSqlTableColumnsEqualExpressions[column]));
                 }
             }
         }

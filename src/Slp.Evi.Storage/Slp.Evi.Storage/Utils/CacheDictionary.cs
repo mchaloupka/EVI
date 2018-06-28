@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Slp.Evi.Storage.Utils
 {
@@ -18,7 +18,7 @@ namespace Slp.Evi.Storage.Utils
         /// <summary>
         /// The cache
         /// </summary>
-        private readonly Dictionary<TK, T> _cache;
+        private readonly ConcurrentDictionary<TK, T> _cache = new ConcurrentDictionary<TK, T>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheDictionary{K, T}"/> class.
@@ -27,7 +27,6 @@ namespace Slp.Evi.Storage.Utils
         public CacheDictionary(Func<TK, T> getFunc)
         {
             _getFunc = getFunc;
-            _cache = new Dictionary<TK, T>();
         }
 
         /// <summary>
@@ -37,12 +36,7 @@ namespace Slp.Evi.Storage.Utils
         /// <returns>The value.</returns>
         public T GetValueFor(TK key)
         {
-            if (!_cache.ContainsKey(key))
-            {
-                _cache.Add(key, _getFunc(key));
-            }
-
-            return _cache[key];
+            return _cache.GetOrAdd(key, _getFunc);
         }
     }
 }

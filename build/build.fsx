@@ -172,12 +172,10 @@ Target.create "Build" (fun _ ->
 
 Target.create "InstallDependencies" (fun _ ->
   Trace.log " --- Installing dependencies --- "
-  match Common.branch with
-  | "local" -> ()
-  | _ ->
-    let zipLocation = Common.baseDirectory + "/build/opencover.zip"
-    Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
-    Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
+  
+  let zipLocation = Common.baseDirectory + "/build/opencover.zip"
+  Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
+  Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
 
   let toInstall =
     match Common.branch with
@@ -202,9 +200,9 @@ Target.create "BeginSonarQube" (fun _ ->
               "sonar.host.url=https://sonarcloud.io"
               ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
               "sonar.organization=mchaloupka-github"
-              "sonar.cs.opencover.reportsPaths=..\\coverage.xml"
+              (sprintf "sonar.cs.opencover.reportsPaths=\"%s\\build\\coverage.xml\"" Common.baseDirectory)
             ]
-          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\msbuild-sonarqube-runner\\tools\\SonarScanner.MSBuild.exe"
+          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\sonarscanner-msbuild-net46\\tools\\SonarScanner.MSBuild.exe"
       }
     )
   else Trace.log "SonarQube start skipped (not develop branch)"
@@ -216,7 +214,7 @@ Target.create "EndSonarQube" (fun _ ->
     SonarQube.finish (Some (fun p ->
       { p with
           Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
-          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\msbuild-sonarqube-runner\\tools\\SonarScanner.MSBuild.exe"
+          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\sonarscanner-msbuild-net46\\tools\\SonarScanner.MSBuild.exe"
       }
     ))
   else Trace.log "SonarQube end skipped (not develop branch)"
@@ -273,18 +271,8 @@ Target.create "PrepareDatabase" (fun _ ->
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
   let exec proj =
-    match Common.branch with
-    | "local" ->
-      proj 
-      |> DotNet.test (fun p ->
-        { p with
-            NoRestore = true
-            NoBuild = true
-        }
-      )
-    | _ ->  
-      let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
-      if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
+    let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+    if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
   !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
   |> Seq.iter exec
@@ -295,8 +283,8 @@ Target.create "UploadCodeCov" (fun _ ->
   | "local" -> Trace.log "Skipping uploading coverage results"
   | _ ->
     Trace.log " --- Uploading CodeCov --- "
-    Http.downloadFile ".\\codecov.sh" "https://codecov.io/bash" |> ignore
-    let result = Shell.Exec("bash", sprintf "codecov.sh -f \"%s/build/coverage.xml\" -t %s" Common.baseDirectory (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    Http.downloadFile "codecov.sh" "https://codecov.io/bash" |> ignore
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f coverage.xml -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 

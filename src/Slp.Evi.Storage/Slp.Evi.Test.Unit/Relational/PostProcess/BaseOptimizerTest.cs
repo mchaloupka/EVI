@@ -30,7 +30,7 @@ namespace Slp.Evi.Test.Unit.Relational.PostProcess
 
         protected virtual ISqlDatabase GetDb()
         {
-            return (new MsSqlDbFactory()).CreateSqlDb("");
+            return (new MsSqlDbFactory()).CreateSqlDb("", 30);
         }
 
         protected virtual SparqlQuery GenerateSparqlQuery()
