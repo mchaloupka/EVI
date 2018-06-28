@@ -16,6 +16,10 @@
     nuget Fake.Testing.SonarQube
     nuget Newtonsoft.Json //"
 
+#if !FAKE
+  #r "netstandard"
+#endif
+
 #load "./.fake/build.fsx/intellisense.fsx"
 
 open System
