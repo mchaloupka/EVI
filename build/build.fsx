@@ -14,12 +14,9 @@
     nuget Fake.DotNet.MSBuild
     nuget Fake.Windows.Chocolatey
     nuget Fake.Testing.SonarQube
-    nuget System.Reactive 3.1.1
     nuget Newtonsoft.Json //"
 
-#if !FAKE
-#load ".fake/build.fsx/intellisense.fsx"
-#endif
+#load "./.fake/build.fsx/intellisense.fsx"
 
 open System
 open System.IO
