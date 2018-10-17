@@ -12,6 +12,5 @@ There will be more detail in the future. Feel free to contact the author: chalou
 
 # Current build status
 [![Build status](https://ci.appveyor.com/api/projects/status/0occxl9nsbjcmkc2/branch/master?svg=true)](https://ci.appveyor.com/project/mchaloupka/dotnetr2rmlstore/branch/master) 
-[![codecov](https://codecov.io/gh/mchaloupka/EVI/branch/master/graph/badge.svg)](https://codecov.io/gh/mchaloupka/EVI)
-[![Quality Gate](https://sonarcloud.io/api/badges/measure?key=EVI&metric=lines)](https://sonarcloud.io/dashboard?id=EVI)
-[![Quality Gate](https://sonarcloud.io/api/badges/measure?key=EVI&metric=ncloc)](https://sonarcloud.io/dashboard?id=EVI)
+[![CodeCov](https://codecov.io/gh/mchaloupka/EVI/branch/master/graph/badge.svg)](https://codecov.io/gh/mchaloupka/EVI)
+[![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=ncloc)](https://sonarcloud.io/dashboard?id=EVI)
