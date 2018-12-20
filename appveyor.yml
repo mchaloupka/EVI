@@ -9,7 +9,7 @@ environment:
   CODECOV_TOKEN:
     secure: TkNT/U61mrXkNbtNjTxKXnBmF3wzp8YcFqAiboRXi8bj61fYHdogm/DxHxIJEtiH
   NUGET_TOKEN:
-    secure: osLMSCVxKNTsqSX5/7N1A1YRWeGVShtYhco2cdiTfPIahSN5zrEUqpmJu1QCRr0Z
+    secure: 1LgbIbX85nwAiw/QI4PTcJ8JfKZUuSG8ta+H9RevK798l+wY4TvkgKVu5t8+rRxh
 services: 
   - mssql2014
 build_script:
