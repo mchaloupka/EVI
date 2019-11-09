@@ -37,7 +37,6 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
     {
         public MsSqlSparqlTestSuite(MsSqlSparqlFixture fixture)
             : base(fixture)
-        {
-        }
+        { }
     }
 }

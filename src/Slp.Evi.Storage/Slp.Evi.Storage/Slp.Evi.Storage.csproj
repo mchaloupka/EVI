@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Slp.Evi.Storage</RootNamespace>
     <AssemblyName>Slp.Evi.Storage</AssemblyName>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
@@ -14,10 +14,11 @@
     <PackageId>slp.evi</PackageId>
     <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
     <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
     <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
     <ProjectGuid>57F07E37-93C5-49C0-8E44-2676D1C3ADC8</ProjectGuid>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
@@ -39,6 +40,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Net.Compilers" Version="2.8.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.0" />
@@ -157,6 +159,10 @@
     <None Update="Sparql\Utils\CodeGeneration\BaseSparqlOptimizerImplementation.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BaseSparqlOptimizerImplementation.cs</LastGenOutput>
+    </None>
+    <None Include="..\..\..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 

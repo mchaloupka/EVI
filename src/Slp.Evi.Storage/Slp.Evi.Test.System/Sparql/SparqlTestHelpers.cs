@@ -3,8 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Slp.Evi.Storage;
-using Slp.Evi.Storage.Bootstrap;
+using Slp.Evi.FuncStorage;
 using Slp.Evi.Storage.Database;
 using TCode.r2rml4net.Mapping.Fluent;
 
@@ -19,7 +18,7 @@ namespace Slp.Evi.Test.System.Sparql
             return path;
         }
 
-        public static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IEviQueryableStorageFactory storageFactory)
+        public static EviStorage InitializeDataset(string dataset, ISqlDatabase sqlDb)
         {
             var datasetFile = GetPath($@"Data\{dataset}\_dataset.xml");
 
@@ -42,7 +41,7 @@ namespace Slp.Evi.Test.System.Sparql
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new EviQueryableStorage(sqlDb, mapping, storageFactory);
+            return new EviStorage(new QueryProcessor());
         }
 
         private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)

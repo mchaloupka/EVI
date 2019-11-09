@@ -24,8 +24,9 @@ build/
 .fake
 !/build
 
-# Temporary build folder is not needed
+# Temporary build output is not needed
 .build
+coverage.xml
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

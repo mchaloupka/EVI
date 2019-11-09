@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Algebra.fs" />
+    <Compile Include="ValueBinders.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DatabaseSchemaReader" Version="2.7.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Slp.Evi.Common\Slp.Evi.Common.fsproj" />
+  </ItemGroup>
+
+</Project>

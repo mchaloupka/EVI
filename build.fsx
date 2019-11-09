@@ -188,7 +188,7 @@ Target.create "BeginSonarQube" (fun _ ->
         (sprintf
           "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\" /d:sonar.host.url=\"https://sonarcloud.io\""
           (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
-          Common.buildTempDirectory
+          Common.baseDirectory
         )
     if not startProc.OK then failwithf "Process failed with %A" startProc
   else Trace.log "SonarQube start skipped (not develop branch)"
@@ -260,7 +260,7 @@ Target.create "PrepareDatabase" (fun _ ->
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
   let exec proj =
-    let result = Shell.Exec(Common.buildTempDirectory + "/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/coverage.xml\" -oldstyle" proj Common.buildTempDirectory)
+    let result = Shell.Exec(Common.buildTempDirectory + "/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/coverage.xml\" -oldstyle" proj Common.baseDirectory)
     if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
   !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
