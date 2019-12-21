@@ -12,7 +12,6 @@
     nuget Fake.BuildServer.AppVeyor
     nuget Fake.DotNet.Nuget
     nuget Fake.DotNet.MSBuild
-    nuget Fake.Windows.Chocolatey
     nuget Fake.Testing.SonarQube
     nuget Newtonsoft.Json"
 
@@ -181,41 +180,37 @@ Target.create "InstallDependencies" (fun _ ->
   let zipLocation = Common.buildTempDirectory + "/opencover.zip"
   Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
   Zip.unzip (Common.buildTempDirectory + "/opencover") zipLocation
-
-  let toInstall =
-    match Common.branch with
-    | "develop" ->
-      [
-        "msbuild-sonarqube-runner"
-      ]
-    | _ -> []
-
-  toInstall
-  |> Seq.iter (Choco.install id)
 )
 
 Target.create "BeginSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Starting SonarQube analyzer --- "
-    SonarQube.start (fun p ->
-      { p with
-          Key = "EVI"
-          Settings =
-            [
-              "sonar.host.url=https://sonarcloud.io"
-              ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
-              "sonar.organization=mchaloupka-github"
-              (sprintf "sonar.cs.opencover.reportsPaths=\"%s\\build\\coverage.xml\"" Common.baseDirectory)
-            ]
-          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\sonarscanner-msbuild-net46\\tools\\SonarScanner.MSBuild.exe"
-      }
-    )
+    let start = 
+      DotNet.exec
+        id 
+        "sonarscanner" 
+        (sprintf
+          "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\""
+          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
+          Common.buildTempDirectory
+        )
+    if not start.OK then failwithf "Process failed with %A" start
   else Trace.log "SonarQube start skipped (not develop branch)"
 )
 
 Target.create "EndSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Exiting SonarQube analyzer --- "
+    let endProc = 
+      DotNet.exec
+        id 
+        "sonarscanner" 
+        (sprintf
+          "end /d:sonar.login=\"%s\""
+          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
+        )
+    if not endProc.OK then failwithf "Process failed with %A" endProc
+
     SonarQube.finish (Some (fun p ->
       { p with
           Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
