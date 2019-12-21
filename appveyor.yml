@@ -13,5 +13,6 @@ environment:
 services: 
   - mssql2014
 build_script:
-  - ps: dotnet tool restore && dotnet fake build
+  - ps: dotnet tool restore
+  - ps: dotnet fake build
 test: off
