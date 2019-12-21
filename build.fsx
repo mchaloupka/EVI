@@ -185,7 +185,7 @@ Target.create "InstallDependencies" (fun _ ->
 Target.create "BeginSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Starting SonarQube analyzer --- "
-    let start = 
+    let startProc = 
       DotNet.exec
         id 
         "sonarscanner" 
@@ -194,7 +194,7 @@ Target.create "BeginSonarQube" (fun _ ->
           (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
           Common.buildTempDirectory
         )
-    if not start.OK then failwithf "Process failed with %A" start
+    if not startProc.OK then failwithf "Process failed with %A" startProc
   else Trace.log "SonarQube start skipped (not develop branch)"
 )
 
@@ -210,13 +210,6 @@ Target.create "EndSonarQube" (fun _ ->
           (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
         )
     if not endProc.OK then failwithf "Process failed with %A" endProc
-
-    SonarQube.finish (Some (fun p ->
-      { p with
-          Settings = [ ("sonar.login=" + Environment.GetEnvironmentVariable("SONARQUBE_TOKEN")) ]
-          ToolsPath = "C:\\ProgramData\\chocolatey\\lib\\sonarscanner-msbuild-net46\\tools\\SonarScanner.MSBuild.exe"
-      }
-    ))
   else Trace.log "SonarQube end skipped (not develop branch)"
 )
 
