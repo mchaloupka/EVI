@@ -248,7 +248,7 @@ Target.create "PrepareDatabase" (fun _ ->
   | "local" -> Trace.log "Skipping database preparation "
   | _ ->
     Trace.log " --- Preparing database --- "
-    let sqlInstance = "(local)\\SQL2014";
+    let sqlInstance = "(local)\\SQL2017";
     let dbName = "R2RMLTestStore";
     let connectionString = sprintf "Server=%s;Database=%s;User ID=sa;Password=Password12!" sqlInstance dbName
 
