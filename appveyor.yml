@@ -11,7 +11,7 @@ environment:
   NUGET_TOKEN:
     secure: 1yTwisjggoeqOa9BeFZlrRJfachN35lziQA66bOssVLQ1tVAONno2xMasXq9YLxc
 services: 
-  - mssql2014
+  - mssql2017
 build_script:
   - ps: dotnet tool restore
   - ps: dotnet fake build
