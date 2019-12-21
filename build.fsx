@@ -14,11 +14,7 @@
     nuget Fake.DotNet.MSBuild
     nuget Fake.Windows.Chocolatey
     nuget Fake.Testing.SonarQube
-    nuget Newtonsoft.Json //"
-
-#if !FAKE
-  #r "netstandard"
-#endif
+    nuget Newtonsoft.Json"
 
 #load "./.fake/build.fsx/intellisense.fsx"
 
@@ -45,7 +41,9 @@ BuildServer.install [
 module Common =
   let private scriptDirectory = __SOURCE_DIRECTORY__
 
-  let baseDirectory = (Directory.GetParent scriptDirectory).FullName
+  let baseDirectory = DirectoryInfo(scriptDirectory).FullName
+
+  let buildTempDirectory = Path.Combine(baseDirectory, ".build")
 
   let branch =
     let b = AppVeyor.Environment.RepoBranch
@@ -170,12 +168,19 @@ Target.create "Build" (fun _ ->
   build "Release"
 )
 
+Target.create "CreateTempFolder" (fun _ ->
+  Trace.log("--- Creating temporary build folder ---")
+
+  let di = DirectoryInfo(Common.buildTempDirectory)
+  di.Create()
+)
+
 Target.create "InstallDependencies" (fun _ ->
   Trace.log " --- Installing dependencies --- "
   
-  let zipLocation = Common.baseDirectory + "/build/opencover.zip"
+  let zipLocation = Common.buildTempDirectory + "/opencover.zip"
   Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
-  Zip.unzip (Common.baseDirectory + "/build/opencover") zipLocation
+  Zip.unzip (Common.buildTempDirectory + "/opencover") zipLocation
 
   let toInstall =
     match Common.branch with
@@ -271,7 +276,7 @@ Target.create "PrepareDatabase" (fun _ ->
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
   let exec proj =
-    let result = Shell.Exec(Common.baseDirectory + "/build/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/build/coverage.xml\" -oldstyle" proj Common.baseDirectory)
+    let result = Shell.Exec(Common.buildTempDirectory + "/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/coverage.xml\" -oldstyle" proj Common.buildTempDirectory)
     if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
 
   !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
@@ -308,9 +313,9 @@ Target.create "PublishArtifacts" (fun _ ->
         |> Zip.moveToFolder "Tests/Unit"
     ]
     |> Seq.concat
-    |> Zip.zipSpec (sprintf "%s/build/Binaries-%s.zip" Common.baseDirectory version)
+    |> Zip.zipSpec (sprintf "%s/Binaries-%s.zip" Common.buildTempDirectory version)
 
-    !! (Common.baseDirectory + "/build/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.buildTempDirectory + "/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
     !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
 
@@ -331,7 +336,8 @@ Target.create "PublishArtifacts" (fun _ ->
 open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
-"InstallDependencies"
+"CreateTempFolder"
+ ==> "InstallDependencies"
  ==> "UpdateAssemblyInfo" <=> "RestorePackages"
  ==> "BeginSonarQube"
  ==> "Build"

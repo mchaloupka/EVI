@@ -24,6 +24,9 @@ build/
 .fake
 !/build
 
+# Temporary build folder is not needed
+.build
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
