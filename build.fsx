@@ -190,7 +190,7 @@ Target.create "BeginSonarQube" (fun _ ->
         id 
         "sonarscanner" 
         (sprintf
-          "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\""
+          "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\" /d:sonar.host.url=\"https://sonarcloud.io\""
           (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
           Common.buildTempDirectory
         )
