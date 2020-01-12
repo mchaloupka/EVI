@@ -33,12 +33,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DatabaseSchemaReader" Version="2.5.1" />
-    <PackageReference Include="dotNetRDF" Version="2.0.1" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.8.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.2" />
+    <PackageReference Include="DatabaseSchemaReader" Version="2.7.2" />
+    <PackageReference Include="dotNetRDF" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.0" />
     <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
   </ItemGroup>
 
