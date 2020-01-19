@@ -191,6 +191,7 @@ namespace Slp.Evi.Storage.Database.Vendor.MsSql
                 case "time":
                     return EviConstants.XsdTime;
                 case "datetime":
+                case "datetime2":
                     return EviConstants.XsdDateTime;
                 case "binary":
                 case "varbinary":
