@@ -277,6 +277,11 @@ Target.create "UploadCodeCov" (fun _ ->
     if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
+Target.create "RunBenchmarks" (fun _ ->
+  Trace.log " --- Starting benchmarking --- "
+  
+)
+
 Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
@@ -330,6 +335,7 @@ open Fake.Core.TargetOperators
  ==> "EndSonarQube"
  ==> "UploadCodeCov"
  ==> "Package"
+ ==> "RunBenchmarks"
  ==> "PublishArtifacts"
 
 // *** Start Build ***

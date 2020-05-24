@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.Unit", "Slp.Ev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.System", "Slp.Evi.Test.System\Slp.Evi.Test.System.csproj", "{32D17C53-D762-4F83-B617-CAE13E165495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sparql.Evi.Test.Benchmark", "Sparql.Evi.Test.Benchmark\Sparql.Evi.Test.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Benchmark", "Slp.Evi.Benchmark\Slp.Evi.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
