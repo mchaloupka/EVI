@@ -19,7 +19,6 @@
 
 open System
 open System.IO
-open System.Xml
 open System.Text.RegularExpressions
 open Fake.Core
 open Fake.IO
@@ -27,10 +26,7 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.Net
 open Fake.BuildServer
-open Fake.DotNet.NuGet.Restore
 open Fake.DotNet.NuGet.NuGet
-open Fake.Windows
-open Fake.Testing
 
 BuildServer.install [
   AppVeyor.Installer
