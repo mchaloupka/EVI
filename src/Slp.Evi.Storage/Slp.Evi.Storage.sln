@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage", "Slp.Evi.Storage\Slp.Evi.Storage.csproj", "{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.Unit", "Slp.Evi.Test.Unit\Slp.Evi.Test.Unit.csproj", "{48AB080D-DA54-42F1-B738-5C823CA5ACC1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.System", "Slp.Evi.Test.System\Slp.Evi.Test.System.csproj", "{32D17C53-D762-4F83-B617-CAE13E165495}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sparql.Evi.Test.Benchmark", "Sparql.Evi.Test.Benchmark\Sparql.Evi.Test.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

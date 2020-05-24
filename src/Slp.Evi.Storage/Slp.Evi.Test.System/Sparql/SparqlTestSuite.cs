@@ -21,9 +21,7 @@ namespace Slp.Evi.Test.System.Sparql
         public void TestQuery(string dataset, string testName, QueryVerificationType verificationType)
         {
             var storage = _fixture.GetStorage(dataset);
-
             var path = $"Data\\{dataset}\\{testName}";
-
             var query = GetQuery($"{path}.rq");
             var expected = GetExpected($"{path}.srx");
             var result = storage.Query(query);
@@ -54,7 +52,7 @@ namespace Slp.Evi.Test.System.Sparql
             return doc;
         }
 
-        private static string GetQuery(string queryFile)
+        public static string GetQuery(string queryFile)
         {
             string query;
 
