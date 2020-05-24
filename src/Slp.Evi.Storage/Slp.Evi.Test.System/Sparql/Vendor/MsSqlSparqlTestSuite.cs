@@ -12,8 +12,11 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
         public MsSqlSparqlFixture()
         {
             // Prepare all databases beforehand
-            var bootUp = SparqlTestSuite.TestData.Select(x => x[0]).Cast<string>().Distinct()
-                .Select(x => base.GetStorage(x));
+            var datasetsToBootup = SparqlTestSuite.TestData.Select(x => x[0]).Cast<string>().Distinct();
+            foreach (var dataset in datasetsToBootup)
+            {
+                GetStorage(dataset);
+            }
         }
 
         protected override ISqlDatabase GetSqlDb()
