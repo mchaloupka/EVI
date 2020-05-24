@@ -279,7 +279,13 @@ Target.create "UploadCodeCov" (fun _ ->
 
 Target.create "RunBenchmarks" (fun _ ->
   Trace.log " --- Starting benchmarking --- "
-  
+  let startProc =
+    DotNet.exec
+      id
+      "run"
+      (sprintf "-p .\\src\\Slp.Evi.Storage\\Slp.Evi.Benchmark -c Release")
+
+  if not startProc.OK then failwithf "Process failed with %A" startProc
 )
 
 Target.create "PublishArtifacts" (fun _ ->
@@ -335,8 +341,10 @@ open Fake.Core.TargetOperators
  ==> "EndSonarQube"
  ==> "UploadCodeCov"
  ==> "Package"
- ==> "RunBenchmarks"
  ==> "PublishArtifacts"
+
+"RestorePackages"
+ ==> "RunBenchmarks"
 
 // *** Start Build ***
 Target.runOrDefault "PublishArtifacts"

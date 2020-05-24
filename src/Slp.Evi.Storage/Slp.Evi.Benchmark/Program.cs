@@ -1,13 +1,19 @@
-﻿using BenchmarkDotNet.Running;
-using Sparql.Evi.Test.Benchmark.Sparql.Vendor;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Running;
+using Slp.Evi.Benchmark.Sparql.Vendor;
 
-namespace Sparql.Evi.Test.Benchmark
+namespace Slp.Evi.Benchmark
 {
     class Program
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<MsSqlSparqlBenchmark>();
+#if DEBUG
+            BenchmarkRunner.Run<MsSqlSparqlBenchmark>(new DebugBuildConfig());
+#else
+             BenchmarkRunner.Run<MsSqlSparqlBenchmark>();
+#endif
+
         }
     }
 }

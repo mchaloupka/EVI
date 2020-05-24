@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 using Slp.Evi.Storage;
 using Slp.Evi.Test.System.Sparql;
 
-namespace Sparql.Evi.Test.Benchmark.Sparql
+namespace Slp.Evi.Benchmark.Sparql
 {
     public class SparqlBenchmarkArguments
     {
@@ -26,10 +26,30 @@ namespace Sparql.Evi.Test.Benchmark.Sparql
             _storage.Query(_query);
         }
 
-        /// <inheritdoc />
         public override string ToString()
         {
-            return $"{_dataset}\\{_queryFile}.rq";
+            // The argument is trimmed to 20 characters, let's make it fit
+            var totalLength = _dataset.Length + _queryFile.Length + 1;
+            var toTrim = totalLength - 20;
+
+            if (toTrim > 0)
+            {
+                var trimmedDataset = _dataset.Substring(0, 3);
+                toTrim -= (_dataset.Length - 3);
+
+                if (toTrim > 0)
+                {
+                    return $"{trimmedDataset}.{_queryFile.Substring(toTrim)}";
+                }
+                else
+                {
+                    return $"{trimmedDataset}.{_queryFile}";
+                }
+            }
+            else
+            {
+                return $"{_dataset}-{_queryFile}";
+            }
         }
     }
 

@@ -176,3 +176,6 @@ $RECYCLE.BIN/
 
 # Ionide VS code files
 .ionide
+
+# Benchmark artifacts
+BenchmarkDotNet.Artifacts
