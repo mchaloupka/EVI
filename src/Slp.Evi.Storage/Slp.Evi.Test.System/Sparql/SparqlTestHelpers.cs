@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -13,7 +14,8 @@ namespace Slp.Evi.Test.System.Sparql
     {
         public static string GetPath(string dataFile)
         {
-            var path = $".\\Sparql\\{dataFile}";
+            var root = AppDomain.CurrentDomain.BaseDirectory;
+            var path = Path.Combine(root, $".\\Sparql\\{dataFile}");
             return path;
         }
 
