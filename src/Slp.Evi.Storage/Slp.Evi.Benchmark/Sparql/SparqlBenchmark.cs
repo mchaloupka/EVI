@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using Slp.Evi.Storage;
 using Slp.Evi.Test.System.Sparql;
+using VDS.RDF.Storage;
 
 namespace Slp.Evi.Benchmark.Sparql
 {
     public class SparqlBenchmarkArguments
     {
-        private string _dataset;
-        private string _queryFile;
-        private EviQueryableStorage _storage;
-        private string _query;
+        private readonly string _dataset;
+        private readonly string _queryFile;
+        private readonly IQueryableStorage _storage;
+        private readonly string _query;
 
         public SparqlBenchmarkArguments(string dataset, string queryFile, SparqlFixture fixture)
         {
@@ -23,7 +23,16 @@ namespace Slp.Evi.Benchmark.Sparql
 
         public void RunTest()
         {
-            _storage.Query(_query);
+            // Temporarily catch exceptions as they are expected
+            // TODO: Remove try-catch
+            try
+            {
+                _storage.Query(_query);
+            }
+            catch
+            {
+                // We do not care in Benchmark right now
+            }
         }
 
         public override string ToString()

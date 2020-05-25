@@ -250,31 +250,18 @@ and private processTriplePatterns (triplePatterns: Query.Patterns.ITriplePattern
                     Object = orBgp.Object |> processPattern
                 }
 
-                let rec addToPrevious selected =
-                    match selected with
-                    | EmptyPattern ->
-                        patternMatch
-                        |> List.singleton
-                        |> NotProcessedTriplePatterns
-                    | FilterPattern(children, condition) ->
-                        addToPrevious children
-                        |> fun inner -> FilterPattern(inner, condition)
-                    | NotProcessedTriplePatterns(patterns) ->
-                        NotProcessedTriplePatterns(patternMatch :: patterns)
-                    | _ -> raise (new NotSupportedException(sprintf "Unexpected pattern found: %A" selected))
+                let notProcessedTriplePattern =
+                    patternMatch
+                    |> List.singleton
+                    |> NotProcessedTriplePatterns
+                    |> normalizeSparqlPattern
 
-                addToPrevious previous
+                JoinPattern [ previous; notProcessedTriplePattern ]
+                |> normalizeSparqlPattern
 
             | :? Query.Patterns.FilterPattern as orFilter ->
                 let condition = orFilter.Filter.Expression |> processSparqlCondition
-
-                match previous with
-                | FilterPattern(inner, ConjunctionCondition(conjConditions)) ->
-                    FilterPattern(inner, ConjunctionCondition(condition :: conjConditions))
-                | FilterPattern(inner, otherCondition) ->
-                    FilterPattern(inner, ConjunctionCondition([condition; otherCondition]))
-                | inner ->
-                    FilterPattern(inner, condition)
+                FilterPattern(previous, condition) |> normalizeSparqlPattern
             | x -> raise (new NotImplementedException(sprintf "The underlying triple pattern is not supported: %A" x))
     )
 
@@ -296,9 +283,9 @@ let private buildDescribeQuery (vdsAlgebra: Query.Algebra.ISparqlAlgebra) (sparq
             Query =
                 JoinPattern [
                     innerPattern
-                    { Subject = VariablePattern variable; Predicate = VariablePattern predicateVariable; Object = VariablePattern objectVariable } |> List.singleton |> NotProcessedTriplePatterns 
-                ]
-            Modifiers = [Select [variable; predicateVariable; objectVariable]]
+                    { Subject = VariablePattern variable; Predicate = VariablePattern predicateVariable; Object = VariablePattern objectVariable } |> List.singleton |> NotProcessedTriplePatterns |> normalizeSparqlPattern
+                ] |> normalizeSparqlPattern
+            Modifiers = [Select [variable; predicateVariable; objectVariable]] |> normalizeModifiers
         }
 
     | _ ->

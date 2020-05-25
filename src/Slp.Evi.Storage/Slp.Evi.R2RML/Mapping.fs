@@ -8,7 +8,7 @@ type TriplesMappingSource =
 
 type TermMapValue =
     | IriColumn of string
-    | IriTemplate of string
+    | IriTemplate of MappingTemplate.Template
     | IriConstant of Uri
 
 type ParsedLiteralParts = {
@@ -19,7 +19,7 @@ type ParsedLiteralParts = {
 
 type LiteralValue =
     | LiteralColumn of string
-    | LiteralTemplate of string
+    | LiteralTemplate of MappingTemplate.Template
     | LiteralConstant of ParsedLiteralParts
 
 type ITriplesMapping =
@@ -31,7 +31,6 @@ type ITriplesMapping =
 and IriMapping = {
     Value: TermMapValue
     BaseIri: Uri option
-    TriplesMap: ITriplesMapping
     IsBlankNode: bool
 }
 
@@ -39,6 +38,7 @@ and SubjectMapping = {
     Value: IriMapping
     GraphMaps: IriMapping list
     Classes: Uri list
+    TriplesMap: ITriplesMapping
 }
 
 and PredicateObjectMapping = {
@@ -66,5 +66,5 @@ and LiteralMapping = {
 }
 
 and ObjectMapping =
-    | Iri of IriMapping
-    | Literal of LiteralMapping
+    | IriObject of IriMapping
+    | LiteralObject of LiteralMapping

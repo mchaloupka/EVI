@@ -9,6 +9,7 @@
     <Compile Include="Algebra.fs" />
     <Compile Include="SparqlQueryNormalizer.fs" />
     <Compile Include="SparqlQueryBuilder.fs" />
+    <Compile Include="MappingProcessor.fs" />
   </ItemGroup>
 
   <ItemGroup>

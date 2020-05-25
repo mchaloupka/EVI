@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="MappingTemplate.fs" />
     <Compile Include="Mapping.fs" />
     <Compile Include="Builder.fs" />
   </ItemGroup>

@@ -41,7 +41,7 @@ namespace Slp.Evi.Test.System.Sparql
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new EviStorage(new QueryProcessor());
+            return new EviStorage(new QueryProcessor(mapping));
         }
 
         private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)

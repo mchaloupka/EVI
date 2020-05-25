@@ -25,7 +25,13 @@ type BasicGraphObjectMapping =
     | ObjectMatch of ObjectMapping
     | RefObjectMatch of RefObjectMapping
 
-type BasicGraphPatternMapping = { TriplesMap: ITriplesMapping; Subject: SubjectMapping; PredicateObject: PredicateObjectMapping; Predicate: IriMapping; Object: BasicGraphObjectMapping; Graph: IriMapping option }
+type BasicGraphPatternMapping = { 
+    TriplesMap: ITriplesMapping
+    Subject: SubjectMapping
+    Predicate: IriMapping
+    Object: BasicGraphObjectMapping
+    Graph: IriMapping option
+}
 
 type RestrictedPatternMatch = { PatternMatch: BasicGraphPatternMatch; Restriction: BasicGraphPatternMapping }
 
