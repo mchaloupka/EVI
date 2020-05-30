@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slp.Evi.FuncStorage\Slp.Evi.FuncStorage.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj" />
     <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj" />
   </ItemGroup>
 

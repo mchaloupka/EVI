@@ -19,7 +19,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Sparql", "Slp.Evi.S
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Common", "Slp.Evi.Common\Slp.Evi.Common.fsproj", "{0327677F-55B0-456B-A594-EDBB783F6F42}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Slp.Evi.FuncStorage", "Slp.Evi.FuncStorage\Slp.Evi.FuncStorage.fsproj", "{ED460784-7F56-43E1-B411-98B0ABEEA719}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core", "Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj", "{ED460784-7F56-43E1-B411-98B0ABEEA719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
