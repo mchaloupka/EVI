@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Slp.Evi.FuncStorage;
 using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.MsSql;
 using TCode.r2rml4net.Mapping.Fluent;
 
 namespace Slp.Evi.Test.System.Sparql
@@ -41,7 +41,7 @@ namespace Slp.Evi.Test.System.Sparql
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new EviStorage(new QueryProcessor(mapping));
+            return new EviStorage(mapping);
         }
 
         private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)

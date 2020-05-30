@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Include="QueryProcessor.fs" />
-    <Compile Include="EviStorage.fs" />
   </ItemGroup>
 
   <ItemGroup>

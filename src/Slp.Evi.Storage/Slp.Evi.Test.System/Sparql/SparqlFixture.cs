@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
-using Slp.Evi.FuncStorage;
 using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.MsSql;
 using VDS.RDF.Storage;
 
 namespace Slp.Evi.Test.System.Sparql

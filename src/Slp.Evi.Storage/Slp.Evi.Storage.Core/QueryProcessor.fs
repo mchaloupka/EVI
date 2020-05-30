@@ -1,4 +1,4 @@
-﻿namespace Slp.Evi.FuncStorage
+﻿namespace Slp.Evi.Storage.Core
 
 open System
 open VDS.RDF
