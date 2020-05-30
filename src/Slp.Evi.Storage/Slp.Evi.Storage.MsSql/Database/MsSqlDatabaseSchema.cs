@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using DatabaseSchemaReader;
-using Slp.Evi.Common;
 using Slp.Evi.Common.DatabaseConnection;
+using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
     public class MsSqlDatabaseSchema
         : ISqlDatabaseSchema
     {
-        private readonly Dictionary<string, MsSqlTable> _tableCache;
+        private readonly Dictionary<string, MsSqlTable> _tables;
 
-        private MsSqlDatabaseSchema(Dictionary<string, MsSqlTable> tableCache)
+        private MsSqlDatabaseSchema(Dictionary<string, MsSqlTable> tables)
         {
-            _tableCache = tableCache;
+            _tables = tables;
         }
 
         public static MsSqlDatabaseSchema CreateFromDatabase(DbConnection connection)
@@ -37,13 +37,27 @@ namespace Slp.Evi.Storage.MsSql.Database
         /// <inheritdoc />
         public string NormalizeTableName(string tableName)
         {
-            throw new NotImplementedException();
+            if (_tables.ContainsKey(tableName))
+            {
+                return tableName;
+            }
+            else
+            {
+                throw new ArgumentException($"Table ${tableName} was not found in the database");
+            }
         }
 
         /// <inheritdoc />
-        public Types.LiteralValueType DetectDefaultRdfType(string tableName, string columnName)
+        public LiteralValueType DetectDefaultRdfType(string tableName, string columnName)
         {
-            throw new NotImplementedException();
+            if (_tables.TryGetValue(tableName, out var table))
+            {
+                return table.DetectDefaultRdfType(columnName);
+            }
+            else
+            {
+                throw new ArgumentException($"Table ${tableName} was not found in the database");
+            }
         }
     }
 }

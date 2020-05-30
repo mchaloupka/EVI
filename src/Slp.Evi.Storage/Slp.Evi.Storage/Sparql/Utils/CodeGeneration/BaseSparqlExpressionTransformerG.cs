@@ -1,8 +1,6 @@
 ﻿// This is generated code, do not edit!!!
-using System;
 
 using Slp.Evi.Storage.Sparql.Algebra;
-using Slp.Evi.Storage.Sparql.Algebra.Patterns;
 using Slp.Evi.Storage.Sparql.Algebra.Expressions;
 namespace Slp.Evi.Storage.Sparql.Utils.CodeGeneration
 {

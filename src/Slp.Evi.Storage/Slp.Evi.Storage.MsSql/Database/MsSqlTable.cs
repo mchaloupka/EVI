@@ -1,22 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
     public class MsSqlTable
     {
-        public MsSqlTable(string name)
+        private readonly Dictionary<string, MsSqlColumn> _columns;
+
+        public MsSqlTable(string tableName, IEnumerable<MsSqlColumn> columns)
         {
-            Name = name;
+            Name = tableName;
+            _columns = columns.ToDictionary(column => column.Name);
         }
 
         public string Name { get; }
 
         public static MsSqlTable CreateFromDatabase(DatabaseTable tableSchema)
         {
-            return new MsSqlTable(tableSchema.Name);
+            var columns = tableSchema.Columns.Select(MsSqlColumn.CreateFromDatabase);
+            return new MsSqlTable(tableSchema.Name, columns);
+        }
+
+        public LiteralValueType DetectDefaultRdfType(string columnName)
+        {
+            if (_columns.TryGetValue(columnName, out var column))
+            {
+                return column.DefaultRdfType;
+            }
+            else
+            {
+                throw new ArgumentException($"Column ${columnName} was not found in the table ${Name}");
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿// Generated code, do not edit!!!
 
-using Slp.Evi.Storage.Relational.Builder.ConditionBuilderHelpers;
 using Slp.Evi.Storage.Relational.PostProcess.Optimizers;
 using Slp.Evi.Storage.Relational.Query;
 using Slp.Evi.Storage.Relational.Query.Conditions.Assignment;

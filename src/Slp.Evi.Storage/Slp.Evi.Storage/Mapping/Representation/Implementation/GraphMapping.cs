@@ -1,5 +1,4 @@
-﻿using System;
-using TCode.r2rml4net.Mapping;
+﻿using TCode.r2rml4net.Mapping;
 
 namespace Slp.Evi.Storage.Mapping.Representation.Implementation
 {
