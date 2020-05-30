@@ -7,14 +7,14 @@ namespace Slp.Evi.Test.System.Sparql
 {
     public abstract class SparqlFixture
     {
-        private readonly ConcurrentDictionary<string, EviStorage> _storages = new ConcurrentDictionary<string, EviStorage>();
+        private readonly ConcurrentDictionary<string, MsSqlEviStorage> _storageCache = new ConcurrentDictionary<string, MsSqlEviStorage>();
 
         public IQueryableStorage GetStorage(string storageName)
         {
-            return _storages.GetOrAdd(storageName, CreateStorage);
+            return _storageCache.GetOrAdd(storageName, CreateStorage);
         }
 
-        private EviStorage CreateStorage(string storageName)
+        private MsSqlEviStorage CreateStorage(string storageName)
         {
             return SparqlTestHelpers.InitializeDataset(storageName, GetSqlDb());
         }

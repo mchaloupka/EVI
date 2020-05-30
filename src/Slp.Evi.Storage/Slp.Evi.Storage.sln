@@ -23,6 +23,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core", "Slp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.Evi.Storage.MsSql", "Slp.Evi.Storage.MsSql\Slp.Evi.Storage.MsSql.csproj", "{674A72ED-2365-4CD1-A197-87DF73F2CFBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.Evi.Storage.Common", "Slp.Evi.Storage.Common\Slp.Evi.Storage.Common.csproj", "{7890F1A3-34AF-478E-BF2B-C2C60251E911}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

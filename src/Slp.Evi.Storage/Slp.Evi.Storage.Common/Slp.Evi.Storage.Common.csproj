@@ -6,11 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.5.1" />
-    <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slp.Evi.Storage.Common\Slp.Evi.Storage.Common.csproj" />
     <ProjectReference Include="..\Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj" />
   </ItemGroup>
 
