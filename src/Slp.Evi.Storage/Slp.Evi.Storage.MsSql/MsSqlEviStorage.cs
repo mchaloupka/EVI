@@ -1,4 +1,5 @@
 ﻿using Slp.Evi.Storage.Common;
+using Slp.Evi.Storage.MsSql.Database;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.MsSql
@@ -7,8 +8,8 @@ namespace Slp.Evi.Storage.MsSql
         : EviStorage
     {
         /// <inheritdoc />
-        public MsSqlEviStorage(IR2RML mapping) 
-            : base(mapping)
+        public MsSqlEviStorage(IR2RML mapping, string connectionString) 
+            : base(mapping, new MsSqlDatabase(connectionString))
         {
 
         }

@@ -5,10 +5,12 @@ open TCode.r2rml4net
 open TCode.r2rml4net.Extensions
 open TCode.r2rml4net.Mapping
 open VDS.RDF
+open Slp.Evi.Common.DatabaseConnection
+open Slp.Evi.Common.Types
 
 let private createOptionFromNullable x = if x = null then None else Some x
 
-let private parseLiteralParts (literalTermMap: ILiteralTermMap): ParsedLiteralParts =
+let private parseLiteralParts (literalTermMap: ILiteralTermMap): string * LiteralValueType =
     let node = 
         literalTermMap.Node.GetObjects("rr:constant")
         |> Seq.tryHead 
@@ -21,7 +23,16 @@ let private parseLiteralParts (literalTermMap: ILiteralTermMap): ParsedLiteralPa
     | Some(x) ->
         let dataType = createOptionFromNullable x.DataType
         let language = createOptionFromNullable x.Language
-        { Value = x.Value; Type = dataType; LanguageTag = language }
+
+        let literalType = 
+            match dataType, language with
+            | Some(_), Some(_) -> new InvalidOperationException("Literal has both data type and language set") |> raise
+            | Some(iri), _ -> iri |> WithType
+            | _, Some(lang) -> lang |> WithLanguage
+            | _, _ -> DefaultType
+        
+
+        x.Value, literalType
     | None -> raise (new InvalidOperationException("The literal value is missing"))
 
 let private createIriMapping (termMap: IUriValuedTermMap): IriMapping =
@@ -36,18 +47,35 @@ let private createIriMapping (termMap: IUriValuedTermMap): IriMapping =
 
     { Value = value; BaseIri = baseIri; IsBlankNode = isBlankNode }
 
-let private createObjectMapping (objectMap: IObjectMap): ObjectMapping =
+let private createObjectMapping (databaseSchema: ISqlDatabaseSchema) (triplesMap: ITriplesMapping) (objectMap: IObjectMap): ObjectMapping =
     if objectMap.TermType.IsLiteral then
-        let value =
-            if objectMap.IsConstantValued then LiteralConstant (parseLiteralParts objectMap)
-            else if objectMap.IsTemplateValued then objectMap.Template |> MappingTemplate.parseTemplate |> LiteralTemplate
-            else if objectMap.IsColumnValued then LiteralColumn objectMap.ColumnName
+        let (detectedType, value) =
+            if objectMap.IsConstantValued then
+                let parsedValue, parsedType = parseLiteralParts objectMap
+                parsedType, LiteralConstant parsedValue
+            else if objectMap.IsTemplateValued then
+                DefaultType, objectMap.Template |> MappingTemplate.parseTemplate |> LiteralTemplate
+            else if objectMap.IsColumnValued then
+                let tableName =
+                    match triplesMap.Source with
+                    | Table name -> name
+                    | _ -> new NotImplementedException(sprintf "Table source %A is not yet supported" triplesMap.Source) |> raise
+
+                let columnName = objectMap.ColumnName
+                databaseSchema.DetectDefaultRdfType(tableName, columnName), LiteralColumn columnName
             else raise (new NotSupportedException("Unsupported term type"))
 
         let dataTypeIri = createOptionFromNullable objectMap.DataTypeURI
         let language = createOptionFromNullable objectMap.Language
 
-        LiteralObject { Value = value; DataTypeIri = dataTypeIri; Language = language }
+        let literalType = 
+            match (dataTypeIri, language, detectedType) with
+            | Some(_), Some(_), _ -> new InvalidOperationException("Cannot have both language and type on a literal set") |> raise
+            | Some(iri), _, _ -> iri |> WithType
+            | _, Some(language), _-> language |> WithLanguage
+            | _, _, detectedType -> detectedType
+
+        LiteralObject { Value = value; Type = literalType }
     else
         let isBlankNode = objectMap.TermType.IsBlankNode
         let baseIri = createOptionFromNullable objectMap.BaseUri
@@ -71,24 +99,24 @@ type private TriplesMapping private(source: TriplesMappingSource, baseIri: Optio
     let mutable predicateObjectMaps: List<PredicateObjectMapping> = []
     let mutable subjectMap: SubjectMapping option = None
 
-    new (triplesMap: ITriplesMap) =
+    new (databaseSchema: ISqlDatabaseSchema, triplesMap: ITriplesMap) =
         let source =
             if String.IsNullOrEmpty(triplesMap.TableName) then Statement triplesMap.SqlQuery
-            else Table triplesMap.TableName
+            else triplesMap.TableName |> databaseSchema.NormalizeTableName |> Table
 
         let baseIri = createOptionFromNullable triplesMap.BaseUri
 
         TriplesMapping(source, baseIri)
 
-    member this.BaseIri = baseIri
+    member _.BaseIri = baseIri
 
-    member this.Source = source
+    member _.Source = source
 
-    member this.SubjectMap
+    member _.SubjectMap
         with get() = subjectMap.Value
         and set(value) = subjectMap <- value |> Some
 
-    member this.PredicateObjectMaps
+    member _.PredicateObjectMaps
         with get() = predicateObjectMaps
         and set(value) = predicateObjectMaps <- value
 
@@ -98,9 +126,9 @@ type private TriplesMapping private(source: TriplesMappingSource, baseIri: Optio
         member this.Source = this.Source
         member this.SubjectMap = this.SubjectMap
 
-let createMappingRepresentation (mappingInput: IR2RML): ITriplesMapping list =
+let createMappingRepresentation (databaseSchema: ISqlDatabaseSchema) (mappingInput: IR2RML): ITriplesMapping list =
     let tripleMapsToMapping =
-        seq { for tripleMap in mappingInput.TriplesMaps -> tripleMap, new TriplesMapping(tripleMap) }
+        seq { for tripleMap in mappingInput.TriplesMaps -> tripleMap, new TriplesMapping(databaseSchema, tripleMap) }
         |> Seq.map (fun (tripleMap, triplesMapping) ->
             triplesMapping.SubjectMap <- createSubjectMap (tripleMap.SubjectMap) triplesMapping
             tripleMap, triplesMapping
@@ -123,7 +151,7 @@ let createMappingRepresentation (mappingInput: IR2RML): ITriplesMapping list =
             let graphMaps = predicateObjectMap.GraphMaps |> Seq.map createIriMapping |> Seq.toList
             let predicateMaps = predicateObjectMap.PredicateMaps |> Seq.map createIriMapping |> Seq.toList
             let refObjectMaps = predicateObjectMap.RefObjectMaps |> Seq.map createRefObjectMap |> Seq.toList
-            let objectMaps = predicateObjectMap.ObjectMaps |> Seq.map createObjectMapping |> Seq.toList
+            let objectMaps = predicateObjectMap.ObjectMaps |> Seq.map (createObjectMapping databaseSchema triplesMapping) |> Seq.toList
 
             { BaseIri = baseIri; GraphMaps = graphMaps; PredicateMaps = predicateMaps; ObjectMaps = objectMaps; RefObjectMaps = refObjectMaps }
 

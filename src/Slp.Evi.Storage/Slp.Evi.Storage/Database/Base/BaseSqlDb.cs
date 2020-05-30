@@ -56,7 +56,7 @@ namespace Slp.Evi.Storage.Database.Base
         /// Gets the connection string.
         /// </summary>
         /// <value>The connection string.</value>
-        protected string ConnectionString { get; }
+        public string ConnectionString { get; }
 
         /// <summary>
         /// Gets the type of the SQL connection.

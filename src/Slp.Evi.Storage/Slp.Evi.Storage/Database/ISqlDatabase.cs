@@ -83,5 +83,10 @@ namespace Slp.Evi.Storage.Database
         /// Creates the connection to the database.
         /// </summary>
         DbConnection CreateConnection();
+
+        /// <summary>
+        /// Returns connection string used to create the database
+        /// </summary>
+        string ConnectionString { get; }
     }
 }

@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="DatabaseConnection.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="Algebra.fs" />
+    <Compile Include="DatabaseConnection.fs" />
   </ItemGroup>
 
   <ItemGroup>

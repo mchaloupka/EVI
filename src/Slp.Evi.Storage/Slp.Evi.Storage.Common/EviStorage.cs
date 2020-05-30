@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slp.Evi.Common.DatabaseConnection;
 using Slp.Evi.Storage.Core;
 using TCode.r2rml4net;
 using VDS.RDF;
@@ -16,9 +17,9 @@ namespace Slp.Evi.Storage.Common
     {
         private readonly QueryProcessor _queryProcessor;
 
-        public EviStorage(IR2RML mapping)
+        protected EviStorage(IR2RML mapping, ISqlDatabase database)
         {
-            _queryProcessor = new QueryProcessor(mapping);
+            _queryProcessor = new QueryProcessor(mapping, database);
         }
 
         /// <inheritdoc />

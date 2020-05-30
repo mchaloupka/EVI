@@ -1,6 +1,7 @@
 ﻿namespace Slp.Evi.R2RML
 
 open System
+open Slp.Evi.Common.Types
 
 type TriplesMappingSource =
     | Table of string
@@ -11,16 +12,10 @@ type TermMapValue =
     | IriTemplate of MappingTemplate.Template
     | IriConstant of Uri
 
-type ParsedLiteralParts = {
-    Value: string
-    Type: Uri option
-    LanguageTag: string option
-}
-
 type LiteralValue =
     | LiteralColumn of string
     | LiteralTemplate of MappingTemplate.Template
-    | LiteralConstant of ParsedLiteralParts
+    | LiteralConstant of string
 
 type ITriplesMapping =
     abstract member SubjectMap: SubjectMapping
@@ -61,8 +56,7 @@ and RefObjectMapping = {
 
 and LiteralMapping = {
     Value: LiteralValue
-    DataTypeIri: Uri option
-    Language: string option
+    Type: LiteralValueType
 }
 
 and ObjectMapping =
