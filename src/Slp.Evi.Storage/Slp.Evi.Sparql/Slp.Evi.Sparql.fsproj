@@ -13,12 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="dotNetRDF" Version="2.3.0" />
+    <PackageReference Include="dotNetRDF" Version="2.5.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.Common\Slp.Evi.Common.fsproj" />
     <ProjectReference Include="..\Slp.Evi.R2RML\Slp.Evi.R2RML.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
   </ItemGroup>
 
 </Project>

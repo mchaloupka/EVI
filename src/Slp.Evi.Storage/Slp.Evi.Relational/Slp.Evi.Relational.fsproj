@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Slp.Evi.Common\Slp.Evi.Common.fsproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
+  </ItemGroup>
+
 </Project>

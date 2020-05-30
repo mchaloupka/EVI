@@ -15,4 +15,8 @@
     <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
+  </ItemGroup>
+
 </Project>
