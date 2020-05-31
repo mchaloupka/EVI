@@ -10,6 +10,8 @@ open Slp.Evi.Common.Types
 
 let private createOptionFromNullable x = if x = null then None else Some x
 
+let private parseTemplate = MappingTemplate.parseTemplate id
+
 let private parseLiteralParts (literalTermMap: ILiteralTermMap): string * LiteralValueType =
     let node = 
         literalTermMap.Node.GetObjects("rr:constant")
@@ -41,7 +43,7 @@ let private createIriMapping (termMap: IUriValuedTermMap): IriMapping =
 
     let value =
         if termMap.IsConstantValued then IriConstant termMap.URI
-        else if termMap.IsTemplateValued then termMap.Template |> MappingTemplate.parseTemplate |> IriTemplate
+        else if termMap.IsTemplateValued then termMap.Template |> parseTemplate |> IriTemplate
         else if termMap.IsColumnValued then IriColumn termMap.ColumnName
         else raise (new NotSupportedException("Unsupported term type"))
 
@@ -54,7 +56,7 @@ let private createObjectMapping (databaseSchema: ISqlDatabaseSchema) (triplesMap
                 let parsedValue, parsedType = parseLiteralParts objectMap
                 parsedType, LiteralConstant parsedValue
             else if objectMap.IsTemplateValued then
-                DefaultType, objectMap.Template |> MappingTemplate.parseTemplate |> LiteralTemplate
+                DefaultType, objectMap.Template |> parseTemplate |> LiteralTemplate
             else if objectMap.IsColumnValued then
                 let tableName =
                     match triplesMap.Source with
@@ -82,7 +84,7 @@ let private createObjectMapping (databaseSchema: ISqlDatabaseSchema) (triplesMap
 
         let value =
             if objectMap.IsConstantValued then IriConstant objectMap.URI
-            else if objectMap.IsTemplateValued then objectMap.Template |> MappingTemplate.parseTemplate |> IriTemplate
+            else if objectMap.IsTemplateValued then objectMap.Template |> parseTemplate |> IriTemplate
             else if objectMap.IsColumnValued then IriColumn objectMap.ColumnName
             else raise (new NotSupportedException("Unsupported term type"))
 

@@ -1,13 +1,29 @@
 ﻿module Slp.Evi.Sparql.R2RMLMappingProcessor
 
 open Slp.Evi.R2RML
+open Slp.Evi.R2RML.MappingTemplate
 open Algebra
 open SparqlQueryNormalizer
 open VDS.RDF
 
+let canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<_>) (rightTemplate:Template<_>) =
+    new System.NotImplementedException(sprintf "Deciding whether iri:%b templates %A and %A can match" isIriMatch leftTemplate rightTemplate)
+    |> raise
+
 let carIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
-    // TODO: Consider base IRI
-    raise (new System.Exception(sprintf "Deciding whether %A can match %A" iri mapping))
+    if iri.NodeType = NodeType.Blank && not mapping.IsBlankNode then
+        false
+    elif iri.NodeType <> NodeType.Blank && mapping.IsBlankNode then
+        false
+    else
+        let nodeUri = iri.Uri.AbsoluteUri |> TextPart |> List.singleton
+        let mappingPattern =
+            match mapping.Value with
+            | IriColumn column -> column |> ColumnPart |> List.singleton
+            | IriConstant constant -> constant.AbsoluteUri |> TextPart |> List.singleton
+            | IriTemplate template -> template
+
+        canTemplatesMatch true nodeUri mappingPattern
 
 let canMappingMatchPattern (pattern: Pattern) (mapping: ObjectMapping) =
     match pattern, mapping with

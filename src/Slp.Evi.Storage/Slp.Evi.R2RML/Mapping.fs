@@ -9,12 +9,12 @@ type TriplesMappingSource =
 
 type TermMapValue =
     | IriColumn of string
-    | IriTemplate of MappingTemplate.Template
+    | IriTemplate of MappingTemplate.Template<string>
     | IriConstant of Uri
 
 type LiteralValue =
     | LiteralColumn of string
-    | LiteralTemplate of MappingTemplate.Template
+    | LiteralTemplate of MappingTemplate.Template<string>
     | LiteralConstant of string
 
 type ITriplesMapping =
