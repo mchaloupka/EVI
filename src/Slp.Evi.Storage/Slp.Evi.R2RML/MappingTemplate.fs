@@ -100,8 +100,48 @@ let rec private buildTemplateComparisonInDirection (isIriMatch: bool) (currentRe
     | [], [], _, _ ->
         ((leftAcc, rightAcc) |> MatchingCondition) :: currentResult
 
-let private finalizeResult (input: TemplateCompareResult<'T>) =
-    input
+let rec private finalizeTemplate (acc: string list) (result: Template<'T>) (input: Template<'T>) =
+    let templateFromAcc () =
+        acc |> List.rev |> String.concat "" |> TextPart
+
+    match input, acc with
+    | ColumnPart _ as c :: rest, [] ->
+        finalizeTemplate [] (c :: result) rest
+    | ColumnPart _ as c :: rest, _ ->
+        finalizeTemplate [] (c :: templateFromAcc () :: result) rest
+    | TextPart t :: rest, _ ->
+        finalizeTemplate (t :: acc) result rest
+    | [], [] ->
+        result |> List.rev
+    | [], _ ->
+        finalizeTemplate [] (templateFromAcc () :: result) []
+
+let rec private finalizeResult (result: TemplateCompareResult<'T>) (input: TemplateCompareResult<'T>) =
+    match input with
+    | AlwaysMatching :: rest -> finalizeResult result rest
+    | AlwaysNotMatching :: _ -> [ AlwaysNotMatching ]
+    | MatchingCondition(left, right) :: rest ->
+        let newLeft = left |> finalizeTemplate [] []
+        let newRight = right |> finalizeTemplate [] []
+
+        match newLeft, newRight with
+        | [], [] ->
+            finalizeResult result rest
+        | [], nonEmpty
+        | nonEmpty, [] ->
+            let cannotBeEmpty =
+                function
+                | TextPart x when x |> String.length > 0 -> true
+                | _ -> false
+
+            if nonEmpty |> List.exists cannotBeEmpty then
+                [ AlwaysNotMatching ]
+            else
+                MatchingCondition(newLeft, newRight) :: result |> finalizeResult <| rest
+        | _, _ ->
+            MatchingCondition(newLeft, newRight) :: result |> finalizeResult <| rest
+
+    | [] -> result |> List.rev
 
 let rec private revertResult (acc: TemplateCompareResult<'T>) (input: TemplateCompareResult<'T>) =
     match input with
@@ -130,6 +170,4 @@ let compareTemplates (isIriMatch: bool) (leftTemplate: Template<'T>) (rightTempl
         | _ -> processedFromFront |> revertResult []
 
     processedFromBack
-    |> finalizeResult
-
-
+    |> finalizeResult []

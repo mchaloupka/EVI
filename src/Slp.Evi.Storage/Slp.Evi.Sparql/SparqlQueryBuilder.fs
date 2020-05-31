@@ -7,8 +7,7 @@ open System
 open VDS.RDF
 open Slp.Evi.Common.Algebra
 open System.Reflection
-open VDS.RDF.Parsing
-open VDS.RDF.Nodes
+open Slp.Evi.Common.Types
 
 let private getNodeFromConstantTerm: Query.Expressions.Primary.ConstantTerm -> INode =
     let property =
@@ -20,16 +19,18 @@ let private processNode (orNode: INode) =
     match orNode with
     | :? IUriNode as orUriNode ->
         Iri orUriNode
-    | :? Nodes.IValuedNode as orLiteralNode ->
+    | :? ILiteralNode as orLiteralNode ->
         Literal orLiteralNode
     | _ ->
-        orNode.AsValuedNode() |> Literal
+        sprintf "Node is expected to be either IUriNode or ILiteralNode but is %A" orNode
+        |> NotSupportedException
+        |> raise
 
 let rec private processSparqlCondition (vdsExpression: Query.Expressions.ISparqlExpression): SparqlCondition =
     match processSparqlExpression vdsExpression with
     | BooleanExpression condition -> condition
-    | NodeExpression(Literal node) when node.EffectiveType = XmlSpecsHelper.XmlSchemaDataTypeBoolean ->
-        if node.AsBoolean() then
+    | NodeExpression(Literal node) when (node |> LiteralValueType.fromLiteralNode) = KnownTypes.xsdBoolean ->
+        if Query.SparqlSpecsHelper.EffectiveBooleanValue(node) then
             AlwaysTrueCondition
         else
             AlwaysFalseCondition

@@ -5,12 +5,14 @@ open Slp.Evi.R2RML.MappingTemplate
 open Algebra
 open SparqlQueryNormalizer
 open VDS.RDF
+open Slp.Evi.Common.Types
 
 let canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<_>) (rightTemplate:Template<_>) =
-    new System.NotImplementedException(sprintf "Deciding whether iri:%b templates %A and %A can match" isIriMatch leftTemplate rightTemplate)
-    |> raise
+    compareTemplates isIriMatch leftTemplate rightTemplate
+    |> TemplateCompareResult.isNeverMatching
+    |> not
 
-let carIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
+let canIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
     if iri.NodeType = NodeType.Blank && not mapping.IsBlankNode then
         false
     elif iri.NodeType <> NodeType.Blank && mapping.IsBlankNode then
@@ -25,12 +27,27 @@ let carIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
 
         canTemplatesMatch true nodeUri mappingPattern
 
+let canLiteralMatchLiteralMapping (literal: ILiteralNode) (mapping: LiteralMapping) =
+    let literalType = literal |> LiteralValueType.fromLiteralNode
+
+    if mapping.Type <> literalType then
+        false
+    else
+        let literalPattern = literal.Value |> TextPart |> List.singleton
+        let mappingPattern =
+            match mapping.Value with
+            | LiteralColumn column -> column |> ColumnPart |> List.singleton
+            | LiteralConstant constant -> constant |> TextPart |> List.singleton
+            | LiteralTemplate template -> template
+
+        canTemplatesMatch false literalPattern mappingPattern
+
 let canMappingMatchPattern (pattern: Pattern) (mapping: ObjectMapping) =
     match pattern, mapping with
     | NodeMatchPattern (Iri iri), IriObject iriMapping ->
-        carIriMatchIriMapping iri iriMapping
+        canIriMatchIriMapping iri iriMapping
     | NodeMatchPattern (Literal valuedNode), LiteralObject literalMapping ->
-        raise (new System.Exception(sprintf "Deciding whether %A can match %A (needs type check)" valuedNode literalMapping))
+        canLiteralMatchLiteralMapping valuedNode literalMapping
     | NodeMatchPattern(_), _ -> false
     | _ -> true
 

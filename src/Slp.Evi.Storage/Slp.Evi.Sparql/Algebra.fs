@@ -3,7 +3,6 @@
 open Slp.Evi.Common.Algebra
 open VDS.RDF
 open Slp.Evi.R2RML
-open VDS.RDF.Nodes
 
 type SparqlVariable = 
     | SparqlVariable of string
@@ -12,7 +11,7 @@ type SparqlVariable =
 type OrderingPart = { Variable: SparqlVariable; Direction: OrderingDirection }
 
 type Node =
-    | Literal of IValuedNode
+    | Literal of ILiteralNode
     | Iri of IUriNode
 
 type Pattern =

@@ -136,7 +136,7 @@ let ``Test that equivalent with more separated columns with iri matching`` () =
         "col1" |> ColumnPart
         "/" |> TextPart
         "col2" |> ColumnPart
-        "/suffix2" |> TextPart
+        "/suffix" |> TextPart
     ]
     let rightTemplate = [
         "http://test.com/" |> TextPart
@@ -177,7 +177,36 @@ let ``Test with non-separated columns only on one side without iri matching`` ()
         "col1" |> ColumnPart
         "-" |> TextPart
         "col2" |> ColumnPart
-        "/suffix2" |> TextPart
+        "/suffix" |> TextPart
+    ]
+    let rightTemplate = [
+        "http://test.com/" |> TextPart
+        "col3" |> ColumnPart
+        "/suffix" |> TextPart
+    ]
+    let result = compareTemplates false leftTemplate rightTemplate
+    let expected = [
+        (
+            [
+                "col1" |> ColumnPart
+                "-" |> TextPart
+                "col2" |> ColumnPart
+            ],[
+                "col3" |> ColumnPart
+            ]
+        ) |> MatchingCondition
+    ]
+
+    Assert.Equal<TemplateCompareResult<string>>(expected, result)
+
+[<Fact>]
+let ``Test with non-separated columns with multiple characters only on one side with iri matching`` () =
+    let leftTemplate = [
+        "http://test.com/" |> TextPart
+        "col1" |> ColumnPart
+        "inner" |> TextPart
+        "col2" |> ColumnPart
+        "/suffix" |> TextPart
     ]
     let rightTemplate = [
         "http://test.com/" |> TextPart
@@ -189,7 +218,36 @@ let ``Test with non-separated columns only on one side without iri matching`` ()
         (
             [
                 "col1" |> ColumnPart
-                "-" |> TextPart
+                "inner" |> TextPart
+                "col2" |> ColumnPart
+            ],[
+                "col3" |> ColumnPart
+            ]
+        ) |> MatchingCondition
+    ]
+
+    Assert.Equal<TemplateCompareResult<string>>(expected, result)
+
+[<Fact>]
+let ``Test with non-separated columns with multiple characters only on one side without iri matching`` () =
+    let leftTemplate = [
+        "http://test.com/" |> TextPart
+        "col1" |> ColumnPart
+        "inner" |> TextPart
+        "col2" |> ColumnPart
+        "/suffix" |> TextPart
+    ]
+    let rightTemplate = [
+        "http://test.com/" |> TextPart
+        "col3" |> ColumnPart
+        "/suffix" |> TextPart
+    ]
+    let result = compareTemplates false leftTemplate rightTemplate
+    let expected = [
+        (
+            [
+                "col1" |> ColumnPart
+                "inner" |> TextPart
                 "col2" |> ColumnPart
             ],[
                 "col3" |> ColumnPart
@@ -206,7 +264,7 @@ let ``Test with more separated columns only on one side without iri matching`` (
         "col1" |> ColumnPart
         "/" |> TextPart
         "col2" |> ColumnPart
-        "/suffix2" |> TextPart
+        "/suffix" |> TextPart
     ]
     let rightTemplate = [
         "http://test.com/" |> TextPart

@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Utils.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="DatabaseConnection.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRDF" Version="2.5.1" />
   </ItemGroup>
 
   <ItemGroup>

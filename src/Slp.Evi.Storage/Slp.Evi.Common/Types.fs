@@ -1,11 +1,34 @@
 ﻿namespace Slp.Evi.Common.Types
 
 open System
+open VDS.RDF
+open Slp.Evi.Common.Utils
 
 type LiteralValueType =
     | DefaultType
     | WithType of Uri
     | WithLanguage of string
+
+module LiteralValueType =
+    let fromLiteralNode (node: ILiteralNode) =
+        let literalType = node.DataType |> createOptionFromNullable
+        let language =
+            if node.Language |> String.IsNullOrEmpty then
+                None
+            else
+                Some(node.Language)
+
+        match (language, literalType) with
+        | Some(l), Some(t) ->
+            sprintf "Node %A have both language %A and type %A" node l t
+            |> InvalidOperationException
+            |> raise
+        | Some(l), _ ->
+            l |> WithLanguage
+        | _, Some(t) ->
+            t |> WithType
+        | _, _ ->
+            DefaultType
 
 type NodeType =
     | BlankNode

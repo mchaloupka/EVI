@@ -7,8 +7,7 @@ open TCode.r2rml4net.Mapping
 open VDS.RDF
 open Slp.Evi.Common.DatabaseConnection
 open Slp.Evi.Common.Types
-
-let private createOptionFromNullable x = if x = null then None else Some x
+open Slp.Evi.Common.Utils
 
 let private parseTemplate = MappingTemplate.parseTemplate id
 
