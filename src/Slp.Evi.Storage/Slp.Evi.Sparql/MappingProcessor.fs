@@ -7,42 +7,43 @@ open SparqlQueryNormalizer
 open VDS.RDF
 open Slp.Evi.Common.Types
 
-let canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<_>) (rightTemplate:Template<_>) =
+let private canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<_>) (rightTemplate:Template<_>) =
+    // TODO: Add check that a number cannot equal empty string
     compareTemplates isIriMatch leftTemplate rightTemplate
     |> TemplateCompareResult.isNeverMatching
     |> not
 
-let canIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
+let private buildTemplateFromIriMapping = function
+    | IriColumn column -> column |> ColumnPart |> List.singleton
+    | IriConstant constant -> constant.AbsoluteUri |> TextPart |> List.singleton
+    | IriTemplate template -> template
+
+let private buildTemplateFromLiteralMapping = function
+    | LiteralColumn column -> column |> ColumnPart |> List.singleton
+    | LiteralConstant constant -> constant |> TextPart |> List.singleton
+    | LiteralTemplate template -> template
+
+let private canIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
     if iri.NodeType = NodeType.Blank && not mapping.IsBlankNode then
         false
     elif iri.NodeType <> NodeType.Blank && mapping.IsBlankNode then
         false
     else
         let nodeUri = iri.Uri.AbsoluteUri |> TextPart |> List.singleton
-        let mappingPattern =
-            match mapping.Value with
-            | IriColumn column -> column |> ColumnPart |> List.singleton
-            | IriConstant constant -> constant.AbsoluteUri |> TextPart |> List.singleton
-            | IriTemplate template -> template
-
+        let mappingPattern = mapping.Value |> buildTemplateFromIriMapping
         canTemplatesMatch true nodeUri mappingPattern
 
-let canLiteralMatchLiteralMapping (literal: ILiteralNode) (mapping: LiteralMapping) =
+let private canLiteralMatchLiteralMapping (literal: ILiteralNode) (mapping: LiteralMapping) =
     let literalType = literal |> LiteralValueType.fromLiteralNode
 
     if mapping.Type <> literalType then
         false
     else
         let literalPattern = literal.Value |> TextPart |> List.singleton
-        let mappingPattern =
-            match mapping.Value with
-            | LiteralColumn column -> column |> ColumnPart |> List.singleton
-            | LiteralConstant constant -> constant |> TextPart |> List.singleton
-            | LiteralTemplate template -> template
-
+        let mappingPattern = mapping.Value |> buildTemplateFromLiteralMapping
         canTemplatesMatch false literalPattern mappingPattern
 
-let canMappingMatchPattern (pattern: Pattern) (mapping: ObjectMapping) =
+let private canMappingMatchPattern (pattern: Pattern) (mapping: ObjectMapping) =
     match pattern, mapping with
     | NodeMatchPattern (Iri iri), IriObject iriMapping ->
         canIriMatchIriMapping iri iriMapping
@@ -61,6 +62,77 @@ let private canMappingMatchTriplePattern (pattern: BasicGraphPatternMatch) (mapp
     else
         false
 
+let private canMappingsMatch = function
+    | IriObject leftMapping, IriObject rightMapping ->
+        if leftMapping.IsBlankNode <> rightMapping.IsBlankNode then
+            false
+        else
+            let leftTemplate = leftMapping.Value |> buildTemplateFromIriMapping
+            let rightTemplate = rightMapping.Value |> buildTemplateFromIriMapping
+            canTemplatesMatch true leftTemplate rightTemplate
+    | LiteralObject leftMapping, LiteralObject rightMapping ->
+        if leftMapping.Type <> rightMapping.Type then
+            false
+        else
+            let leftTemplate = leftMapping.Value |> buildTemplateFromLiteralMapping
+            let rightTemplate = rightMapping.Value |> buildTemplateFromLiteralMapping
+            canTemplatesMatch false leftTemplate rightTemplate
+    | _, _ ->
+        false
+
+let private canRestrictionsMatch (left: Map<SparqlVariable, ObjectMapping>) (right: Map<SparqlVariable, ObjectMapping>) =
+    left
+    |> Map.forall (
+        fun leftKey leftMapping ->
+            match right.TryGetValue leftKey with
+            | false, _ -> true
+            | true, rightMapping ->
+                canMappingsMatch (leftMapping, rightMapping)
+    )
+
+let private restrictTriplePatterns (restrictBy: RestrictedPatternMatch) (toProcess: (BasicGraphPatternMatch * BasicGraphPatternMapping list) list) =
+    let extractVariableConstraints (patternMatch: BasicGraphPatternMatch) (mapping: BasicGraphPatternMapping) =
+        [
+            patternMatch.Subject, mapping.Subject.Value |> IriObject
+            patternMatch.Predicate, mapping.Predicate |> IriObject
+            patternMatch.Object, mapping.Object |> (function | ObjectMatch x -> x | RefObjectMatch x -> x.TargetSubjectMap.Value |> IriObject)
+        ]
+        |> List.choose (
+            function
+            | VariablePattern v, mapping -> Some(v, mapping)
+            | _ -> None
+        )
+        |> Map.ofList
+
+    let restrictions = extractVariableConstraints restrictBy.PatternMatch restrictBy.Restriction
+    
+    toProcess
+    |> List.map (
+        fun (patternMatch, mappings) ->
+            let filteredMappings =
+                mappings
+                |> List.filter ((extractVariableConstraints patternMatch) >> (canRestrictionsMatch restrictions))
+            
+            patternMatch, filteredMappings
+    )
+
+let rec private processTriplePatternsJoin (toProcess: (BasicGraphPatternMatch * BasicGraphPatternMapping list) list): RestrictedPatternMatch list list =
+    match toProcess |> List.sortBy (snd >> List.length) with
+    | (patternMatch, mappings) :: other ->
+        mappings
+        |> List.map (
+            fun current ->
+                let restrictedPatternMatch =
+                    { PatternMatch = patternMatch; Restriction = current }
+
+                other
+                |> restrictTriplePatterns restrictedPatternMatch
+                |> processTriplePatternsJoin
+                |> List.map (fun otherResult -> restrictedPatternMatch :: otherResult)
+        )
+        |> List.concat
+    | [] -> [[]]
+
 let private processTriplePatterns (mappings: BasicGraphPatternMapping list) (triplePatterns: BasicGraphPatternMatch list) =
     let addMappingsToMatches (pattern: BasicGraphPatternMatch) =
         pattern, mappings |> List.filter (canMappingMatchTriplePattern pattern)
@@ -68,6 +140,7 @@ let private processTriplePatterns (mappings: BasicGraphPatternMapping list) (tri
     let patternsWithMappings =
         triplePatterns
         |> List.map addMappingsToMatches
+        |> processTriplePatternsJoin
 
     raise (new System.Exception(sprintf "Ended with %A" patternsWithMappings))
 
@@ -95,7 +168,7 @@ let generateBasicGraphPatternMapping (input: ITriplesMapping list): BasicGraphPa
             graphs |> List.map Some
         else
             [ None ]
-    
+
     [ for triplesMapping in input do
         let subjectMap = triplesMapping.SubjectMap
         let baseGraphs = subjectMap.GraphMaps

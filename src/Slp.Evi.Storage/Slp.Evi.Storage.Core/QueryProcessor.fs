@@ -21,6 +21,7 @@ type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMappin
     new (mapping: IR2RML, database: ISqlDatabase) =
         let processedMapping = R2RML.Builder.createMappingRepresentation database.DatabaseSchema mapping
         let bgpMappings = Sparql.R2RMLMappingProcessor.generateBasicGraphPatternMapping processedMapping
+        
         QueryProcessor(bgpMappings)
 
     member _.Query(rdfHandler: IRdfHandler, resultsHandler: ISparqlResultsHandler, sparqlQuery: string): unit =
