@@ -2,19 +2,20 @@
 
 open System
 open Slp.Evi.Common.Types
+open Slp.Evi.Common.Database
 
 type TriplesMappingSource =
-    | Table of string
+    | Table of ISqlTableSchema
     | Statement of string
 
 type TermMapValue =
-    | IriColumn of string
-    | IriTemplate of MappingTemplate.Template<string>
+    | IriColumn of ISqlColumnSchema
+    | IriTemplate of MappingTemplate.Template<ISqlColumnSchema>
     | IriConstant of Uri
 
 type LiteralValue =
-    | LiteralColumn of string
-    | LiteralTemplate of MappingTemplate.Template<string>
+    | LiteralColumn of ISqlColumnSchema
+    | LiteralTemplate of MappingTemplate.Template<ISqlColumnSchema>
     | LiteralConstant of string
 
 type ITriplesMapping =

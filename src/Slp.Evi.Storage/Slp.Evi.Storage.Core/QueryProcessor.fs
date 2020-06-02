@@ -5,7 +5,7 @@ open VDS.RDF
 open VDS.RDF.Parsing
 open Slp.Evi
 open TCode.r2rml4net
-open Slp.Evi.Common.DatabaseConnection
+open Slp.Evi.Common.Database
 
 type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list) =
     let generateSqlAlgebra (query: Query.SparqlQuery) =

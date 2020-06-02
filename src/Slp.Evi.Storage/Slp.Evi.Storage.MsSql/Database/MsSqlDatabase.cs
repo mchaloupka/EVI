@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Data.SqlClient;
-using Slp.Evi.Common.DatabaseConnection;
+using Slp.Evi.Common.Database;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
-    public sealed class MsSqlDatabase 
+    public sealed class MsSqlDatabase
         : ISqlDatabase
     {
         private readonly MsSqlDatabaseSchema _databaseSchema;

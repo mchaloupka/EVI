@@ -1,16 +1,16 @@
 ﻿using DatabaseSchemaReader.DataSchema;
+using Slp.Evi.Common.Database;
 using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
     public class MsSqlColumn
+        : ISqlColumnSchema
     {
-        private MsSqlColumnType _columnType;
-
         public MsSqlColumn(string name, MsSqlColumnType columnType)
         {
             Name = name;
-            _columnType = columnType;
+            SqlType = columnType;
         }
 
         public static MsSqlColumn CreateFromDatabase(DatabaseColumn column)
@@ -20,6 +20,7 @@ namespace Slp.Evi.Storage.MsSql.Database
 
         public string Name { get; }
 
-        public LiteralValueType DefaultRdfType => _columnType.DefaultRdfType;
+        /// <inheritdoc />
+        public ISqlColumnType SqlType { get; }
     }
 }

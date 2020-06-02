@@ -1,9 +1,11 @@
 ﻿using System;
+using Slp.Evi.Common.Database;
 using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
     public class MsSqlColumnType
+        : ISqlColumnType
     {
         private readonly string _dbType;
 

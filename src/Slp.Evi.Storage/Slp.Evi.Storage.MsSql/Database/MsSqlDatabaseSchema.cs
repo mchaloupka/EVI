@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using DatabaseSchemaReader;
-using Slp.Evi.Common.DatabaseConnection;
+using Slp.Evi.Common.Database;
 using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
@@ -35,28 +35,15 @@ namespace Slp.Evi.Storage.MsSql.Database
         }
 
         /// <inheritdoc />
-        public string NormalizeTableName(string tableName)
-        {
-            if (_tables.ContainsKey(tableName))
-            {
-                return tableName;
-            }
-            else
-            {
-                throw new ArgumentException($"Table ${tableName} was not found in the database");
-            }
-        }
-
-        /// <inheritdoc />
-        public LiteralValueType DetectDefaultRdfType(string tableName, string columnName)
+        public ISqlTableSchema GetTable(string tableName)
         {
             if (_tables.TryGetValue(tableName, out var table))
             {
-                return table.DetectDefaultRdfType(columnName);
+                return table;
             }
             else
             {
-                throw new ArgumentException($"Table ${tableName} was not found in the database");
+                throw new ArgumentException($"The table {tableName} does not exist", nameof(tableName));
             }
         }
     }
