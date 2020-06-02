@@ -1,4 +1,4 @@
-﻿module Slp.Evi.Storage.Core.MappingTemplate.Tests
+﻿module Slp.Evi.Storage.Core.R2RML.MappingTemplate.Tests
 
 open Xunit
 open Slp.Evi.R2RML.MappingTemplate

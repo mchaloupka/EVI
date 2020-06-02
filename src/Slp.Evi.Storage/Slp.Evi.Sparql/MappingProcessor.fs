@@ -6,12 +6,32 @@ open Algebra
 open SparqlQueryNormalizer
 open VDS.RDF
 open Slp.Evi.Common.Types
+open Slp.Evi.Common.Database
+open Slp.Evi.Common.StringRestriction
 
-let private canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<_>) (rightTemplate:Template<_>) =
-    // TODO: Add check that a number cannot equal empty string
+let private canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<ISqlColumnSchema>) (rightTemplate:Template<ISqlColumnSchema>) =
+    let templateToStringRestriction (input: Template<ISqlColumnSchema>) =
+        fun (current: TemplatePart<ISqlColumnSchema>) processed ->
+            match current with
+            | TextPart t -> RestrictedTemplate.fromText t @ processed
+            | ColumnPart c -> (c.SqlType.DefaultRdfType |> LiteralValueType.valueStringRestriction) @ processed
+        |> List.foldBack <|| (input, [])
+    
+    let rec processResult =
+        function
+        | [] -> true
+        | AlwaysMatching :: xs -> processResult xs
+        | AlwaysNotMatching :: _ -> false
+        | MatchingCondition(leftTemplate, rightTemplate) :: xs ->
+            let leftRestriction = leftTemplate |> templateToStringRestriction
+            let rightRestriction = rightTemplate |> templateToStringRestriction
+            if RestrictedTemplate.canMatch leftRestriction rightRestriction then
+                processResult xs
+            else
+                false
+      
     compareTemplates isIriMatch leftTemplate rightTemplate
-    |> TemplateCompareResult.isNeverMatching
-    |> not
+    |> processResult
 
 let private buildTemplateFromIriMapping = function
     | IriColumn column -> column |> ColumnPart |> List.singleton

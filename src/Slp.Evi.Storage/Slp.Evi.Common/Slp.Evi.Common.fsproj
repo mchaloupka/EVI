@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Utils.fs" />
+    <Compile Include="StringRestriction.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Database.fs" />
