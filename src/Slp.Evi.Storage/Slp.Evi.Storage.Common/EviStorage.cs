@@ -43,7 +43,7 @@ namespace Slp.Evi.Storage.Common
         public bool ListGraphsSupported => false;
 
         private Uri GetGraphUri(string graphUri)
-            => string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
+            => string.IsNullOrEmpty(graphUri) ? null : new Uri(graphUri);
 
         /// <inheritdoc />
         public void LoadGraph(IGraph g, Uri graphUri)

@@ -1,5 +1,6 @@
 ﻿module Slp.Evi.Sparql.R2RMLMappingProcessor
 
+open System
 open Slp.Evi.R2RML
 open Slp.Evi.R2RML.MappingTemplate
 open Algebra
@@ -182,7 +183,7 @@ let processSparqlQuery (mapping: BasicGraphPatternMapping list) (input: SparqlQu
 let generateBasicGraphPatternMapping (input: ITriplesMapping list): BasicGraphPatternMapping list =
     let classPredicateIri = 
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-        |> VDS.RDF.UriFactory.Create
+        |> Uri
         |> Iri.fromUri
     
     let getGraphMaps graphs =
