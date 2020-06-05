@@ -18,9 +18,9 @@ let private getNodeFromConstantTerm: Query.Expressions.Primary.ConstantTerm -> I
 let private processNode (orNode: INode) =
     match orNode with
     | :? IUriNode as orUriNode ->
-        Iri orUriNode
+        IriNode orUriNode
     | :? ILiteralNode as orLiteralNode ->
-        Literal orLiteralNode
+        Algebra.LiteralNode orLiteralNode
     | _ ->
         sprintf "Node is expected to be either IUriNode or ILiteralNode but is %A" orNode
         |> NotSupportedException
@@ -29,7 +29,7 @@ let private processNode (orNode: INode) =
 let rec private processSparqlCondition (vdsExpression: Query.Expressions.ISparqlExpression): SparqlCondition =
     match processSparqlExpression vdsExpression with
     | BooleanExpression condition -> condition
-    | NodeExpression(Literal node) when (node |> LiteralValueType.fromLiteralNode) = KnownTypes.xsdBoolean ->
+    | NodeExpression(LiteralNode node) when (node |> LiteralValueType.fromLiteralNode) = KnownTypes.xsdBoolean ->
         if Query.SparqlSpecsHelper.EffectiveBooleanValue(node) then
             AlwaysTrueCondition
         else

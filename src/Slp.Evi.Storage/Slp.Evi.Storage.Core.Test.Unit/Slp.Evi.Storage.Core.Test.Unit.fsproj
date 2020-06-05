@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common\Iri.fs" />
     <Compile Include="Common\StringRestriction.fs" />
     <Compile Include="R2RML\MappingTemplate.fs" />
     <Compile Include="Program.fs" />

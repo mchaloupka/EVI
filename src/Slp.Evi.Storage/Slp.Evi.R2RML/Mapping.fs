@@ -1,6 +1,7 @@
 ﻿namespace Slp.Evi.R2RML
 
 open System
+open Slp.Evi.Common
 open Slp.Evi.Common.Types
 open Slp.Evi.Common.Database
 
@@ -11,7 +12,7 @@ type TriplesMappingSource =
 type TermMapValue =
     | IriColumn of ISqlColumnSchema
     | IriTemplate of MappingTemplate.Template<ISqlColumnSchema>
-    | IriConstant of Uri
+    | IriConstant of Iri
 
 type LiteralValue =
     | LiteralColumn of ISqlColumnSchema
@@ -22,23 +23,23 @@ type ITriplesMapping =
     abstract member SubjectMap: SubjectMapping
     abstract member PredicateObjectMaps: PredicateObjectMapping list
     abstract member Source: TriplesMappingSource
-    abstract member BaseIri: Uri option
+    abstract member BaseIri: Iri option
 
 and IriMapping = {
     Value: TermMapValue
-    BaseIri: Uri option
+    BaseIri: Iri option
     IsBlankNode: bool
 }
 
 and SubjectMapping = {
     Value: IriMapping
     GraphMaps: IriMapping list
-    Classes: Uri list
+    Classes: Iri list
     TriplesMap: ITriplesMapping
 }
 
 and PredicateObjectMapping = {
-    BaseIri: Uri option
+    BaseIri: Iri option
     PredicateMaps: IriMapping list
     ObjectMaps: ObjectMapping list
     RefObjectMaps: RefObjectMapping list

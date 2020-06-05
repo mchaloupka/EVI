@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Iri.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="StringRestriction.fs" />
     <Compile Include="Types.fs" />

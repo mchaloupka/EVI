@@ -4,27 +4,25 @@ open System
 open VDS.RDF
 open Slp.Evi.Common.Utils
 open Slp.Evi.Common.StringRestriction
+open Slp.Evi.Common
 
 type LiteralValueType =
     | DefaultType
-    | WithType of Uri
+    | WithType of Iri
     | WithLanguage of string
 
 module KnownTypes =
-    let private baseXsdNamespace = "http://www.w3.org/2001/XMLSchema#"
-    let private createFromXsd name =
-        sprintf "%s%s" baseXsdNamespace name
-        |> Uri
-        |> WithType
+    let private baseXsdIri = "http://www.w3.org/2001/XMLSchema" |> Uri |> Iri.fromUri
+    let private createFromXsd = IriReference.fromString >> IriReference.resolve baseXsdIri >> WithType
 
-    let xsdInteger = createFromXsd "integer"
-    let xsdBoolean = createFromXsd "boolean"
-    let xsdDecimal = createFromXsd "decimal"
-    let xsdDouble = createFromXsd "double"
-    let xsdDate = createFromXsd "date"
-    let xsdTime = createFromXsd "time"
-    let xsdDateTime = createFromXsd "dateTime"
-    let xsdHexBinary = createFromXsd "hexBinary"
+    let xsdInteger = createFromXsd "#integer"
+    let xsdBoolean = createFromXsd "#boolean"
+    let xsdDecimal = createFromXsd "#decimal"
+    let xsdDouble = createFromXsd "#double"
+    let xsdDate = createFromXsd "#date"
+    let xsdTime = createFromXsd "#time"
+    let xsdDateTime = createFromXsd "#dateTime"
+    let xsdHexBinary = createFromXsd "#hexBinary"
 
 module LiteralValueType =
     let fromLiteralNode (node: ILiteralNode) =
@@ -43,7 +41,7 @@ module LiteralValueType =
         | Some(l), _ ->
             l |> WithLanguage
         | _, Some(t) ->
-            t |> WithType
+            t |> Iri.fromUri |> WithType
         | _, _ ->
             DefaultType
 
@@ -79,10 +77,13 @@ module LiteralValueType =
         let scientificNotationNumeral =
             [
                 [ noDecimalPointNumeral; decimalPointNumeral ] |> Choice
-                [ RestrictedTemplate.fromText "eE" ] |> Choice
+                RestrictedTemplate.fromText "eE" |> List.map List.singleton |> Choice
             ] @ noDecimalPointNumeral
 
-        let hexDigit = [ DigitCharacter :: RestrictedTemplate.fromText "abcdefABCDEF" ] |> Choice
+        let hexDigit =
+            DigitCharacter :: RestrictedTemplate.fromText "abcdefABCDEF" 
+            |> List.map List.singleton 
+            |> Choice
 
         let dateFrag = 
             [
@@ -158,6 +159,6 @@ module LiteralValueType =
         | false, _ -> AnyCharacter |> List.singleton |> InfiniteRepetition |> List.singleton
 
 type NodeType =
-    | BlankNode
-    | IriNode
-    | LiteralNode of LiteralValueType
+    | BlankNodeType
+    | IriNodeType
+    | LiteralNodeType of LiteralValueType

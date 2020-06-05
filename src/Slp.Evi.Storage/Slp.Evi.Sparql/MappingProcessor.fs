@@ -8,6 +8,7 @@ open VDS.RDF
 open Slp.Evi.Common.Types
 open Slp.Evi.Common.Database
 open Slp.Evi.Common.StringRestriction
+open Slp.Evi.Common
 
 let private canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<ISqlColumnSchema>) (rightTemplate:Template<ISqlColumnSchema>) =
     let templateToStringRestriction (input: Template<ISqlColumnSchema>) =
@@ -35,7 +36,7 @@ let private canTemplatesMatch (isIriMatch:bool) (leftTemplate:Template<ISqlColum
 
 let private buildTemplateFromIriMapping = function
     | IriColumn column -> column |> ColumnPart |> List.singleton
-    | IriConstant constant -> constant.AbsoluteUri |> TextPart |> List.singleton
+    | IriConstant constant -> constant |> Iri.toText |> TextPart |> List.singleton
     | IriTemplate template -> template
 
 let private buildTemplateFromLiteralMapping = function
@@ -65,9 +66,9 @@ let private canLiteralMatchLiteralMapping (literal: ILiteralNode) (mapping: Lite
 
 let private canMappingMatchPattern (pattern: Pattern) (mapping: ObjectMapping) =
     match pattern, mapping with
-    | NodeMatchPattern (Iri iri), IriObject iriMapping ->
+    | NodeMatchPattern (IriNode iri), IriObject iriMapping ->
         canIriMatchIriMapping iri iriMapping
-    | NodeMatchPattern (Literal valuedNode), LiteralObject literalMapping ->
+    | NodeMatchPattern (LiteralNode valuedNode), LiteralObject literalMapping ->
         canLiteralMatchLiteralMapping valuedNode literalMapping
     | NodeMatchPattern(_), _ -> false
     | _ -> true
@@ -182,6 +183,7 @@ let generateBasicGraphPatternMapping (input: ITriplesMapping list): BasicGraphPa
     let classPredicateIri = 
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
         |> VDS.RDF.UriFactory.Create
+        |> Iri.fromUri
     
     let getGraphMaps graphs =
         if graphs |> List.isEmpty |> not then

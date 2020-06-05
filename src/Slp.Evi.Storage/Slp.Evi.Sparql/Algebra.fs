@@ -11,8 +11,8 @@ type SparqlVariable =
 type OrderingPart = { Variable: SparqlVariable; Direction: OrderingDirection }
 
 type Node =
-    | Literal of ILiteralNode
-    | Iri of IUriNode
+    | LiteralNode of ILiteralNode
+    | IriNode of IUriNode
 
 type Pattern =
     | VariablePattern of SparqlVariable
