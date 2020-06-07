@@ -1,24 +1,7 @@
 ﻿namespace Slp.Fsm
 
 module FiniteStateMachineBuilder =
-    let initial node = { StartState = node; Edges = Map.empty; EndStates = set [ node ] }
-
-    let private addAnyEdge edgeToAdd fromNode toNode appendTo =
-        let updatedFromNode =
-            match appendTo.Edges.TryGetValue fromNode with
-            | true, edges -> (toNode, edgeToAdd) :: edges
-            | false, _ -> [ (toNode, edgeToAdd) ]
-
-        { appendTo with
-            Edges = appendTo.Edges |> Map.add fromNode updatedFromNode
-        }
-
-    let addEmptyEdge fromNode toNode =
-        addAnyEdge Empty fromNode toNode
-
-    let addEdge edge fromNode toNode =
-        let edgeToAdd = WithToken edge
-        addAnyEdge edgeToAdd fromNode toNode
+    let initial node = { StartStates = set [ node ]; Edges = Map.empty; EndStates = set [ node ] }
 
     let appendEdge edge node appendTo =
         ({ appendTo with
@@ -26,55 +9,48 @@ module FiniteStateMachineBuilder =
         }, appendTo.EndStates)
         ||> Set.fold (
             fun current endState ->
-                addEdge edge endState node current
+                FiniteStateMachine.addEdge edge endState node current
         )
 
-    let private mergeEdges (leftEdges: Map<_, _ list>) (rightEdges: Map<_, _ list>) =
-        (leftEdges, rightEdges)
-        ||> Map.fold (
-            fun current from edges ->
-                match current.TryGetValue from with
-                | true, prevEdges -> current |> Map.add from (edges @ prevEdges)
-                | false, _ -> current |> Map.add from edges
+    let private interconnect fromNodes toNodes machine =
+        (machine, fromNodes)
+        ||> Seq.fold (
+            fun current fromNode ->
+                (current, toNodes)
+                ||> Seq.fold (
+                    fun c toNode -> 
+                        c |> FiniteStateMachine.addEmptyEdge fromNode toNode
+                )
         )
 
     let private addNewEndState node machine =
-        ({ machine with
+        { machine with
             EndStates = set [ node ]
-        }, machine.EndStates)
-        ||> Set.fold (
-            fun current endState ->
-                current |> addEmptyEdge endState node
-        )
+        }
+        |> interconnect machine.EndStates [ node ]
 
     let private addNewStartState node machine =
         { machine with
-            StartState = node
-        } |> addEmptyEdge node machine.StartState
+            StartStates = set [ node ]
+        }
+        |> interconnect [ node ] machine.StartStates
 
     let appendMachine machine appendTo =
-        ({ appendTo with
-            Edges = mergeEdges machine.Edges appendTo.Edges
+        { appendTo with
+            Edges = FiniteStateMachine.mergeEdges machine.Edges appendTo.Edges
             EndStates = machine.EndStates
-        }, appendTo.EndStates)
-        ||> Set.fold (
-            fun current endState ->
-                current |> addEmptyEdge endState machine.StartState
-        )
+        }
+        |> interconnect appendTo.EndStates machine.StartStates
 
     let optional newStartState newEndState machine =
         machine
         |> addNewStartState newStartState
         |> addNewEndState newEndState
-        |> fun m -> m, m.EndStates
-        ||> Set.fold (
-            fun current endState ->
-                addEmptyEdge current.StartState endState current
-        )
+        |> fun m -> m |> interconnect m.StartStates m.EndStates
 
     let transformNodes transformNode machine =
         let nodeTransform =
-            (machine.EndStates |> Set.add machine.StartState, machine.Edges)
+            (machine.EndStates |> Set.union machine.StartStates, machine.Edges)
             ||> Map.fold (
                 fun current node edges ->
                     (current |> Set.add node, edges)
@@ -97,7 +73,7 @@ module FiniteStateMachineBuilder =
             )
 
         {
-            StartState = nodeTransform.[machine.StartState]
+            StartStates = machine.StartStates |> Set.map (fun n -> nodeTransform.[n])
             EndStates = machine.EndStates |> Set.map (fun n -> nodeTransform.[n])
             Edges = transformedEdges
         }
@@ -105,7 +81,7 @@ module FiniteStateMachineBuilder =
     let infiniteRepeat newStartState newEndState machine =
         machine
         |> optional newStartState newEndState
-        |> addEmptyEdge newEndState newStartState
+        |> FiniteStateMachine.addEmptyEdge newEndState newStartState
 
     let atLeastOneRepeat newStartState newIntermediateState transformNode machine =
         machine
@@ -132,13 +108,9 @@ module FiniteStateMachineBuilder =
         }, machines)
         ||> List.fold (
             fun current machine ->
-                ({ current with
-                    Edges = mergeEdges current.Edges machine.Edges
+                { current with
+                    Edges = FiniteStateMachine.mergeEdges current.Edges machine.Edges
                 }
-                |> addEmptyEdge current.StartState machine.StartState, machine.EndStates)
-                ||> Set.fold (
-                    fun current endState ->
-                        current
-                        |> addEmptyEdge endState newEndState
-                )
+                |> interconnect current.StartStates machine.StartStates
+                |> interconnect machine.EndStates current.EndStates
         )

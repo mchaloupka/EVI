@@ -1,4 +1,4 @@
-[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 10)>]
+[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 20)>]
 module FiniteStateMachine.Accept
 
 open Slp.Fsm
