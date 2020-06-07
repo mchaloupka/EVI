@@ -34,7 +34,7 @@ module ByteBasedEdges =
                     sizedMachine op |> Gen.map(GenericNode.appendEdge AnyByte)
                     (Arb.generate<byte>, sizedMachine op) ||> Gen.map2 (fun b -> GenericNode.appendEdge (ExactByte b))
                     splitMachines op |> Gen.map (fun (l, r) -> FiniteStateMachineBuilder.appendMachine l r)
-                    sizedMachine op |> Gen.map FiniteStateMachineBuilder.infiniteRepeat
+                    sizedMachine op |> Gen.map GenericNode.infiniteRepeatMachine
                     splitMachines op |> Gen.map (fun (l, r) -> [l; r] |> GenericNode.choiceMachine)
                 } |> Gen.oneof
 

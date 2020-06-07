@@ -59,9 +59,9 @@ let ``Machine append`` (leftMachine: ByteBasedEdges.ByteBasedFsm) (rightMachine:
 
     (orMatches [] input) = (completeMachine |> accepts input)
 
-[<Property(Replay="212548222,296752373")>]
+[<Property>]
 let ``Machine optional`` (orMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
-    let machine = orMachine |> FiniteStateMachineBuilder.optional
+    let machine = orMachine |> GenericNode.optionalMachine
 
     (machine |> accepts input) = (orMachine |> accepts input || input |> List.isEmpty)
 
@@ -85,9 +85,9 @@ let private availableRepetitions input machine =
     Seq.init 20 id
     |> Seq.filter (containsRepeats [] input)
 
-[<Property(Replay="1454438580,296752372")>]
+[<Property>]
 let ``Machine infinite repeat`` (orMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
-    let machine = orMachine |> FiniteStateMachineBuilder.infiniteRepeat
+    let machine = orMachine |> GenericNode.infiniteRepeatMachine
     (machine |> accepts input) = (orMachine |> availableRepetitions input |> Seq.isEmpty |> not)
 
 [<Property>]
@@ -100,7 +100,7 @@ let ``Machine fixed repeat (3)`` (orMachine: ByteBasedEdges.ByteBasedFsm) (input
     let machine = orMachine |> GenericNode.repeatMachine 3
     (machine |> accepts input) = (orMachine |> availableRepetitions input |> Seq.filter (fun x -> x = 3) |> Seq.isEmpty |> not)
 
-[<Property(Replay="1494769171,296752372")>]
+[<Property>]
 let ``Machine choice`` (leftMachine: ByteBasedEdges.ByteBasedFsm) (rightMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
     let machine = [ leftMachine; rightMachine ] |> GenericNode.choiceMachine
     (machine |> accepts input) = ((leftMachine |> accepts input) || (rightMachine |> accepts input))

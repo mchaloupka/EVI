@@ -27,10 +27,14 @@ module GenericNode =
 
     let appendEdge edge = FiniteStateMachineBuilder.appendEdge edge (GenericNode.create ())
 
-    let choiceMachine machines = FiniteStateMachineBuilder.choice (GenericNode.create ()) machines
+    let choiceMachine machines = FiniteStateMachineBuilder.choice (GenericNode.create ()) (GenericNode.create ()) machines
 
     let transformNode _ = GenericNode.create ()
 
-    let atLeastOneRepeatMachine machine = FiniteStateMachineBuilder.atLeastOneRepeat transformNode machine
+    let infiniteRepeatMachine machine = FiniteStateMachineBuilder.infiniteRepeat (GenericNode.create ()) (GenericNode.create ()) machine
+
+    let atLeastOneRepeatMachine machine = FiniteStateMachineBuilder.atLeastOneRepeat (GenericNode.create ()) (GenericNode.create ()) transformNode machine
 
     let repeatMachine count machine = FiniteStateMachineBuilder.repeat transformNode count machine
+
+    let optionalMachine machine = FiniteStateMachineBuilder.optional (GenericNode.create ()) (GenericNode.create()) machine

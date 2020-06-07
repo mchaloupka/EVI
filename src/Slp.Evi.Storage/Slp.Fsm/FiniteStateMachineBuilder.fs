@@ -38,6 +38,20 @@ module FiniteStateMachineBuilder =
                 | false, _ -> current |> Map.add from edges
         )
 
+    let private addNewEndState node machine =
+        ({ machine with
+            EndStates = set [ node ]
+        }, machine.EndStates)
+        ||> Set.fold (
+            fun current endState ->
+                current |> addEmptyEdge endState node
+        )
+
+    let private addNewStartState node machine =
+        { machine with
+            StartState = node
+        } |> addEmptyEdge node machine.StartState
+
     let appendMachine machine appendTo =
         ({ appendTo with
             Edges = mergeEdges machine.Edges appendTo.Edges
@@ -48,11 +62,14 @@ module FiniteStateMachineBuilder =
                 current |> addEmptyEdge endState machine.StartState
         )
 
-    let optional machine =
-        (machine, machine.EndStates)
+    let optional newStartState newEndState machine =
+        machine
+        |> addNewStartState newStartState
+        |> addNewEndState newEndState
+        |> fun m -> m, m.EndStates
         ||> Set.fold (
             fun current endState ->
-                addEmptyEdge machine.StartState endState current
+                addEmptyEdge current.StartState endState current
         )
 
     let transformNodes transformNode machine =
@@ -85,18 +102,14 @@ module FiniteStateMachineBuilder =
             Edges = transformedEdges
         }
 
-    let infiniteRepeat machine =
-        ({ machine with
-            EndStates = machine.EndStates |> Set.add machine.StartState
-        }, machine.EndStates)
-        ||> Set.fold (
-            fun current endState ->
-                addEmptyEdge endState machine.StartState current
-        )
-
-    let atLeastOneRepeat transformNode machine =
+    let infiniteRepeat newStartState newEndState machine =
         machine
-        |> infiniteRepeat
+        |> optional newStartState newEndState
+        |> addEmptyEdge newEndState newStartState
+
+    let atLeastOneRepeat newStartState newIntermediateState transformNode machine =
+        machine
+        |> infiniteRepeat newStartState newIntermediateState
         |> appendMachine (machine |> transformNodes transformNode)
 
     let repeat transformNode count machine =
@@ -113,13 +126,19 @@ module FiniteStateMachineBuilder =
 
         repeatImpl (count - 1) machine
 
-    let choice newStartNode machines =
-        (initial newStartNode, machines)
+    let choice newStartNode newEndState machines =
+        ({ initial newStartNode with
+            EndStates = set [ newEndState ]
+        }, machines)
         ||> List.fold (
             fun current machine ->
-                { current with
+                ({ current with
                     Edges = mergeEdges current.Edges machine.Edges
-                    EndStates = current.EndStates |> Set.union machine.EndStates
                 }
-                |> addEmptyEdge current.StartState machine.StartState
+                |> addEmptyEdge current.StartState machine.StartState, machine.EndStates)
+                ||> Set.fold (
+                    fun current endState ->
+                        current
+                        |> addEmptyEdge endState newEndState
+                )
         )
