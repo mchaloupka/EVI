@@ -7,74 +7,80 @@ type ByteBasedEdges =
     | AnyByte
     | ExactByte of byte
 
-type ByteBasedEdgesEvaluator() =
-    interface IEdgeEvaluator<ByteBasedEdges, byte> with
-        member _.IsOnEdge(edge, x) =
-            match edge with
-            | AnyByte -> true
-            | ExactByte b -> b = x
-
 module ByteBasedEdges =
     type ByteBasedFsm = FiniteStateMachine<GenericNode, ByteBasedEdges>
 
-    let evaluator = ByteBasedEdgesEvaluator ()
+    let edgeEvaluator (edge, x) =
+        match edge with
+        | AnyByte -> true
+        | ExactByte b -> b = x
 
     let private machineGenerator =
-        let rec sizedEdges edgeCount (nodes: GenericNode list) =
-            if edgeCount = 0 then
-                { StartStates = Set.empty; EndStates = Set.empty; Edges = Map.empty } |> Gen.constant
+        let cartesian xs ys = 
+            xs |> List.collect (fun x -> ys |> List.map (fun y -> x, y))
+
+        let tuples xs = cartesian xs xs
+
+        let setsOfSize n input =
+            let result =
+                ([ Set.empty ], input)
+                ||> List.fold (
+                    fun results i ->
+                        results
+                        |> List.collect (
+                            fun result ->
+                                if result |> Set.count = n then
+                                    [ result ]
+                                else
+                                    [ result; result |> Set.add i ]
+                        )
+                )
+                |> List.filter (fun x -> x |> Set.count = n)
+
+            if result |> List.isEmpty then
+                sprintf "Cannot create a unique set of size %d from %A" n input |> invalidArg "n" |> raise
             else
-                let edgeToAdd =
-                    (nodes |> Gen.elements |> Gen.two, Arb.generate<byte option>)
-                    ||> Gen.map2 (
-                        fun (f, t) e ->
-                            match e with
-                            | Some(e) -> ExactByte e |> EdgeWithToken, f, t
-                            | None -> LambdaEdge, f, t
+                result
+
+        let sizedEdges edgeCount (nodes: GenericNode list) =
+            tuples nodes
+            |> cartesian [ None; Some(0uy); Some(1uy) ]
+            |> setsOfSize edgeCount
+            |> Gen.elements
+            |> Gen.map (
+                fun edges ->
+                    ({ StartStates = Set.empty; EndStates = Set.empty; Edges = Map.empty }, edges)
+                    ||> Set.fold (
+                        fun machine edge ->
+                            match edge with
+                            | None, (f, t) -> machine |> FiniteStateMachine.addEmptyEdge f t
+                            | Some(b), (f, t) -> machine |> FiniteStateMachine.addEdge (ExactByte(b)) f t
                     )
+            )
 
-                sizedEdges (edgeCount - 1) nodes
-                |> Gen.zip edgeToAdd
-                |> Gen.filter (
-                    fun ((edge, fN, tN), machine) ->
-                        match machine.Edges.TryGetValue fN with
-                        | true, edges -> edges |> List.exists (fun (t, e) -> e = edge && t = tN) |> not
-                        | false, _ -> true
-                )
-                |> Gen.map (
-                    fun ((edge, f, t), machine) ->
-                        match edge with
-                        | EdgeWithToken e -> machine |> FiniteStateMachine.addEdge e f t
-                        | LambdaEdge -> machine |> FiniteStateMachine.addEmptyEdge f t
-                )
-
-        let rec withStartNodes (nodes: GenericNode list) startNodesCount (machineGen: Gen<ByteBasedFsm>) =
-            if startNodesCount = 0 then
-                machineGen
-            else
-                (withStartNodes nodes (startNodesCount - 1) machineGen, nodes |> Gen.elements)
-                ||> Gen.zip
-                |> Gen.filter (fun (machine, startNode) -> machine.StartStates |> Set.contains startNode |> not)
-                |> Gen.map (
-                    fun (machine, startNode) ->
-                        { machine with
-                            StartStates = machine.StartStates |> Set.add startNode
-                        }
-                )
+        let withStartNodes (nodes: GenericNode list) startNodesCount (machineGen: Gen<ByteBasedFsm>) =
+            nodes
+            |> setsOfSize startNodesCount
+            |> Gen.elements
+            |> Gen.zip machineGen
+            |> Gen.map (
+                fun (machine, startStates) ->
+                    { machine with
+                        StartStates = startStates
+                    }
+            )
 
         let rec withEndNodes (nodes: GenericNode list) endNodesCount (machineGen: Gen<ByteBasedFsm>) =
-            if endNodesCount = 0 then
-                machineGen
-            else
-                (withEndNodes nodes (endNodesCount - 1) machineGen, nodes |> Gen.elements)
-                ||> Gen.zip
-                |> Gen.filter (fun (machine, endNode) -> machine.EndStates |> Set.contains endNode |> not)
-                |> Gen.map (
-                    fun (machine, endNode) ->
-                        { machine with
-                            EndStates = machine.EndStates |> Set.add endNode
-                        }
-                )
+            nodes
+            |> setsOfSize endNodesCount
+            |> Gen.elements
+            |> Gen.zip machineGen
+            |> Gen.map (
+                fun (machine, endStates) ->
+                    { machine with
+                        EndStates = endStates
+                    }
+            )
 
         let sizedMachine operations =
             seq {
@@ -96,7 +102,7 @@ module ByteBasedEdges =
             |> Gen.oneof
             |> Gen.map (FiniteStateMachineBuilder.transformNodes GenericNode.transformNode)
 
-        Gen.sized sizedMachine
+        Gen.sized sizedMachine |> Gen.scaleSize (fun x -> x / 3)
 
     type MachineGenerators =
         static member FiniteStateMachine() =

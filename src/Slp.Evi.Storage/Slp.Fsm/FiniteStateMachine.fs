@@ -7,9 +7,6 @@ type Edge<'C> =
 type FiniteStateMachine<'N, 'C> when 'N : comparison =
     { StartStates: Set<'N>; Edges: Map<'N, ('N * Edge<'C>) list>; EndStates: Set<'N> }
 
-type IEdgeEvaluator<'C, 'X> =
-    abstract member IsOnEdge: 'C * 'X -> bool
-
 module FiniteStateMachine =
     let internal mergeEdges (leftEdges: Map<_, _ list>) (rightEdges: Map<_, _ list>) =
         (leftEdges, rightEdges)
@@ -55,7 +52,7 @@ module FiniteStateMachine =
         let edgeToAdd = EdgeWithToken edge
         addAnyEdge edgeToAdd fromNode toNode
 
-    let accepts (evaluator: IEdgeEvaluator<'C, 'X>) input machine =
+    let accepts (edgeEvaluator: ('C * 'X) -> bool) input machine =
         let rec evaluateQueue stepsQueue =
             match stepsQueue with
             | [] ->
@@ -72,7 +69,7 @@ module FiniteStateMachine =
                             match edge, inp with
                             | LambdaEdge, _ when history |> Set.contains (node, inp) |> not ->
                                 (inp, node, history |> Set.add (node, inp)) |> List.singleton
-                            | EdgeWithToken c, x::xs when evaluator.IsOnEdge(c, x) && history |> Set.contains (node, xs) |> not ->
+                            | EdgeWithToken c, x::xs when edgeEvaluator(c, x) && history |> Set.contains (node, xs) |> not ->
                                 (xs, node, history |> Set.add (node, xs)) |> List.singleton
                             | _ ->
                                 List.empty
@@ -146,3 +143,70 @@ module FiniteStateMachine =
                     |> removeLambdaEdgesImpl (removed |> Set.add (fromNode, toNode))
 
         removeLambdaEdgesImpl Set.empty machine
+
+    let removeNonReachable machine =
+        let rec reachableFrom (edgesMap:Map<'X,'X list>) reachable toProcess =
+            match toProcess with
+            | [] -> reachable
+            | x :: xs ->
+                if reachable |> Set.contains x then
+                    reachableFrom edgesMap reachable xs
+                else
+                    let newReachable = reachable |> Set.add x
+                    let addToProcess =
+                        match edgesMap.TryGetValue x with
+                        | true, edges -> edges |> List.distinct
+                        | false, _ -> List.empty
+
+                    reachableFrom edgesMap newReachable (xs @ addToProcess)
+
+        let reachableFromStart =
+            let edgesMap =
+                machine.Edges
+                |> Map.map (
+                    fun key value ->
+                        value |> List.map fst |> List.distinct
+                )
+
+            reachableFrom edgesMap Set.empty (machine.StartStates |> Set.toList)
+
+        let reachableFromEnd =
+            let invertedEdgesMap =
+                machine.Edges
+                |> Map.toList
+                |> List.collect (
+                    fun (from, edges) ->
+                        edges |> List.map fst |> List.map (fun x -> x, from)
+                )
+                |> List.groupBy fst
+                |> List.map (fun (key, value) -> key, value |> List.map snd |> List.distinct)
+                |> Map.ofList
+
+            reachableFrom invertedEdgesMap Set.empty (machine.EndStates |> Set.toList)
+
+        let reachableStates = Set.intersect reachableFromStart reachableFromEnd
+
+        let newStartStates = Set.intersect reachableStates machine.StartStates
+        let newEndStates = Set.intersect reachableStates machine.EndStates
+        let newEdges =
+            (Map.empty, machine.Edges)
+            ||> Map.fold (
+                fun current from fromEdges ->
+                    if reachableStates |> Set.contains from then
+                        let newFromEdges =
+                            fromEdges
+                            |> List.filter (fst >> (fun x -> reachableStates |> Set.contains x))
+
+                        if newFromEdges |> List.isEmpty |> not then
+                            current |> Map.add from newFromEdges
+                        else
+                            current
+                    else
+                        current
+            )
+
+        {
+            StartStates = newStartStates
+            EndStates = newEndStates
+            Edges = newEdges
+        }

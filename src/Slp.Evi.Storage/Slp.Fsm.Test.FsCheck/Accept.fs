@@ -1,10 +1,10 @@
-[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 20)>]
+[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 30)>]
 module FiniteStateMachine.Accept
 
 open Slp.Fsm
 open FsCheck.Xunit
 
-let accepts = FiniteStateMachine.accepts ByteBasedEdges.evaluator
+let accepts = FiniteStateMachine.accepts ByteBasedEdges.edgeEvaluator
 
 [<Property>]
 let ``Initial machine`` (input:list<byte>) =
