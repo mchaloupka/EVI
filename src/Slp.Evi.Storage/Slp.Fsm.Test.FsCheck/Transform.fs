@@ -79,3 +79,11 @@ let ``After RemoveNonReachable the non-connected is empty`` (leftMachine: ByteBa
         EndStates = Set.empty
         Edges = Map.empty
     }
+
+[<Property>]
+let ``Intersection of machines`` (leftMachine: ByteBasedEdges.ByteBasedFsm) (rightMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
+    let machine =
+        leftMachine
+        |> FiniteStateMachine.intersect rightMachine
+
+    (machine |> accepts input) = ((leftMachine |> accepts input) && (rightMachine |> accepts input))

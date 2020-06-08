@@ -210,3 +210,6 @@ module FiniteStateMachine =
             EndStates = newEndStates
             Edges = newEdges
         }
+
+    let intersect leftMachine rightMachine =
+        leftMachine
