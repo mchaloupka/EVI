@@ -4,9 +4,9 @@ open System
 open DatabaseSchemaReader.DataSchema
 open Slp.Evi.Common.Algebra
 
-type SqlColumn = { Name: string; Source: SqlSource; Type: DataType }
+type SqlColumn = { Name: string; Source: ISqlSource; Type: DataType }
 
-and SqlSource =
+and ISqlSource =
     abstract member GetColumn: string -> SqlColumn
 
 type Literal =
@@ -49,12 +49,14 @@ type Assignment = { Variable: AssignedVariable; Expression: Expression }
 type Ordering = { Expression: Expression; Direction: OrderingDirection }
 
 type VariableSource =
-    | Sql of SqlSource
+    | Sql of ISqlSource
     | Model of CalculusModel
     | ModifiedModel of ModifiedCalculusModel
+    | UnionModel of Variable * Source list
+    | LeftOuterJoinModel of Source * Condition
 
 and Source = { Variables: Variable list; VariableSource: VariableSource }
 
-and CalculusModel = { Sources: VariableSource list; Assignments: Assignment list; Filter: Condition list }
+and CalculusModel = { Sources: Source list; Assignments: Assignment list; Filter: Condition list }
 
 and ModifiedCalculusModel = { InnerModel: CalculusModel; Ordering: Ordering list; Limit: int option; Offset: int option; IsDistinct: bool }

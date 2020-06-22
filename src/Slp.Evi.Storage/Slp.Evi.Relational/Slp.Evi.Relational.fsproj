@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.Common\Slp.Evi.Common.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.R2RML\Slp.Evi.R2RML.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Sparql\Slp.Evi.Sparql.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
