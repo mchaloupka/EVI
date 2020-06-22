@@ -276,7 +276,7 @@ type R2RMLMappingProcessor(mappings: BasicGraphPatternMapping list) =
         match toProcess |> List.sortBy (snd >> List.length) with
         | (patternMatch, mappings) :: other ->
             mappings
-            |> List.map (
+            |> List.collect (
                 fun current ->
                     let restrictedPatternMatch =
                         { PatternMatch = patternMatch; Restriction = current }
@@ -286,19 +286,19 @@ type R2RMLMappingProcessor(mappings: BasicGraphPatternMapping list) =
                     |> processTriplePatternsJoin
                     |> List.map (fun otherResult -> restrictedPatternMatch :: otherResult)
             )
-            |> List.concat
         | [] -> [[]]
 
     let processTriplePatterns (triplePatterns: BasicGraphPatternMatch list) =
         let addMappingsToMatches (pattern: BasicGraphPatternMatch) =
             pattern, mappings |> List.filter (canMappingMatchTriplePattern pattern)
     
-        let patternsWithMappings =
-            triplePatterns
-            |> List.map addMappingsToMatches
-            |> processTriplePatternsJoin
-
-        raise (new System.Exception(sprintf "Ended with %A" patternsWithMappings))
+        triplePatterns
+        |> List.map addMappingsToMatches
+        |> processTriplePatternsJoin
+        |> List.map RestrictedTriplePatterns
+        |> List.map normalizeSparqlPattern
+        |> UnionPattern
+        |> normalizeSparqlPattern
 
     let rec processSparqlPattern = function
         | EmptyPattern -> EmptyPattern
