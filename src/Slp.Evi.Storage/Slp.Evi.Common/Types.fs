@@ -3,8 +3,8 @@
 open System
 open VDS.RDF
 open Slp.Evi.Common.Utils
-open Slp.Evi.Common.StringRestriction
 open Slp.Evi.Common
+open Slp.Evi.Common.ValueRestriction
 
 type LiteralValueType =
     | DefaultType
@@ -46,117 +46,136 @@ module LiteralValueType =
             DefaultType
 
     let private knownStringRestrictions =
-        let optionalSignCharacter = 
-            [
-                [ExactCharacter '+']
-                [ExactCharacter '-']
-            ] |> Choice |> List.singleton |> Optional
+        let choiceMachineForCharacters chars =
+            chars
+            |> List.map TemplateFsm.machineForCharacter
+            |> TemplateFsm.choiceMachine
 
-        let noDecimalPointNumeral =
-            [
-                optionalSignCharacter
-                [ DigitCharacter ] |> AtLeastOneRepetition
-            ]
+        let singleDigitCharacterMachine () =
+            TemplateFsm.initialMachine ()
+            |> TemplateFsm.appendEdge DigitCharacter
 
-        let decimalPointNumeral =
+        let optionalSignCharacter () = 
             [
-                optionalSignCharacter
-                [ DigitCharacter ] |> InfiniteRepetition
-                ExactCharacter '.'
-                [ DigitCharacter ] |> AtLeastOneRepetition
-            ]
+                TemplateFsm.machineForCharacter '+'
+                TemplateFsm.machineForCharacter '-'
+            ] |> TemplateFsm.choiceMachine |> TemplateFsm.optionalMachine
 
-        let numericalSpecialRep =
+        let noDecimalPointNumeral () =
+            singleDigitCharacterMachine ()
+            |> TemplateFsm.atLeastOneRepeatMachine
+            |> TemplateFsm.appendMachine <| optionalSignCharacter ()
+
+        let decimalPointNumeral () =
+            let afterDecimalPoint =
+                singleDigitCharacterMachine ()
+                |> TemplateFsm.atLeastOneRepeatMachine
+                |> TemplateFsm.appendMachine <| TemplateFsm.machineForCharacter '.'
+
+            singleDigitCharacterMachine ()
+            |> TemplateFsm.infiniteRepeatMachine
+            |> TemplateFsm.appendMachine <| optionalSignCharacter ()
+            |> TemplateFsm.appendMachine afterDecimalPoint
+
+        let numericalSpecialRep () =
             [
-                RestrictedTemplate.fromText "+INF"
-                RestrictedTemplate.fromText "INF"
-                RestrictedTemplate.fromText "-INF"
-                RestrictedTemplate.fromText "NaN"
-            ] |> Choice |> List.singleton
+                TemplateFsm.machineForText "+INF"
+                TemplateFsm.machineForText "INF"
+                TemplateFsm.machineForText "-INF"
+                TemplateFsm.machineForText "NaN"
+            ] |> TemplateFsm.choiceMachine
 
-        let scientificNotationNumeral =
-            [
-                [ noDecimalPointNumeral; decimalPointNumeral ] |> Choice
-                RestrictedTemplate.fromText "eE" |> List.map List.singleton |> Choice
-            ] @ noDecimalPointNumeral
+        let scientificNotationNumeral () =
+            [ noDecimalPointNumeral (); decimalPointNumeral () ]
+            |> TemplateFsm.choiceMachine
+            |> TemplateFsm.appendMachine (choiceMachineForCharacters [ 'e'; 'E' ])
+            |> TemplateFsm.appendMachine (noDecimalPointNumeral ())
 
-        let hexDigit =
-            DigitCharacter :: RestrictedTemplate.fromText "abcdefABCDEF" 
-            |> List.map List.singleton 
-            |> Choice
+        let hexDigit () =
+            "abcdefABCDEF"
+            |> Seq.toList
+            |> choiceMachineForCharacters
 
-        let dateFrag = 
-            [
-                DigitCharacter
-                DigitCharacter
-                DigitCharacter
-                DigitCharacter
-                ExactCharacter '-'
-                DigitCharacter
-                DigitCharacter
-                ExactCharacter '-'
-                DigitCharacter
-                DigitCharacter
-            ]
+        let dateFrag () =
+            TemplateFsm.initialMachine ()
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge (ExactCharacter '-')
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge (ExactCharacter '-')
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
 
-        let timeFrag =
-            [
-                DigitCharacter
-                DigitCharacter
-                ExactCharacter ':'
-                DigitCharacter
-                DigitCharacter
-                ExactCharacter ':'
-                DigitCharacter
-                DigitCharacter
+        let timeFrag () =
+            TemplateFsm.initialMachine ()
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge (ExactCharacter ':')
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge (ExactCharacter ':')
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendEdge DigitCharacter
+            |> TemplateFsm.appendMachine (
+                singleDigitCharacterMachine ()
+                |> TemplateFsm.atLeastOneRepeatMachine
+                |> TemplateFsm.appendMachine <| TemplateFsm.machineForCharacter '.'
+            )
+
+        let timezoneFrag () =
+            let timezone =
                 [
-                    ExactCharacter '.'
-                    DigitCharacter |> List.singleton |> AtLeastOneRepetition
-                ] |> Optional
-            ]
-
-        let timezoneFrag =
-            [
-                ExactCharacter 'Z' |> List.singleton
-                [
-                    [
-                        [ExactCharacter '+']
-                        [ExactCharacter '-']
-                    ] |> Choice
-                    DigitCharacter
-                    DigitCharacter
-                    ExactCharacter ':'
-                    DigitCharacter
-                    DigitCharacter
+                    TemplateFsm.machineForCharacter '+'
+                    TemplateFsm.machineForCharacter '-'
                 ]
-            ] |> Choice |> List.singleton
+                |> TemplateFsm.choiceMachine
+                |> TemplateFsm.appendEdge DigitCharacter
+                |> TemplateFsm.appendEdge DigitCharacter
+                |> TemplateFsm.appendEdge (ExactCharacter ':')
+                |> TemplateFsm.appendEdge DigitCharacter
+                |> TemplateFsm.appendEdge DigitCharacter
+
+            [
+                TemplateFsm.machineForCharacter 'Z'
+                timezone
+            ]
+            |> TemplateFsm.choiceMachine
 
         [
-            (KnownTypes.xsdInteger, noDecimalPointNumeral)
-            (KnownTypes.xsdBoolean, [
+            (KnownTypes.xsdInteger, noDecimalPointNumeral ())
+            (KnownTypes.xsdBoolean,
                 [
-                    RestrictedTemplate.fromText "true"
-                    RestrictedTemplate.fromText "false"
-                ] |> Choice
-            ])
-            (KnownTypes.xsdDecimal, [ noDecimalPointNumeral; decimalPointNumeral ] |> Choice |> List.singleton)
-            (KnownTypes.xsdDouble, [ noDecimalPointNumeral; decimalPointNumeral; numericalSpecialRep; scientificNotationNumeral ] |> Choice |> List.singleton)
-            (KnownTypes.xsdDate, dateFrag @ (timezoneFrag |> Optional |> List.singleton))
-            (KnownTypes.xsdTime, timeFrag @ (timezoneFrag |> Optional |> List.singleton))
-            (KnownTypes.xsdDateTime, dateFrag @ [ ExactCharacter 'T' ] @ timeFrag @ (timezoneFrag |> Optional |> List.singleton))
-            (KnownTypes.xsdHexBinary, [
-                [
-                    hexDigit
-                    hexDigit
-                ] |> InfiniteRepetition
-            ])
+                    TemplateFsm.machineForText "true"
+                    TemplateFsm.machineForText "false"
+                ]
+                |> TemplateFsm.choiceMachine
+            )
+            (KnownTypes.xsdDecimal, [ noDecimalPointNumeral (); decimalPointNumeral () ] |> TemplateFsm.choiceMachine)
+            (KnownTypes.xsdDouble, [ noDecimalPointNumeral (); decimalPointNumeral (); numericalSpecialRep (); scientificNotationNumeral () ] |> TemplateFsm.choiceMachine)
+            (KnownTypes.xsdDate, timezoneFrag () |> TemplateFsm.optionalMachine |> TemplateFsm.appendMachine <| dateFrag ())
+            (KnownTypes.xsdTime, timezoneFrag () |> TemplateFsm.optionalMachine |> TemplateFsm.appendMachine <| timeFrag ())
+            (KnownTypes.xsdDateTime, dateFrag () |> TemplateFsm.appendEdge (ExactCharacter 'T') |> TemplateFsm.appendMachine (timeFrag ()) |> TemplateFsm.appendMachine (timezoneFrag () |> TemplateFsm.optionalMachine))
+            (KnownTypes.xsdHexBinary, hexDigit () |> TemplateFsm.appendMachine (hexDigit ()) |> TemplateFsm.infiniteRepeatMachine)
         ]
         |> readOnlyDict
 
-    let valueStringRestriction (input: LiteralValueType) =
+    let private nonIriTextRestriction =
+        TemplateFsm.initialMachine ()
+        |> TemplateFsm.appendEdge AnyCharacter
+        |> TemplateFsm.infiniteRepeatMachine
+
+    let private iriTextRestriction =
+        TemplateFsm.initialMachine ()
+        |> TemplateFsm.appendEdge IriUnRestrictedCharacter
+        |> TemplateFsm.infiniteRepeatMachine
+
+    let valueStringRestriction (isIri: bool) (input: LiteralValueType) =
         match knownStringRestrictions.TryGetValue input with
         | true, restriction -> restriction
-        | false, _ -> AnyCharacter |> List.singleton |> InfiniteRepetition |> List.singleton
+        | false, _ -> if isIri then iriTextRestriction else nonIriTextRestriction
 
 type NodeType =
     | BlankNodeType

@@ -8,10 +8,12 @@ open TCode.r2rml4net
 open Slp.Evi.Common.Database
 
 type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list) =
+    let mappingProcessor = Sparql.R2RMLMappingProcessor(bgpMappings)
+
     let generateSqlAlgebra (query: Query.SparqlQuery) =
         query
         |> Sparql.SparqlQueryBuilder.buildSparqlQuery
-        |> Sparql.R2RMLMappingProcessor.processSparqlQuery bgpMappings
+        |> mappingProcessor.processSparqlQuery
 
     let performQuery (rdfHandler: IRdfHandler, resultsHandler: ISparqlResultsHandler) (query: Query.SparqlQuery) =
         let sqlAlgebra = generateSqlAlgebra query
