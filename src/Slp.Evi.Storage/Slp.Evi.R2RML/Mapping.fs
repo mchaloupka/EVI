@@ -1,6 +1,5 @@
 ﻿namespace Slp.Evi.R2RML
 
-open System
 open Slp.Evi.Common
 open Slp.Evi.Common.Types
 open Slp.Evi.Common.Database

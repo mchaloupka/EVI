@@ -8,6 +8,7 @@ open VDS.RDF
 open Slp.Evi.Common.Algebra
 open System.Reflection
 open Slp.Evi.Common.Types
+open Slp.Evi.Common
 
 let private getNodeFromConstantTerm: Query.Expressions.Primary.ConstantTerm -> INode =
     let property =
@@ -18,9 +19,9 @@ let private getNodeFromConstantTerm: Query.Expressions.Primary.ConstantTerm -> I
 let private processNode (orNode: INode) =
     match orNode with
     | :? IUriNode as orUriNode ->
-        IriNode orUriNode
+        IriNode { IsBlankNode = orUriNode.NodeType = NodeType.Blank; Iri = Iri.fromUri orUriNode.Uri }
     | :? ILiteralNode as orLiteralNode ->
-        Algebra.LiteralNode orLiteralNode
+        Algebra.LiteralNode { Value = orLiteralNode.Value; ValueType = LiteralValueType.fromLiteralNode orLiteralNode }
     | _ ->
         sprintf "Node is expected to be either IUriNode or ILiteralNode but is %A" orNode
         |> NotSupportedException
@@ -29,8 +30,10 @@ let private processNode (orNode: INode) =
 let rec private processSparqlCondition (vdsExpression: Query.Expressions.ISparqlExpression): SparqlCondition =
     match processSparqlExpression vdsExpression with
     | BooleanExpression condition -> condition
-    | NodeExpression(LiteralNode node) when (node |> LiteralValueType.fromLiteralNode) = KnownTypes.xsdBoolean ->
-        if Query.SparqlSpecsHelper.EffectiveBooleanValue(node) then
+    | NodeExpression(LiteralNode node) ->
+        if (node.ValueType = KnownTypes.xsdBoolean && node.Value = "true")
+            || (node.ValueType = KnownTypes.xsdInteger && node.Value <> "0") 
+            || (node.ValueType = DefaultType && node.Value |> String.length > 0) then
             AlwaysTrueCondition
         else
             AlwaysFalseCondition

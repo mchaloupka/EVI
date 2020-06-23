@@ -5,7 +5,6 @@ open Slp.Evi.R2RML
 open Slp.Evi.R2RML.MappingTemplate
 open Algebra
 open SparqlQueryNormalizer
-open VDS.RDF
 open Slp.Evi.Common
 open Slp.Evi.Common.Database
 open Slp.Evi.Common.Types
@@ -163,23 +162,21 @@ type R2RMLMappingProcessor(mappings: BasicGraphPatternMapping list) =
     let literalMappingCombinations =
         literalMappingRestrictions |> buildCombinations
 
-    let canIriMatchIriMapping (iri: IUriNode) (mapping: IriMapping) =
-        if iri.NodeType = NodeType.Blank && not mapping.IsBlankNode then
+    let canIriMatchIriMapping (iri: IriNode) (mapping: IriMapping) =
+        if iri.IsBlankNode && not mapping.IsBlankNode then
             false
-        elif iri.NodeType <> NodeType.Blank && mapping.IsBlankNode then
+        elif iri.IsBlankNode |> not && mapping.IsBlankNode then
             false
         else
             match mapping.Value with
             | IriColumn _ -> true
             | _ ->
-                let nodeUri = iri.Uri.AbsoluteUri
+                let nodeUri = iri.Iri |> Iri.toText
                 let mappingPattern = iriMappingRestrictions.[mapping.Value]
                 mappingPattern |> TemplateFsm.accepts (nodeUri |> List.ofSeq)
 
-    let canLiteralMatchLiteralMapping (literal: ILiteralNode) (mapping: LiteralMapping) =
-        let literalType = literal |> LiteralValueType.fromLiteralNode
-
-        if mapping.Type <> literalType then
+    let canLiteralMatchLiteralMapping (literal: LiteralNode) (mapping: LiteralMapping) =
+        if mapping.Type <> literal.ValueType then
             false
         else
             match mapping.Value with

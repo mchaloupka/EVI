@@ -36,8 +36,7 @@ module LiteralValueType =
         match (language, literalType) with
         | Some(l), Some(t) ->
             sprintf "Node %A have both language %A and type %A" node l t
-            |> InvalidOperationException
-            |> raise
+            |> invalidOp
         | Some(l), _ ->
             l |> WithLanguage
         | _, Some(t) ->

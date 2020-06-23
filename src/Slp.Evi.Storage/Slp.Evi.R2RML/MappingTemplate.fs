@@ -73,7 +73,7 @@ let rec private isIReserved s =
     if s |> String.length = 1 then
         s.[0] |> MappingHelper.IsIUnreserved |> not
     else
-        InvalidOperationException("At this moment, there should not be any text part with different length than 1") |> raise
+        "At this moment, there should not be any text part with different length than 1" |> invalidOp
 
 let rec private buildTemplateComparisonInDirection (isIriMatch: bool) (currentResult: TemplateCompareResult<'T>) (leftAcc: Template<'T>) (rightAcc: Template<'T>) (leftTemplate: Template<'T>) (rightTemplate: Template<'T>): TemplateCompareResult<'T> =
     match (leftTemplate, rightTemplate, leftAcc, rightAcc) with

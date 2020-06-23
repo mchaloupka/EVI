@@ -6,7 +6,6 @@ type Iri internal (uri: Uri) =
     do if uri.IsAbsoluteUri |> not then
             (sprintf "Provided URI is not absolute which is not allowed: %O" uri)
             |> invalidArg <| "uri"
-            |> raise
 
     let iri = uri
     
@@ -21,6 +20,12 @@ type Iri internal (uri: Uri) =
 
     override _.GetHashCode() =
         (iri, iri.Fragment).GetHashCode()
+
+    interface System.IComparable with
+        member x.CompareTo yObj =
+            match yObj with
+            | :? Iri as i -> x.Uri.AbsoluteUri.CompareTo(i.Uri.AbsoluteUri)
+            | _ -> "cannot compare values of different types"|> invalidArg "yObj"
 
 type IriReference =
     | AbsoluteIriReference of Iri
@@ -55,7 +60,6 @@ module IriReference =
             if r.Split('/') |> Seq.exists (fun x -> x = "." || x = "..") then
                 (sprintf "Relative IRI cannot contain . or .. segments, but it was: %O" r)
                 |> invalidArg <| "input"
-                |> raise
             else
                 (baseIri.Uri, r) |> Uri |> Iri.fromUri
 

@@ -1,7 +1,8 @@
 ﻿module Slp.Evi.Sparql.Algebra
 
+open Slp.Evi.Common
 open Slp.Evi.Common.Algebra
-open VDS.RDF
+open Slp.Evi.Common.Types
 open Slp.Evi.R2RML
 
 type SparqlVariable = 
@@ -10,9 +11,13 @@ type SparqlVariable =
 
 type OrderingPart = { Variable: SparqlVariable; Direction: OrderingDirection }
 
+type IriNode = { IsBlankNode: bool; Iri: Iri }
+
+type LiteralNode = { Value: string; ValueType: LiteralValueType }
+
 type Node =
-    | LiteralNode of ILiteralNode
-    | IriNode of IUriNode
+    | LiteralNode of LiteralNode
+    | IriNode of IriNode
 
 type Pattern =
     | VariablePattern of SparqlVariable

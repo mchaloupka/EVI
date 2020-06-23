@@ -18,7 +18,7 @@ let private parseLiteralParts (literalTermMap: ILiteralTermMap): string * Litera
         |> Seq.tryHead 
         |> Option.map (function
             | :? ILiteralNode as literalNode -> literalNode
-            | _ -> raise (new InvalidOperationException("The literal value has incorrect type"))
+            | _ -> "The literal value has incorrect type" |> invalidOp
         )
 
     match node with
@@ -28,14 +28,14 @@ let private parseLiteralParts (literalTermMap: ILiteralTermMap): string * Litera
 
         let literalType = 
             match dataType, language with
-            | Some(_), Some(_) -> new InvalidOperationException("Literal has both data type and language set") |> raise
+            | Some(_), Some(_) -> "Literal has both data type and language set" |> invalidOp
             | Some(iri), _ -> iri |> Iri.fromUri |> WithType
             | _, Some(lang) -> lang |> WithLanguage
             | _, _ -> DefaultType
         
 
         x.Value, literalType
-    | None -> raise (new InvalidOperationException("The literal value is missing"))
+    | None -> "The literal value is missing" |> invalidOp
 
 let private createIriMapping (tableSchema: ISqlTableSchema) (triplesBaseIri: Iri option) (termMap: IUriValuedTermMap): IriMapping =
     let isBlankNode = termMap.TermType.IsBlankNode
@@ -45,7 +45,7 @@ let private createIriMapping (tableSchema: ISqlTableSchema) (triplesBaseIri: Iri
         if termMap.IsConstantValued then termMap.URI |> IriReference.fromUri |> IriReference.tryResolve baseIri |> IriConstant
         else if termMap.IsTemplateValued then termMap.Template |> parseTemplate tableSchema |> IriTemplate
         else if termMap.IsColumnValued then termMap.ColumnName |> tableSchema.GetColumn |> IriColumn 
-        else raise (new NotSupportedException("Unsupported term type"))
+        else "Unsupported term type" |> invalidOp
 
     { Value = value; BaseIri = baseIri; IsBlankNode = isBlankNode }
 
@@ -67,7 +67,7 @@ let private createObjectMapping (tableSchema: ISqlTableSchema) (triplesBaseIri: 
 
         let literalType = 
             match (dataTypeIri, language, detectedType) with
-            | Some(_), Some(_), _ -> new InvalidOperationException("Cannot have both language and type on a literal set") |> raise
+            | Some(_), Some(_), _ -> "Cannot have both language and type on a literal set" |> invalidOp
             | Some(iri), _, _ -> iri |> Iri.fromUri |> WithType
             | _, Some(language), _-> language |> WithLanguage
             | _, _, detectedType -> detectedType

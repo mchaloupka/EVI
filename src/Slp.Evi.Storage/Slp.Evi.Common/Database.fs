@@ -15,6 +15,10 @@ type ISqlTableSchema =
 
     abstract member GetColumn: columnName: string -> ISqlColumnSchema
 
+    abstract member Columns: string seq with get
+
+    abstract member Keys: string seq seq with get
+
 type ISqlDatabaseSchema =
     abstract member GetTable: tableName: string -> ISqlTableSchema
 

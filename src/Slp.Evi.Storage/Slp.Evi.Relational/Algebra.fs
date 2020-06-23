@@ -3,11 +3,13 @@
 open System
 open DatabaseSchemaReader.DataSchema
 open Slp.Evi.Common.Algebra
+open Slp.Evi.Common.Database
 
-type SqlColumn = { Name: string; Source: ISqlSource; Type: DataType }
+[<ReferenceEquality>]
+type SqlColumn = { Schema: ISqlColumnSchema; }
 
-and ISqlSource =
-    abstract member GetColumn: string -> SqlColumn
+[<ReferenceEquality>]
+type SqlSource = { Schema: ISqlTableSchema; Columns: SqlColumn list }
 
 type Literal =
     | String of string
@@ -16,7 +18,7 @@ type Literal =
     | DateTime of DateTime
 
 type AssignedVariable(dataType: DataType) =
-    member this.DataType = dataType
+    member _.DataType = dataType
 
 type Variable =
     | Assigned of AssignedVariable
@@ -49,14 +51,13 @@ type Assignment = { Variable: AssignedVariable; Expression: Expression }
 type Ordering = { Expression: Expression; Direction: OrderingDirection }
 
 type VariableSource =
-    | Sql of ISqlSource
-    | Model of CalculusModel
+    | NoResult
+    | SingleEmptyResult
+    | Sql of SqlSource
     | ModifiedModel of ModifiedCalculusModel
-    | UnionModel of Variable * Source list
-    | LeftOuterJoinModel of Source * Condition
+    | UnionModel of Variable * CalculusModel list
+    | LeftOuterJoinModel of CalculusModel * Condition
 
-and Source = { Variables: Variable list; VariableSource: VariableSource }
-
-and CalculusModel = { Sources: Source list; Assignments: Assignment list; Filter: Condition list }
+and CalculusModel = { Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
 
 and ModifiedCalculusModel = { InnerModel: CalculusModel; Ordering: Ordering list; Limit: int option; Offset: int option; IsDistinct: bool }
