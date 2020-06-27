@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Include="Algebra.fs" />
-    <Compile Include="ValueBinders.fs" />
     <Compile Include="RelationalAlgebraBuilder.fs" />
   </ItemGroup>
 

@@ -22,5 +22,11 @@ namespace Slp.Evi.Storage.MsSql.Database
 
         /// <inheritdoc />
         public ISqlColumnType SqlType { get; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"Column({Name})";
+        }
     }
 }

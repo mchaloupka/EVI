@@ -4,12 +4,19 @@ open System
 open DatabaseSchemaReader.DataSchema
 open Slp.Evi.Common.Algebra
 open Slp.Evi.Common.Database
+open Slp.Evi.Sparql.Algebra
+open Slp.Evi.Common.Types
+open Slp.Evi.R2RML
 
 [<ReferenceEquality>]
 type SqlColumn = { Schema: ISqlColumnSchema; }
 
 [<ReferenceEquality>]
 type SqlSource = { Schema: ISqlTableSchema; Columns: SqlColumn list }
+
+module SqlSource =
+    let getColumn name source =
+        source.Columns |> List.find (fun x -> x.Schema.Name = name)
 
 type Literal =
     | String of string
@@ -58,6 +65,15 @@ type VariableSource =
     | UnionModel of Variable * CalculusModel list
     | LeftOuterJoinModel of CalculusModel * Condition
 
-and CalculusModel = { Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
+and CalculusModel = { AlwaysBoundVariables: Variable list; OtherVariables: Variable list; Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
 
 and ModifiedCalculusModel = { InnerModel: CalculusModel; Ordering: Ordering list; Limit: int option; Offset: int option; IsDistinct: bool }
+
+type ValueBinder =
+    | EmptyValueBinder
+    | BaseValueBinder of ObjectMapping * Map<string, Variable>
+    | CoalesceValueBinder of ValueBinder list
+    | CaseValueBinder of Variable * Map<int, ValueBinder>
+    | ExpressionValueBinder of Expression * NodeType
+
+type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder> }
