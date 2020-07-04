@@ -58,16 +58,20 @@ type Assignment = { Variable: AssignedVariable; Expression: Expression }
 type Ordering = { Expression: Expression; Direction: OrderingDirection }
 
 type VariableSource =
-    | NoResult
-    | SingleEmptyResult
     | Sql of SqlSource
-    | ModifiedModel of ModifiedCalculusModel
-    | UnionModel of Variable * CalculusModel list
-    | LeftOuterJoinModel of CalculusModel * Condition
+    | SubQuery of CalculusModel
+    | UnionModel of Variable * NotModifiedCalculusModel list
+    | LeftOuterJoinModel of NotModifiedCalculusModel * Condition
 
-and CalculusModel = { AlwaysBoundVariables: Variable list; OtherVariables: Variable list; Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
+and NotModifiedCalculusModel = { NonNullVariables: Variable list; Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
 
 and ModifiedCalculusModel = { InnerModel: CalculusModel; Ordering: Ordering list; Limit: int option; Offset: int option; IsDistinct: bool }
+
+and CalculusModel =
+    | NoResult
+    | SingleEmptyResult
+    | Modified of ModifiedCalculusModel
+    | NotModified of NotModifiedCalculusModel
 
 type ValueBinder =
     | EmptyValueBinder
@@ -76,4 +80,4 @@ type ValueBinder =
     | CaseValueBinder of Variable * Map<int, ValueBinder>
     | ExpressionValueBinder of Expression * NodeType
 
-type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder> }
+type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder>; AlwaysBoundVariables: SparqlVariable list }

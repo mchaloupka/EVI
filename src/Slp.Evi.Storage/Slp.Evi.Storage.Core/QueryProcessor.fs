@@ -12,12 +12,10 @@ type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMappin
     let mappingProcessor = Sparql.R2RMLMappingProcessor(bgpMappings)
 
     let generateSqlAlgebra (query: Query.SparqlQuery) =
-        let relationalBuilder = RelationalAlgebraBuilder()
-
         query
         |> Sparql.SparqlQueryBuilder.buildSparqlQuery
         |> mappingProcessor.processSparqlQuery
-        |> relationalBuilder.buildRelationalQuery
+        |> RelationalAlgebraBuilder.buildRelationalQuery
 
     let performQuery (rdfHandler: IRdfHandler, resultsHandler: ISparqlResultsHandler) (query: Query.SparqlQuery) =
         let sqlAlgebra = generateSqlAlgebra query
