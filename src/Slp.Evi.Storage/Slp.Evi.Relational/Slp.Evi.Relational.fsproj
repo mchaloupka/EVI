@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="TypeIndexer.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="RelationalAlgebraNormalizer.fs" />
     <Compile Include="RelationalAlgebraOptimizers.fs" />

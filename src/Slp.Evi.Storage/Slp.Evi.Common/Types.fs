@@ -23,6 +23,7 @@ module KnownTypes =
     let xsdTime = createFromXsd "#time"
     let xsdDateTime = createFromXsd "#dateTime"
     let xsdHexBinary = createFromXsd "#hexBinary"
+    let xsdString = createFromXsd "#string"
 
 module LiteralValueType =
     let fromLiteralNode (node: ILiteralNode) =

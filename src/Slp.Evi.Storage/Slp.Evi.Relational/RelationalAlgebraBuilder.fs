@@ -1,21 +1,229 @@
 ﻿module Slp.Evi.Relational.RelationalAlgebraBuilder
 
 open System
+
+open Slp.Evi.Common
+open Slp.Evi.Common.Types
 open Slp.Evi.R2RML
 open Slp.Evi.Sparql.Algebra
 open Slp.Evi.Relational.Algebra
 open Slp.Evi.Relational.RelationalAlgebraOptimizers
+open Slp.Evi.R2RML.MappingTemplate
 
-let private valueBinderEqualToNodeCondition valueBinder node =
-    sprintf "IsEqualValue for %A and %A" valueBinder node |> NotImplementedException |> raise
+let rec private isBaseValueBinderBoundCondition neededVars =
+    if neededVars |> Map.isEmpty then
+        AlwaysTrue |> optimizeRelationalCondition
+    else
+        neededVars
+        |> Map.toList
+        |> List.map snd
+        |> List.distinct
+        |> List.map (fun v -> v |> IsNull |> optimizeRelationalCondition |> Not |> optimizeRelationalCondition)
+        |> Conjunction |> optimizeRelationalCondition
 
-let private valueBindersEqualValueCondition valueBinder otherValueBinder =
-    sprintf "IsEqualValue for %A and %A" valueBinder otherValueBinder |> NotImplementedException |> raise
+let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinder =
+    match valueBinder with
+    | EmptyValueBinder ->
+        ExpressionSet.empty
+    | BaseValueBinder(mapping, neededVariables) ->
+        let isBoundCondition = isBaseValueBinderBoundCondition neededVariables
+        match mapping with
+        | IriObject iriMapping ->
+            let nodeTypeRecord =
+                if iriMapping.IsBlankNode then BlankNodeType else IriNodeType
+                |> typeIndexer.FromType
 
-let private isValueBinderBoundCondition valueBinder =
-    sprintf "IsBoundCondition for %A" valueBinder |> NotImplementedException |> raise
+            let expression =
+                match iriMapping.Value with
+                | IriColumn c -> neededVariables |> Map.find c.Name |> Variable |> optimizeRelationalExpression
+                | IriConstant i -> i |> Iri.toText |> String |> Constant |> optimizeRelationalExpression
+                | IriTemplate parts ->
+                    parts
+                    |> List.map (
+                        function
+                        | TemplatePart.TextPart t -> t |> String |> Constant |> optimizeRelationalExpression
+                        | TemplatePart.ColumnPart c -> neededVariables |> Map.find c.Name |> Variable |> optimizeRelationalExpression
+                    )
+                    |> Concatenation
+                    |> optimizeRelationalExpression
 
-let private processRestrictedTriplePattern (patterns: RestrictedPatternMatch list) =
+            { ExpressionSet.empty with
+                IsNotErrorCondition = isBoundCondition
+                TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
+                TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
+                StringExpression = expression
+            }
+            
+        | LiteralObject literalMapping ->
+            let nodeTypeRecord =
+                literalMapping.Type
+                |> LiteralNodeType
+                |> typeIndexer.FromType
+
+            let expression =
+                match literalMapping.Value with
+                | LiteralColumn c -> neededVariables |> Map.find c.Name |> Variable |> optimizeRelationalExpression
+                | LiteralConstant s -> s |> String |> Constant |> optimizeRelationalExpression
+                | LiteralTemplate parts ->
+                    parts
+                    |> List.map (
+                        function
+                        | TemplatePart.TextPart t -> t |> String |> Constant |> optimizeRelationalExpression
+                        | TemplatePart.ColumnPart c -> neededVariables |> Map.find c.Name |> Variable |> optimizeRelationalExpression
+                    )
+                    |> Concatenation
+                    |> optimizeRelationalExpression
+
+            let baseRecord =
+                { ExpressionSet.empty with
+                    IsNotErrorCondition = isBoundCondition
+                    TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
+                    TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
+                }
+
+            match nodeTypeRecord.Category with
+            | TypeIndexer.TypeCategory.BooleanLiteral ->
+                { baseRecord with
+                    BooleanExpression = expression
+                }
+            | TypeIndexer.TypeCategory.NumericLiteral ->
+                { baseRecord with
+                    NumericExpression = expression
+                }
+            | TypeIndexer.TypeCategory.DateTimeLiteral ->
+                { baseRecord with
+                    DateTimeExpresion = expression
+                }
+             | _ ->
+                { baseRecord with
+                    StringExpression = expression
+                }
+
+    | CaseValueBinder(caseVariable, cases) ->
+        let transformedCases =
+            cases
+            |> Map.map (fun _ vb -> vb |> valueBinderToExpressionSet typeIndexer)
+
+        let buildExpression selector =
+            transformedCases
+            |> Map.toList
+            |> List.map (
+                fun (cv, vb) ->
+                    {
+                        Condition = EqualVariableTo(caseVariable, cv |> Int) |> optimizeRelationalCondition
+                        Expression = vb |> selector
+                    }
+            )
+            |> Switch |> optimizeRelationalExpression
+
+        {
+            IsNotErrorCondition =
+                transformedCases
+                |> Map.toList
+                |> List.map (
+                    fun (cv, vb) ->
+                        [
+                            EqualVariableTo(caseVariable, cv |> Int) |> optimizeRelationalCondition
+                            vb.IsNotErrorCondition
+                        ] |> Conjunction |> optimizeRelationalCondition
+                ) |> Disjunction |> optimizeRelationalCondition
+            TypeCategoryExpression = buildExpression (fun x -> x.TypeCategoryExpression)
+            TypeExpression = buildExpression (fun x -> x.TypeExpression)
+            StringExpression = buildExpression (fun x -> x.StringExpression)
+            NumericExpression = buildExpression (fun x -> x.NumericExpression)
+            BooleanExpression = buildExpression (fun x -> x.BooleanExpression)
+            DateTimeExpresion = buildExpression (fun x -> x.DateTimeExpresion)
+        }
+
+    | CoalesceValueBinder valueBinders ->
+        let transformed = valueBinders |> List.map (valueBinderToExpressionSet typeIndexer)
+        let buildExpression selector =
+            let rec buildExpressionImpl condition result rest =
+                match rest with
+                | [] -> result |> List.rev |> Switch |> optimizeRelationalExpression
+                | x :: xs ->
+                    let isBound = [ condition; x.IsNotErrorCondition ] |> Conjunction |> optimizeRelationalCondition
+                    let nextCondition = [ condition; x.IsNotErrorCondition |> Not |> optimizeRelationalCondition ] |> Conjunction |> optimizeRelationalCondition
+                    let newResult = { Condition = isBound; Expression = x |> selector } :: result
+                    xs |> buildExpressionImpl nextCondition newResult
+            buildExpressionImpl AlwaysTrue List.empty transformed
+
+        {
+            IsNotErrorCondition =
+                transformed
+                |> List.map (fun vb -> vb.IsNotErrorCondition)
+                |> Conjunction
+                |> optimizeRelationalCondition
+            TypeCategoryExpression = buildExpression (fun x -> x.TypeCategoryExpression)
+            TypeExpression = buildExpression (fun x -> x.TypeExpression)
+            StringExpression = buildExpression (fun x -> x.StringExpression)
+            NumericExpression = buildExpression (fun x -> x.NumericExpression)
+            BooleanExpression = buildExpression (fun x -> x.BooleanExpression)
+            DateTimeExpresion = buildExpression (fun x -> x.DateTimeExpresion)
+        }
+
+    | ExpressionValueBinder expressionSet -> expressionSet
+
+
+let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
+    match node with
+    | IriNode iriNode ->
+        let nodeTypeRecord =
+            if iriNode.IsBlankNode then BlankNodeType else IriNodeType
+            |> typeIndexer.FromType
+
+        { ExpressionSet.empty with
+            IsNotErrorCondition = AlwaysTrue
+            TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
+            TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
+            StringExpression = iriNode.Iri |> Iri.toText |> String |> Constant |> optimizeRelationalExpression
+        }
+
+    | LiteralNode literalNode ->
+        let nodeTypeRecord =
+            literalNode.ValueType
+            |> LiteralNodeType
+            |> typeIndexer.FromType
+
+        let baseRecord =
+            { ExpressionSet.empty with
+                IsNotErrorCondition = AlwaysTrue
+                TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
+                TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
+            }
+
+        let expression = literalNode.Value |> String |> Constant
+
+        match nodeTypeRecord.Category with
+        | TypeIndexer.TypeCategory.BooleanLiteral ->
+            { baseRecord with
+                BooleanExpression = expression
+            }
+        | TypeIndexer.TypeCategory.NumericLiteral ->
+            { baseRecord with
+                NumericExpression = expression
+            }
+        | TypeIndexer.TypeCategory.DateTimeLiteral ->
+            { baseRecord with
+                DateTimeExpresion = expression
+            }
+         | _ ->
+            { baseRecord with
+                StringExpression = expression
+            }
+
+let private expressionSetValuesEqualCondition left right =
+    sprintf "ExpressionSet equality for %A and %A" left right |> NotImplementedException |> raise
+
+let private valueBinderValueEqualToNodeCondition typeIndexer valueBinder node =
+    (valueBinder |> valueBinderToExpressionSet typeIndexer, node |> nodeToExpressionSet typeIndexer)
+    ||> expressionSetValuesEqualCondition
+
+let private valueBindersEqualValueCondition typeIndexer valueBinder otherValueBinder =
+    (valueBinder |> valueBinderToExpressionSet typeIndexer, otherValueBinder |> valueBinderToExpressionSet typeIndexer)
+    ||> expressionSetValuesEqualCondition
+
+let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns: RestrictedPatternMatch list) =
     let findIds (subjectMap: IriMapping) =
         match subjectMap.Value with
         | IriColumn col -> col.Name |> Set.singleton
@@ -72,7 +280,7 @@ let private processRestrictedTriplePattern (patterns: RestrictedPatternMatch lis
             x, sqlSources |> Map.add pattern updatedSources
 
     let applyPatternMatch filters (valueBindings: Map<_,_>) source pattern mapping =
-        let valueBinder =
+        let variables =
             let neededVariables =
                 match mapping with
                 | IriObject iriObj ->
@@ -80,7 +288,7 @@ let private processRestrictedTriplePattern (patterns: RestrictedPatternMatch lis
                     | IriColumn col -> col.Name |> List.singleton
                     | IriConstant _ -> List.empty
                     | IriTemplate tmpl ->
-                        tmpl 
+                        tmpl
                         |> List.choose (
                             function
                             | MappingTemplate.ColumnPart col -> col.Name |> Some
@@ -98,25 +306,24 @@ let private processRestrictedTriplePattern (patterns: RestrictedPatternMatch lis
                             | _ -> None
                         )
 
-            let variables =
-                neededVariables
-                |> List.map (
-                    fun var ->
-                        var, source |>SqlSource.getColumn var |> Column
-                )
-                |> Map.ofList
+            neededVariables
+            |> List.map (
+                fun var ->
+                    var, source |>SqlSource.getColumn var |> Column
+            )
+            |> Map.ofList
 
-            BaseValueBinder(mapping, variables)
+        let valueBinder = BaseValueBinder(mapping, variables)
 
         match pattern with
         | VariablePattern var ->
             match valueBindings.TryGetValue var with
             | true, otherValueBinder ->
-                isValueBinderBoundCondition valueBinder :: valueBindersEqualValueCondition valueBinder otherValueBinder :: filters, valueBindings
+                isBaseValueBinderBoundCondition variables :: valueBindersEqualValueCondition typeIndexer valueBinder otherValueBinder :: filters, valueBindings
             | false, _ ->
-                isValueBinderBoundCondition valueBinder :: filters, valueBindings |> Map.add var valueBinder
+                isBaseValueBinderBoundCondition variables :: filters, valueBindings |> Map.add var valueBinder
         | NodeMatchPattern node ->
-            isValueBinderBoundCondition valueBinder :: valueBinderEqualToNodeCondition valueBinder node :: filters, valueBindings
+            isBaseValueBinderBoundCondition variables :: valueBinderValueEqualToNodeCondition typeIndexer valueBinder node :: filters, valueBindings
 
     let rec implPatternList sqlSources filters valueBindings toProcess =
         match toProcess with
@@ -181,7 +388,7 @@ let private processRestrictedTriplePattern (patterns: RestrictedPatternMatch lis
 
     implPatternList Map.empty [] Map.empty patterns
 
-let private processSparqlPattern (sparqlPattern: SparqlPattern) =
+let private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
     optimizeBoundCalculusModel <|
     match sparqlPattern with
     | EmptyPattern -> 
@@ -201,7 +408,7 @@ let private processSparqlPattern (sparqlPattern: SparqlPattern) =
         |> invalidArg "sparqlPattern"
     | RestrictedTriplePatterns restrictedPatterns ->
         restrictedPatterns
-        |> processRestrictedTriplePattern
+        |> processRestrictedTriplePattern typeIndexer
     | _ ->
         sprintf "Ended with %A" sparqlPattern
         |> invalidOp
@@ -210,12 +417,7 @@ let private applyModifiers (modifiers: Modifier list) (inner: BoundCalculusModel
     sprintf "Ended with %A with modifiers to add %A" inner modifiers
     |> invalidOp
 
-let buildRelationalQuery (sparqlAlgebra: SparqlQuery) =
+let buildRelationalQuery (typeIndexer: TypeIndexer) (sparqlAlgebra: SparqlQuery) =
     sparqlAlgebra.Query
-    |> processSparqlPattern
+    |> processSparqlPattern typeIndexer
     |> applyModifiers sparqlAlgebra.Modifiers
-
-
-
-
-

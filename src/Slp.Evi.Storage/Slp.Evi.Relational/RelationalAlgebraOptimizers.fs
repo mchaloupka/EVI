@@ -14,10 +14,6 @@ let optimizeCalculusModel model =
     model
     |> normalizeCalculusModel
 
-let optimizeModifiedCalculus model =
-    model
-    |> normalizeModifiedCalculus
-
 let optimizeBoundCalculusModel model =
     model
     |> normalizeBoundCalculusModel

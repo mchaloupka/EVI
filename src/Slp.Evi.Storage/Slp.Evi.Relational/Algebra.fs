@@ -22,7 +22,6 @@ type Literal =
     | String of string
     | Int of int
     | Double of double
-    | DateTime of DateTime
 
 type AssignedVariable(dataType: DataType) =
     member _.DataType = dataType
@@ -37,6 +36,7 @@ type Condition =
     | Comparison of Comparisons * Expression * Expression
     | Conjunction of Condition list
     | Disjunction of Condition list
+    | EqualVariableTo of Variable * Literal
     | EqualVariables of Variable * Variable
     | IsNull of Variable
     | LanguageMatch of Expression * Expression
@@ -51,7 +51,30 @@ and Expression =
     | Coalesce of Expression list
     | Variable of Variable
     | Constant of Literal
+    | Concatenation of Expression list
     | Null
+
+type ExpressionSet = {
+    IsNotErrorCondition: Condition
+    TypeCategoryExpression: Expression
+    TypeExpression: Expression
+    StringExpression: Expression
+    NumericExpression: Expression
+    BooleanExpression: Expression
+    DateTimeExpresion: Expression
+}
+
+module ExpressionSet =
+    let empty =
+        {
+            IsNotErrorCondition=AlwaysFalse
+            TypeCategoryExpression=Null
+            TypeExpression=Null
+            StringExpression=Null
+            NumericExpression=Null
+            BooleanExpression=Null
+            DateTimeExpresion=Null
+        }
 
 type Assignment = { Variable: AssignedVariable; Expression: Expression }
 
@@ -78,6 +101,6 @@ type ValueBinder =
     | BaseValueBinder of ObjectMapping * Map<string, Variable>
     | CoalesceValueBinder of ValueBinder list
     | CaseValueBinder of Variable * Map<int, ValueBinder>
-    | ExpressionValueBinder of Expression * NodeType
+    | ExpressionValueBinder of ExpressionSet
 
 type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder>; AlwaysBoundVariables: SparqlVariable list }
