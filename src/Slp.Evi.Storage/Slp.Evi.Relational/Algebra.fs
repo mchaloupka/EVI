@@ -86,7 +86,7 @@ type VariableSource =
     | UnionModel of Variable * NotModifiedCalculusModel list
     | LeftOuterJoinModel of NotModifiedCalculusModel * Condition
 
-and NotModifiedCalculusModel = { NonNullVariables: Variable list; Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
+and NotModifiedCalculusModel = { Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
 
 and ModifiedCalculusModel = { InnerModel: CalculusModel; Ordering: Ordering list; Limit: int option; Offset: int option; IsDistinct: bool }
 

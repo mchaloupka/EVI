@@ -9,9 +9,10 @@ namespace Slp.Evi.Storage.MsSql.Database
     {
         private readonly string _dbType;
 
-        public MsSqlColumnType(string dbType)
+        public MsSqlColumnType(string dbType, bool isNullable)
         {
             _dbType = dbType;
+            IsNullable = isNullable;
         }
 
         public LiteralValueType DefaultRdfType
@@ -58,5 +59,8 @@ namespace Slp.Evi.Storage.MsSql.Database
                 }
             }
         }
+
+        /// <inheritdoc />
+        public bool IsNullable { get; }
     }
 }

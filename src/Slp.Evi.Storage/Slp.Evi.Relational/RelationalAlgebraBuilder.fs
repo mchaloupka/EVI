@@ -369,12 +369,6 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
         | [] ->
             {
                 Model = {
-                    NonNullVariables =
-                        sqlSources
-                        |> Map.toList
-                        |> List.collect snd
-                        |> List.collect (fun x -> x.Columns)
-                        |> List.map Column
                     Sources =
                         sqlSources
                         |> Map.toList

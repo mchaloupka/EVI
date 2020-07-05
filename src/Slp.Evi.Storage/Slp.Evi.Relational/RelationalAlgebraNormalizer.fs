@@ -69,6 +69,7 @@ let normalizeRelationalCondition condition =
         |> function
         | [] -> AlwaysTrue
         | AlwaysFalse :: _ -> AlwaysFalse
+        | x :: [] -> x
         | xs -> Conjunction(xs)
     | Disjunction conditions ->
         (conditions, List.empty)
@@ -83,6 +84,7 @@ let normalizeRelationalCondition condition =
         |> function
         | [] -> AlwaysFalse
         | AlwaysTrue :: _ -> AlwaysTrue
+        | x :: [] -> x
         | xs -> Disjunction(xs)
     | Not AlwaysTrue ->
         AlwaysFalse
