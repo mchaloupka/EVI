@@ -9,6 +9,7 @@ open Slp.Evi.Sparql.Algebra
 open Slp.Evi.Relational.Algebra
 open Slp.Evi.Relational.RelationalAlgebraOptimizers
 open Slp.Evi.R2RML.MappingTemplate
+open Slp.Evi.Common.Algebra
 
 let rec private isBaseValueBinderBoundCondition neededVars =
     if neededVars |> Map.isEmpty then
@@ -213,7 +214,42 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
             }
 
 let private expressionSetValuesEqualCondition left right =
-    sprintf "ExpressionSet equality for %A and %A" left right |> NotImplementedException |> raise
+    let isTypeEqual =
+        Comparison(Comparisons.EqualTo, left.TypeExpression, right.TypeExpression)
+        |> optimizeRelationalCondition
+
+    let notIsValueInCategory category =
+        Comparison(Comparisons.EqualTo, left.TypeCategoryExpression, category |> int |> Int |> Constant)
+        |> optimizeRelationalCondition
+        |> Not
+        |> optimizeRelationalCondition
+
+    let notIsValueNumeric = notIsValueInCategory TypeIndexer.TypeCategory.NumericLiteral
+    let notIsValueBoolean = notIsValueInCategory TypeIndexer.TypeCategory.BooleanLiteral
+    let notIsValueDateTime = notIsValueInCategory TypeIndexer.TypeCategory.DateTimeLiteral
+    let notIsValueString =
+        [
+            notIsValueInCategory TypeIndexer.TypeCategory.BlankNode
+            notIsValueInCategory TypeIndexer.TypeCategory.Iri
+            notIsValueInCategory TypeIndexer.TypeCategory.StringLiteral
+            notIsValueInCategory TypeIndexer.TypeCategory.SimpleLiteral
+            notIsValueInCategory TypeIndexer.TypeCategory.OtherLiteral
+        ]
+        |> Conjunction |> optimizeRelationalCondition
+
+    let expressionEqual selector =
+        Comparison(Comparisons.EqualTo, left |> selector, right |> selector)
+        |> optimizeRelationalCondition
+
+    [
+        isTypeEqual
+        [ notIsValueString; expressionEqual (fun x -> x.StringExpression) ] |> Disjunction |> optimizeRelationalCondition
+        [ notIsValueNumeric; expressionEqual (fun x -> x.NumericExpression) ] |> Disjunction |> optimizeRelationalCondition
+        [ notIsValueBoolean; expressionEqual (fun x -> x.BooleanExpression) ] |> Disjunction |> optimizeRelationalCondition
+        [ notIsValueDateTime; expressionEqual (fun x -> x.DateTimeExpresion) ] |> Disjunction |> optimizeRelationalCondition
+    ]
+    |> Conjunction
+    |> optimizeRelationalCondition
 
 let private valueBinderValueEqualToNodeCondition typeIndexer valueBinder node =
     (valueBinder |> valueBinderToExpressionSet typeIndexer, node |> nodeToExpressionSet typeIndexer)
@@ -264,20 +300,23 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
                     None
                 
             mayBeUsableSource
+            |> Option.map (
+                fun x -> x, sqlSources
+            )
             |> Option.defaultWith (fun () ->
-                {
-                    Schema = schema
-                    Columns =
-                        schema.Columns
-                        |> Seq.toList
-                        |> List.map (fun col -> { Schema = schema.GetColumn(col) })
-                }
+                let newSource =
+                    {
+                        Schema = schema
+                        Columns =
+                            schema.Columns
+                            |> Seq.toList
+                            |> List.map (fun col -> { Schema = schema.GetColumn(col) })
+                    }
+                let updatedSources = newSource :: (sqlSources |> Map.tryFind pattern |> Option.defaultValue List.empty)
+                newSource, sqlSources |> Map.add pattern updatedSources
             )
 
         | Statement _ -> "SQL Statements are not yet supported" |> NotImplementedException |> raise
-        |> fun x ->
-            let updatedSources = sqlSources |> Map.tryFind pattern |> Option.defaultValue List.empty |> fun xs -> x :: xs
-            x, sqlSources |> Map.add pattern updatedSources
 
     let applyPatternMatch filters (valueBindings: Map<_,_>) source pattern mapping =
         let variables =
@@ -309,7 +348,7 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
             neededVariables
             |> List.map (
                 fun var ->
-                    var, source |>SqlSource.getColumn var |> Column
+                    var, source |> SqlSource.getColumn var |> Column
             )
             |> Map.ofList
 
