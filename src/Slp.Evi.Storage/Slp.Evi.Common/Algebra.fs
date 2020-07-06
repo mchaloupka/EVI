@@ -16,4 +16,3 @@ type Comparisons =
     | LessThan
     | LessOrEqualThan
     | EqualTo
-    | NotEqualTo

@@ -7,7 +7,8 @@ let normalizeRelationalExpression expression =
     match expression with
     | Null
     | Constant _
-    | Variable _ 
+    | Variable _
+    | IriSafeVariable _
     | BinaryNumericOperation _ ->
         expression
 

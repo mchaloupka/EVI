@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Compile Include="Common\Iri.fs" />
-    <Compile Include="R2RML\MappingTemplate.fs" />
+    <Compile Include="Relational\ConcatenationEqualityOptimizer.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.R2RML\Slp.Evi.R2RML.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Relational\Slp.Evi.Relational.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

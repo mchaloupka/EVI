@@ -43,7 +43,7 @@ let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinde
                     |> List.map (
                         function
                         | TemplatePart.TextPart t -> t |> String |> Constant |> optimizeRelationalExpression
-                        | TemplatePart.ColumnPart c -> neededVariables |> Map.find c.Name |> Variable |> optimizeRelationalExpression
+                        | TemplatePart.ColumnPart c -> neededVariables |> Map.find c.Name |> IriSafeVariable |> optimizeRelationalExpression
                     )
                     |> Concatenation
                     |> optimizeRelationalExpression

@@ -8,8 +8,38 @@ let optimizeRelationalExpression expression =
     expression
     |> normalizeRelationalExpression
 
-let optimizeRelationalCondition condition =
+let rec optimizeRelationalCondition condition =
+    let optimizeConcatenationsEquality leftConcat rightConcat =
+        match ConcatenationEqualityOptimizer.compareConcatenations leftConcat rightConcat with
+        | Some(processed) ->
+            processed
+            |> List.map (
+                function
+                | ConcatenationEqualityOptimizer.AlwaysMatching -> AlwaysTrue
+                | ConcatenationEqualityOptimizer.AlwaysNotMatching -> AlwaysFalse
+                | ConcatenationEqualityOptimizer.MatchingCondition(left, right) ->
+                    if left = leftConcat && right = rightConcat then
+                        Comparison(Comparisons.EqualTo, left |> Concatenation, right |> Concatenation)
+                    else
+                        Comparison(
+                            Comparisons.EqualTo, 
+                            left |> Concatenation |> optimizeRelationalExpression,
+                            right |> Concatenation |> optimizeRelationalExpression
+                        )
+                        |> optimizeRelationalCondition
+            )
+            |> Conjunction
+            |> optimizeRelationalCondition
+        | None ->
+            Comparison(Comparisons.EqualTo, leftConcat |> Concatenation, rightConcat |> Concatenation)
+
     match condition with
+    | Comparison(Comparisons.EqualTo, Concatenation(left), Concatenation(right)) ->
+        optimizeConcatenationsEquality left right
+    | Comparison(Comparisons.EqualTo, Concatenation(left), (Constant(_) as right)) ->
+        optimizeConcatenationsEquality left [ right ]
+    | Comparison(Comparisons.EqualTo, (Constant(_) as left), Concatenation(right)) ->
+        optimizeConcatenationsEquality [ left ] right
     | Comparison(Comparisons.EqualTo, Constant(constX), Constant(constY)) ->
         match constX, constY with
         | Int x, Int y ->

@@ -50,6 +50,7 @@ and Expression =
     | Switch of CaseStatement list
     | Coalesce of Expression list
     | Variable of Variable
+    | IriSafeVariable of Variable
     | Constant of Literal
     | Concatenation of Expression list
     | Null

@@ -62,7 +62,7 @@ and private processSparqlExpression (vdsExpression: Query.Expressions.ISparqlExp
     | :? Query.Expressions.Comparison.EqualsExpression as orComparison ->
         processComparison EqualTo orComparison.Arguments |> normalizeSparqlCondition |> BooleanExpression
     | :? Query.Expressions.Comparison.NotEqualsExpression as orComparison ->
-        processComparison NotEqualTo orComparison.Arguments |> normalizeSparqlCondition |> BooleanExpression
+        processComparison EqualTo orComparison.Arguments |> normalizeSparqlCondition |> NegationCondition |> normalizeSparqlCondition |> BooleanExpression
     | :? Query.Expressions.Primary.VariableTerm as orVariable ->
         orVariable.Variables |> Seq.exactlyOne |> SparqlVariable |> VariableExpression
     | :? Query.Expressions.Primary.ConstantTerm as orConstant ->

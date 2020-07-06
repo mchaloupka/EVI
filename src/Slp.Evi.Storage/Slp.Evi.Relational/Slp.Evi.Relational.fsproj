@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="TypeIndexer.fs" />
     <Compile Include="Algebra.fs" />
+    <Compile Include="ConcatenationEqualityOptimizer.fs" />
     <Compile Include="RelationalAlgebraNormalizer.fs" />
     <Compile Include="RelationalAlgebraOptimizers.fs" />
     <Compile Include="RelationalAlgebraBuilder.fs" />
