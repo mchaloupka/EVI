@@ -243,16 +243,16 @@ let private expressionSetValueUncheckedComparison comparison left right =
         |> List.map notIsValueInCategory
         |> Conjunction |> optimizeRelationalCondition
 
-    let expressionEqual selector =
-        Comparison(Comparisons.EqualTo, left |> selector, right |> selector)
+    let expressionComparison selector =
+        Comparison(comparison, left |> selector, right |> selector)
         |> optimizeRelationalCondition
 
     [
         Comparison(Comparisons.EqualTo, left.TypeCategoryExpression, right.TypeCategoryExpression)
-        [ notIsValueString; expressionEqual (fun x -> x.StringExpression) ] |> Disjunction
-        [ notIsValueNumeric; expressionEqual (fun x -> x.NumericExpression) ] |> Disjunction
-        [ notIsValueBoolean; expressionEqual (fun x -> x.BooleanExpression) ] |> Disjunction
-        [ notIsValueDateTime; expressionEqual (fun x -> x.DateTimeExpresion) ] |> Disjunction
+        [ notIsValueString; expressionComparison (fun x -> x.StringExpression) ] |> Disjunction
+        [ notIsValueNumeric; expressionComparison (fun x -> x.NumericExpression) ] |> Disjunction
+        [ notIsValueBoolean; expressionComparison (fun x -> x.BooleanExpression) ] |> Disjunction
+        [ notIsValueDateTime; expressionComparison (fun x -> x.DateTimeExpresion) ] |> Disjunction
     ]
     |> List.map optimizeRelationalCondition
     |> Conjunction
@@ -275,7 +275,135 @@ let private valueBindersEqualValueCondition typeIndexer valueBinder otherValueBi
     ||> expressionSetValuesEqualCondition
 
 let rec private processSparqlExpression (typeIndexer: TypeIndexer) (bindings: Map<SparqlVariable, ValueBinder>) (expression: SparqlExpression): ExpressionSet =
-    invalidOp "Not yet implemented"
+    match expression with
+    | BooleanExpression(sparqlCondition) ->
+        let (isNonError, condition) = sparqlCondition |> processSparqlCondition typeIndexer bindings
+        { ExpressionSet.empty with
+            IsNotErrorCondition = isNonError
+            TypeCategoryExpression = TypeIndexer.TypeCategory.BooleanLiteral |> int |> Int |> Constant |> optimizeRelationalExpression
+            TypeExpression = typeIndexer.FromType (KnownTypes.xsdBoolean |> LiteralNodeType) |> fun x -> x.Index |> Int |> Constant |> optimizeRelationalExpression
+            BooleanExpression = condition |> Boolean |> optimizeRelationalExpression
+        }
+        
+    | NodeExpression(node) ->
+        node |> nodeToExpressionSet typeIndexer
+
+    | VariableExpression(sparqlVariable) ->
+        match bindings.TryGetValue sparqlVariable with
+        | true, binder ->
+            binder |> valueBinderToExpressionSet typeIndexer
+        | false, _ ->
+            ExpressionSet.empty
+
+    | BinaryArithmeticExpression(operator, left, right) ->
+        let leftProc = left |> processSparqlExpression typeIndexer bindings
+        let rightProc = right |> processSparqlExpression typeIndexer bindings
+        let possibleNumericTypes =
+            typeIndexer.IndexedTypes
+            |> List.filter (fun x -> x.Category = TypeIndexer.TypeCategory.NumericLiteral)
+
+        let isNotError =
+            [
+                leftProc.IsNotErrorCondition
+                rightProc.IsNotErrorCondition
+                leftProc |> isExpressionSetInCategory TypeIndexer.TypeCategory.NumericLiteral
+                rightProc |> isExpressionSetInCategory TypeIndexer.TypeCategory.NumericLiteral
+            ]
+            |> Conjunction
+            |> optimizeRelationalCondition
+
+        let typeExpression =
+            possibleNumericTypes
+            |> List.collect (
+                fun leftType ->
+                    possibleNumericTypes
+                    |> List.map (
+                        fun rightType ->
+                            let finalType =
+                                match leftType.NodeType, rightType.NodeType with
+                                | LiteralNodeType lt, LiteralNodeType rt ->
+                                    if lt = KnownTypes.xsdDouble || rt = KnownTypes.xsdDouble then
+                                        KnownTypes.xsdDouble
+                                    elif lt = KnownTypes.xsdDecimal || rt = KnownTypes.xsdDecimal then
+                                        KnownTypes.xsdDecimal
+                                    elif lt = KnownTypes.xsdInteger && rt = KnownTypes.xsdInteger then
+                                        KnownTypes.xsdInteger
+                                    else
+                                        sprintf "Unsupported numeric types for arithmetic expression: %A; %A" lt rt
+                                        |> invalidOp
+                                | _ ->
+                                    sprintf "Unsupported non-literal types for arithmetic expression: %A; %A" leftType.NodeType rightType.NodeType
+                                    |> invalidOp
+                                |> LiteralNodeType
+                                |> typeIndexer.FromType
+
+                            (finalType, (leftType, rightType))
+                    )
+            )
+            |> List.groupBy fst
+            |> List.map (
+                fun (finalType, combs) ->
+                    combs
+                    |> List.map snd
+                    |> List.distinct
+                    |> fun x -> finalType, x
+            )
+            |> List.map (
+                fun (finalType, combs) ->
+                    let condition =
+                        combs
+                        |> List.map (
+                            fun (leftType, rightType) ->
+                                [
+                                    Comparison(Comparisons.EqualTo, leftProc.TypeExpression, leftType.Index |> Int |> Constant) |> optimizeRelationalCondition
+                                    Comparison(Comparisons.EqualTo, rightProc.TypeExpression, rightType.Index |> Int |> Constant) |> optimizeRelationalCondition
+                                ]
+                                |> Conjunction
+                                |> optimizeRelationalCondition
+                        )
+                        |> Disjunction
+                        |> optimizeRelationalCondition
+
+                    { Condition = condition; Expression = finalType.Index |> Int |> Constant }
+            )
+            |> Switch
+            |> optimizeRelationalExpression
+
+        { ExpressionSet.empty with
+            IsNotErrorCondition = isNotError
+            TypeCategoryExpression = TypeIndexer.TypeCategory.NumericLiteral |> int |> Int |> Constant
+            TypeExpression = typeExpression
+            NumericExpression = BinaryNumericOperation(operator, leftProc.NumericExpression, rightProc.NumericExpression)
+        }
+
+    | LangExpression(inner) ->
+        let procInner = inner |> processSparqlExpression typeIndexer bindings
+
+        { ExpressionSet.empty with
+            IsNotErrorCondition = procInner.IsNotErrorCondition
+            TypeCategoryExpression = TypeIndexer.TypeCategory.SimpleLiteral |> int |> Int |> Constant |> optimizeRelationalExpression
+            TypeExpression = DefaultType |> LiteralNodeType |> typeIndexer.FromType |> fun x -> x.Index |> Int |> Constant |> optimizeRelationalExpression
+            StringExpression =
+                typeIndexer.IndexedTypes
+                |> List.map (
+                    fun indexedType ->
+                        let condition =
+                            Comparison(Comparisons.EqualTo, procInner.TypeExpression, indexedType.Index |> Int |> Constant)
+                            |> optimizeRelationalCondition
+
+                        let lang =
+                            match indexedType.NodeType with
+                            | LiteralNodeType(WithLanguage(l)) -> l
+                            | _ -> String.Empty
+                            |> String
+                            |> Constant
+                            |> optimizeRelationalExpression
+
+                        { Condition = condition; Expression = lang }
+                )
+                |> Switch
+                |> optimizeRelationalExpression
+        }
 
 and private processSparqlCondition (typeIndexer: TypeIndexer) (bindings: Map<SparqlVariable, ValueBinder>) (condition: SparqlCondition) =
     (fun (isNonError, condition) ->

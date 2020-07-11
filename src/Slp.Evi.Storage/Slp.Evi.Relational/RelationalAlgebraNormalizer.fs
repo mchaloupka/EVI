@@ -9,6 +9,7 @@ let normalizeRelationalExpression expression =
     | Constant _
     | Variable _
     | IriSafeVariable _
+    | Boolean _
     | BinaryNumericOperation _ ->
         expression
 

@@ -74,3 +74,5 @@ type TypeIndexer () =
 
     member _.FromType nodeType = getTypeRecord nodeType
     member _.FromIndex index = getFromIndex index
+    member _.IndexedTypes with get () =
+        indexedRecords.Values |> Seq.toList

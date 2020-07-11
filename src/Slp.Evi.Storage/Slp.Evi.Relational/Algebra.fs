@@ -53,6 +53,7 @@ and Expression =
     | IriSafeVariable of Variable
     | Constant of Literal
     | Concatenation of Expression list
+    | Boolean of Condition
     | Null
 
 type ExpressionSet = {

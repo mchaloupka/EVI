@@ -33,7 +33,7 @@ let rec optimizeRelationalCondition condition =
         | None ->
             Comparison(Comparisons.EqualTo, leftConcat |> Concatenation, rightConcat |> Concatenation)
 
-    match condition with
+    match condition |> normalizeRelationalCondition with
     | Comparison(Comparisons.EqualTo, Concatenation(left), Concatenation(right)) ->
         optimizeConcatenationsEquality left right
     | Comparison(Comparisons.EqualTo, Concatenation(left), (Constant(_) as right)) ->
@@ -41,7 +41,7 @@ let rec optimizeRelationalCondition condition =
     | Comparison(Comparisons.EqualTo, (Constant(_) as left), Concatenation(right)) ->
         optimizeConcatenationsEquality [ left ] right
     | Comparison(Comparisons.EqualTo, IriSafeVariable(left), IriSafeVariable(right)) ->
-        Comparison(Comparisons.EqualTo, Variable left, Variable right)
+        Comparison(Comparisons.EqualTo, Variable left, Variable right) |> optimizeRelationalCondition
     | Comparison(Comparisons.EqualTo, Constant(constX), Constant(constY)) ->
         match constX, constY with
         | Int x, Int y ->
@@ -54,6 +54,8 @@ let rec optimizeRelationalCondition condition =
             condition
     | IsNull(Column(col)) when col.Schema.SqlType.IsNullable |> not ->
         AlwaysFalse
+    | EqualVariables(x, y) when x = y ->
+        AlwaysTrue
     | _ ->
         condition
     |> normalizeRelationalCondition
