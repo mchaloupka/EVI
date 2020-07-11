@@ -165,7 +165,6 @@ let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinde
 
     | ExpressionValueBinder expressionSet -> expressionSet
 
-
 let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
     match node with
     | IriNode iriNode ->
@@ -213,14 +212,20 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
                 StringExpression = expression
             }
 
-let private expressionSetValuesEqualCondition left right =
-    let isTypeEqual =
-        Comparison(Comparisons.EqualTo, left.TypeExpression, right.TypeExpression)
-        |> optimizeRelationalCondition
+let private isExpressionSetInCategory (category: TypeIndexer.TypeCategory) exprSet =
+    Comparison(Comparisons.EqualTo, exprSet.TypeCategoryExpression, category |> int |> Int |> Constant)
+    |> optimizeRelationalCondition
 
+let private isExpressionSetInOneOfCategories (categories: TypeIndexer.TypeCategory list) exprSet =
+    categories
+    |> List.map (fun x -> isExpressionSetInCategory x exprSet)
+    |> List.map optimizeRelationalCondition
+    |> Disjunction
+    |> optimizeRelationalCondition
+
+let private expressionSetValueUncheckedComparison comparison left right =
     let notIsValueInCategory category =
-        Comparison(Comparisons.EqualTo, left.TypeCategoryExpression, category |> int |> Int |> Constant)
-        |> optimizeRelationalCondition
+        isExpressionSetInCategory category left
         |> Not
         |> optimizeRelationalCondition
 
@@ -229,12 +234,13 @@ let private expressionSetValuesEqualCondition left right =
     let notIsValueDateTime = notIsValueInCategory TypeIndexer.TypeCategory.DateTimeLiteral
     let notIsValueString =
         [
-            notIsValueInCategory TypeIndexer.TypeCategory.BlankNode
-            notIsValueInCategory TypeIndexer.TypeCategory.Iri
-            notIsValueInCategory TypeIndexer.TypeCategory.StringLiteral
-            notIsValueInCategory TypeIndexer.TypeCategory.SimpleLiteral
-            notIsValueInCategory TypeIndexer.TypeCategory.OtherLiteral
+            TypeIndexer.TypeCategory.BlankNode
+            TypeIndexer.TypeCategory.Iri
+            TypeIndexer.TypeCategory.StringLiteral
+            TypeIndexer.TypeCategory.SimpleLiteral
+            TypeIndexer.TypeCategory.OtherLiteral
         ]
+        |> List.map notIsValueInCategory
         |> Conjunction |> optimizeRelationalCondition
 
     let expressionEqual selector =
@@ -242,11 +248,20 @@ let private expressionSetValuesEqualCondition left right =
         |> optimizeRelationalCondition
 
     [
-        isTypeEqual
-        [ notIsValueString; expressionEqual (fun x -> x.StringExpression) ] |> Disjunction |> optimizeRelationalCondition
-        [ notIsValueNumeric; expressionEqual (fun x -> x.NumericExpression) ] |> Disjunction |> optimizeRelationalCondition
-        [ notIsValueBoolean; expressionEqual (fun x -> x.BooleanExpression) ] |> Disjunction |> optimizeRelationalCondition
-        [ notIsValueDateTime; expressionEqual (fun x -> x.DateTimeExpresion) ] |> Disjunction |> optimizeRelationalCondition
+        Comparison(Comparisons.EqualTo, left.TypeCategoryExpression, right.TypeCategoryExpression)
+        [ notIsValueString; expressionEqual (fun x -> x.StringExpression) ] |> Disjunction
+        [ notIsValueNumeric; expressionEqual (fun x -> x.NumericExpression) ] |> Disjunction
+        [ notIsValueBoolean; expressionEqual (fun x -> x.BooleanExpression) ] |> Disjunction
+        [ notIsValueDateTime; expressionEqual (fun x -> x.DateTimeExpresion) ] |> Disjunction
+    ]
+    |> List.map optimizeRelationalCondition
+    |> Conjunction
+    |> optimizeRelationalCondition
+
+let private expressionSetValuesEqualCondition left right =
+    [
+        Comparison(Comparisons.EqualTo, left.TypeExpression, right.TypeExpression) |> optimizeRelationalCondition
+        expressionSetValueUncheckedComparison Comparisons.EqualTo left right
     ]
     |> Conjunction
     |> optimizeRelationalCondition
@@ -258,6 +273,121 @@ let private valueBinderValueEqualToNodeCondition typeIndexer valueBinder node =
 let private valueBindersEqualValueCondition typeIndexer valueBinder otherValueBinder =
     (valueBinder |> valueBinderToExpressionSet typeIndexer, otherValueBinder |> valueBinderToExpressionSet typeIndexer)
     ||> expressionSetValuesEqualCondition
+
+let rec private processSparqlExpression (typeIndexer: TypeIndexer) (bindings: Map<SparqlVariable, ValueBinder>) (expression: SparqlExpression): ExpressionSet =
+    invalidOp "Not yet implemented"
+
+and private processSparqlCondition (typeIndexer: TypeIndexer) (bindings: Map<SparqlVariable, ValueBinder>) (condition: SparqlCondition) =
+    (fun (isNonError, condition) ->
+        isNonError |> optimizeRelationalCondition, condition |> optimizeRelationalCondition
+    ) <|
+    match condition with
+    | AlwaysFalseCondition ->
+        AlwaysTrue, AlwaysFalse
+
+    | AlwaysTrueCondition ->
+        AlwaysTrue, AlwaysTrue
+
+    | ConjunctionCondition inners ->
+        let (isNonErrors, conditions) =
+            inners
+            |> List.map (processSparqlCondition typeIndexer bindings)
+            |> List.unzip
+        isNonErrors |> Conjunction, conditions |> Conjunction
+
+    | DisjunctionCondition inners ->
+        let (isNonErrors, conditions) =
+            inners
+            |> List.map (processSparqlCondition typeIndexer bindings)
+            |> List.unzip
+        isNonErrors |> Conjunction, conditions |> Disjunction
+
+    | IsBoundCondition variable ->
+        match bindings.TryGetValue variable with
+        | true, valueBinder ->
+            AlwaysTrue, valueBinder |> valueBinderToExpressionSet typeIndexer |> fun x -> x.IsNotErrorCondition
+        | false, _ ->
+            AlwaysTrue, AlwaysFalse
+
+    | NegationCondition inner ->
+        inner
+        |> processSparqlCondition typeIndexer bindings
+        |> fun (isNonError, condition) -> isNonError, condition |> Not
+
+    | ComparisonCondition(comp, left, right) ->
+        let procLeft = left |> processSparqlExpression typeIndexer bindings
+        let procRight = right |> processSparqlExpression typeIndexer bindings
+
+        let isNonTypeError =
+            match comp with
+            | Comparisons.EqualTo -> List.empty
+            | _ ->
+                [
+                    Comparison(Comparisons.EqualTo, procLeft.TypeCategoryExpression, procRight.TypeCategoryExpression) |> optimizeRelationalCondition
+                    [
+                        TypeIndexer.TypeCategory.SimpleLiteral
+                        TypeIndexer.TypeCategory.StringLiteral
+                        TypeIndexer.TypeCategory.BooleanLiteral
+                        TypeIndexer.TypeCategory.DateTimeLiteral
+                        TypeIndexer.TypeCategory.NumericLiteral
+                    ] |> isExpressionSetInOneOfCategories <| procLeft
+                ]
+
+        let isNonError =
+            procLeft.IsNotErrorCondition :: procRight.IsNotErrorCondition :: isNonTypeError
+            |> Conjunction
+
+        let exactTypeEquality =
+            match comp with
+            | Comparisons.EqualTo ->
+                [
+                    Comparison(Comparisons.EqualTo, procLeft.TypeExpression, procRight.TypeExpression) |> optimizeRelationalCondition
+                    expressionSetValuesEqualCondition procLeft procRight
+                ]
+                |> Conjunction
+                |> optimizeRelationalCondition
+                |> List.singleton
+            | _ -> List.empty
+
+        let nonExactTypeEquality =
+            expressionSetValueUncheckedComparison comp procLeft procRight
+
+        isNonError, nonExactTypeEquality :: exactTypeEquality |> Disjunction |> optimizeRelationalCondition
+
+    | LanguageMatchesCondition langMatch ->
+        let langExprSet = langMatch.Language |> processSparqlExpression typeIndexer bindings
+        let langRangeExprSet = langMatch.LanguageRange |> processSparqlExpression typeIndexer bindings
+        [
+            langExprSet.IsNotErrorCondition
+            langRangeExprSet.IsNotErrorCondition
+            langExprSet |> isExpressionSetInCategory TypeIndexer.TypeCategory.SimpleLiteral
+            langRangeExprSet |> isExpressionSetInCategory TypeIndexer.TypeCategory.SimpleLiteral
+        ]
+        |> Conjunction, LanguageMatch(langExprSet.StringExpression, langRangeExprSet.StringExpression)
+
+    | RegexCondition regex ->
+        if regex.Flags.IsSome then "Regex flags are not yet implemented" |> NotImplementedException |> raise
+        else
+            let (pattern, producesError) =
+                match regex.Pattern with
+                | NodeExpression(LiteralNode({ Value = value; ValueType = DefaultType})) ->
+                    value, false
+                | NodeExpression(LiteralNode({ Value = value; ValueType = _})) ->
+                    value, true
+                | _ ->
+                    sprintf "The following regex pattern is not supported: %A" regex.Pattern
+                    |> invalidOp
+
+            let processedExpression = regex.Expression |> processSparqlExpression typeIndexer bindings
+
+            [
+                processedExpression.IsNotErrorCondition
+                [
+                   processedExpression |> isExpressionSetInCategory TypeIndexer.TypeCategory.StringLiteral
+                   processedExpression |> isExpressionSetInCategory TypeIndexer.TypeCategory.SimpleLiteral
+                ] |> Disjunction |> optimizeRelationalCondition
+                if producesError then AlwaysFalse else AlwaysTrue
+            ] |> Conjunction, Like(processedExpression.StringExpression, pattern)
 
 let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns: RestrictedPatternMatch list) =
     let findIds (subjectMap: IriMapping) =
@@ -378,7 +508,6 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
                     Filters = filters
                 } |> NotModified |> optimizeCalculusModel
                 Bindings = valueBindings
-                AlwaysBoundVariables = valueBindings |> Map.toList |> List.map fst
             }
         | current :: xs ->
             implPatternSubject sqlSources filters valueBindings current xs
@@ -421,20 +550,37 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
 
     implPatternList Map.empty [] Map.empty patterns
 
-let private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
+let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
+    let rec applyOnNotModifiedModel (applyFunction: NotModifiedCalculusModel -> NotModifiedCalculusModel) (model: CalculusModel) =
+        optimizeCalculusModel <|
+        match model with
+        | NoResult ->
+            NoResult
+        | SingleEmptyResult ->
+            { Sources = SubQuery SingleEmptyResult |> List.singleton; Assignments = List.empty; Filters = List.empty }
+            |> NotModified
+            |> applyOnNotModifiedModel applyFunction
+        | Modified modified ->
+            { modified with
+                InnerModel = modified.InnerModel |> applyOnNotModifiedModel applyFunction
+            }
+            |> Modified
+        | NotModified notModified ->
+            notModified
+            |> applyFunction
+            |> NotModified
+
     optimizeBoundCalculusModel <|
     match sparqlPattern with
     | EmptyPattern -> 
         {
             Model = SingleEmptyResult
             Bindings = Map.empty
-            AlwaysBoundVariables = List.empty
         }
     | NotMatchingPattern ->
         {
             Model = NoResult
             Bindings = Map.empty
-            AlwaysBoundVariables = List.empty
         }
     | NotProcessedTriplePatterns _ ->
         "Encountered NotProcessedTriplePatterns in RelationalAlgebraBuilder"
@@ -442,6 +588,19 @@ let private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: Spar
     | RestrictedTriplePatterns restrictedPatterns ->
         restrictedPatterns
         |> processRestrictedTriplePattern typeIndexer
+    | FilterPattern(inner, condition) ->
+        let processedInner = inner |> processSparqlPattern typeIndexer
+        let (conditionNonError, conditionTrue) = condition |> processSparqlCondition typeIndexer processedInner.Bindings
+        { processedInner with
+            Model =
+                processedInner.Model
+                |> applyOnNotModifiedModel (
+                    fun innerModel ->
+                        { innerModel with
+                            Filters = conditionNonError :: conditionTrue :: innerModel.Filters
+                        }
+                )
+        }
     | _ ->
         sprintf "Ended with %A" sparqlPattern
         |> invalidOp

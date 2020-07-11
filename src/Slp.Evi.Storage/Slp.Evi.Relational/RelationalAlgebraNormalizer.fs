@@ -95,14 +95,9 @@ let normalizeRelationalCondition condition =
         x
     | Comparison(EqualTo, Variable x, Variable y) ->
         EqualVariables(x, y)
-    | Comparison(NotEqualTo, Variable x, Variable y) ->
-        EqualVariables(x, y) |> Not
     | Comparison(EqualTo, Variable x, Constant y)
     | Comparison(EqualTo, Constant y, Variable x) ->
         EqualVariableTo(x, y)
-    | Comparison(NotEqualTo, Variable x, Constant y)
-    | Comparison(NotEqualTo, Constant y, Variable x) ->
-        EqualVariableTo(x, y) |> Not
     | AlwaysFalse
     | AlwaysTrue
     | Comparison _

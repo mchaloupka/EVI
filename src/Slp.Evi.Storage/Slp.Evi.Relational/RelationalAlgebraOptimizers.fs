@@ -40,6 +40,8 @@ let rec optimizeRelationalCondition condition =
         optimizeConcatenationsEquality left [ right ]
     | Comparison(Comparisons.EqualTo, (Constant(_) as left), Concatenation(right)) ->
         optimizeConcatenationsEquality [ left ] right
+    | Comparison(Comparisons.EqualTo, IriSafeVariable(left), IriSafeVariable(right)) ->
+        Comparison(Comparisons.EqualTo, Variable left, Variable right)
     | Comparison(Comparisons.EqualTo, Constant(constX), Constant(constY)) ->
         match constX, constY with
         | Int x, Int y ->
