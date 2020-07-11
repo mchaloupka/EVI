@@ -62,10 +62,11 @@ let normalizeRelationalCondition condition =
         (conditions, List.empty)
         ||> List.foldBack (
             fun current rest ->
-                match current with
-                | AlwaysTrue -> rest
-                | AlwaysFalse -> AlwaysFalse |> List.singleton
-                | Conjunction(inner) -> inner @ rest
+                match current, rest with
+                | _, [ AlwaysFalse ] -> rest
+                | AlwaysTrue, _ -> rest
+                | AlwaysFalse, _ -> AlwaysFalse |> List.singleton
+                | Conjunction(inner), _ -> inner @ rest
                 | _ -> current :: rest
         )
         |> function
@@ -77,10 +78,11 @@ let normalizeRelationalCondition condition =
         (conditions, List.empty)
         ||> List.foldBack (
             fun current rest ->
-                match current with
-                | AlwaysFalse -> rest
-                | AlwaysTrue -> AlwaysTrue |> List.singleton
-                | Disjunction(inner) -> inner @ rest
+                match current, rest with
+                | _, [ AlwaysTrue ] -> rest
+                | AlwaysFalse, _ -> rest
+                | AlwaysTrue, _ -> AlwaysTrue |> List.singleton
+                | Disjunction(inner), _ -> inner @ rest
                 | _ -> current :: rest
         )
         |> function
@@ -114,20 +116,54 @@ let normalizeRelationalCondition condition =
 let normalizeCalculusModel model =
     match model with
     | NotModified notModified ->
-        notModified.Filters
-        |> Conjunction
-        |> normalizeRelationalCondition
+        let updatedFilters =
+            notModified.Filters
+            |> Conjunction
+            |> normalizeRelationalCondition
+            |> function
+            | AlwaysFalse ->
+                AlwaysFalse |> List.singleton
+            | Conjunction(filters) ->
+                filters
+            | x ->
+                x |> List.singleton
+
+        (notModified.Sources, List.empty)
+        ||> List.foldBack (
+            fun toAdd current ->
+                match toAdd, current with
+                | _, [ SubQuery NoResult ] -> current
+                | SubQuery SingleEmptyResult, _ -> current
+                | SubQuery NoResult, _ -> toAdd |> List.singleton
+                | _, _ -> toAdd :: current
+        )
+        |> fun x -> x, updatedFilters, notModified.Assignments
         |> function
-        | AlwaysFalse ->
+        | [ SubQuery NoResult ], _, _
+        | _, AlwaysFalse :: _, _ ->
             NoResult
-        | Conjunction(filters) ->
-            { notModified with Filters = filters } |> NotModified
-        | x ->
-            { notModified with Filters = x |> List.singleton } |> NotModified
+        | [ SubQuery SingleEmptyResult ], [ AlwaysTrue ], [] ->
+            SingleEmptyResult
+        | sources, filters, assignments ->
+            { Sources = sources; Filters = filters; Assignments = assignments }
+            |> NotModified
     | Modified _ ->
         model
     | NoResult -> NoResult
     | SingleEmptyResult -> SingleEmptyResult
+    | Union (variable, unioned) ->
+        unioned
+        |> List.filter (
+            function
+            | { Sources = [ SubQuery NoResult ]; Assignments = _; Filters = _ } ->
+                false
+            | _ ->
+                true
+        )
+        |> function
+        | [] -> NoResult
+        | x :: [] -> x |> NotModified
+        | xs -> Union(variable, xs)
 
 let normalizeBoundCalculusModel model =
     model

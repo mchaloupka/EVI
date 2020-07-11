@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="DatabaseSchemaReader" Version="2.7.2" />
+    <PackageReference Include="FSharpx.Collections" Version="2.1.3" />
   </ItemGroup>
 
   <ItemGroup>

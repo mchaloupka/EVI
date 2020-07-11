@@ -1,6 +1,7 @@
 ﻿module Slp.Evi.Relational.RelationalAlgebraBuilder
 
 open System
+open FSharpx.Collections
 
 open Slp.Evi.Common
 open Slp.Evi.Common.Types
@@ -678,25 +679,71 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
 
     implPatternList Map.empty [] Map.empty patterns
 
+let private processJoin (typeIndexer: TypeIndexer) (left: BoundCalculusModel) (right: BoundCalculusModel) =
+    let leftValueBinders = left.Bindings
+    let rightValueBinders = right.Bindings
+    let leftVariables = leftValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+    let rightVariables = rightValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+    let sharedVariables =
+        Set.intersect leftVariables rightVariables
+    let onlyLeftVariables = Set.difference leftVariables sharedVariables
+    let onlyRightVariables = Set.difference rightVariables sharedVariables
+
+    let joinConditions =
+        sharedVariables
+        |> Set.toList
+        |> List.map (
+            fun variable ->
+                let leftBinder = leftValueBinders.[variable] |> valueBinderToExpressionSet typeIndexer
+                let rightBinder = rightValueBinders.[variable] |> valueBinderToExpressionSet typeIndexer
+
+                [
+                    leftBinder.IsNotErrorCondition |> Not |> optimizeRelationalCondition
+                    rightBinder.IsNotErrorCondition |> Not |> optimizeRelationalCondition
+                    expressionSetValuesEqualCondition leftBinder rightBinder
+                ]
+                |> Disjunction
+                |> optimizeRelationalCondition
+        )
+
+    let oneSideValueBinders variables binders =
+        binders
+        |> Map.filter (fun v _ -> variables |> Set.contains v)
+
+    let sharedValueBinders =
+        sharedVariables
+        |> Set.toSeq
+        |> Seq.map (
+            fun v ->
+                v,
+                [
+                    leftValueBinders.[v]
+                    rightValueBinders.[v]
+                ] |> CoalesceValueBinder
+        )
+        |> Map.ofSeq
+
+    let valueBinders =
+        oneSideValueBinders onlyLeftVariables leftValueBinders
+        |> Map.union (oneSideValueBinders onlyRightVariables rightValueBinders)
+        |> Map.union sharedValueBinders
+
+    valueBinders, joinConditions
+
 let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
-    let rec applyOnNotModifiedModel (applyFunction: NotModifiedCalculusModel -> NotModifiedCalculusModel) (model: CalculusModel) =
-        optimizeCalculusModel <|
+    let getNotModifiedModel model =
         match model with
-        | NoResult ->
-            NoResult
-        | SingleEmptyResult ->
-            { Sources = SubQuery SingleEmptyResult |> List.singleton; Assignments = List.empty; Filters = List.empty }
-            |> NotModified
-            |> applyOnNotModifiedModel applyFunction
-        | Modified modified ->
-            { modified with
-                InnerModel = modified.InnerModel |> applyOnNotModifiedModel applyFunction
-            }
-            |> Modified
         | NotModified notModified ->
             notModified
-            |> applyFunction
-            |> NotModified
+        | _ ->
+            { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
+
+    let rec applyOnNotModifiedModel applyFunction model =
+        model
+        |> getNotModifiedModel
+        |> applyFunction
+        |> NotModified
+        |> optimizeCalculusModel
 
     optimizeBoundCalculusModel <|
     match sparqlPattern with
@@ -705,17 +752,21 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
             Model = SingleEmptyResult
             Bindings = Map.empty
         }
+
     | NotMatchingPattern ->
         {
             Model = NoResult
             Bindings = Map.empty
         }
+
     | NotProcessedTriplePatterns _ ->
         "Encountered NotProcessedTriplePatterns in RelationalAlgebraBuilder"
         |> invalidArg "sparqlPattern"
+
     | RestrictedTriplePatterns restrictedPatterns ->
         restrictedPatterns
         |> processRestrictedTriplePattern typeIndexer
+
     | FilterPattern(inner, condition) ->
         let processedInner = inner |> processSparqlPattern typeIndexer
         let (conditionNonError, conditionTrue) = condition |> processSparqlCondition typeIndexer processedInner.Bindings
@@ -729,9 +780,109 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
                         }
                 )
         }
-    | _ ->
-        sprintf "Ended with %A" sparqlPattern
-        |> invalidOp
+
+    | ExtendPattern(inner, extensions) ->
+        let processedInner = inner |> processSparqlPattern typeIndexer
+
+        { processedInner with
+            Bindings =
+                (processedInner.Bindings, extensions)
+                ||> List.fold (
+                    fun bindings (variable, expression) ->
+                        match bindings.TryGetValue variable with
+                        | true, _ ->
+                            sprintf "Tried to extend graph with a variable that is already present: %A" variable
+                            |> invalidOp
+                        | false, _ ->
+                            let expressionSet = processSparqlExpression typeIndexer bindings expression
+                            bindings |> Map.add variable (expressionSet |> ExpressionValueBinder)
+                )
+        }
+
+    | JoinPattern inners ->
+        inners
+        |> List.map (processSparqlPattern typeIndexer)
+        |> List.reduce (
+            fun left right ->
+                let (valueBinders, joinConditions) = processJoin typeIndexer left right
+
+                let leftModel = left.Model |> getNotModifiedModel
+                let rightModel = right.Model |> getNotModifiedModel
+
+                {
+                    Model =
+                        {
+                            Sources = leftModel.Sources @ rightModel.Sources
+                            Assignments = leftModel.Assignments @ rightModel.Assignments
+                            Filters = leftModel.Filters @ rightModel.Filters @ joinConditions
+                        }
+                        |> NotModified
+                        |> optimizeCalculusModel
+                    Bindings = valueBinders
+                }
+        )
+
+    | LeftJoinPattern(left, right, condition) ->
+        let leftProc = left |> processSparqlPattern typeIndexer
+        let rightProc = right |> processSparqlPattern typeIndexer
+        let (valueBinders, joinConditions) = processJoin typeIndexer leftProc rightProc
+        let conditionProc =
+            condition
+            |> processSparqlCondition typeIndexer valueBinders
+            |> fun (x, y) -> [x; y]
+            |> Conjunction
+            |> optimizeRelationalCondition
+
+        let leftModel = leftProc.Model |> getNotModifiedModel
+        let rightModel = rightProc.Model |> getNotModifiedModel
+
+        {
+            Model =
+                { leftModel with
+                    Sources =
+                        LeftOuterJoinModel(
+                            rightModel,
+                            conditionProc :: joinConditions
+                            |> Conjunction
+                            |> optimizeRelationalCondition
+                        ) :: leftModel.Sources
+                }
+                |> NotModified
+                |> optimizeCalculusModel
+            Bindings = valueBinders
+        }
+
+    | UnionPattern unioned ->
+        let switchVariable = AssignedVariable()
+        let (models, valueBindersCases) =
+            unioned
+            |> List.map (processSparqlPattern typeIndexer)
+            |> List.mapi (
+                fun i proc ->
+                    let procModel = proc.Model |> getNotModifiedModel
+                    { procModel with
+                        Assignments = { Variable = switchVariable; Expression = i |> Int |> Constant } :: procModel.Assignments
+                    }, proc.Bindings |> Map.toList |> List.map (fun (v, vb) -> v, (i, vb))
+            )
+            |> List.unzip
+
+        {
+            Model = (switchVariable, models) |> Union |> optimizeCalculusModel
+            Bindings =
+                valueBindersCases
+                |> List.concat
+                |> List.groupBy fst
+                |> List.map (
+                    fun (variable, binderCases) ->
+                        let vb =
+                            binderCases
+                            |> List.map snd
+                            |> Map.ofList
+                            |> fun x -> CaseValueBinder(switchVariable |> Assigned, x)
+                        variable, vb
+                )
+                |> Map.ofList
+        }
 
 let private applyModifiers (modifiers: Modifier list) (inner: BoundCalculusModel) =
     sprintf "Ended with %A with modifiers to add %A" inner modifiers

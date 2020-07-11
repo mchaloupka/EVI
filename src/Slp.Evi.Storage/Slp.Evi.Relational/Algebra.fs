@@ -23,8 +23,7 @@ type Literal =
     | Int of int
     | Double of double
 
-type AssignedVariable(dataType: DataType) =
-    member _.DataType = dataType
+type AssignedVariable() = class end
 
 type Variable =
     | Assigned of AssignedVariable
@@ -85,7 +84,6 @@ type Ordering = { Expression: Expression; Direction: OrderingDirection }
 type VariableSource =
     | Sql of SqlSource
     | SubQuery of CalculusModel
-    | UnionModel of Variable * NotModifiedCalculusModel list
     | LeftOuterJoinModel of NotModifiedCalculusModel * Condition
 
 and NotModifiedCalculusModel = { Sources: VariableSource list; Assignments: Assignment list; Filters: Condition list }
@@ -96,6 +94,7 @@ and CalculusModel =
     | NoResult
     | SingleEmptyResult
     | Modified of ModifiedCalculusModel
+    | Union of AssignedVariable * NotModifiedCalculusModel list
     | NotModified of NotModifiedCalculusModel
 
 type ValueBinder =
