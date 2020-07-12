@@ -149,7 +149,7 @@ let addModifier (modifier: Modifier) (query: SparqlQuery) =
         List.append query.Modifiers [modifier]
         |> normalizeModifiers
 
-    { query with Modifiers=newModifiers }
+    { query with Modifiers = newModifiers }
 
 let rec private processSparqlQuery (vdsAlgebra: Query.Algebra.ISparqlAlgebra): SparqlQuery =
     match vdsAlgebra with

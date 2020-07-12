@@ -884,11 +884,126 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
                 |> Map.ofList
         }
 
-let private applyModifiers (modifiers: Modifier list) (inner: BoundCalculusModel) =
-    sprintf "Ended with %A with modifiers to add %A" inner modifiers
-    |> invalidOp
+let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list) (inner: BoundCalculusModel) =
+    (inner, modifiers)
+    ||> List.fold (
+        fun procInner modifier ->
+            let rec updateModified apply model =
+                match model with
+                | NoResult ->
+                    NoResult
+
+                | Modified m ->
+                    m
+                    |> apply
+                    |> optimizeCalculusModel
+
+                | NotModified nm ->
+                    {
+                        InnerModel = nm |> NotModified
+                        Ordering = List.empty
+                        Limit = None
+                        Offset = None
+                        IsDistinct = false
+                    }
+                    |> Modified
+                    |> updateModified apply
+
+                | _ ->
+                    { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
+                    |> NotModified
+                    |> updateModified apply
+
+            optimizeBoundCalculusModel <|
+            match modifier with
+            | Select variables ->
+                { procInner with 
+                    Bindings =
+                        variables
+                        |> List.map (
+                            fun v ->
+                                match procInner.Bindings.TryGetValue v with
+                                | true, vb -> v, vb
+                                | false, _ -> v, EmptyValueBinder
+                        )
+                        |> Map.ofList
+                }
+
+            | Distinct ->
+                // It is needed to align all value binders
+                "DISTINCT modifier is not yet implemented" |> NotImplementedException |> raise
+
+            | OrderBy orderingParts ->
+                (orderingParts, procInner)
+                ||> List.foldBack (
+                    fun orderingPart current ->
+                        let vb =
+                            match current.Bindings.TryGetValue orderingPart.Variable with
+                            | true, x -> x
+                            | false, _ -> EmptyValueBinder
+                        let es =
+                            vb |> valueBinderToExpressionSet typeIndexer
+
+                        let newOrdering =
+                            [
+                                es.IsNotErrorCondition |> Boolean
+                                es.TypeCategoryExpression
+                                es.BooleanExpression
+                                es.NumericExpression
+                                es.DateTimeExpresion
+                                es.StringExpression
+                            ]
+                            |> List.map (
+                                fun expr ->
+                                    { Expression = expr; Direction = orderingPart.Direction }
+                            )
+
+                        { procInner with
+                            Model =
+                                procInner.Model
+                                |> updateModified (
+                                    fun x ->
+                                        { x with Ordering = newOrdering @ x.Ordering }
+                                        |> Modified
+                                )
+                        }
+                )
+
+            | Slice slice ->
+                { procInner with 
+                    Model =
+                        procInner.Model
+                        |> updateModified (
+                            fun x ->
+                                { x with
+                                    Limit =
+                                        slice.Limit
+                                        |> Option.bind (
+                                            fun limit ->
+                                                x.Limit
+                                                |> Option.map (
+                                                    fun innerLimit ->
+                                                        Math.Min(limit, innerLimit - (slice.Offset |> Option.defaultValue 0))
+                                                )
+                                                |> Option.orElse slice.Limit
+                                        )
+                                        |> Option.orElse x.Limit
+                                    Offset =
+                                        slice.Offset
+                                        |> Option.bind (
+                                            fun offset ->
+                                                x.Offset
+                                                |> Option.map (fun innerOffset -> offset + innerOffset)
+                                                |> Option.orElse slice.Offset
+                                        )
+                                        |> Option.orElse x.Offset
+                                }
+                                |> Modified
+                        )
+                }
+    )
 
 let buildRelationalQuery (typeIndexer: TypeIndexer) (sparqlAlgebra: SparqlQuery) =
     sparqlAlgebra.Query
     |> processSparqlPattern typeIndexer
-    |> applyModifiers sparqlAlgebra.Modifiers
+    |> applyModifiers typeIndexer sparqlAlgebra.Modifiers
