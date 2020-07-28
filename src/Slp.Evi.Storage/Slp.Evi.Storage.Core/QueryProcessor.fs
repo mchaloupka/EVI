@@ -5,10 +5,10 @@ open VDS.RDF
 open VDS.RDF.Parsing
 open Slp.Evi
 open TCode.r2rml4net
-open Slp.Evi.Common.Database
 open Slp.Evi.Relational
+open Slp.Evi.Database
 
-type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list) =
+type QueryProcessor<'T, 'C> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list) =
     let mappingProcessor = Sparql.R2RMLMappingProcessor(bgpMappings)
 
     let generateSqlAlgebra (query: Query.SparqlQuery) =
@@ -24,7 +24,7 @@ type QueryProcessor private (bgpMappings: Sparql.Algebra.BasicGraphPatternMappin
 
         raise (NotImplementedException(sprintf "Has not been further implemented, last part ended up with %A" sqlAlgebra))
 
-    new (mapping: IR2RML, database: ISqlDatabase) =
+    new (mapping: IR2RML, database: ISqlDatabase<'T, 'C>) =
         let processedMapping = R2RML.Builder.createMappingRepresentation database.DatabaseSchema mapping
         let bgpMappings = Sparql.R2RMLMappingProcessor.generateBasicGraphPatternMapping processedMapping
         

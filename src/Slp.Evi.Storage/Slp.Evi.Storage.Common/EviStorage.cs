@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slp.Evi.Common.Database;
+using Slp.Evi.Database;
 using Slp.Evi.Storage.Core;
 using TCode.r2rml4net;
 using VDS.RDF;
@@ -12,14 +13,14 @@ using VDS.RDF.Storage.Management;
 
 namespace Slp.Evi.Storage.Common
 {
-    public abstract class EviStorage
+    public abstract class EviStorage<TQuery, TQueryColumn>
         : IQueryableStorage
     {
-        private readonly QueryProcessor _queryProcessor;
+        private readonly QueryProcessor<TQuery, TQueryColumn> _queryProcessor;
 
-        protected EviStorage(IR2RML mapping, ISqlDatabase database)
+        protected EviStorage(IR2RML mapping, ISqlDatabase<TQuery, TQueryColumn> database)
         {
-            _queryProcessor = new QueryProcessor(mapping, database);
+            _queryProcessor = new QueryProcessor<TQuery, TQueryColumn>(mapping, database);
         }
 
         /// <inheritdoc />

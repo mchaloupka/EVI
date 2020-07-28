@@ -5,7 +5,7 @@ using TCode.r2rml4net;
 namespace Slp.Evi.Storage.MsSql
 {
     public sealed class MsSqlEviStorage
-        : EviStorage
+        : EviStorage<MsSqlQuery, string>
     {
         /// <inheritdoc />
         public MsSqlEviStorage(IR2RML mapping, string connectionString) 

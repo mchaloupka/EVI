@@ -23,8 +23,3 @@ type ISqlTableSchema =
 
 type ISqlDatabaseSchema =
     abstract member GetTable: tableName: string -> ISqlTableSchema
-
-type ISqlDatabase =
-    abstract member DatabaseSchema: ISqlDatabaseSchema with get
-
-    abstract member ExecuteQuery: query:string -> unit
