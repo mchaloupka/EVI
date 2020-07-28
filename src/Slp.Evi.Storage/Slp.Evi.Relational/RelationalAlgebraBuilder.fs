@@ -930,8 +930,24 @@ let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list)
                 }
 
             | Distinct ->
-                // It is needed to align all value binders
-                "DISTINCT modifier is not yet implemented" |> NotImplementedException |> raise
+                ((procInner.Model, Map.empty), procInner.Bindings)
+                ||> Map.fold (
+                    fun (current, prevBinders) var valueBinder ->
+                        match valueBinder with
+                        | BaseValueBinder _ ->
+                            current, prevBinders |> Map.add var valueBinder
+                        | _ ->
+                            sprintf "%A not yet supported for DISTINCT alignment" valueBinder
+                            |> NotImplementedException
+                            |> raise
+                )
+                |> fun (innerModel, bindings) ->
+                    {
+                        Model =
+                            innerModel
+                            |> updateModified (fun x -> { x with IsDistinct = true } |> Modified)
+                        Bindings = bindings
+                    }
 
             | OrderBy orderingParts ->
                 (orderingParts, procInner)
