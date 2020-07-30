@@ -28,12 +28,6 @@ namespace Slp.Evi.Storage.MsSql.Database
         }
 
         /// <inheritdoc />
-        public ISqlQueryBuilder<MsSqlQuery, string> CreateQueryBuilder()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
         public ISqlDatabaseSchema DatabaseSchema => _databaseSchema;
 
         private SqlConnection GetRawConnection()

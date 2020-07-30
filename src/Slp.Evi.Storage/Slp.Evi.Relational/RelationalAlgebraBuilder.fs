@@ -11,6 +11,7 @@ open Slp.Evi.Relational.Algebra
 open Slp.Evi.Relational.RelationalAlgebraOptimizers
 open Slp.Evi.R2RML.MappingTemplate
 open Slp.Evi.Common.Algebra
+open Slp.Evi.Common.Database
 
 let rec private isBaseValueBinderBoundCondition neededVars =
     if neededVars |> Map.isEmpty then
@@ -730,7 +731,7 @@ let private processJoin (typeIndexer: TypeIndexer) (left: BoundCalculusModel) (r
 
     valueBinders, joinConditions
 
-let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
+let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
     let getNotModifiedModel model =
         match model with
         | NotModified notModified ->
@@ -768,7 +769,7 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
         |> processRestrictedTriplePattern typeIndexer
 
     | FilterPattern(inner, condition) ->
-        let processedInner = inner |> processSparqlPattern typeIndexer
+        let processedInner = inner |> processSparqlPattern database typeIndexer
         let (conditionNonError, conditionTrue) = condition |> processSparqlCondition typeIndexer processedInner.Bindings
         { processedInner with
             Model =
@@ -782,7 +783,7 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
         }
 
     | ExtendPattern(inner, extensions) ->
-        let processedInner = inner |> processSparqlPattern typeIndexer
+        let processedInner = inner |> processSparqlPattern database typeIndexer
 
         { processedInner with
             Bindings =
@@ -801,7 +802,7 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
 
     | JoinPattern inners ->
         inners
-        |> List.map (processSparqlPattern typeIndexer)
+        |> List.map (processSparqlPattern database typeIndexer)
         |> List.reduce (
             fun left right ->
                 let (valueBinders, joinConditions) = processJoin typeIndexer left right
@@ -823,8 +824,8 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
         )
 
     | LeftJoinPattern(left, right, condition) ->
-        let leftProc = left |> processSparqlPattern typeIndexer
-        let rightProc = right |> processSparqlPattern typeIndexer
+        let leftProc = left |> processSparqlPattern database typeIndexer
+        let rightProc = right |> processSparqlPattern database typeIndexer
         let (valueBinders, joinConditions) = processJoin typeIndexer leftProc rightProc
         let conditionProc =
             condition
@@ -853,10 +854,10 @@ let rec private processSparqlPattern (typeIndexer: TypeIndexer) (sparqlPattern: 
         }
 
     | UnionPattern unioned ->
-        let switchVariable = AssignedVariable()
+        let switchVariable = { SqlType = database.IntegerType }
         let (models, valueBindersCases) =
             unioned
-            |> List.map (processSparqlPattern typeIndexer)
+            |> List.map (processSparqlPattern database typeIndexer)
             |> List.mapi (
                 fun i proc ->
                     let procModel = proc.Model |> getNotModifiedModel
@@ -1019,7 +1020,7 @@ let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list)
                 }
     )
 
-let buildRelationalQuery (typeIndexer: TypeIndexer) (sparqlAlgebra: SparqlQuery) =
+let buildRelationalQuery (database: ISqlDatabaseSchema) (typeIndexer: TypeIndexer) (sparqlAlgebra: SparqlQuery) =
     sparqlAlgebra.Query
-    |> processSparqlPattern typeIndexer
+    |> processSparqlPattern database typeIndexer
     |> applyModifiers typeIndexer sparqlAlgebra.Modifiers

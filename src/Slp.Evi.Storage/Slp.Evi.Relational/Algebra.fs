@@ -9,7 +9,7 @@ open Slp.Evi.Common.Types
 open Slp.Evi.R2RML
 
 [<ReferenceEquality>]
-type SqlColumn = { Schema: ISqlColumnSchema; }
+type SqlColumn = { Schema: ISqlColumnSchema }
 
 [<ReferenceEquality>]
 type SqlSource = { Schema: ISqlTableSchema; Columns: SqlColumn list }
@@ -23,7 +23,8 @@ type Literal =
     | Int of int
     | Double of double
 
-type AssignedVariable() = class end
+[<ReferenceEquality>]
+type AssignedVariable = { SqlType: ISqlColumnType }
 
 type Variable =
     | Assigned of AssignedVariable

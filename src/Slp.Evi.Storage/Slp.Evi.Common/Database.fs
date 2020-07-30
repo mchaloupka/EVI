@@ -23,3 +23,5 @@ type ISqlTableSchema =
 
 type ISqlDatabaseSchema =
     abstract member GetTable: tableName: string -> ISqlTableSchema
+
+    abstract member IntegerType: ISqlColumnType with get

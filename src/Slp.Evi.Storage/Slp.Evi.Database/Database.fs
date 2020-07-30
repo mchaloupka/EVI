@@ -19,5 +19,3 @@ type ISqlDatabase<'T, 'C> =
     abstract member DatabaseSchema: ISqlDatabaseSchema with get
 
     abstract member ExecuteQuery: query: 'T -> ISqlResultReader<'C>
-
-    abstract member CreateQueryBuilder: unit -> ISqlQueryBuilder<'T, 'C>

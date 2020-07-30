@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="DatabaseQueryBuilder.fs" />
+    <Compile Include="DatabaseQuery.fs" />
     <Compile Include="Database.fs" />
-    <Compile Include="QueryBuilder.fs" />
+    <Compile Include="DatabaseQueryBuilder.fs" />
   </ItemGroup>
 
   <ItemGroup>

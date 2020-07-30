@@ -46,5 +46,8 @@ namespace Slp.Evi.Storage.MsSql.Database
                 throw new ArgumentException($"The table {tableName} does not exist", nameof(tableName));
             }
         }
+
+        /// <inheritdoc />
+        public ISqlColumnType IntegerType => new MsSqlColumnType("int", false);
     }
 }
