@@ -42,28 +42,26 @@ and SelectQuery = {
     NamingProvider: NamingProvider
     Variables: Variable list
     InnerQuery: InnerQuery
-    Ordering: Ordering list
-    Limit: int option
-    Offset: int option
     IsDistinct: bool
 }
 
-and UnionQuery = {
-    NamingProvider: NamingProvider
-    Variables: Variable list
-    InnerQueries: InnerQuery list
-    SwitchVariable: Variable
-}
-
-and SqlQuery =
+and QueryContent =
     | NoResultQuery
     | SingleEmptyResultQuery
-    | UnionQuery of UnionQuery
     | SelectQuery of SelectQuery
     member self.NamingProvider
         with get() =
             match self with
             | NoResultQuery -> NamingProvider.Empty
             | SingleEmptyResultQuery -> NamingProvider.Empty
-            | UnionQuery u -> u.NamingProvider
             | SelectQuery s -> s.NamingProvider
+
+and SqlQuery = {
+    NamingProvider: NamingProvider
+    Variables: Variable list
+    InnerQueries: QueryContent list
+    Limit: int option
+    Offset: int option
+    Ordering: Ordering list
+    IsDistinct: bool
+}

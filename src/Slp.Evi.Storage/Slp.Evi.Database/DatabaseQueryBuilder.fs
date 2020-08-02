@@ -20,12 +20,12 @@ module private VariableList =
         r.UnionWith(xs |> fromList)
         r
 
-    let union (hs1: VariableList) (hs2: VariableList) =
+    let union hs2 (hs1: VariableList) =
         let r1 = HashSet<_>(hs1)
         r1.UnionWith(hs2)
         r1
 
-    let intersect (hs1: VariableList) (hs2: VariableList) =
+    let intersect hs2 (hs1: VariableList) =
         let r1 = HashSet<_>(hs1)
         r1.IntersectWith(hs2)
         r1
@@ -153,40 +153,46 @@ let rec private neededVariablesForValueBinders valueBinders result =
         |> neededVariablesForExpression [ expressionSet.StringExpression ]
         |> neededVariablesForValueBinders xs
 
+let private emptySqlQuery = {
+    NamingProvider = NamingProvider.Empty
+    Variables = List.empty
+    InnerQueries = List.empty
+    Limit = None
+    Offset = None
+    Ordering = List.empty
+    IsDistinct = false
+}
+
 let rec private translateModel desiredVariables model =
     match model with
     | NoResult ->
-        VariableList.empty, NoResultQuery
+        { emptySqlQuery with InnerQueries = NoResultQuery |> List.singleton }
 
     | SingleEmptyResult ->
-        VariableList.empty, SingleEmptyResultQuery
+        { emptySqlQuery with InnerQueries = SingleEmptyResultQuery |> List.singleton }
 
     | Modified modifiedModel ->
-        invalidOp "modified"
+        let innerResult = translateModel desiredVariables modifiedModel.InnerModel
+        let selectedVariables = VariableList.intersect innerResult.Variables desiredVariables
+        let selectedVariablesList = selectedVariables |> VariableList.toList
+        let namingProvider = NamingProvider.WithVariables selectedVariablesList
+
+        sprintf "modified: %A" innerResult
+        |> invalidOp
 
     | Union(var, inners) ->
-        invalidOp "union"
+        sprintf "union: %A" inners
+        |> invalidOp
 
     | NotModified notModifiedModel ->
-        let (providedVariables, inner) = translateInnerModel desiredVariables notModifiedModel
+        let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
         let selectedVariables = VariableList.intersect desiredVariables providedVariables
         let selectedVariablesList = selectedVariables |> VariableList.toList
         let namingProvider = NamingProvider.WithVariables selectedVariablesList
-        let selectQuery =
-            {
-                NamingProvider = namingProvider
-                Variables = selectedVariablesList
-                InnerQuery = inner
-                Ordering = List.empty
-                Limit = None
-                Offset = None
-                IsDistinct = false
-            }
-            |> SelectQuery
+        sprintf "Not modified: %A" innerResult
+        |> invalidOp
 
-        selectedVariables, selectQuery
-
-and private translateInnerModel desiredVariables notModifiedModel =
+and private translateNotModifiedModel desiredVariables notModifiedModel: (VariableList * InnerQuery) =
     let assignedVariables =
         notModifiedModel.Assignments
         |> List.map (fun x -> x.Variable |> Assigned)
@@ -218,14 +224,14 @@ and private translateInnerModel desiredVariables notModifiedModel =
                 resProvidedVariables |> VariableList.addMany variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(variables, source); Sources = source :: resQuery.Sources }
 
             | SubQuery model ->
-                let (variables, result) = translateModel neededVariables model
-                let source = result |> InnerSource
-                resProvidedVariables |> VariableList.union variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(variables |> VariableList.toList, source); Sources = source :: resQuery.Sources }
+                let innerResult = translateModel neededVariables model
+                let source = innerResult |> InnerSource
+                resProvidedVariables |> VariableList.union innerResult.Variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source); Sources = source :: resQuery.Sources }
 
             | LeftOuterJoinModel(model, condition) ->
-                let (variables, result) = translateModel neededVariables (model |> NotModified)
-                let source = result |> InnerSource
-                resProvidedVariables |> VariableList.union variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(variables |> VariableList.toList, source); LeftJoinedSources = (source, condition) :: resQuery.LeftJoinedSources }
+                let innerResult = translateModel neededVariables (model |> NotModified)
+                let source = innerResult |> InnerSource
+                resProvidedVariables |> VariableList.union innerResult.Variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source); LeftJoinedSources = (source, condition) :: resQuery.LeftJoinedSources }
     )
 
 let translateToQuery boundCalculusModel =
