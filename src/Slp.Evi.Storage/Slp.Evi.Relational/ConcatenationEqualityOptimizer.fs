@@ -59,7 +59,7 @@ let private isIReserved = MappingHelper.IsIUnreserved >> not
 
 let private isIriSafeAdd =
     function
-    | ConcatVariable -> false
+    | ConcatVariable _ -> false
     | _ -> true
 
 let rec private buildConcatenationEqualityInDirection (isAccIriSafe: bool) (currentResult: ConcatenationSimpleEqualityResult) (leftAcc: ConcatenationSimplePattern) (rightAcc: ConcatenationSimplePattern) (leftTemplate: ConcatenationSimplePattern) (rightTemplate: ConcatenationSimplePattern): ConcatenationSimpleEqualityResult =
