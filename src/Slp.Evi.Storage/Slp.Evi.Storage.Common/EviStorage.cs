@@ -13,14 +13,14 @@ using VDS.RDF.Storage.Management;
 
 namespace Slp.Evi.Storage.Common
 {
-    public abstract class EviStorage<TQuery, TQueryColumn>
+    public abstract class EviStorage<TQuery>
         : IQueryableStorage
     {
-        private readonly QueryProcessor<TQuery, TQueryColumn> _queryProcessor;
+        private readonly QueryProcessor<TQuery> _queryProcessor;
 
-        protected EviStorage(IR2RML mapping, ISqlDatabase<TQuery, TQueryColumn> database)
+        protected EviStorage(IR2RML mapping, ISqlDatabase<TQuery> database)
         {
-            _queryProcessor = new QueryProcessor<TQuery, TQueryColumn>(mapping, database);
+            _queryProcessor = new QueryProcessor<TQuery>(mapping, database);
         }
 
         /// <inheritdoc />

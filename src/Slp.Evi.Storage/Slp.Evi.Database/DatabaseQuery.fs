@@ -4,7 +4,6 @@ open System.Collections.Generic
 open Slp.Evi.Relational.Algebra
 
 type NamingProvider private (nameMapping: IDictionary<Variable, string>) =
-
     static member Empty with get () = new Dictionary<_,_>() |> NamingProvider
     static member WithVariables variables = variables |> List.mapi (fun i v -> v, sprintf "c%d" i) |> dict |> NamingProvider
     static member FromTable table = table.Columns |> List.map (fun c -> c |> Column, c.Schema.Name) |> dict |> NamingProvider

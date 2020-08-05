@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ValueBinderLoader.fs" />
     <Compile Include="QueryProcessor.fs" />
   </ItemGroup>
 

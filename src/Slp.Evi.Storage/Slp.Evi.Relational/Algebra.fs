@@ -105,4 +105,4 @@ type ValueBinder =
     | CaseValueBinder of Variable * Map<int, ValueBinder>
     | ExpressionValueBinder of ExpressionSet
 
-type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder> }
+type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder>; Variables: SparqlVariable list }

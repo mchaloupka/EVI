@@ -1,21 +1,29 @@
 ﻿namespace Slp.Evi.Database
 
 open Slp.Evi.Common.Database
+open System
 
-type ISqlResultColumn<'C> =
-    abstract member Name: 'C with get
+type ISqlResultColumn =
+    abstract member Name: string with get
 
-type ISqlResultRow<'C> =
-    abstract member Columns: ISqlResultColumn<'C> seq with get
+type ISqlResultRow =
+    abstract member Columns: ISqlResultColumn seq with get
 
-    abstract member GetColumn: 'C -> ISqlResultColumn<'C>
+    abstract member GetColumn: string -> ISqlResultColumn
 
-type ISqlResultReader<'C> =
+type ISqlResultReader =
     abstract member HasNextRow: bool with get
 
-    abstract member ReadRow: unit -> ISqlResultRow<'C>
+    abstract member ReadRow: unit -> ISqlResultRow
 
-type ISqlDatabase<'T, 'C> =
+    inherit IDisposable
+    
+type ISqlDatabaseWriter<'T> =
+    abstract member WriteQuery: query: SqlQuery -> 'T
+
+type ISqlDatabase<'T> =
     abstract member DatabaseSchema: ISqlDatabaseSchema with get
 
-    abstract member ExecuteQuery: query: 'T -> ISqlResultReader<'C>
+    abstract member Writer: ISqlDatabaseWriter<'T> with get
+
+    abstract member ExecuteQuery: query: 'T -> ISqlResultReader

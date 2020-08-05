@@ -6,7 +6,7 @@ using Slp.Evi.Database;
 namespace Slp.Evi.Storage.MsSql.Database
 {
     public sealed class MsSqlDatabase
-        : ISqlDatabase<MsSqlQuery, string>
+        : ISqlDatabase<MsSqlQuery>
     {
         private readonly MsSqlDatabaseSchema _databaseSchema;
         private readonly string _connectionString;
@@ -22,13 +22,16 @@ namespace Slp.Evi.Storage.MsSql.Database
         }
 
         /// <inheritdoc />
-        public ISqlResultReader<string> ExecuteQuery(MsSqlQuery query)
+        public ISqlResultReader ExecuteQuery(MsSqlQuery query)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         public ISqlDatabaseSchema DatabaseSchema => _databaseSchema;
+
+        /// <inheritdoc />
+        public ISqlDatabaseWriter<MsSqlQuery> Writer { get; }
 
         private SqlConnection GetRawConnection()
         {

@@ -638,6 +638,7 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
                     Filters = filters
                 } |> NotModified |> optimizeCalculusModel
                 Bindings = valueBindings
+                Variables = valueBindings |> Map.keys |> List.ofSeq
             }
         | current :: xs ->
             implPatternSubject sqlSources filters valueBindings current xs
@@ -752,12 +753,14 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
         {
             Model = SingleEmptyResult
             Bindings = Map.empty
+            Variables = List.empty
         }
 
     | NotMatchingPattern ->
         {
             Model = NoResult
             Bindings = Map.empty
+            Variables = List.empty
         }
 
     | NotProcessedTriplePatterns _ ->
@@ -820,6 +823,7 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
                         |> NotModified
                         |> optimizeCalculusModel
                     Bindings = valueBinders
+                    Variables = valueBinders |> Map.keys |> List.ofSeq
                 }
         )
 
@@ -851,6 +855,7 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
                 |> NotModified
                 |> optimizeCalculusModel
             Bindings = valueBinders
+            Variables = valueBinders |> Map.keys |> List.ofSeq
         }
 
     | UnionPattern unioned ->
@@ -867,22 +872,25 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
             )
             |> List.unzip
 
+        let valueBindings =
+            valueBindersCases
+            |> List.concat
+            |> List.groupBy fst
+            |> List.map (
+                fun (variable, binderCases) ->
+                    let vb =
+                        binderCases
+                        |> List.map snd
+                        |> Map.ofList
+                        |> fun x -> CaseValueBinder(switchVariable |> Assigned, x)
+                    variable, vb
+            )
+            |> Map.ofList
+
         {
             Model = (switchVariable, models) |> Union |> optimizeCalculusModel
-            Bindings =
-                valueBindersCases
-                |> List.concat
-                |> List.groupBy fst
-                |> List.map (
-                    fun (variable, binderCases) ->
-                        let vb =
-                            binderCases
-                            |> List.map snd
-                            |> Map.ofList
-                            |> fun x -> CaseValueBinder(switchVariable |> Assigned, x)
-                        variable, vb
-                )
-                |> Map.ofList
+            Bindings = valueBindings
+            Variables = valueBindings |> Map.keys |> List.ofSeq
         }
 
 let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list) (inner: BoundCalculusModel) =
@@ -928,6 +936,7 @@ let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list)
                                 | false, _ -> v, EmptyValueBinder
                         )
                         |> Map.ofList
+                    Variables = variables
                 }
 
             | Distinct ->
@@ -948,6 +957,7 @@ let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list)
                             innerModel
                             |> updateModified (fun x -> { x with IsDistinct = true } |> Modified)
                         Bindings = bindings
+                        Variables = procInner.Variables
                     }
 
             | OrderBy orderingParts ->

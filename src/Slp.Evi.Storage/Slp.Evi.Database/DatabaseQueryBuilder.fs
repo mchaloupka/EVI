@@ -186,9 +186,9 @@ let rec private translateModel desiredVariables model =
             }
 
     | Union(_, inners) ->
-        ((VariableList.empty, List.empty), inners)
-        ||> List.fold (
-            fun (prevVars, prev) notModifiedModel ->
+        (inners, (VariableList.empty, List.empty))
+        ||> List.foldBack (
+            fun notModifiedModel (prevVars, prev) ->
                 let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
                 let selectedVariables = VariableList.intersect desiredVariables providedVariables
                 prevVars |> VariableList.union selectedVariables, innerResult :: prev
