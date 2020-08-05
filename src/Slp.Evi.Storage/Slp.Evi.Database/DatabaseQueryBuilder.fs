@@ -173,24 +173,47 @@ let rec private translateModel desiredVariables model =
 
     | Modified modifiedModel ->
         let innerResult = translateModel desiredVariables modifiedModel.InnerModel
-        let selectedVariables = VariableList.intersect innerResult.Variables desiredVariables
-        let selectedVariablesList = selectedVariables |> VariableList.toList
-        let namingProvider = NamingProvider.WithVariables selectedVariablesList
 
-        sprintf "modified: %A" innerResult
-        |> invalidOp
+        if innerResult.IsDistinct || innerResult.Limit.IsSome || innerResult.Offset.IsSome || innerResult.Ordering.IsEmpty |> not then
+            sprintf "Another application of modified model on: %A" innerResult
+            |> invalidOp
+        else
+            { innerResult with
+                IsDistinct = modifiedModel.IsDistinct
+                Limit = modifiedModel.Limit
+                Offset = modifiedModel.Offset
+                Ordering = modifiedModel.Ordering
+            }
 
-    | Union(var, inners) ->
-        sprintf "union: %A" inners
-        |> invalidOp
+    | Union(_, inners) ->
+        ((VariableList.empty, List.empty), inners)
+        ||> List.fold (
+            fun (prevVars, prev) notModifiedModel ->
+                let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
+                let selectedVariables = VariableList.intersect desiredVariables providedVariables
+                prevVars |> VariableList.union selectedVariables, innerResult :: prev
+        )
+        |> fun (selectedVariables, innerResults) ->
+            let selectedVariablesList = selectedVariables |> VariableList.toList
+            let namingProvider = NamingProvider.WithVariables selectedVariablesList
+            
+            { emptySqlQuery with
+                NamingProvider = namingProvider
+                Variables = selectedVariablesList
+                InnerQueries = innerResults |> List.map SelectQuery
+            }
 
     | NotModified notModifiedModel ->
         let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
         let selectedVariables = VariableList.intersect desiredVariables providedVariables
         let selectedVariablesList = selectedVariables |> VariableList.toList
         let namingProvider = NamingProvider.WithVariables selectedVariablesList
-        sprintf "Not modified: %A" innerResult
-        |> invalidOp
+
+        { emptySqlQuery with
+            NamingProvider = namingProvider
+            Variables = selectedVariablesList
+            InnerQueries = innerResult |> SelectQuery |>  List.singleton
+        }
 
 and private translateNotModifiedModel desiredVariables notModifiedModel: (VariableList * InnerQuery) =
     let assignedVariables =

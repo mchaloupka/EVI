@@ -38,23 +38,10 @@ and InnerQuery = {
     Assignments: Assignment list
 }
 
-and SelectQuery = {
-    NamingProvider: NamingProvider
-    Variables: Variable list
-    InnerQuery: InnerQuery
-    IsDistinct: bool
-}
-
 and QueryContent =
     | NoResultQuery
     | SingleEmptyResultQuery
-    | SelectQuery of SelectQuery
-    member self.NamingProvider
-        with get() =
-            match self with
-            | NoResultQuery -> NamingProvider.Empty
-            | SingleEmptyResultQuery -> NamingProvider.Empty
-            | SelectQuery s -> s.NamingProvider
+    | SelectQuery of InnerQuery
 
 and SqlQuery = {
     NamingProvider: NamingProvider
