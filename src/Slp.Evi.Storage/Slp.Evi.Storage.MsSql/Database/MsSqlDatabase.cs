@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using Slp.Evi.Common.Database;
 using Slp.Evi.Database;
+using Slp.Evi.Storage.MsSql.QueryWriter;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {
@@ -31,7 +32,7 @@ namespace Slp.Evi.Storage.MsSql.Database
         public ISqlDatabaseSchema DatabaseSchema => _databaseSchema;
 
         /// <inheritdoc />
-        public ISqlDatabaseWriter<MsSqlQuery> Writer { get; }
+        public ISqlDatabaseWriter<MsSqlQuery> Writer => new MsSqlQueryWriter();
 
         private SqlConnection GetRawConnection()
         {

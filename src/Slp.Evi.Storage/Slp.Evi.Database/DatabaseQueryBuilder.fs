@@ -189,8 +189,8 @@ let rec private translateModel desiredVariables model =
         (inners, (VariableList.empty, List.empty))
         ||> List.foldBack (
             fun notModifiedModel (prevVars, prev) ->
-                let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
-                let selectedVariables = VariableList.intersect desiredVariables providedVariables
+                let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
+                let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
                 prevVars |> VariableList.union selectedVariables, innerResult :: prev
         )
         |> fun (selectedVariables, innerResults) ->
@@ -204,8 +204,8 @@ let rec private translateModel desiredVariables model =
             }
 
     | NotModified notModifiedModel ->
-        let (providedVariables, innerResult) = translateNotModifiedModel desiredVariables notModifiedModel
-        let selectedVariables = VariableList.intersect desiredVariables providedVariables
+        let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
+        let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
         let selectedVariablesList = selectedVariables |> VariableList.toList
         let namingProvider = NamingProvider.WithVariables selectedVariablesList
 
@@ -215,7 +215,7 @@ let rec private translateModel desiredVariables model =
             InnerQueries = innerResult |> SelectQuery |>  List.singleton
         }
 
-and private translateNotModifiedModel desiredVariables notModifiedModel: (VariableList * InnerQuery) =
+and private translateNotModifiedModel desiredVariables notModifiedModel =
     let assignedVariables =
         notModifiedModel.Assignments
         |> List.map (fun x -> x.Variable |> Assigned)
@@ -236,25 +236,37 @@ and private translateNotModifiedModel desiredVariables notModifiedModel: (Variab
         )
         |> VariableList.fromList
 
-    ((assignedVariables, { NamingProvider = MergedNamingProvider.Empty; Sources = List.empty; LeftJoinedSources = List.empty; Filters = notModifiedModel.Filters; Assignments = notModifiedModel.Assignments }), notModifiedModel.Sources)
+    ({ NamingProvider = MergedNamingProvider.Empty; ProvidedVariables = assignedVariables; Sources = List.empty; LeftJoinedSources = List.empty; Filters = notModifiedModel.Filters; Assignments = notModifiedModel.Assignments }, notModifiedModel.Sources)
     ||> List.fold (
-        fun (resProvidedVariables, resQuery) source ->
+        fun resQuery source ->
             match source with
             | Sql sqlSource ->
                 let variables = sqlSource.Columns |> List.map Column
                 let namingProvider = NamingProvider.FromTable sqlSource
                 let source = (sqlSource, namingProvider) |> InnerTable
-                resProvidedVariables |> VariableList.addMany variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(variables, source); Sources = source :: resQuery.Sources }
+                { resQuery with
+                    NamingProvider = resQuery.NamingProvider.MergeWith(variables, source)
+                    Sources = source :: resQuery.Sources
+                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.addMany variables
+                }
 
             | SubQuery model ->
                 let innerResult = translateModel neededVariables model
                 let source = innerResult |> InnerSource
-                resProvidedVariables |> VariableList.union innerResult.Variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source); Sources = source :: resQuery.Sources }
+                { resQuery with
+                    NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
+                    Sources = source :: resQuery.Sources
+                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
+                }
 
             | LeftOuterJoinModel(model, condition) ->
                 let innerResult = translateModel neededVariables (model |> NotModified)
                 let source = innerResult |> InnerSource
-                resProvidedVariables |> VariableList.union innerResult.Variables, { resQuery with NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source); LeftJoinedSources = (source, condition) :: resQuery.LeftJoinedSources }
+                { resQuery with
+                    NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
+                    LeftJoinedSources = (source, condition) :: resQuery.LeftJoinedSources
+                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
+                }
     )
 
 let translateToQuery boundCalculusModel =

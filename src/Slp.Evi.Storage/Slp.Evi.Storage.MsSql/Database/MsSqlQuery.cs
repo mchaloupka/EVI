@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Slp.Evi.Storage.MsSql.Database
+﻿namespace Slp.Evi.Storage.MsSql.Database
 {
     public class MsSqlQuery
     {
+        public MsSqlQuery(string queryString)
+        {
+            QueryString = queryString;
+        }
+
+        public string QueryString { get; }
     }
 }
