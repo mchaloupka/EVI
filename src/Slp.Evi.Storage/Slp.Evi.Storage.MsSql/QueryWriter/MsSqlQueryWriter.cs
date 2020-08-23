@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AngleSharp.Common;
+using Microsoft.FSharp.Collections;
+using Slp.Evi.Common;
 using Slp.Evi.Database;
 using Slp.Evi.Relational.Algebra;
 using Slp.Evi.Storage.Common.FSharpExtensions;
@@ -21,8 +23,9 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             return new MsSqlQuery(sb.ToString());
         }
 
-        private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
+        private static void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
+            // The ORDER BY and DISTINCT may cause issue if it is in the same query level
             if (sqlQuery.IsDistinct && !sqlQuery.Ordering.IsEmpty)
             {
                 sb.Append("SELECT * FROM (");
@@ -61,20 +64,13 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             var firstInnerQuery = true;
             foreach (var innerQuery in sqlQuery.InnerQueries)
             {
-                if (!firstInnerQuery)
+                if (firstInnerQuery)
                 {
-                    if (sqlQuery.IsDistinct)
-                    {
-                        sb.Append(" UNION ");
-                    }
-                    else
-                    {
-                        sb.Append(" UNION ALL ");
-                    }
+                    firstInnerQuery = false;
                 }
                 else
                 {
-                    firstInnerQuery = false;
+                    sb.Append(sqlQuery.IsDistinct ? " UNION " : " UNION ALL ");
                 }
 
                 WriteInnerQuery(sb, innerQuery, variables, variablesMappings, sqlQuery.IsDistinct, innerLimit);
@@ -86,11 +82,10 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             // TODO: Add ordering and offset and limit
-
             throw new NotImplementedException();
         }
 
-        private void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
+        private static void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
         {
             sb.Append("SELECT");
 
@@ -107,15 +102,15 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
             if (query.IsSelectQuery)
             {
-                WriteInnerSelectQuery(sb, ((QueryContent.SelectQuery) query).Item, variables, variablesMappings);
+                WriteInnerSelectQueryContent(sb, ((QueryContent.SelectQuery) query).Item, variables, variablesMappings);
             }
             else if (query.IsNoResultQuery)
             {
-                WriteInnerNoResultQuery(sb, variables, variablesMappings);
+                WriteInnerNoResultQueryContent(sb, variables, variablesMappings);
             }
             else if (query.IsSingleEmptyResultQuery)
             {
-                WriteInnerSingleEmptyResultQuery(sb, variables, variablesMappings);
+                WriteInnerSingleEmptyResultQueryContent(sb, variables, variablesMappings);
             }
             else
             {
@@ -123,28 +118,29 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private void WriteInnerSingleEmptyResultQuery(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private static void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
         {
             throw new NotImplementedException();
         }
 
-        private void WriteInnerNoResultQuery(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private static void WriteInnerNoResultQueryContent(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
         {
             throw new NotImplementedException();
         }
 
-        private void WriteInnerSelectQuery(StringBuilder sb, InnerQuery query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private static void WriteInnerSelectQueryContent(StringBuilder sb, InnerQuery query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
         {
             var isFirstVariable = true;
             foreach (var variableName in variables)
             {
-                if (!isFirstVariable)
+                if (isFirstVariable)
                 {
-                    sb.Append(",");
+                    sb.Append(" ");
+                    isFirstVariable = false;
                 }
                 else
                 {
-                    isFirstVariable = false;
+                    sb.Append(", ");
                 }
 
                 var providedVariables = variablesMappings.GetOrDefault(variableName, new List<Variable>())
@@ -169,19 +165,12 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 sb.Append(variableName);
             }
 
-            sb.Append(" FROM ");
+            sb.Append(" FROM");
 
             var isFirstSource = true;
             foreach (var innerSource in query.Sources)
             {
-                if (!isFirstSource)
-                {
-                    sb.Append(", ");
-                }
-                else
-                {
-                    isFirstSource = false;
-                }
+                sb.Append(!isFirstSource ? " INNER JOIN " : " ");
 
                 WriteInnerSource(sb, innerSource);
 
@@ -195,13 +184,43 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 {
                     throw new InvalidOperationException($"Name for source has not been found. Source: {innerSource}");
                 }
+
+                if (!isFirstSource)
+                {
+                    sb.Append(" ON 1=1");
+                }
+                else
+                {
+                    isFirstSource = false;
+                }
             }
 
-            // Left outer join, filters
-            throw new NotImplementedException();
+            foreach (var leftJoined in query.LeftJoinedSources)
+            {
+                sb.Append(" LEFT JOIN ");
+                WriteInnerSource(sb, leftJoined.Item1);
+                sb.Append(" ON ");
+                WriteCondition(sb, query, leftJoined.Item2);
+            }
+
+            var isFirstCondition = true;
+            foreach (var condition in query.Filters)
+            {
+                if (!isFirstCondition)
+                {
+                    sb.Append(" AND ");
+                }
+                else
+                {
+                    sb.Append(" WHERE ");
+                    isFirstCondition = false;
+                }
+
+                WriteCondition(sb, query, condition);
+            }
         }
 
-        private void WriteInnerSource(StringBuilder sb, InnerSource innerSource)
+        private static void WriteInnerSource(StringBuilder sb, InnerSource innerSource)
         {
             if (innerSource.IsInnerTable)
             {
@@ -221,7 +240,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private void WriteVariable(StringBuilder sb, InnerQuery query, Variable variable)
+        private static void WriteVariable(StringBuilder sb, InnerQuery query, Variable variable)
         {
             if (query.NamingProvider.TryGetSource(variable, out var innerSource))
             {
@@ -247,7 +266,6 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
         {
             if (query.NamingProvider.TryGetSourceName(innerSource, out var innerSourceName))
             {
-                sb.Append(" ");
                 sb.Append(innerSourceName);
                 sb.Append(".");
 
@@ -266,9 +284,177 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private void WriteExpression(StringBuilder sb, InnerQuery query, Expression assignmentExpression)
+        private static void WriteExpression(StringBuilder sb, InnerQuery query, Expression expression)
         {
-            throw new NotImplementedException();
+            var writer = new MsSqlExpressionWriter(sb, query);
+            SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
+        }
+
+        private static void WriteCondition(StringBuilder sb, InnerQuery query, Condition condition)
+        {
+            var writer = new MsSqlExpressionWriter(sb, query);
+            SqlDatabaseWriterHelper.ProcessCondition(writer, condition);
+        }
+
+        private class MsSqlExpressionWriter: SqlDatabaseWriterHelper.ISqlExpressionWriter
+        {
+            private readonly StringBuilder _sb;
+            private readonly InnerQuery _query;
+
+            public MsSqlExpressionWriter(StringBuilder sb, InnerQuery query)
+            {
+                _sb = sb;
+                _query = query;
+            }
+
+            private void ProcessCondition(Condition condition)
+            {
+                SqlDatabaseWriterHelper.ProcessCondition(this, condition);
+            }
+
+            private void ProcessExpression(Expression expression)
+            {
+                SqlDatabaseWriterHelper.ProcessExpression(this, expression);
+            }
+
+            /// <inheritdoc />
+            public void WriteNull()
+            {
+                _sb.Append("NULL");
+            }
+
+            /// <inheritdoc />
+            public void WriteBinaryNumericOperation(Algebra.ArithmeticOperator @operator, Expression leftOperand, Expression rightOperand)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteSwitch(FSharpList<CaseStatement> caseStatements)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteCoalesce(FSharpList<Expression> expressions)
+            {
+                _sb.Append("COALESCE(");
+
+                var isFirstExpression = true;
+                foreach (var expression in expressions)
+                {
+                    if (isFirstExpression)
+                    {
+                        isFirstExpression = false;
+                    }
+                    else
+                    {
+                        _sb.Append(", ");
+                    }
+
+                    ProcessExpression(expression);
+                }
+
+                _sb.Append(")");
+            }
+
+            /// <inheritdoc />
+            public void WriteVariable(Variable variable)
+            {
+                MsSqlQueryWriter.WriteVariable(_sb, _query, variable);
+            }
+
+            /// <inheritdoc />
+            public void WriteIriSafeVariable(Variable variable)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteConstant(Literal literal)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteConcatenation(FSharpList<Expression> expressions)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteBooleanExpression(Condition condition)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteTrue()
+            {
+                _sb.Append("1=1");
+            }
+
+            /// <inheritdoc />
+            public void WriteFalse()
+            {
+                _sb.Append("1=0");
+            }
+
+            /// <inheritdoc />
+            public void WriteComparison(Algebra.Comparisons comparison, Expression leftOperand, Expression rightOperand)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteConjunction(FSharpList<Condition> conditions)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteDisjunction(FSharpList<Condition> conditions)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteEqualVariableTo(Variable variable, Literal literal)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteEqualVariables(Variable leftVariable, Variable rightVariable)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteIsNull(Variable variable)
+            {
+                WriteVariable(variable);
+                _sb.Append(" IS NULL");
+            }
+
+            /// <inheritdoc />
+            public void WriteLanguageMatch(Expression langExpression, Expression langRangeExpression)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteLikeMatch(Expression expression, string pattern)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteNot(Condition condition)
+            {
+                _sb.Append("NOT ");
+                ProcessCondition(condition);
+            }
         }
     }
 }
