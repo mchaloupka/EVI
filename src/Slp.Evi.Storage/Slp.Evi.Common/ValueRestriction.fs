@@ -98,4 +98,49 @@ module ValueRestriction =
                 | DigitCharacter -> c |> Char.IsDigit
                 | ExactCharacter a -> a = c
 
-            FiniteStateMachine.accepts edgeEvaluation input machine
+            DeterministicFiniteStateMachine.accepts edgeEvaluation input machine
+
+        let private getDisjunctParentEdge edge1 edge2 =
+            match edge1, edge2 with
+            | AnyCharacter, _
+            | _, AnyCharacter ->
+                AnyCharacter |> Some
+            | IriUnRestrictedCharacter, DigitCharacter
+            | DigitCharacter, IriUnRestrictedCharacter ->
+                IriUnRestrictedCharacter |> Some
+            | IriUnRestrictedCharacter, ExactCharacter c
+            | ExactCharacter c, IriUnRestrictedCharacter when c |> MappingHelper.IsIUnreserved ->
+                IriUnRestrictedCharacter |> Some
+            | DigitCharacter, ExactCharacter c
+            | ExactCharacter c, DigitCharacter when Char.IsDigit(c) ->
+                DigitCharacter |> Some
+            | IriUnRestrictedCharacter, IriUnRestrictedCharacter ->
+                IriUnRestrictedCharacter |> Some
+            | DigitCharacter, DigitCharacter ->
+                DigitCharacter |> Some
+            | ExactCharacter a, ExactCharacter b when a = b ->
+                ExactCharacter a |> Some
+            | _ ->
+                None
+
+        let private isNotDisjunct e1 e2 = getDisjunctParentEdge e1 e2 |> Option.isSome
+        let private disjunctEdges edges =
+            let rec processEdges toProcess output =
+                match toProcess with
+                | [] -> output
+                | x :: xs -> processEdge x xs [] output
+            and processEdge edge other output toProcess =
+                match toProcess with
+                | [] -> edge :: output |> processEdges other
+                | x :: xs ->
+                    match getDisjunctParentEdge edge x with
+                    | Some e ->
+                        e :: xs @ output |> processEdges other
+                    | None ->
+                        processEdge edge other (x :: output) xs
+
+            processEdges edges []
+
+        let compileMachine machine =
+            DeterministicFiniteStateMachine.fromFiniteStateMachine disjunctEdges isNotDisjunct machine
+            |> DeterministicFiniteStateMachine.transformNodes GenericNode.transformNode

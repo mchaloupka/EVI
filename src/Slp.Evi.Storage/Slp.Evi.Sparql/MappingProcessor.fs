@@ -113,54 +113,62 @@ type R2RMLMappingProcessor(mappings: BasicGraphPatternMapping list) =
         )
         |> readOnlyDict
 
-    let iriMappingRestrictions =
-        mappings
-        |> List.collect (
-            fun mapping ->
-                let sub = mapping.Subject.Value.Value
-                let pred = mapping.Predicate.Value
+    let compiledRestrictions (restrictions: Collections.Generic.IReadOnlyDictionary<'T, TemplateFsm>) =
+        restrictions.Keys
+        |> Seq.map (
+            fun key ->
+                key, restrictions.[key] |> TemplateFsm.compileMachine
+        )
+        |> readOnlyDict
 
+    let (iriMappingCombinations, iriMappingRestrictions) =
+        let iriMappingRestrictions =
+            mappings
+            |> List.collect (
+                fun mapping ->
+                    let sub = mapping.Subject.Value.Value
+                    let pred = mapping.Predicate.Value
+
+                    match mapping.Object with
+                    | ObjectMatch(IriObject(obj)) -> [ sub; pred; obj.Value ]
+                    | RefObjectMatch refObj -> [ sub; pred; refObj.TargetSubjectMap.Value.Value ]
+                    | _ -> [ sub; pred ]
+            )
+            |> List.distinct
+            |> List.choose (
+                fun termMapValue ->
+                    termMapValue
+                    |> buildTemplateFromIriMapping
+                    |> Option.map (
+                        fun template ->
+                            termMapValue, template |> templateToValueRestriction true
+                    )
+            )
+            |> readOnlyDict
+
+        iriMappingRestrictions |> buildCombinations, iriMappingRestrictions |> compiledRestrictions
+
+    let (literalMappingCombinations, literalMappingRestrictions) =
+        let literalMappingRestrictions =
+            mappings
+            |> List.collect (fun mapping ->
                 match mapping.Object with
-                | ObjectMatch(IriObject(obj)) -> [ sub; pred; obj.Value ]
-                | RefObjectMatch refObj -> [ sub; pred; refObj.TargetSubjectMap.Value.Value ]
-                | _ -> [ sub; pred ]
-        )
-        |> List.distinct
-        |> List.choose (
-            fun termMapValue ->
-                termMapValue
-                |> buildTemplateFromIriMapping
-                |> Option.map (
-                    fun template ->
-                        termMapValue, template |> templateToValueRestriction true
-                )
-        )
-        |> readOnlyDict
+                | ObjectMatch(LiteralObject(obj)) -> [ obj.Value ]
+                | _ -> List.empty
+            )
+            |> List.distinct
+            |> List.choose (
+                fun literalMapValue ->
+                    literalMapValue
+                    |> buildTemplateFromLiteralMapping
+                    |> Option.map (
+                        fun template ->
+                            literalMapValue, template |> templateToValueRestriction false
+                    )
+            )
+            |> readOnlyDict
 
-    let iriMappingCombinations =
-        iriMappingRestrictions |> buildCombinations
-
-    let literalMappingRestrictions =
-        mappings
-        |> List.collect (fun mapping ->
-            match mapping.Object with
-            | ObjectMatch(LiteralObject(obj)) -> [ obj.Value ]
-            | _ -> List.empty
-        )
-        |> List.distinct
-        |> List.choose (
-            fun literalMapValue ->
-                literalMapValue
-                |> buildTemplateFromLiteralMapping
-                |> Option.map (
-                    fun template ->
-                        literalMapValue, template |> templateToValueRestriction false
-                )
-        )
-        |> readOnlyDict
-
-    let literalMappingCombinations =
-        literalMappingRestrictions |> buildCombinations
+        literalMappingRestrictions |> buildCombinations, literalMappingRestrictions |> compiledRestrictions
 
     let canIriMatchIriMapping (iri: IriNode) (mapping: IriMapping) =
         if iri.IsBlankNode && not mapping.IsBlankNode then
