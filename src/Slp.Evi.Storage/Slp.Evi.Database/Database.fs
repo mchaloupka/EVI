@@ -38,9 +38,11 @@ module SqlDatabaseWriterHelper =
         abstract member WriteCoalesce: expressions:Expression list -> unit
         abstract member WriteVariable: variable:Variable -> unit
         abstract member WriteIriSafeVariable: variable:Variable -> unit
-        abstract member WriteConstant: literal:Literal -> unit
         abstract member WriteConcatenation: expressions:Expression list -> unit
         abstract member WriteBooleanExpression: condition:Condition -> unit
+        abstract member WriteConstant: literal:string -> unit
+        abstract member WriteConstant: literal:double -> unit
+        abstract member WriteConstant: literal:int -> unit
 
         abstract member WriteTrue: unit -> unit
         abstract member WriteFalse: unit -> unit
@@ -61,7 +63,11 @@ module SqlDatabaseWriterHelper =
         | Coalesce(expressions) -> writer.WriteCoalesce(expressions)
         | Variable(variable) -> writer.WriteVariable(variable)
         | IriSafeVariable(iriSafeVariable) -> writer.WriteIriSafeVariable(iriSafeVariable)
-        | Constant(literal) -> writer.WriteConstant(literal)
+        | Constant(literal) ->
+            match literal with
+            | String(s) -> writer.WriteConstant(s)
+            | Double(d) -> writer.WriteConstant(d)
+            | Int(i) -> writer.WriteConstant(i)
         | Concatenation(expressions) -> writer.WriteConcatenation(expressions)
         | Boolean(condition) -> writer.WriteBooleanExpression(condition)
         | Null -> writer.WriteNull()

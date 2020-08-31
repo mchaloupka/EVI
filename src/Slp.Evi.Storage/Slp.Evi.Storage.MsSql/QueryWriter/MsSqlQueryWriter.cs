@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using AngleSharp.Common;
@@ -371,12 +372,6 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteConstant(Literal literal)
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <inheritdoc />
             public void WriteConcatenation(FSharpList<Expression> expressions)
             {
                 throw new NotImplementedException();
@@ -386,6 +381,26 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             public void WriteBooleanExpression(Condition condition)
             {
                 throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteConstant(string literal)
+            {
+                _sb.Append("'");
+                _sb.Append(literal.Replace("\'", "\'\'"));
+                _sb.Append("'");
+            }
+
+            /// <inheritdoc />
+            public void WriteConstant(double literal)
+            {
+                _sb.Append(literal.ToString(CultureInfo.InvariantCulture));
+            }
+
+            /// <inheritdoc />
+            public void WriteConstant(int literal)
+            {
+                _sb.Append(literal);
             }
 
             /// <inheritdoc />
