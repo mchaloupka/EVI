@@ -1,4 +1,4 @@
-﻿module IriTests
+﻿module Slp.Evi.Common.Iri.Tests
 
 open Xunit
 open System

@@ -16,10 +16,8 @@ namespace Slp.Evi.Storage.MsSql.Database
         {
             _connectionString = connectionString;
 
-            using (var connection = GetRawConnection())
-            {
-                _databaseSchema = MsSqlDatabaseSchema.CreateFromDatabase(connection);
-            }
+            using var connection = GetRawConnection();
+            _databaseSchema = MsSqlDatabaseSchema.CreateFromDatabase(connection);
         }
 
         /// <inheritdoc />

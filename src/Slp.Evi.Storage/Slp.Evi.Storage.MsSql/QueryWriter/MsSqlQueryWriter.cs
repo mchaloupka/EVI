@@ -82,8 +82,53 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 sb.Append(")");
             }
 
-            // TODO: Add ordering and offset and limit
-            throw new NotImplementedException();
+            if (!innerLimit.HasValue)
+            {
+                var firstOrderBy = true;
+                foreach (var ordering in sqlQuery.Ordering)
+                {
+                    if (firstOrderBy)
+                    {
+                        sb.Append(" ORDER BY ");
+                        firstOrderBy = false;
+                    }
+                    else
+                    {
+                        sb.Append(", ");
+                    }
+
+                    WriteExpression(sb, sqlQuery, ordering.Expression);
+                    if (ordering.Direction.Equals(Algebra.OrderingDirection.Descending))
+                    {
+                        sb.Append(" DESC");
+                    }
+                }
+
+                if (sqlQuery.Offset.IsSome() || sqlQuery.Limit.IsSome())
+                {
+                    if (firstOrderBy)
+                    {
+                        throw new Exception("To enable offset and limit, it is needed to use also order by clause");
+                    }
+                }
+
+                var offset = sqlQuery.Offset.ToNullable();
+                var limit = sqlQuery.Limit.ToNullable();
+
+                if (offset.HasValue)
+                {
+                    sb.Append(" OFFSET ");
+                    sb.Append(offset.Value);
+                    sb.Append(" ROWS");
+                }
+
+                if (limit.HasValue)
+                {
+                    sb.Append(" FETCH NEXT ");
+                    sb.Append(limit.Value);
+                    sb.Append(" ROWS");
+                }
+            }
         }
 
         private static void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
@@ -107,11 +152,11 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
             else if (query.IsNoResultQuery)
             {
-                WriteInnerNoResultQueryContent(sb, variables, variablesMappings);
+                WriteInnerNoResultQueryContent(sb, variables);
             }
             else if (query.IsSingleEmptyResultQuery)
             {
-                WriteInnerSingleEmptyResultQueryContent(sb, variables, variablesMappings);
+                WriteInnerSingleEmptyResultQueryContent(sb, variables);
             }
             else
             {
@@ -119,14 +164,33 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private static void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables)
         {
-            throw new NotImplementedException();
+            sb.Append("SELECT");
+
+            var firstVariable = true;
+
+            foreach (var variable in variables)
+            {
+                if (firstVariable)
+                {
+                    sb.Append(" ");
+                    firstVariable = false;
+                }
+                else
+                {
+                    sb.Append(", ");
+                }
+
+                sb.Append("NULL AS ");
+                sb.Append(variable);
+            }
         }
 
-        private static void WriteInnerNoResultQueryContent(StringBuilder sb, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private static void WriteInnerNoResultQueryContent(StringBuilder sb, List<string> variables)
         {
-            throw new NotImplementedException();
+            WriteInnerSingleEmptyResultQueryContent(sb, variables);
+            sb.Append(" WHERE 1=0");
         }
 
         private static void WriteInnerSelectQueryContent(StringBuilder sb, InnerQuery query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
@@ -241,6 +305,18 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
+        private static void WriteVariable(StringBuilder sb, SqlQuery query, Variable variable)
+        {
+            if (query.NamingProvider.TryGetVariableName(variable, out var name))
+            {
+                sb.Append(name);
+            }
+            else
+            {
+                throw new InvalidOperationException("Cannot find name for a variable in query");
+            }
+        }
+
         private static void WriteVariable(StringBuilder sb, InnerQuery query, Variable variable)
         {
             if (query.NamingProvider.TryGetSource(variable, out var innerSource))
@@ -287,25 +363,31 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
         private static void WriteExpression(StringBuilder sb, InnerQuery query, Expression expression)
         {
-            var writer = new MsSqlExpressionWriter(sb, query);
+            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
+            SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
+        }
+
+        private static void WriteExpression(StringBuilder sb, SqlQuery query, Expression expression)
+        {
+            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
         }
 
         private static void WriteCondition(StringBuilder sb, InnerQuery query, Condition condition)
         {
-            var writer = new MsSqlExpressionWriter(sb, query);
+            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessCondition(writer, condition);
         }
 
         private class MsSqlExpressionWriter: SqlDatabaseWriterHelper.ISqlExpressionWriter
         {
             private readonly StringBuilder _sb;
-            private readonly InnerQuery _query;
+            private readonly Action<StringBuilder, Variable> _writeVariableAction;
 
-            public MsSqlExpressionWriter(StringBuilder sb, InnerQuery query)
+            public MsSqlExpressionWriter(StringBuilder sb, Action<StringBuilder, Variable> writeVariableAction)
             {
                 _sb = sb;
-                _query = query;
+                _writeVariableAction = writeVariableAction;
             }
 
             private void ProcessCondition(Condition condition)
@@ -362,7 +444,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteVariable(Variable variable)
             {
-                MsSqlQueryWriter.WriteVariable(_sb, _query, variable);
+                _writeVariableAction(_sb, variable);
             }
 
             /// <inheritdoc />
@@ -380,7 +462,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteBooleanExpression(Condition condition)
             {
-                throw new NotImplementedException();
+                ProcessCondition(condition);
             }
 
             /// <inheritdoc />
