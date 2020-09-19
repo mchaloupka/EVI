@@ -15,7 +15,7 @@ namespace Slp.Evi.Storage.MsSql.Database
 
         public static MsSqlColumn CreateFromDatabase(DatabaseColumn column)
         {
-            return new MsSqlColumn(column.Name, new MsSqlColumnType(column.DbDataType, column.Nullable));
+            return new MsSqlColumn(column.Name, MsSqlColumnType.Create(column.DbDataType, column.Nullable));
         }
 
         public string Name { get; }

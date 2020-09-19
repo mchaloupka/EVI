@@ -30,7 +30,7 @@ namespace Slp.Evi.Storage.MsSql.Database
         public ISqlDatabaseSchema DatabaseSchema => _databaseSchema;
 
         /// <inheritdoc />
-        public ISqlDatabaseWriter<MsSqlQuery> Writer => new MsSqlQueryWriter();
+        public ISqlDatabaseWriter<MsSqlQuery> Writer => new MsSqlQueryWriter(_databaseSchema);
 
         private SqlConnection GetRawConnection()
         {

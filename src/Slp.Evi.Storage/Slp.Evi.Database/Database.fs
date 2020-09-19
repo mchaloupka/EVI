@@ -1,9 +1,10 @@
 ﻿namespace Slp.Evi.Database
 
-open Slp.Evi.Common.Database
 open System
-open Slp.Evi.Relational.Algebra
 open Slp.Evi.Common.Algebra
+open Slp.Evi.Relational.Algebra
+open Slp.Evi.Common.Database
+open Slp.Evi.Database
 
 type ISqlResultColumn =
     abstract member Name: string with get
@@ -33,31 +34,33 @@ type ISqlDatabase<'T> =
 module SqlDatabaseWriterHelper =
     type ISqlExpressionWriter =
         abstract member WriteNull: unit -> unit
-        abstract member WriteBinaryNumericOperation: operator:ArithmeticOperator * leftOperand:Expression * rightOperand:Expression -> unit
-        abstract member WriteSwitch: caseStatements:CaseStatement list -> unit
-        abstract member WriteCoalesce: expressions:Expression list -> unit
-        abstract member WriteVariable: variable:Variable -> unit
-        abstract member WriteIriSafeVariable: variable:Variable -> unit
-        abstract member WriteConcatenation: expressions:Expression list -> unit
-        abstract member WriteBooleanExpression: condition:Condition -> unit
+        abstract member WriteBinaryNumericOperation: operator:ArithmeticOperator * leftOperand: TypedExpression * rightOperand: TypedExpression -> unit
+        abstract member WriteSwitch: caseStatements: TypedCaseStatement list -> unit
+        abstract member WriteCoalesce: expressions: TypedExpression list -> unit
+        abstract member WriteVariable: variable: Variable -> unit
+        abstract member WriteIriSafeVariable: variable: Variable -> unit
+        abstract member WriteConcatenation: expressions: TypedExpression list -> unit
+        abstract member WriteBooleanExpression: condition: TypedCondition -> unit
         abstract member WriteConstant: literal:string -> unit
         abstract member WriteConstant: literal:double -> unit
         abstract member WriteConstant: literal:int -> unit
 
         abstract member WriteTrue: unit -> unit
         abstract member WriteFalse: unit -> unit
-        abstract member WriteComparison: comparison:Comparisons * leftOperand:Expression * rightOperand:Expression -> unit
-        abstract member WriteConjunction: conditions:Condition list -> unit
-        abstract member WriteDisjunction: conditions:Condition list -> unit
-        abstract member WriteEqualVariableTo: variable:Variable * literal:Literal -> unit
-        abstract member WriteEqualVariables: leftVariable:Variable * rightVariable:Variable -> unit
-        abstract member WriteIsNull: variable:Variable -> unit
-        abstract member WriteLanguageMatch: langExpression:Expression * langRangeExpression:Expression -> unit
-        abstract member WriteLikeMatch: expression:Expression * pattern:string -> unit
-        abstract member WriteNot: condition:Condition -> unit
+        abstract member WriteComparison: comparison:Comparisons * leftOperand: TypedExpression * rightOperand: TypedExpression -> unit
+        abstract member WriteConjunction: conditions: TypedCondition list -> unit
+        abstract member WriteDisjunction: conditions: TypedCondition list -> unit
+        abstract member WriteEqualVariableTo: variable: Variable * literal: Literal -> unit
+        abstract member WriteEqualVariables: leftVariable: Variable * rightVariable: Variable -> unit
+        abstract member WriteIsNull: variable: Variable -> unit
+        abstract member WriteLanguageMatch: langExpression: TypedExpression * langRangeExpression:TypedExpression -> unit
+        abstract member WriteLikeMatch: expression: TypedExpression * pattern: string -> unit
+        abstract member WriteNot: condition: TypedCondition -> unit
 
-    let ProcessExpression (writer: ISqlExpressionWriter, expression: Expression) =
-        match expression with
+        abstract member WriteCastedExpression: actualType: ISqlColumnType * expectedType: ISqlColumnType * writeExpressionFunc: Action -> unit
+
+    let private writeExpression (writer: ISqlExpressionWriter, expressionContent: TypedExpressionContent) =
+        match expressionContent with
         | BinaryNumericOperation(operator, leftOperand, rightOperand) -> writer.WriteBinaryNumericOperation(operator, leftOperand, rightOperand)
         | Switch(caseStatements) -> writer.WriteSwitch(caseStatements)
         | Coalesce(expressions) -> writer.WriteCoalesce(expressions)
@@ -72,7 +75,13 @@ module SqlDatabaseWriterHelper =
         | Boolean(condition) -> writer.WriteBooleanExpression(condition)
         | Null -> writer.WriteNull()
 
-    let ProcessCondition (writer: ISqlExpressionWriter, condition: Condition) =
+    [<CompiledName("ProcessExpression")>]
+    let processExpression (writer: ISqlExpressionWriter, expression: TypedExpression) =
+        let writeExpressionFunc = fun () -> writeExpression(writer, expression.Expression)
+        writer.WriteCastedExpression(expression.ActualType, expression.ProvidedType, new Action(writeExpressionFunc))
+
+    [<CompiledName("ProcessCondition")>]
+    let processCondition (writer: ISqlExpressionWriter, condition: TypedCondition) =
         match condition with
         | AlwaysFalse -> writer.WriteFalse()
         | AlwaysTrue -> writer.WriteTrue()

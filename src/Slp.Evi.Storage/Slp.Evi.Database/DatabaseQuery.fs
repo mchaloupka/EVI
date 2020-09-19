@@ -3,6 +3,8 @@
 open System.Collections.Generic
 open Slp.Evi.Relational.Algebra
 open System.Runtime.InteropServices
+open Slp.Evi.Common.Algebra
+open Slp.Evi.Common.Database
 
 type NamingProvider private (nameMapping: IDictionary<Variable, string>) =
     member _.TryGetVariableName(var: Variable, [<Out>] value: byref<string>) =
@@ -37,13 +39,47 @@ and InnerSource =
             | InnerTable(_, np) -> np
             | InnerSource q -> q.NamingProvider
 
+and TypedCondition =
+    | AlwaysFalse
+    | AlwaysTrue
+    | Comparison of Comparisons * TypedExpression * TypedExpression
+    | Conjunction of TypedCondition list
+    | Disjunction of TypedCondition list
+    | EqualVariableTo of Variable * Literal
+    | EqualVariables of Variable * Variable
+    | IsNull of Variable
+    | LanguageMatch of TypedExpression * TypedExpression
+    | Like of TypedExpression * string
+    | Not of TypedCondition
+
+and TypedCaseStatement = { Condition: TypedCondition; Expression: TypedExpression }
+
+and TypedExpressionContent =
+    | BinaryNumericOperation of ArithmeticOperator * TypedExpression * TypedExpression
+    | Switch of TypedCaseStatement list
+    | Coalesce of TypedExpression list
+    | Variable of Variable
+    | IriSafeVariable of Variable
+    | Constant of Literal
+    | Concatenation of TypedExpression list
+    | Boolean of TypedCondition
+    | Null
+
+and TypedExpression = {
+    ProvidedType: ISqlColumnType
+    ActualType: ISqlColumnType
+    Expression: TypedExpressionContent
+}
+
+and TypedAssignment = { Variable: AssignedVariable; Expression: TypedExpression }
+
 and InnerQuery = {
     ProvidedVariables: HashSet<Variable>
     NamingProvider: MergedNamingProvider
     Sources: InnerSource list
-    LeftJoinedSources: (InnerSource * Condition) list
-    Filters: Condition list
-    Assignments: Assignment list
+    LeftJoinedSources: (InnerSource * TypedCondition) list
+    Filters: TypedCondition list
+    Assignments: TypedAssignment list
 }
 
 and QueryContent =
@@ -51,12 +87,14 @@ and QueryContent =
     | SingleEmptyResultQuery
     | SelectQuery of InnerQuery
 
+and TypedOrdering = { Expression: TypedExpression; Direction: OrderingDirection }
+
 and SqlQuery = {
     NamingProvider: NamingProvider
     Variables: Variable list
     InnerQueries: QueryContent list
     Limit: int option
     Offset: int option
-    Ordering: Ordering list
+    Ordering: TypedOrdering list
     IsDistinct: bool
 }

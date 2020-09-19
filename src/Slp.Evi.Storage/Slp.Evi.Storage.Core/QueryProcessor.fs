@@ -23,7 +23,7 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
         let sqlAlgebra = generateSqlAlgebra query
         let databaseQuery =
             sqlAlgebra
-            |> DatabaseQueryBuilder.translateToQuery
+            |> DatabaseQueryBuilder.translateToQuery database.DatabaseSchema
 
         use queryResult = databaseQuery |> database.Writer.WriteQuery |> database.ExecuteQuery
 

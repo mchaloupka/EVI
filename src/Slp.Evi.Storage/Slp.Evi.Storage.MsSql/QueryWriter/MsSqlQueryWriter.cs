@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using AngleSharp.Common;
 using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 using Slp.Evi.Common;
+using Slp.Evi.Common.Database;
 using Slp.Evi.Database;
 using Slp.Evi.Relational.Algebra;
 using Slp.Evi.Storage.Common.FSharpExtensions;
@@ -13,9 +15,16 @@ using Slp.Evi.Storage.MsSql.Database;
 
 namespace Slp.Evi.Storage.MsSql.QueryWriter
 {
-    class MsSqlQueryWriter
+    public class MsSqlQueryWriter
         : ISqlDatabaseWriter<MsSqlQuery>
     {
+        private readonly MsSqlDatabaseSchema _databaseSchema;
+
+        public MsSqlQueryWriter(MsSqlDatabaseSchema databaseSchema)
+        {
+            _databaseSchema = databaseSchema;
+        }
+
         /// <inheritdoc />
         public MsSqlQuery WriteQuery(SqlQuery query)
         {
@@ -24,7 +33,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             return new MsSqlQuery(sb.ToString());
         }
 
-        private static void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
+        private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
             // The ORDER BY and DISTINCT may cause issue if it is in the same query level
             if (sqlQuery.IsDistinct && !sqlQuery.Ordering.IsEmpty)
@@ -98,7 +107,8 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                     }
 
                     WriteExpression(sb, sqlQuery, ordering.Expression);
-                    if (ordering.Direction.Equals(Algebra.OrderingDirection.Descending))
+
+                    if (ordering.Direction.IsDescending)
                     {
                         sb.Append(" DESC");
                     }
@@ -131,7 +141,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
+        private void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
         {
             sb.Append("SELECT");
 
@@ -164,7 +174,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables)
+        private void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables)
         {
             sb.Append("SELECT");
 
@@ -187,13 +197,13 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteInnerNoResultQueryContent(StringBuilder sb, List<string> variables)
+        private void WriteInnerNoResultQueryContent(StringBuilder sb, List<string> variables)
         {
             WriteInnerSingleEmptyResultQueryContent(sb, variables);
             sb.Append(" WHERE 1=0");
         }
 
-        private static void WriteInnerSelectQueryContent(StringBuilder sb, InnerQuery query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
+        private void WriteInnerSelectQueryContent(StringBuilder sb, InnerQuery query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings)
         {
             var isFirstVariable = true;
             foreach (var variableName in variables)
@@ -223,7 +233,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 }
                 else
                 {
-                    WriteExpression(sb, query, Expression.Null);
+                    WriteExpression(sb, query, new TypedExpression(_databaseSchema.NullType, _databaseSchema.NullType, TypedExpressionContent.Null));
                 }
 
                 sb.Append(" AS ");
@@ -285,7 +295,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteInnerSource(StringBuilder sb, InnerSource innerSource)
+        private void WriteInnerSource(StringBuilder sb, InnerSource innerSource)
         {
             if (innerSource.IsInnerTable)
             {
@@ -361,19 +371,19 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
         }
 
-        private static void WriteExpression(StringBuilder sb, InnerQuery query, Expression expression)
+        private static void WriteExpression(StringBuilder sb, InnerQuery query, TypedExpression expression)
         {
             var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
         }
 
-        private static void WriteExpression(StringBuilder sb, SqlQuery query, Expression expression)
+        private static void WriteExpression(StringBuilder sb, SqlQuery query, TypedExpression expression)
         {
             var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
         }
 
-        private static void WriteCondition(StringBuilder sb, InnerQuery query, Condition condition)
+        private static void WriteCondition(StringBuilder sb, InnerQuery query, TypedCondition condition)
         {
             var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessCondition(writer, condition);
@@ -390,12 +400,12 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 _writeVariableAction = writeVariableAction;
             }
 
-            private void ProcessCondition(Condition condition)
+            private void ProcessCondition(TypedCondition condition)
             {
                 SqlDatabaseWriterHelper.ProcessCondition(this, condition);
             }
 
-            private void ProcessExpression(Expression expression)
+            private void ProcessExpression(TypedExpression expression)
             {
                 SqlDatabaseWriterHelper.ProcessExpression(this, expression);
             }
@@ -407,19 +417,19 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteBinaryNumericOperation(Algebra.ArithmeticOperator @operator, Expression leftOperand, Expression rightOperand)
+            public void WriteBinaryNumericOperation(Algebra.ArithmeticOperator @operator, TypedExpression leftOperand, TypedExpression rightOperand)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteSwitch(FSharpList<CaseStatement> caseStatements)
+            public void WriteSwitch(FSharpList<TypedCaseStatement> caseStatements)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteCoalesce(FSharpList<Expression> expressions)
+            public void WriteCoalesce(FSharpList<TypedExpression> expressions)
             {
                 _sb.Append("COALESCE(");
 
@@ -454,13 +464,13 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteConcatenation(FSharpList<Expression> expressions)
+            public void WriteConcatenation(FSharpList<TypedExpression> expressions)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteBooleanExpression(Condition condition)
+            public void WriteBooleanExpression(TypedCondition condition)
             {
                 ProcessCondition(condition);
             }
@@ -498,19 +508,20 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteComparison(Algebra.Comparisons comparison, Expression leftOperand, Expression rightOperand)
+            public void WriteComparison(Algebra.Comparisons comparison, TypedExpression leftOperand, TypedExpression rightOperand)
+            {
+
+                throw new NotImplementedException();
+            }
+
+            /// <inheritdoc />
+            public void WriteConjunction(FSharpList<TypedCondition> conditions)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteConjunction(FSharpList<Condition> conditions)
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <inheritdoc />
-            public void WriteDisjunction(FSharpList<Condition> conditions)
+            public void WriteDisjunction(FSharpList<TypedCondition> conditions)
             {
                 throw new NotImplementedException();
             }
@@ -535,22 +546,48 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteLanguageMatch(Expression langExpression, Expression langRangeExpression)
+            public void WriteLanguageMatch(TypedExpression langExpression, TypedExpression langRangeExpression)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteLikeMatch(Expression expression, string pattern)
+            public void WriteLikeMatch(TypedExpression expression, string pattern)
             {
                 throw new NotImplementedException();
             }
 
             /// <inheritdoc />
-            public void WriteNot(Condition condition)
+            public void WriteNot(TypedCondition condition)
             {
                 _sb.Append("NOT ");
                 ProcessCondition(condition);
+            }
+
+            /// <inheritdoc />
+            public void WriteCastedExpression(ISqlColumnType actualType, ISqlColumnType expectedType, Action writeExpressionFunc)
+            {
+                if (actualType != expectedType)
+                {
+                    _sb.Append("CAST(");
+                    writeExpressionFunc();
+                    _sb.Append(" AS ");
+
+                    if (!(expectedType is MsSqlColumnType columnType))
+                    {
+                        throw new InvalidOperationException($"Trying to cast to a type that is not specific to MS SQL, type: {expectedType.GetType()}");
+                    }
+                    else
+                    {
+                        _sb.Append(columnType.DbString);
+                    }
+
+                    _sb.Append(")");
+                }
+                else
+                {
+                    writeExpressionFunc();
+                }
             }
         }
     }

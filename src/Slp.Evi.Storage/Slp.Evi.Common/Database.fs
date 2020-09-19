@@ -24,4 +24,14 @@ type ISqlTableSchema =
 type ISqlDatabaseSchema =
     abstract member GetTable: tableName: string -> ISqlTableSchema
 
+    abstract member NullType: ISqlColumnType with get
+
     abstract member IntegerType: ISqlColumnType with get
+
+    abstract member StringType: ISqlColumnType with get
+
+    abstract member DoubleType: ISqlColumnType with get
+
+    abstract member BooleanType: ISqlColumnType with get
+
+    abstract member GetCommonType: left: ISqlColumnType * right: ISqlColumnType -> ISqlColumnType

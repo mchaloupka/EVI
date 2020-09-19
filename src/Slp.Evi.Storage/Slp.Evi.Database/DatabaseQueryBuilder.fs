@@ -2,6 +2,7 @@
 
 open System.Collections.Generic
 open Slp.Evi.Relational.Algebra
+open Slp.Evi.Common.Database
 
 type private VariableList = HashSet<Variable>
 
@@ -163,113 +164,242 @@ let private emptySqlQuery = {
     IsDistinct = false
 }
 
-let rec private translateModel desiredVariables model =
-    match model with
-    | NoResult ->
-        { emptySqlQuery with InnerQueries = NoResultQuery |> List.singleton }
+type private Builder(databaseSchema: ISqlDatabaseSchema) =
+    let addTypeToExpressionContent contentType content =
+        {
+            ProvidedType = contentType
+            ActualType = contentType
+            Expression = content
+        }
 
-    | SingleEmptyResult ->
-        { emptySqlQuery with InnerQueries = SingleEmptyResultQuery |> List.singleton }
+    let rec transformCondition = function
+        | Condition.AlwaysTrue -> TypedCondition.AlwaysTrue
+        | Condition.AlwaysFalse -> TypedCondition.AlwaysFalse
+        | Condition.Comparison (c, le, re) ->
+            let transformedLe = le |> transformExpression
+            let transformedRe = re |> transformExpression
+            let commonType = databaseSchema.GetCommonType(transformedLe.ProvidedType, transformedRe.ProvidedType)
+            TypedCondition.Comparison (c, { transformedLe with ProvidedType = commonType }, { transformedRe with ProvidedType = commonType })
 
-    | Modified modifiedModel ->
-        let innerResult = translateModel desiredVariables modifiedModel.InnerModel
+        | Condition.Conjunction cs -> cs |> List.map transformCondition |> TypedCondition.Conjunction
+        | Condition.Disjunction cs -> cs |> List.map transformCondition |> TypedCondition.Disjunction
+        | Condition.EqualVariableTo (v, l) -> TypedCondition.EqualVariableTo (v, l)
+        | Condition.EqualVariables (vl, vr) -> TypedCondition.EqualVariables (vl, vr)
+        | Condition.IsNull v -> v |> TypedCondition.IsNull
+        | Condition.LanguageMatch (lang, langRange) -> TypedCondition.LanguageMatch (lang |> transformExpression, langRange |> transformExpression)
+        | Condition.Like (expr, pattern) -> TypedCondition.Like (expr |> transformExpression, pattern)
+        | Condition.Not c -> c |> transformCondition |> TypedCondition.Not
 
-        if innerResult.IsDistinct || innerResult.Limit.IsSome || innerResult.Offset.IsSome || innerResult.Ordering.IsEmpty |> not then
-            sprintf "Another application of modified model on: %A" innerResult
-            |> invalidOp
-        else
-            { innerResult with
-                IsDistinct = modifiedModel.IsDistinct
-                Limit = modifiedModel.Limit
-                Offset = modifiedModel.Offset
-                Ordering = modifiedModel.Ordering
-            }
+    and transformExpression expression: TypedExpression =
+        match expression with
+        | Expression.BinaryNumericOperation (op, le, re) ->
+            let transformedLe = le |> transformExpression
+            let transformedRe = re |> transformExpression
+            let commonType = databaseSchema.GetCommonType(transformedLe.ProvidedType, transformedRe.ProvidedType)
+            
+            TypedExpressionContent.BinaryNumericOperation (op, { transformedLe with ProvidedType = commonType }, { transformedRe with ProvidedType = commonType })
+            |> addTypeToExpressionContent commonType
 
-    | Union(_, inners) ->
-        (inners, (VariableList.empty, List.empty))
-        ||> List.foldBack (
-            fun notModifiedModel (prevVars, prev) ->
-                let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
-                let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
-                prevVars |> VariableList.union selectedVariables, innerResult :: prev
-        )
-        |> fun (selectedVariables, innerResults) ->
+        | Expression.Switch es ->
+            ((databaseSchema.NullType, List.empty), es)
+            ||> List.fold (
+                fun (t, ex) case ->
+                    let transformedE = case.Expression |> transformExpression
+                    let transformedC = case.Condition |> transformCondition
+                    let commonType = databaseSchema.GetCommonType(t, transformedE.ProvidedType)
+                    commonType, (transformedC, transformedE) :: ex
+            )
+            |> fun (ct, ex) ->
+                ex
+                |> List.map (fun (c, e) -> { TypedCaseStatement.Condition = c; TypedCaseStatement.Expression = { e with ProvidedType = ct } })
+                |> List.rev
+                |> TypedExpressionContent.Switch
+                |> addTypeToExpressionContent ct
+
+        | Expression.Coalesce es ->
+            ((databaseSchema.NullType, List.empty), es)
+            ||> List.fold (
+                fun (t, ex) e ->
+                    let transformedE = e |> transformExpression
+                    let commonType = databaseSchema.GetCommonType(t, transformedE.ProvidedType)
+                    commonType, transformedE :: ex
+            )
+            |> fun (ct, ex) ->
+                ex
+                |> List.map (fun e -> { e with ProvidedType = ct })
+                |> TypedExpressionContent.Coalesce
+                |> addTypeToExpressionContent ct
+
+        | Expression.Variable (Assigned v) ->
+            TypedExpressionContent.Variable (Assigned v) |> addTypeToExpressionContent v.SqlType
+        | Expression.Variable (Column c) ->
+            TypedExpressionContent.Variable (Column c) |> addTypeToExpressionContent c.Schema.SqlType
+        | Expression.IriSafeVariable (Assigned v) ->
+            TypedExpressionContent.IriSafeVariable (Assigned v) |> addTypeToExpressionContent v.SqlType
+        | Expression.IriSafeVariable (Column c) ->
+            TypedExpressionContent.IriSafeVariable (Column c) |> addTypeToExpressionContent c.Schema.SqlType
+        | Expression.Constant l ->
+            let t =
+                match l with
+                | String _ -> databaseSchema.StringType
+                | Int _ -> databaseSchema.IntegerType
+                | Double _ -> databaseSchema.DoubleType
+
+            TypedExpressionContent.Constant l
+            |> addTypeToExpressionContent t
+
+        | Expression.Concatenation es ->
+            es
+            |> List.map (
+                transformExpression >> (
+                    fun e ->
+                        { e with ProvidedType = databaseSchema.StringType }
+                )
+            )
+            |> TypedExpressionContent.Concatenation
+            |> addTypeToExpressionContent databaseSchema.StringType
+
+        | Expression.Boolean c ->
+            c
+            |> transformCondition
+            |> TypedExpressionContent.Boolean
+            |> addTypeToExpressionContent databaseSchema.BooleanType
+
+        | Expression.Null ->
+            TypedExpressionContent.Null
+            |> addTypeToExpressionContent databaseSchema.NullType
+
+    let rec translateModel desiredVariables model =
+        match model with
+        | NoResult ->
+            { emptySqlQuery with InnerQueries = NoResultQuery |> List.singleton }
+
+        | SingleEmptyResult ->
+            { emptySqlQuery with InnerQueries = SingleEmptyResultQuery |> List.singleton }
+
+        | Modified modifiedModel ->
+            let innerResult = translateModel desiredVariables modifiedModel.InnerModel
+
+            if innerResult.IsDistinct || innerResult.Limit.IsSome || innerResult.Offset.IsSome || innerResult.Ordering.IsEmpty |> not then
+                sprintf "Another application of modified model on: %A" innerResult
+                |> invalidOp
+            else
+                { innerResult with
+                    IsDistinct = modifiedModel.IsDistinct
+                    Limit = modifiedModel.Limit
+                    Offset = modifiedModel.Offset
+                    Ordering =
+                        modifiedModel.Ordering
+                        |> List.map (
+                            fun x ->
+                                { TypedOrdering.Expression = x.Expression |> transformExpression; TypedOrdering.Direction = x.Direction }
+                        )
+                }
+
+        | Union(_, inners) ->
+            (inners, (VariableList.empty, List.empty))
+            ||> List.foldBack (
+                fun notModifiedModel (prevVars, prev) ->
+                    let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
+                    let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
+                    prevVars |> VariableList.union selectedVariables, innerResult :: prev
+            )
+            |> fun (selectedVariables, innerResults) ->
+                let selectedVariablesList = selectedVariables |> VariableList.toList
+                let namingProvider = NamingProvider.WithVariables selectedVariablesList
+            
+                { emptySqlQuery with
+                    NamingProvider = namingProvider
+                    Variables = selectedVariablesList
+                    InnerQueries = innerResults |> List.map SelectQuery
+                }
+
+        | NotModified notModifiedModel ->
+            let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
+            let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
             let selectedVariablesList = selectedVariables |> VariableList.toList
             let namingProvider = NamingProvider.WithVariables selectedVariablesList
-            
+
             { emptySqlQuery with
                 NamingProvider = namingProvider
                 Variables = selectedVariablesList
-                InnerQueries = innerResults |> List.map SelectQuery
+                InnerQueries = innerResult |> SelectQuery |>  List.singleton
             }
 
-    | NotModified notModifiedModel ->
-        let innerResult = translateNotModifiedModel desiredVariables notModifiedModel
-        let selectedVariables = VariableList.intersect desiredVariables innerResult.ProvidedVariables
-        let selectedVariablesList = selectedVariables |> VariableList.toList
-        let namingProvider = NamingProvider.WithVariables selectedVariablesList
+    and translateNotModifiedModel desiredVariables notModifiedModel =
+        let assignedVariables =
+            notModifiedModel.Assignments
+            |> List.map (fun x -> x.Variable |> Assigned)
+            |> HashSet<_>
 
-        { emptySqlQuery with
-            NamingProvider = namingProvider
-            Variables = selectedVariablesList
-            InnerQueries = innerResult |> SelectQuery |>  List.singleton
-        }
-
-and private translateNotModifiedModel desiredVariables notModifiedModel =
-    let assignedVariables =
-        notModifiedModel.Assignments
-        |> List.map (fun x -> x.Variable |> Assigned)
-        |> HashSet<_>
-
-    let neededVariables =
-        desiredVariables
-        |> VariableList.toList
-        |> neededVariablesForCondition notModifiedModel.Filters
-        |> neededVariablesForExpression (notModifiedModel.Assignments |> List.map (fun x -> x.Expression))
-        |> neededVariablesForCondition (
-            notModifiedModel.Sources 
-            |> List.collect (
-                function
-                | LeftOuterJoinModel(_, condition) -> condition |> List.singleton
-                | _ -> List.empty
+        let neededVariables =
+            desiredVariables
+            |> VariableList.toList
+            |> neededVariablesForCondition notModifiedModel.Filters
+            |> neededVariablesForExpression (notModifiedModel.Assignments |> List.map (fun x -> x.Expression))
+            |> neededVariablesForCondition (
+                notModifiedModel.Sources 
+                |> List.collect (
+                    function
+                    | LeftOuterJoinModel(_, condition) -> condition |> List.singleton
+                    | _ -> List.empty
+                )
             )
+            |> VariableList.fromList
+
+        ({
+            NamingProvider = MergedNamingProvider.Empty
+            ProvidedVariables = assignedVariables
+            Sources = List.empty
+            LeftJoinedSources = List.empty
+            Filters =
+                notModifiedModel.Filters
+                |> List.map transformCondition
+            Assignments =
+                notModifiedModel.Assignments
+                |> List.map (
+                    fun x ->
+                        { TypedAssignment.Variable = x.Variable; TypedAssignment.Expression = x.Expression |> transformExpression }
+                )
+        }, notModifiedModel.Sources)
+        ||> List.fold (
+            fun resQuery source ->
+                match source with
+                | Sql sqlSource ->
+                    let variables = sqlSource.Columns |> List.map Column
+                    let namingProvider = NamingProvider.FromTable sqlSource
+                    let source = (sqlSource, namingProvider) |> InnerTable
+                    { resQuery with
+                        NamingProvider = resQuery.NamingProvider.MergeWith(variables, source)
+                        Sources = source :: resQuery.Sources
+                        ProvidedVariables = resQuery.ProvidedVariables |> VariableList.addMany variables
+                    }
+
+                | SubQuery model ->
+                    let innerResult = translateModel neededVariables model
+                    let source = innerResult |> InnerSource
+                    { resQuery with
+                        NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
+                        Sources = source :: resQuery.Sources
+                        ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
+                    }
+
+                | LeftOuterJoinModel(model, condition) ->
+                    let innerResult = translateModel neededVariables (model |> NotModified)
+                    let source = innerResult |> InnerSource
+                    { resQuery with
+                        NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
+                        LeftJoinedSources = (source, condition |> transformCondition) :: resQuery.LeftJoinedSources
+                        ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
+                    }
         )
-        |> VariableList.fromList
 
-    ({ NamingProvider = MergedNamingProvider.Empty; ProvidedVariables = assignedVariables; Sources = List.empty; LeftJoinedSources = List.empty; Filters = notModifiedModel.Filters; Assignments = notModifiedModel.Assignments }, notModifiedModel.Sources)
-    ||> List.fold (
-        fun resQuery source ->
-            match source with
-            | Sql sqlSource ->
-                let variables = sqlSource.Columns |> List.map Column
-                let namingProvider = NamingProvider.FromTable sqlSource
-                let source = (sqlSource, namingProvider) |> InnerTable
-                { resQuery with
-                    NamingProvider = resQuery.NamingProvider.MergeWith(variables, source)
-                    Sources = source :: resQuery.Sources
-                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.addMany variables
-                }
+    [<CompiledName("Build")>]
+    member _.build = translateModel
 
-            | SubQuery model ->
-                let innerResult = translateModel neededVariables model
-                let source = innerResult |> InnerSource
-                { resQuery with
-                    NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
-                    Sources = source :: resQuery.Sources
-                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
-                }
+let translateToQuery databaseSchema boundCalculusModel =
+    let builder = Builder(databaseSchema)
 
-            | LeftOuterJoinModel(model, condition) ->
-                let innerResult = translateModel neededVariables (model |> NotModified)
-                let source = innerResult |> InnerSource
-                { resQuery with
-                    NamingProvider = resQuery.NamingProvider.MergeWith(innerResult.Variables, source)
-                    LeftJoinedSources = (source, condition) :: resQuery.LeftJoinedSources
-                    ProvidedVariables = resQuery.ProvidedVariables |> VariableList.union innerResult.Variables
-                }
-    )
-
-let translateToQuery boundCalculusModel =
     let neededVariables =
         boundCalculusModel.Bindings
         |> Map.toList
@@ -277,4 +407,4 @@ let translateToQuery boundCalculusModel =
         |> neededVariablesForValueBinders <| List.empty
         |> VariableList.fromList
 
-    translateModel neededVariables boundCalculusModel.Model
+    builder.build neededVariables boundCalculusModel.Model
