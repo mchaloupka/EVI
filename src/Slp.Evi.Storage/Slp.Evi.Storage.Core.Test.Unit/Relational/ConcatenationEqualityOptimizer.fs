@@ -12,9 +12,9 @@ let fakeSchema name =
         member _.Name = name
         member _.SqlType =
             { new ISqlColumnType with
-                member _.IsNullable = false
                 member _.DefaultRdfType = KnownTypes.xsdString
             }
+        member _.IsNullable = false
     }
 
 let textPart = String >> Constant

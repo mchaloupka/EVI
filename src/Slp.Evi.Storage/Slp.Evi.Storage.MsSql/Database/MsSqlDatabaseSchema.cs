@@ -64,16 +64,16 @@ namespace Slp.Evi.Storage.MsSql.Database
         public ISqlColumnType NullType => NullMsSqlColumnType.Instance;
 
         /// <inheritdoc />
-        public ISqlColumnType IntegerType => new IntegerMsSqlColumnType(IntegerMsSqlColumnType.IntegerTypes.Int, false);
+        public ISqlColumnType IntegerType => new IntegerMsSqlColumnType(IntegerMsSqlColumnType.IntegerTypes.Int);
 
         /// <inheritdoc />
-        public ISqlColumnType StringType => VarCharMsSqlColumnType.GetNVarCharMax(false);
+        public ISqlColumnType StringType => VarCharMsSqlColumnType.NVarCharMaxType;
 
         /// <inheritdoc />
         public ISqlColumnType DoubleType =>
-            new FloatingPointMsSqlColumnType(FloatingPointMsSqlColumnType.FloatingTypes.Float, false);
+            new FloatingPointMsSqlColumnType(FloatingPointMsSqlColumnType.FloatingTypes.Float);
 
         /// <inheritdoc />
-        public ISqlColumnType BooleanType => new IntegerMsSqlColumnType(IntegerMsSqlColumnType.IntegerTypes.Bit, false);
+        public ISqlColumnType BooleanType => new IntegerMsSqlColumnType(IntegerMsSqlColumnType.IntegerTypes.Bit);
     }
 }

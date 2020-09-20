@@ -5,10 +5,10 @@ open Slp.Evi.Common.Types
 type ISqlColumnType =
     abstract member DefaultRdfType: LiteralValueType with get
 
-    abstract member IsNullable: bool with get
-
 type ISqlColumnSchema =
     abstract member Name: string with get
+
+    abstract member IsNullable: bool with get
 
     abstract member SqlType: ISqlColumnType with get
 

@@ -65,7 +65,7 @@ let rec optimizeRelationalCondition condition =
             if x = y then AlwaysTrue else AlwaysFalse
         | _ ->
             condition
-    | IsNull(Column(col)) when col.Schema.SqlType.IsNullable |> not ->
+    | IsNull(Column(col)) when col.Schema.IsNullable |> not ->
         AlwaysFalse
     | EqualVariables(x, y) when x = y ->
         AlwaysTrue
