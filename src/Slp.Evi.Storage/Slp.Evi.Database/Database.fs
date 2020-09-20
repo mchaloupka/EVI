@@ -59,6 +59,13 @@ module SqlDatabaseWriterHelper =
 
         abstract member WriteCastedExpression: actualType: ISqlColumnType * expectedType: ISqlColumnType * writeExpressionFunc: Action -> unit
 
+    [<CompiledName("ProcessLiteral")>]
+    let processLiteral (writer: ISqlExpressionWriter, literal: Literal) =
+        match literal with
+        | String(s) -> writer.WriteConstant(s)
+        | Double(d) -> writer.WriteConstant(d)
+        | Int(i) -> writer.WriteConstant(i)
+
     let private writeExpression (writer: ISqlExpressionWriter, expressionContent: TypedExpressionContent) =
         match expressionContent with
         | BinaryNumericOperation(operator, leftOperand, rightOperand) -> writer.WriteBinaryNumericOperation(operator, leftOperand, rightOperand)
@@ -67,10 +74,7 @@ module SqlDatabaseWriterHelper =
         | Variable(variable) -> writer.WriteVariable(variable)
         | IriSafeVariable(iriSafeVariable) -> writer.WriteIriSafeVariable(iriSafeVariable)
         | Constant(literal) ->
-            match literal with
-            | String(s) -> writer.WriteConstant(s)
-            | Double(d) -> writer.WriteConstant(d)
-            | Int(i) -> writer.WriteConstant(i)
+            processLiteral (writer, literal)
         | Concatenation(expressions) -> writer.WriteConcatenation(expressions)
         | Boolean(condition) -> writer.WriteBooleanExpression(condition)
         | Null -> writer.WriteNull()

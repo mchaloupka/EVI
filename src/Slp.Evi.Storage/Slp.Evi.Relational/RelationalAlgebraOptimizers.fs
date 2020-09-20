@@ -3,6 +3,7 @@
 open Slp.Evi.Common.Algebra
 open Slp.Evi.Relational.Algebra
 open Slp.Evi.Relational.RelationalAlgebraNormalizer
+open TCode.r2rml4net
 
 let optimizeRelationalExpression expression =
     expression
@@ -42,6 +43,18 @@ let rec optimizeRelationalCondition condition =
         optimizeConcatenationsEquality [ left ] right
     | Comparison(Comparisons.EqualTo, IriSafeVariable(left), IriSafeVariable(right)) ->
         Comparison(Comparisons.EqualTo, Variable left, Variable right) |> optimizeRelationalCondition
+    | Comparison(Comparisons.EqualTo, IriSafeVariable(iriSafe), Constant(c))
+    | Comparison(Comparisons.EqualTo, Constant(c), IriSafeVariable(iriSafe)) ->
+        match c with
+        | String s ->
+            if s |> Seq.forall MappingHelper.IsIUnreserved then
+                EqualVariableTo(iriSafe, c)
+            else
+                AlwaysFalse
+        | Int _
+        | Double _ ->
+            EqualVariableTo(iriSafe, c)
+            
     | Comparison(Comparisons.EqualTo, Constant(constX), Constant(constY)) ->
         match constX, constY with
         | Int x, Int y ->

@@ -410,6 +410,11 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 SqlDatabaseWriterHelper.ProcessExpression(this, expression);
             }
 
+            private void ProcessLiteral(Literal literal)
+            {
+                SqlDatabaseWriterHelper.ProcessLiteral(this, literal);
+            }
+
             /// <inheritdoc />
             public void WriteNull()
             {
@@ -510,8 +515,34 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteComparison(Algebra.Comparisons comparison, TypedExpression leftOperand, TypedExpression rightOperand)
             {
+                ProcessExpression(leftOperand);
 
-                throw new NotImplementedException();
+                if (comparison.IsEqualTo)
+                {
+                    _sb.Append("=");
+                }
+                else if (comparison.IsGreaterOrEqualThan)
+                {
+                    _sb.Append(">=");
+                }
+                else if (comparison.IsGreaterThan)
+                {
+                    _sb.Append(">");
+                }
+                else if (comparison.IsLessOrEqualThan)
+                {
+                    _sb.Append("<=");
+                }
+                else if (comparison.IsLessThan)
+                {
+                    _sb.Append("<");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unsupported comparison operator: {comparison}");
+                }
+
+                ProcessExpression(rightOperand);
             }
 
             /// <inheritdoc />
@@ -529,13 +560,17 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteEqualVariableTo(Variable variable, Literal literal)
             {
-                throw new NotImplementedException();
+                WriteVariable(variable);
+                _sb.Append("=");
+                ProcessLiteral(literal);
             }
 
             /// <inheritdoc />
             public void WriteEqualVariables(Variable leftVariable, Variable rightVariable)
             {
-                throw new NotImplementedException();
+                WriteVariable(leftVariable);
+                _sb.Append("=");
+                WriteVariable(rightVariable);
             }
 
             /// <inheritdoc />

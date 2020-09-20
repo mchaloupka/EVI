@@ -237,7 +237,7 @@ type private Builder(databaseSchema: ISqlDatabaseSchema) =
         | Expression.IriSafeVariable (Assigned v) ->
             TypedExpressionContent.IriSafeVariable (Assigned v) |> addTypeToExpressionContent v.SqlType
         | Expression.IriSafeVariable (Column c) ->
-            TypedExpressionContent.IriSafeVariable (Column c) |> addTypeToExpressionContent c.Schema.SqlType
+            TypedExpressionContent.IriSafeVariable (Column c) |> addTypeToExpressionContent databaseSchema.StringType
         | Expression.Constant l ->
             let t =
                 match l with
