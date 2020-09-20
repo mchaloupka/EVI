@@ -424,7 +424,30 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteBinaryNumericOperation(Algebra.ArithmeticOperator @operator, TypedExpression leftOperand, TypedExpression rightOperand)
             {
-                throw new NotImplementedException();
+                ProcessExpression(leftOperand);
+
+                if (@operator.IsAdd)
+                {
+                    _sb.Append("+");
+                }
+                else if (@operator.IsSubtract)
+                {
+                    _sb.Append("-");
+                }
+                else if (@operator.IsMultiply)
+                {
+                    _sb.Append("*");
+                }
+                else if (@operator.IsDivide)
+                {
+                    _sb.Append("/");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Operator not yet supported: {@operator}");
+                }
+
+                ProcessExpression(rightOperand);
             }
 
             /// <inheritdoc />
@@ -548,13 +571,47 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteConjunction(FSharpList<TypedCondition> conditions)
             {
-                throw new NotImplementedException();
+                _sb.Append("(");
+                var isFirst = true;
+
+                foreach (var condition in conditions)
+                {
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        _sb.Append(" AND ");
+                    }
+
+                    ProcessCondition(condition);
+                }
+
+                _sb.Append(")");
             }
 
             /// <inheritdoc />
             public void WriteDisjunction(FSharpList<TypedCondition> conditions)
             {
-                throw new NotImplementedException();
+                _sb.Append("(");
+                var isFirst = true;
+
+                foreach (var condition in conditions)
+                {
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        _sb.Append(" OR ");
+                    }
+
+                    ProcessCondition(condition);
+                }
+
+                _sb.Append(")");
             }
 
             /// <inheritdoc />
@@ -602,7 +659,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteCastedExpression(ISqlColumnType actualType, ISqlColumnType expectedType, Action writeExpressionFunc)
             {
-                if (actualType != expectedType)
+                if (!actualType.Equals(expectedType))
                 {
                     _sb.Append("CAST(");
                     writeExpressionFunc();
