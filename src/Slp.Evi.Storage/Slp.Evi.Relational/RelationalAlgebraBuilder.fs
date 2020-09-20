@@ -643,7 +643,7 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
                         |> List.collect snd
                         |> List.map Sql
                     Assignments = []
-                    Filters = filters
+                    Filters = filters |> List.distinct
                 } |> NotModified |> optimizeCalculusModel
                 Bindings = valueBindings
                 Variables = valueBindings |> Map.keys |> List.ofSeq
