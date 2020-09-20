@@ -73,10 +73,77 @@ let rec optimizeRelationalCondition condition =
         condition
     |> normalizeRelationalCondition
 
+let rec private isConstantExpression = function
+    | BinaryNumericOperation (_, le, re) ->
+        isConstantExpression le && isConstantExpression re
+    | Switch caseStatements ->
+        caseStatements
+        |> List.forall (
+            fun x ->
+                isConstantCondition x.Condition && isConstantExpression x.Expression
+        )
+    | Coalesce expressions ->
+        expressions
+        |> List.forall isConstantExpression
+    | Variable _ ->
+        false
+    | IriSafeVariable _ ->
+        false
+    | Constant _ ->
+        true
+    | Concatenation expressions ->
+        expressions
+        |> List.forall isConstantExpression
+    | Boolean condition ->
+        condition
+        |> isConstantCondition
+    | Null ->
+        true
+
+and private isConstantCondition = function
+    | AlwaysFalse
+    | AlwaysTrue ->
+        true        
+    | Comparison (_, le, re) ->
+        isConstantExpression le && isConstantExpression re
+    | Conjunction conditions ->
+        conditions
+        |> List.forall isConstantCondition
+    | Disjunction conditions ->
+        conditions
+        |> List.forall isConstantCondition
+    | EqualVariableTo _ ->
+        false
+    | EqualVariables _ ->
+        false
+    | IsNull _ ->
+        false
+    | LanguageMatch (le, re) ->
+        isConstantExpression le && isConstantExpression re
+    | Like (ex, _) ->
+        isConstantExpression ex
+    | Not cond ->
+        isConstantCondition cond
+
 let optimizeCalculusModel model =
-    model
-    |> normalizeCalculusModel
+    normalizeCalculusModel <|
+    match model with
+    | Modified modifiedCalculusModel ->
+        { modifiedCalculusModel with
+            Ordering =
+                modifiedCalculusModel.Ordering
+                |> List.filter (
+                    fun x ->
+                        x.Expression
+                        |> isConstantExpression
+                        |> not
+                )
+        }
+        |> Modified
+    | _ ->
+        model
+    
 
 let optimizeBoundCalculusModel model =
     model
-    |> normalizeBoundCalculusModel
+    |> normalizeBoundCalculusModel 

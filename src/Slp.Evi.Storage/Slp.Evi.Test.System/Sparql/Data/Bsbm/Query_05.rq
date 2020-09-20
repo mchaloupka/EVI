@@ -5,7 +5,7 @@ PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
 SELECT DISTINCT ?product ?productLabel
 WHERE {
 	?product rdfs:label ?productLabel .
- FILTER (<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product1> != ?product)
+	FILTER (<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product1> != ?product)
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product1> bsbm:productFeature ?prodFeature .
 	?product bsbm:productFeature ?prodFeature .
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/Product1> bsbm:productPropertyNumeric1 ?origProperty1 .

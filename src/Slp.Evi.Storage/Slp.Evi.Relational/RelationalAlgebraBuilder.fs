@@ -198,20 +198,28 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
 
         match nodeTypeRecord.Category with
         | TypeIndexer.TypeCategory.BooleanLiteral ->
-            { baseRecord with
-                BooleanExpression = expression
-            }
+            NotImplementedException("BooleanLiteral conversion not yet implemented")
+            |> raise
         | TypeIndexer.TypeCategory.NumericLiteral ->
+            let numericLiteral =
+                match Int32.TryParse(literalNode.Value) with
+                | true, intValue -> intValue |> Int
+                | false, _ ->
+                    match System.Double.TryParse(literalNode.Value) with
+                    | true, doubleValue -> doubleValue |> Double
+                    | false, _ ->
+                        sprintf "Failed to parse numeric: %s" literalNode.Value
+                        |> invalidOp
+
             { baseRecord with
-                NumericExpression = expression
+                NumericExpression = numericLiteral |> Constant
             }
         | TypeIndexer.TypeCategory.DateTimeLiteral ->
-            { baseRecord with
-                DateTimeExpresion = expression
-            }
+            NotImplementedException("DateTimeLiteral conversion not yet implemented")
+            |> raise
          | _ ->
             { baseRecord with
-                StringExpression = expression
+                StringExpression = literalNode.Value |> String |> Constant
             }
 
 let private isExpressionSetInCategory (category: TypeIndexer.TypeCategory) exprSet =

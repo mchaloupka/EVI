@@ -197,12 +197,8 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                 resultsHandler.EndResults(false)
                 reraise()
 
-            "DESCRIBE query type is not yet implemented" |> NotImplementedException |> raise
-
         | _ ->
-            "Unknown query type cannot be processed" |> invalidOp 
-
-        raise (NotImplementedException(sprintf "Has not been further implemented, last part ended up with %A" databaseQuery))
+            "Unknown query type cannot be processed" |> invalidOp
 
     new (mapping: IR2RML, database: ISqlDatabase<'T>) =
         let processedMapping = R2RML.Builder.createMappingRepresentation database.DatabaseSchema mapping

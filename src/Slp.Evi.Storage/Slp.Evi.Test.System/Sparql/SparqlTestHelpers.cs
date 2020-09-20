@@ -36,12 +36,12 @@ namespace Slp.Evi.Test.System.Sparql
                 else if (command.Name == "query")
                     ExecuteQuery(sqlDb, command);
                 else
-                    throw new Exception(String.Format("Unknown sql command {1} when creating dataset {0}", dataset, command.Name));
+                    throw new Exception(string.Format("Unknown sql command {1} when creating dataset {0}", dataset, command.Name));
             }
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new MsSqlEviStorage(mapping, sqlDb.ConnectionString);
+            return new MsSqlEviStorage(mapping, sqlDb.ConnectionString, 30);
         }
 
         private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)

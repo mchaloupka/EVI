@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using AngleSharp.Common;
 using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using Slp.Evi.Common;
 using Slp.Evi.Common.Database;
 using Slp.Evi.Database;
@@ -35,8 +34,18 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
         private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
-            // The ORDER BY and DISTINCT may cause issue if it is in the same query level
-            if (sqlQuery.IsDistinct && !sqlQuery.Ordering.IsEmpty)
+            bool isTrivialQuery =
+                sqlQuery.Ordering.IsEmpty
+                && sqlQuery.Limit.IsNone()
+                && sqlQuery.Offset.IsNone();
+
+            if (sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsSome())
+            {
+                sb.Append("SELECT TOP ");
+                sb.Append(sqlQuery.Limit.Value);
+                sb.Append(" * FROM (");
+            }
+            else if(!isTrivialQuery)
             {
                 sb.Append("SELECT * FROM (");
             }
@@ -67,10 +76,6 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
             var variables = variablesMappings.Keys.OrderBy(x => x).ToList();
 
-            var innerLimit = sqlQuery.InnerQueries.Length == 1 && sqlQuery.Ordering.IsEmpty && sqlQuery.Offset.IsNone()
-                ? sqlQuery.Limit.ToNullable()
-                : null;
-
             var firstInnerQuery = true;
             foreach (var innerQuery in sqlQuery.InnerQueries)
             {
@@ -83,77 +88,68 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                     sb.Append(sqlQuery.IsDistinct ? " UNION " : " UNION ALL ");
                 }
 
-                WriteInnerQuery(sb, innerQuery, variables, variablesMappings, sqlQuery.IsDistinct, innerLimit);
+                WriteInnerQuery(sb, innerQuery, variables, variablesMappings, sqlQuery.IsDistinct);
             }
 
-            if (sqlQuery.IsDistinct && !sqlQuery.Ordering.IsEmpty)
+            if (!isTrivialQuery)
             {
-                sb.Append(")");
+                sb.Append(") AS _");
             }
 
-            if (!innerLimit.HasValue)
+            var firstOrderBy = true;
+            foreach (var ordering in sqlQuery.Ordering)
             {
-                var firstOrderBy = true;
-                foreach (var ordering in sqlQuery.Ordering)
+                if (firstOrderBy)
                 {
-                    if (firstOrderBy)
-                    {
-                        sb.Append(" ORDER BY ");
-                        firstOrderBy = false;
-                    }
-                    else
-                    {
-                        sb.Append(", ");
-                    }
-
-                    WriteExpression(sb, sqlQuery, ordering.Expression);
-
-                    if (ordering.Direction.IsDescending)
-                    {
-                        sb.Append(" DESC");
-                    }
+                    sb.Append(" ORDER BY ");
+                    firstOrderBy = false;
+                }
+                else
+                {
+                    sb.Append(", ");
                 }
 
-                if (sqlQuery.Offset.IsSome() || sqlQuery.Limit.IsSome())
-                {
-                    if (firstOrderBy)
-                    {
-                        throw new Exception("To enable offset and limit, it is needed to use also order by clause");
-                    }
-                }
+                WriteExpression(sb, sqlQuery, ordering.Expression);
 
+                if (ordering.Direction.IsDescending)
+                {
+                    sb.Append(" DESC");
+                }
+            }
+
+            if (sqlQuery.Offset.IsSome())
+            {
+                if (!sqlQuery.Ordering.IsEmpty)
+                {
+                    throw new Exception("To enable offset and limit, it is needed to use also order by clause");
+                }
+            }
+
+            if (!sqlQuery.Ordering.IsEmpty)
+            {
                 var offset = sqlQuery.Offset.ToNullable();
                 var limit = sqlQuery.Limit.ToNullable();
 
-                if (offset.HasValue)
-                {
-                    sb.Append(" OFFSET ");
-                    sb.Append(offset.Value);
-                    sb.Append(" ROWS");
-                }
+                sb.Append(" OFFSET ");
+                sb.Append(offset ?? 0);
+                sb.Append(" ROWS");
 
                 if (limit.HasValue)
                 {
-                    sb.Append(" FETCH NEXT ");
+                    sb.Append(" FETCH FIRST ");
                     sb.Append(limit.Value);
-                    sb.Append(" ROWS");
+                    sb.Append(" ROWS ONLY");
                 }
             }
         }
 
-        private void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct, int? innerLimit)
+        private void WriteInnerQuery(StringBuilder sb, QueryContent query, List<string> variables, Dictionary<string, List<Variable>> variablesMappings, bool isDistinct)
         {
             sb.Append("SELECT");
 
             if (isDistinct)
             {
                 sb.Append(" DISTINCT");
-            }
-
-            if (innerLimit.HasValue)
-            {
-                sb.Append(" TOP");
-                sb.Append(innerLimit.Value);
             }
 
             if (query.IsSelectQuery)
@@ -274,6 +270,15 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             {
                 sb.Append(" LEFT JOIN ");
                 WriteInnerSource(sb, leftJoined.Item1);
+                sb.Append(" AS ");
+                if (query.NamingProvider.TryGetSourceName(leftJoined.Item1, out var sourceName))
+                {
+                    sb.Append(sourceName);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Name for source has not been found. Source: {leftJoined}");
+                }
                 sb.Append(" ON ");
                 WriteCondition(sb, query, leftJoined.Item2);
             }
@@ -500,7 +505,9 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteBooleanExpression(TypedCondition condition)
             {
+                _sb.Append("IIF(");
                 ProcessCondition(condition);
+                _sb.Append(",1,0)");
             }
 
             /// <inheritdoc />
@@ -652,8 +659,9 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteNot(TypedCondition condition)
             {
-                _sb.Append("NOT ");
+                _sb.Append("NOT(");
                 ProcessCondition(condition);
+                _sb.Append(")");
             }
 
             /// <inheritdoc />

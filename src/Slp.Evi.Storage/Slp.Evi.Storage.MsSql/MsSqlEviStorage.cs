@@ -8,10 +8,8 @@ namespace Slp.Evi.Storage.MsSql
         : EviStorage<MsSqlQuery>
     {
         /// <inheritdoc />
-        public MsSqlEviStorage(IR2RML mapping, string connectionString) 
-            : base(mapping, new MsSqlDatabase(connectionString))
-        {
-
-        }
+        public MsSqlEviStorage(IR2RML mapping, string connectionString, int queryTimeout) 
+            : base(mapping, new MsSqlDatabase(connectionString, queryTimeout))
+        { }
     }
 }
