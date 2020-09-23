@@ -6,14 +6,16 @@ namespace Slp.Evi.Storage.MsSql.Reader
     public class MsSqlReaderColumn
         : ISqlResultColumn
     {
-        private readonly object _value;
-
+        /// <inheritdoc />
         public string Name { get; }
 
-        public MsSqlReaderColumn(string name, object value)
+        /// <inheritdoc />
+        public VariableValue VariableValue { get; }
+
+        public MsSqlReaderColumn(string name, VariableValue value)
         {
             Name = name;
-            _value = value is DBNull ? null : value;
+            VariableValue = value;
         }
     }
 }

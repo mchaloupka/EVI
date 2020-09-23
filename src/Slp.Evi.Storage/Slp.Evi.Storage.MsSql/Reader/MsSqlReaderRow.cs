@@ -26,7 +26,17 @@ namespace Slp.Evi.Storage.MsSql.Reader
                 var name = reader.GetName(i);
                 var value = reader.GetValue(i);
 
-                columns.Add(new MsSqlReaderColumn(name, value));
+                VariableValue variableValue = null;
+                if (reader.IsDBNull(i))
+                {
+                    variableValue = VariableValue.NullVariableValue;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                columns.Add(new MsSqlReaderColumn(name, variableValue));
             }
 
             return new MsSqlReaderRow(columns);

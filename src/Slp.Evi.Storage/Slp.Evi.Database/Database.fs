@@ -6,8 +6,32 @@ open Slp.Evi.Relational.Algebra
 open Slp.Evi.Common.Database
 open Slp.Evi.Database
 
+type VariableValue =
+    | IntVariableValue of int
+    | BooleanVariableValue of bool
+    | StringVariableValue of string
+    | DoubleVariableValue of double
+    | NullVariableValue
+
+module VariableValue =
+    [<CompiledName("AsBoolean")>]
+    let asBoolean = function
+        | BooleanVariableValue b -> b
+        | x -> sprintf "Cannot interpret value as boolean: %A" x |> invalidOp
+
+    [<CompiledName("AsInteger")>]
+    let asInteger = function
+        | IntVariableValue i -> i
+        | x -> sprintf "Cannot interpret value as int: %A" x |> invalidOp
+
+    [<CompiledName("AsString")>]
+    let asString = function
+        | _ -> new NotImplementedException () |> raise
+
 type ISqlResultColumn =
     abstract member Name: string with get
+
+    abstract member VariableValue: VariableValue with get
 
 type ISqlResultRow =
     abstract member Columns: ISqlResultColumn seq with get
