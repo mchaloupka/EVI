@@ -26,7 +26,15 @@ module VariableValue =
 
     [<CompiledName("AsString")>]
     let asString = function
+        | NullVariableValue ->
+            "Cannot interpret null value as string" |> invalidOp
         | _ -> new NotImplementedException () |> raise
+
+    [<CompiledName("TryAsString")>]
+    let tryAsString = function
+        | NullVariableValue -> None
+        | x ->
+            x |> asString |> Some
 
 type ISqlResultColumn =
     abstract member Name: string with get

@@ -26,14 +26,35 @@ namespace Slp.Evi.Storage.MsSql.Reader
                 var name = reader.GetName(i);
                 var value = reader.GetValue(i);
 
-                VariableValue variableValue = null;
+                VariableValue variableValue;
                 if (reader.IsDBNull(i))
                 {
                     variableValue = VariableValue.NullVariableValue;
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    var fieldType = reader.GetFieldType(i);
+
+                    if (fieldType == typeof(int))
+                    {
+                        variableValue = VariableValue.NewIntVariableValue(reader.GetInt32(i));
+                    }
+                    else if (fieldType == typeof(string))
+                    {
+                        variableValue = VariableValue.NewStringVariableValue(reader.GetString(i));
+                    }
+                    else if (fieldType == typeof(double))
+                    {
+                        variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
+                    }
+                    else if (fieldType == typeof(int))
+                    {
+                        variableValue = VariableValue.NewBooleanVariableValue(reader.GetBoolean(i));
+                    }
+                    else
+                    {
+                        throw new NotImplementedException($"The field type in the result is not yet supported: {fieldType}");
+                    }
                 }
 
                 columns.Add(new MsSqlReaderColumn(name, variableValue));

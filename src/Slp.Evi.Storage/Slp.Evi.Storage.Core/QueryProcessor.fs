@@ -11,16 +11,17 @@ open Slp.Evi.Database
 type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list, database: ISqlDatabase<'T>) =
     let mappingProcessor = Sparql.R2RMLMappingProcessor(bgpMappings)
 
-    let generateSqlAlgebra (query: Query.SparqlQuery) =
-        let typeIndexer = TypeIndexer()
-
+    let generateSqlAlgebra (typeIndexer: TypeIndexer) (query: Query.SparqlQuery) =
         query
         |> Sparql.SparqlQueryBuilder.buildSparqlQuery
         |> mappingProcessor.processSparqlQuery
         |> RelationalAlgebraBuilder.buildRelationalQuery database.DatabaseSchema typeIndexer
 
     let performQuery (rdfHandler: IRdfHandler, resultsHandler: ISparqlResultsHandler) (query: Query.SparqlQuery) =
-        let sqlAlgebra = generateSqlAlgebra query
+        let typeIndexer = TypeIndexer ()
+        let blankNodeCache = ValueBinderLoader.BlankNodeCache.create ()
+        
+        let sqlAlgebra = generateSqlAlgebra typeIndexer query
         let databaseQuery =
             sqlAlgebra
             |> DatabaseQueryBuilder.translateToQuery database.DatabaseSchema
@@ -71,7 +72,7 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                         sqlAlgebra.Bindings
                         |> Map.iter (
                             fun variable binder ->
-                                let maybeNode = ValueBinderLoader.loadValue rdfHandler databaseQuery.NamingProvider row binder
+                                let maybeNode = ValueBinderLoader.loadValue rdfHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row binder
 
                                 match maybeNode with
                                 | Some node ->
@@ -131,9 +132,9 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                     if curResult.HasNextRow then
                         let row = curResult.ReadRow()
 
-                        let sMaybeNode = sBinder |> ValueBinderLoader.loadValue rdfHandler databaseQuery.NamingProvider row
-                        let pMaybeNode = pBinder |> ValueBinderLoader.loadValue rdfHandler databaseQuery.NamingProvider row
-                        let oMaybeNode = oBinder |> ValueBinderLoader.loadValue rdfHandler databaseQuery.NamingProvider row
+                        let sMaybeNode = sBinder |> ValueBinderLoader.loadValue rdfHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row
+                        let pMaybeNode = pBinder |> ValueBinderLoader.loadValue rdfHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row
+                        let oMaybeNode = oBinder |> ValueBinderLoader.loadValue rdfHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row
 
                         match sMaybeNode, pMaybeNode, oMaybeNode with
                         | Some(sNode), Some(pNode), Some(oNode) ->
@@ -177,7 +178,7 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                         sqlAlgebra.Bindings
                         |> Map.iter (
                             fun variable binder ->
-                                let maybeNode = ValueBinderLoader.loadValue resultsHandler databaseQuery.NamingProvider row binder
+                                let maybeNode = ValueBinderLoader.loadValue resultsHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row binder
 
                                 match maybeNode with
                                 | Some node ->

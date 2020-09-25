@@ -36,7 +36,7 @@ module Iri =
         uri |> Iri
 
     let toUri (iri: Iri) =
-        iri
+        iri.Uri
 
     let toText (iri: Iri) =
         iri.Uri.AbsoluteUri

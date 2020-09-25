@@ -1,9 +1,14 @@
 ﻿module Slp.Evi.Storage.Core.ValueBinderLoader
 
 open VDS.RDF
+open Slp.Evi.Common
 open Slp.Evi.Common.Algebra
+open Slp.Evi.Common.Types
+open Slp.Evi.Common.Database
+open Slp.Evi.R2RML
 open Slp.Evi.Sparql.Algebra
 open Slp.Evi.Database
+open Slp.Evi.Relational
 open Slp.Evi.Relational.Algebra
 open TCode.r2rml4net
 
@@ -12,7 +17,17 @@ let getVariableName =
     | SparqlVariable x -> x
     | BlankNodeVariable x -> x
 
-let rec loadValueFromExpression (namingProvider: NamingProvider) (row: ISqlResultRow) (expression: Expression) =
+let private loadValueFromVariable (namingProvider: NamingProvider) (row: ISqlResultRow) (variable: Variable) =
+    match namingProvider.TryGetVariableName variable with
+    | false, _ ->
+        sprintf "Cannot find name for a variable: %A" variable
+        |> invalidOp
+    | true, variableName ->
+        variableName
+        |> row.GetColumn
+        |> fun x -> x.VariableValue
+
+let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: ISqlResultRow) (expression: Expression) =
     match expression with
     | BinaryNumericOperation (operator, leftExpression, rightExpression) ->
         let leftValue = leftExpression |> loadValueFromExpression namingProvider row
@@ -92,14 +107,7 @@ let rec loadValueFromExpression (namingProvider: NamingProvider) (row: ISqlResul
         getFirstDefined NullVariableValue coalesced
 
     | Variable var ->
-        match namingProvider.TryGetVariableName var with
-        | false, _ ->
-            sprintf "Cannot find name for a variable: %A" var
-            |> invalidOp
-        | true, variableName ->
-            variableName
-            |> row.GetColumn
-            |> fun x -> x.VariableValue
+        loadValueFromVariable namingProvider row var
 
     | IriSafeVariable var ->
         let variableValue = var |> Variable |> loadValueFromExpression namingProvider row
@@ -124,7 +132,7 @@ let rec loadValueFromExpression (namingProvider: NamingProvider) (row: ISqlResul
     | Null ->
         NullVariableValue
 
-and loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlResultRow) (condition: Condition) =
+and private loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlResultRow) (condition: Condition) =
     BooleanVariableValue <|
     match condition with
     | AlwaysFalse ->
@@ -207,7 +215,22 @@ and loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlResultRow)
     | LanguageMatch _ ->
         new System.NotImplementedException() |> raise
 
-let rec loadValue (rdfHandler: INodeFactory) (namingProvider: NamingProvider) (row: ISqlResultRow) (valueBinder: ValueBinder): INode option =
+type BlankNodeCache = System.Collections.Generic.Dictionary<string, IBlankNode>
+
+module BlankNodeCache =
+    let create (): BlankNodeCache =
+        new System.Collections.Generic.Dictionary<string, IBlankNode>()
+
+    let getBlankNode (factory: INodeFactory) value (cache: BlankNodeCache) =
+        match cache.TryGetValue value with
+        | true, node ->
+            node
+        | false, _ ->
+            let node = factory.CreateBlankNode()
+            cache.Add(value, node)
+            node
+
+let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (typeIndexer: TypeIndexer) (namingProvider: NamingProvider) (row: ISqlResultRow) (valueBinder: ValueBinder): INode option =
     match valueBinder with
     | EmptyValueBinder ->
         None
@@ -218,7 +241,7 @@ let rec loadValue (rdfHandler: INodeFactory) (namingProvider: NamingProvider) (r
             | Some(_), _ -> previous
             | None, [] -> None
             | None, x :: xs ->
-                x |> loadValue rdfHandler namingProvider row |> getFirstDefined <| xs
+                x |> loadValue rdfHandler blankNodeCache typeIndexer namingProvider row |> getFirstDefined <| xs
         getFirstDefined None valueBinders
 
     | CaseValueBinder(caseVariable, casesMap) ->
@@ -231,10 +254,100 @@ let rec loadValue (rdfHandler: INodeFactory) (namingProvider: NamingProvider) (r
         | false, _ ->
             None
         | true, vb ->
-            loadValue rdfHandler namingProvider row vb
+            loadValue rdfHandler blankNodeCache typeIndexer namingProvider row vb
 
     | ExpressionValueBinder expressionSet ->
-        new System.NotImplementedException () |> raise
+        let isBound =
+            expressionSet.IsNotErrorCondition
+            |> loadValueFromCondition namingProvider row
+            |> VariableValue.asBoolean
 
-    | BaseValueBinder (objectMapping, baseValueBinder) ->
-        new System.NotImplementedException () |> raise
+        if isBound then
+            let typeIndex =
+                expressionSet.TypeExpression
+                |> loadValueFromExpression namingProvider row
+                |> VariableValue.asInteger
+
+            let valueType =
+                typeIndex |> typeIndexer.FromIndex
+
+            
+            let value =
+                expressionSet.StringExpression
+                |> loadValueFromExpression namingProvider row
+                |> VariableValue.asString
+
+            match valueType.NodeType with
+            | BlankNodeType ->
+                blankNodeCache
+                |> BlankNodeCache.getBlankNode rdfHandler value
+                :> INode
+            | IriNodeType ->
+                new System.Uri(value)
+                |> rdfHandler.CreateUriNode
+                :> INode
+            | LiteralNodeType DefaultType ->
+                rdfHandler.CreateLiteralNode value
+                :> INode
+            | LiteralNodeType (WithType iri) ->
+                rdfHandler.CreateLiteralNode(value, iri |> Iri.toUri)
+                :> INode
+            | LiteralNodeType (WithLanguage lang) ->
+                rdfHandler.CreateLiteralNode(value, lang)
+                :> INode
+            |> Some
+
+        else
+            None
+
+    | BaseValueBinder (objectMapping, variableMappings) ->
+        let getValueForColumn (column: ISqlColumnSchema) =
+            match variableMappings.TryGetValue column.Name with
+            | true, variable ->
+                variable
+                |> loadValueFromVariable namingProvider row
+            | false, _ ->
+                sprintf "Base value binder references columns that is not in the mappings: %A" column
+                |> invalidOp
+
+        let buildIri isBlankNode mayBeBaseIri value =
+            if isBlankNode then
+                blankNodeCache
+                |> BlankNodeCache.getBlankNode rdfHandler value
+                :> INode
+            else
+                value
+                |> IriReference.fromString
+                |> IriReference.tryResolve mayBeBaseIri
+                |> Iri.toUri
+                |> rdfHandler.CreateUriNode
+                :> INode
+
+        let loadTemplateValue isIri template =
+            new System.NotImplementedException() |> raise
+
+        match objectMapping with
+        | IriObject iriMapping ->
+            match iriMapping.Value with
+            | IriColumn column ->
+                column
+                |> getValueForColumn
+                |> VariableValue.tryAsString
+                |> Option.map (buildIri iriMapping.IsBlankNode iriMapping.BaseIri)
+            | IriTemplate template ->
+                template
+                |> loadTemplateValue true
+                |> Option.map (buildIri iriMapping.IsBlankNode iriMapping.BaseIri)
+            | IriConstant iri ->
+                Some <|
+                if iriMapping.IsBlankNode then
+                    blankNodeCache
+                    |> BlankNodeCache.getBlankNode rdfHandler (iri |> Iri.toText)
+                    :> INode
+                else
+                    iri
+                    |> Iri.toUri
+                    |> rdfHandler.CreateUriNode
+                    :> INode
+        | LiteralObject literalMapping ->
+            new System.NotImplementedException () |> raise
