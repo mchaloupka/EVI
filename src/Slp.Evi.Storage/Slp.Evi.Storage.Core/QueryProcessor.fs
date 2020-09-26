@@ -191,12 +191,14 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                                     ()
                         )
 
-                        if resultsHandler.HandleResult(new VDS.RDF.Query.SparqlResult(s)) |> not then
+                        if resultsHandler.HandleResult(new VDS.RDF.Query.SparqlResult(s)) then
+                            processResult curResult
+                        else
                             "Results handler failed to handle result" |> invalidOp
+                    else
+                        resultsHandler.EndResults(true)
 
                 processResult queryResult
-
-                resultsHandler.EndResults(true)
             with
             | _ ->
                 resultsHandler.EndResults(false)
