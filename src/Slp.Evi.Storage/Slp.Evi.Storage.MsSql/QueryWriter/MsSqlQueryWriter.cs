@@ -34,20 +34,22 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
         private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
-            bool isTrivialQuery =
-                sqlQuery.Ordering.IsEmpty
-                && sqlQuery.Limit.IsNone()
-                && sqlQuery.Offset.IsNone();
-
+            bool isTrivialQuery;
             if (sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsSome())
             {
                 sb.Append("SELECT TOP ");
                 sb.Append(sqlQuery.Limit.Value);
                 sb.Append(" * FROM (");
+                isTrivialQuery = false;
             }
-            else if(!isTrivialQuery)
+            else if(sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsNone() && sqlQuery.Offset.IsNone())
             {
                 sb.Append("SELECT * FROM (");
+                isTrivialQuery = false;
+            }
+            else
+            {
+                isTrivialQuery = true;
             }
 
             var variablesMappings = new Dictionary<string, List<Variable>>();
@@ -119,7 +121,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
             if (sqlQuery.Offset.IsSome())
             {
-                if (!sqlQuery.Ordering.IsEmpty)
+                if (sqlQuery.Ordering.IsEmpty)
                 {
                     throw new Exception("To enable offset and limit, it is needed to use also order by clause");
                 }
