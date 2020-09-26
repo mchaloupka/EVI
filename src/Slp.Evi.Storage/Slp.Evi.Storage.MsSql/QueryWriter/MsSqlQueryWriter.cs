@@ -42,7 +42,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 sb.Append(" * FROM (");
                 isTrivialQuery = false;
             }
-            else if(sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsNone() && sqlQuery.Offset.IsNone())
+            else if(!sqlQuery.Ordering.IsEmpty)
             {
                 sb.Append("SELECT * FROM (");
                 isTrivialQuery = false;
