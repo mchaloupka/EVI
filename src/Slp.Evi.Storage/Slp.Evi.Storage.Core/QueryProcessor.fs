@@ -175,15 +175,19 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
 
                         let s = new VDS.RDF.Query.Algebra.Set()
 
-                        sqlAlgebra.Bindings
-                        |> Map.iter (
-                            fun variable binder ->
-                                let maybeNode = ValueBinderLoader.loadValue resultsHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row binder
-
-                                match maybeNode with
-                                | Some node ->
-                                    s.Add(variable |> ValueBinderLoader.getVariableName, node)
-                                | None ->
+                        sqlAlgebra.Variables
+                        |> List.iter (
+                            fun variable ->
+                                match sqlAlgebra.Bindings.TryGetValue variable with
+                                | true, binder ->
+                                    let maybeNode = ValueBinderLoader.loadValue resultsHandler blankNodeCache typeIndexer databaseQuery.NamingProvider row binder
+                                    
+                                    match maybeNode with
+                                    | Some node ->
+                                        s.Add(variable |> ValueBinderLoader.getVariableName, node)
+                                    | None ->
+                                        ()
+                                | false, _ ->
                                     ()
                         )
 
