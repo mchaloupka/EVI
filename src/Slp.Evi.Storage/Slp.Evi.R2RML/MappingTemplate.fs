@@ -1,8 +1,6 @@
 ﻿module Slp.Evi.R2RML.MappingTemplate
 
 open System.Text.RegularExpressions
-open TCode.r2rml4net
-open System
 
 type TemplatePart<'T> =
     | ColumnPart of 'T

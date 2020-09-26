@@ -26,9 +26,12 @@ module VariableValue =
 
     [<CompiledName("AsString")>]
     let asString = function
+        | StringVariableValue s -> s
+        | IntVariableValue i -> string i
+        | DoubleVariableValue d -> d.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        | BooleanVariableValue b -> if b then "true" else "false"
         | NullVariableValue ->
             "Cannot interpret null value as string" |> invalidOp
-        | _ -> new NotImplementedException () |> raise
 
     [<CompiledName("TryAsString")>]
     let tryAsString = function

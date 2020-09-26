@@ -310,24 +310,44 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                 sprintf "Base value binder references columns that is not in the mappings: %A" column
                 |> invalidOp
 
-        let buildIri isBlankNode mayBeBaseIri value =
-            if isBlankNode then
-                blankNodeCache
-                |> BlankNodeCache.getBlankNode rdfHandler value
-                :> INode
-            else
-                value
-                |> IriReference.fromString
-                |> IriReference.tryResolve mayBeBaseIri
-                |> Iri.toUri
-                |> rdfHandler.CreateUriNode
-                :> INode
+        let loadTemplateValue (isIri: bool) (template: MappingTemplate.Template<ISqlColumnSchema>) =
+            let sb = new System.Text.StringBuilder ()
+            let rec templateLoader parts =
+                match parts with
+                | [] -> sb.ToString() |> Some
+                | MappingTemplate.TextPart t :: xs ->
+                    sb.Append t |> ignore
+                    templateLoader xs
+                | MappingTemplate.ColumnPart c :: xs ->
+                    let columnValue =
+                        c
+                        |> getValueForColumn
+                        |> VariableValue.tryAsString
 
-        let loadTemplateValue isIri template =
-            new System.NotImplementedException() |> raise
+                    match columnValue with
+                    | Some v ->
+                        sb.Append v |> ignore
+                        templateLoader xs
+                    | None ->
+                        None
+
+            template |> templateLoader
 
         match objectMapping with
         | IriObject iriMapping ->
+            let buildIri isBlankNode mayBeBaseIri value =
+                if isBlankNode then
+                    blankNodeCache
+                    |> BlankNodeCache.getBlankNode rdfHandler value
+                    :> INode
+                else
+                    value
+                    |> IriReference.fromString
+                    |> IriReference.tryResolve mayBeBaseIri
+                    |> Iri.toUri
+                    |> rdfHandler.CreateUriNode
+                    :> INode
+
             match iriMapping.Value with
             | IriColumn column ->
                 column
@@ -349,5 +369,29 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                     |> Iri.toUri
                     |> rdfHandler.CreateUriNode
                     :> INode
+
         | LiteralObject literalMapping ->
-            new System.NotImplementedException () |> raise
+            let buildLiteral value =
+                match literalMapping.Type with
+                | DefaultType ->
+                    rdfHandler.CreateLiteralNode value
+                    :> INode
+                | WithType iri ->
+                    rdfHandler.CreateLiteralNode (value, iri |> Iri.toUri)
+                    :> INode
+                | WithLanguage lang ->
+                    rdfHandler.CreateLiteralNode (value, lang)
+                    :> INode
+
+            match literalMapping.Value with
+            | LiteralColumn column ->
+                column
+                |> getValueForColumn
+                |> VariableValue.tryAsString
+                |> Option.map buildLiteral
+            | LiteralTemplate template ->
+                template
+                |> loadTemplateValue false
+                |> Option.map buildLiteral
+            | LiteralConstant value ->
+                value |> buildLiteral |> Some
