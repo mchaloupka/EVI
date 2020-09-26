@@ -172,8 +172,6 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
         private void WriteInnerSingleEmptyResultQueryContent(StringBuilder sb, List<string> variables)
         {
-            sb.Append("SELECT");
-
             var firstVariable = true;
 
             foreach (var variable in variables)
