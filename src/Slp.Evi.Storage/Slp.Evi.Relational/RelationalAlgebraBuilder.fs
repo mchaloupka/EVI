@@ -194,8 +194,6 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
                 TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
             }
 
-        let expression = literalNode.Value |> String |> Constant
-
         match nodeTypeRecord.Category with
         | TypeIndexer.TypeCategory.BooleanLiteral ->
             NotImplementedException("BooleanLiteral conversion not yet implemented")
@@ -205,7 +203,7 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
                 match Int32.TryParse(literalNode.Value) with
                 | true, intValue -> intValue |> Int
                 | false, _ ->
-                    match System.Double.TryParse(literalNode.Value) with
+                    match System.Double.TryParse(literalNode.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) with
                     | true, doubleValue -> doubleValue |> Double
                     | false, _ ->
                         sprintf "Failed to parse numeric: %s" literalNode.Value
