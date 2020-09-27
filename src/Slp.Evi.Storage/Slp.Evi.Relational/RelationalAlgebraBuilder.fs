@@ -559,7 +559,7 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
                         fun keys ->
                             keys
                             |> Set.ofSeq
-                            |> Set.isSubset idColumns
+                            |> Set.isSubset <| idColumns
                     )
                     |> Option.map (fun _ -> existingSource)
                 | None ->
