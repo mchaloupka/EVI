@@ -663,7 +663,10 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteLikeMatch(TypedExpression expression, string pattern)
             {
-                throw new NotImplementedException();
+                ProcessExpression(expression);
+                _sb.Append(" LIKE \'");
+                _sb.Append(pattern);
+                _sb.Append('\'');
             }
 
             /// <inheritdoc />

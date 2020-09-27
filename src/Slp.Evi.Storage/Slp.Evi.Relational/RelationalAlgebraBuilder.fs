@@ -521,6 +521,38 @@ and private processSparqlCondition (typeIndexer: TypeIndexer) (bindings: Map<Spa
 
             let processedExpression = regex.Expression |> processSparqlExpression typeIndexer bindings
 
+            // TODO: Improve this function
+            let createLikePattern regexPattern =
+                let sb = System.Text.StringBuilder()
+                let rec implCreateLikePattern = function
+                    | [] ->
+                        sb.Append '%' |> ignore
+                        sb.ToString ()
+                    | ['$'] ->
+                        sb.ToString ()
+                    | '%' :: xs ->
+                        sb.Append "[%]" |> ignore
+                        implCreateLikePattern xs
+                    | '[' :: _
+                    | ']' :: _ ->
+                        sprintf "The complex regex patterns are not yet supported: %s" pattern
+                        |> invalidOp
+                    | '_' :: xs ->
+                        sb.Append "[_]" |> ignore
+                        implCreateLikePattern xs
+                    | x :: xs ->
+                        sb.Append x |> ignore
+                        implCreateLikePattern xs
+
+                match regexPattern with
+                | '^' :: xs ->
+                    implCreateLikePattern xs
+                | xs ->
+                    sb.Append '%' |> ignore
+                    implCreateLikePattern xs
+
+            let likePattern = pattern |> Seq.toList |> createLikePattern
+
             [
                 processedExpression.IsNotErrorCondition
                 [
@@ -528,7 +560,7 @@ and private processSparqlCondition (typeIndexer: TypeIndexer) (bindings: Map<Spa
                    processedExpression |> isExpressionSetInCategory TypeIndexer.TypeCategory.SimpleLiteral
                 ] |> Disjunction |> optimizeRelationalCondition
                 if producesError then AlwaysFalse else AlwaysTrue
-            ] |> Conjunction, Like(processedExpression.StringExpression, pattern)
+            ] |> Conjunction, Like (processedExpression.StringExpression, likePattern)
 
 let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns: RestrictedPatternMatch list) =
     let findIds (subjectMap: IriMapping) =
