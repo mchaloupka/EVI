@@ -653,7 +653,11 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteLanguageMatch(TypedExpression langExpression, TypedExpression langRangeExpression)
             {
-                throw new NotImplementedException();
+                _sb.Append("LOWER(");
+                ProcessExpression(langExpression);
+                _sb.Append(") LIKE LOWER(");
+                ProcessExpression(langRangeExpression); // TODO: Should be handled so the language matching will work properly
+                _sb.Append(")");
             }
 
             /// <inheritdoc />
