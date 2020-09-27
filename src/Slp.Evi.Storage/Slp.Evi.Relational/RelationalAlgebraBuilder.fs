@@ -775,21 +775,21 @@ let private processJoin (typeIndexer: TypeIndexer) (left: BoundCalculusModel) (r
 
     valueBinders, joinConditions
 
+let private getNotModifiedModel model =
+    match model with
+    | NotModified notModified ->
+        notModified
+    | _ ->
+        { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
+
+let private applyOnNotModifiedModel applyFunction model =
+    model
+    |> getNotModifiedModel
+    |> applyFunction
+    |> NotModified
+    |> optimizeCalculusModel
+
 let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer: TypeIndexer) (sparqlPattern: SparqlPattern) =
-    let getNotModifiedModel model =
-        match model with
-        | NotModified notModified ->
-            notModified
-        | _ ->
-            { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
-
-    let rec applyOnNotModifiedModel applyFunction model =
-        model
-        |> getNotModifiedModel
-        |> applyFunction
-        |> NotModified
-        |> optimizeCalculusModel
-
     optimizeBoundCalculusModel <|
     match sparqlPattern with
     | EmptyPattern -> 
@@ -936,6 +936,84 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
             Variables = valueBindings |> Map.keys |> List.ofSeq
         }
 
+let rec private decomposeValueBinderToBaseValueBinders (typeIndexer: TypeIndexer) condition valueBinder =
+    match valueBinder with
+    | EmptyValueBinder ->
+        List.empty |> Some
+    | BaseValueBinder (om, vm) ->
+        match condition with
+        | AlwaysFalse ->
+            List.empty |> Some
+        | _ ->
+            (condition, om, vm) |> List.singleton |> Some
+    | CaseValueBinder (variable, cases) ->
+        (List.empty |> Some, cases |> Map.toList)
+        ||> List.fold (
+            fun mayBePrev (variableValue, vb) ->
+                mayBePrev
+                |> Option.bind (
+                    fun prev ->
+                        let innerCondition =
+                            [
+                                condition
+                                EqualVariableTo (variable, variableValue |> Int) |> optimizeRelationalCondition
+                            ]
+                            |> Conjunction
+                            |> optimizeRelationalCondition
+
+                        decomposeValueBinderToBaseValueBinders typeIndexer innerCondition vb
+                        |> Option.map (fun res -> prev @ res)
+                )
+        )
+    | CoalesceValueBinder coalesced ->
+         ((List.empty, condition) |> Some, coalesced)
+         ||> List.fold (
+            fun mayBePrev vb ->
+                mayBePrev
+                |> Option.bind (
+                    fun (prev, curCondition) ->
+                        decomposeValueBinderToBaseValueBinders typeIndexer curCondition vb
+                        |> Option.map (
+                            fun curResult ->
+                                let nextCondition =
+                                    vb
+                                    |> valueBinderToExpressionSet typeIndexer
+                                    |> fun x ->
+                                        [
+                                            x.IsNotErrorCondition |> Not |> optimizeRelationalCondition
+                                            curCondition
+                                        ]
+                                        |> Conjunction
+                                        |> optimizeRelationalCondition
+
+                                (prev @ curResult, nextCondition)
+                        )
+                )
+         )
+         |> Option.map fst
+    | ExpressionValueBinder _ ->
+        None
+
+let private addValueBinderToDistinctModel (typeIndexer: TypeIndexer) (prevModel: CalculusModel) (prevBinders: Map<SparqlVariable, ValueBinder>) (variable: SparqlVariable) (valueBinder: ValueBinder) =
+    let mayBeDecomposed = decomposeValueBinderToBaseValueBinders typeIndexer AlwaysTrue valueBinder
+
+    let alignmentUsingExpressionSetValueBinder () =
+        sprintf "%A expression set value binder not yet supported for DISTINCT alignment" valueBinder
+        |> NotImplementedException
+        |> raise
+
+    match mayBeDecomposed with
+    | Some [] ->
+        prevModel, prevBinders |> Map.add variable EmptyValueBinder
+    | Some [_] ->
+        // It is decomposed just to a single BaseValueBinder, so we can safely add it as it is
+        prevModel, prevBinders |> Map.add variable valueBinder
+    | Some decomposed ->
+        sprintf "Decomposed base value binders are not yet supported for DISTINCT alignment: %A" decomposed
+        |> invalidOp
+    | None ->
+        alignmentUsingExpressionSetValueBinder ()
+
 let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list) (inner: BoundCalculusModel) =
     (inner, modifiers)
     ||> List.fold (
@@ -986,13 +1064,7 @@ let private applyModifiers (typeIndexer: TypeIndexer) (modifiers: Modifier list)
                 ((procInner.Model, Map.empty), procInner.Bindings)
                 ||> Map.fold (
                     fun (current, prevBinders) var valueBinder ->
-                        match valueBinder with
-                        | BaseValueBinder _ ->
-                            current, prevBinders |> Map.add var valueBinder
-                        | _ ->
-                            sprintf "%A not yet supported for DISTINCT alignment" valueBinder
-                            |> NotImplementedException
-                            |> raise
+                        addValueBinderToDistinctModel typeIndexer current prevBinders var valueBinder
                 )
                 |> fun (innerModel, bindings) ->
                     {
