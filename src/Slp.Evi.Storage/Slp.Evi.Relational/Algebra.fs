@@ -22,6 +22,7 @@ type Literal =
     | String of string
     | Int of int
     | Double of double
+    | DateTimeLiteral of DateTime
 
 [<ReferenceEquality>]
 type AssignedVariable = { SqlType: ISqlColumnType }

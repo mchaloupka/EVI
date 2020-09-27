@@ -11,6 +11,7 @@ type VariableValue =
     | BooleanVariableValue of bool
     | StringVariableValue of string
     | DoubleVariableValue of double
+    | DateTimeVariableValue of DateTime
     | NullVariableValue
 
 module VariableValue =
@@ -27,9 +28,10 @@ module VariableValue =
     [<CompiledName("AsString")>]
     let asString = function
         | StringVariableValue s -> s
-        | IntVariableValue i -> string i
-        | DoubleVariableValue d -> d.ToString(System.Globalization.CultureInfo.InvariantCulture)
-        | BooleanVariableValue b -> if b then "true" else "false"
+        | IntVariableValue i -> System.Xml.XmlConvert.ToString i
+        | DoubleVariableValue d -> System.Xml.XmlConvert.ToString d
+        | BooleanVariableValue b -> System.Xml.XmlConvert.ToString b
+        | DateTimeVariableValue d -> System.Xml.XmlConvert.ToString (d, System.Xml.XmlDateTimeSerializationMode.Utc);
         | NullVariableValue ->
             "Cannot interpret null value as string" |> invalidOp
 
@@ -79,6 +81,7 @@ module SqlDatabaseWriterHelper =
         abstract member WriteConstant: literal:string -> unit
         abstract member WriteConstant: literal:double -> unit
         abstract member WriteConstant: literal:int -> unit
+        abstract member WriteConstant: literal:DateTime -> unit
 
         abstract member WriteTrue: unit -> unit
         abstract member WriteFalse: unit -> unit
@@ -100,6 +103,7 @@ module SqlDatabaseWriterHelper =
         | String(s) -> writer.WriteConstant(s)
         | Double(d) -> writer.WriteConstant(d)
         | Int(i) -> writer.WriteConstant(i)
+        | DateTimeLiteral(d) -> writer.WriteConstant(d)
 
     let private writeExpression (writer: ISqlExpressionWriter, expressionContent: TypedExpressionContent) =
         match expressionContent with

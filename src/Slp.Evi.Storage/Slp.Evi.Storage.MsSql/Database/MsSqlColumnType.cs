@@ -626,7 +626,7 @@ namespace Slp.Evi.Storage.MsSql.Database
         {
             return ((IsUnicode ? 1 : 0) << 10)
                    + ((IsVar ? 1 : 0) << 9)
-                   + ((MaxLength.HasValue ? MaxLength.Value : 0));
+                   + (MaxLength ?? 0);
         }
 
         public static VarCharMsSqlColumnType NVarCharMaxType =>

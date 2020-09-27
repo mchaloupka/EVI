@@ -213,8 +213,13 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
                 NumericExpression = numericLiteral |> Constant
             }
         | TypeIndexer.TypeCategory.DateTimeLiteral ->
-            NotImplementedException("DateTimeLiteral conversion not yet implemented")
-            |> raise
+            let dateTimeLiteral =
+                System.Xml.XmlConvert.ToDateTime(literalNode.Value, System.Xml.XmlDateTimeSerializationMode.Utc)
+                |> DateTimeLiteral
+
+            { baseRecord with
+                DateTimeExpresion = dateTimeLiteral |> Constant
+            }
          | _ ->
             { baseRecord with
                 StringExpression = literalNode.Value |> String |> Constant

@@ -244,6 +244,7 @@ type private Builder(databaseSchema: ISqlDatabaseSchema) =
                 | String _ -> databaseSchema.StringType
                 | Int _ -> databaseSchema.IntegerType
                 | Double _ -> databaseSchema.DoubleType
+                | DateTimeLiteral _ -> databaseSchema.DateTimeType
 
             TypedExpressionContent.Constant l
             |> addTypeToExpressionContent t

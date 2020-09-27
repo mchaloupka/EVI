@@ -75,5 +75,8 @@ namespace Slp.Evi.Storage.MsSql.Database
 
         /// <inheritdoc />
         public ISqlColumnType BooleanType => new IntegerMsSqlColumnType(IntegerMsSqlColumnType.IntegerTypes.Bit);
+
+        /// <inheritdoc />
+        public ISqlColumnType DateTimeType => new DateTimeMsSqlColumnType(DateTimeMsSqlColumnType.DateTimeTypes.DateTime2);
     }
 }

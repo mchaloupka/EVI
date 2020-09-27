@@ -52,7 +52,8 @@ let rec optimizeRelationalCondition condition =
             else
                 AlwaysFalse
         | Int _
-        | Double _ ->
+        | Double _
+        | DateTimeLiteral _ ->
             EqualVariableTo(iriSafe, c)
             
     | Comparison(Comparisons.EqualTo, Constant(constX), Constant(constY)) ->

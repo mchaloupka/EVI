@@ -72,6 +72,11 @@ let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: I
                 sprintf "Cannot process the arithmetic expression as one of the values is textual: %A" expression
                 |> invalidOp
 
+            | DateTimeVariableValue _, _
+            | _, DateTimeVariableValue _ ->
+                sprintf "Cannot process the arithmetic expression as one of the values is date time: %A" expression
+                |> invalidOp
+
             | NullVariableValue, _
             | _, NullVariableValue ->
                 NullVariableValue
@@ -117,6 +122,7 @@ let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: I
         | String s -> StringVariableValue s
         | Int i -> IntVariableValue i
         | Double d -> DoubleVariableValue d
+        | DateTimeLiteral d -> DateTimeVariableValue d
 
     | Concatenation expressions ->
         let sb = new System.Text.StringBuilder()
@@ -185,9 +191,20 @@ and private loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlRe
                 | LessThan -> l < r
                 | LessOrEqualThan -> l <= r
                 | EqualTo -> l = r
+            | DateTimeVariableValue l, DateTimeVariableValue r ->
+                match comparison with
+                | GreaterThan -> l > r
+                | GreaterOrEqualThan -> l >= r
+                | LessThan -> l < r
+                | LessOrEqualThan -> l <= r
+                | EqualTo -> l = r
+            | DateTimeVariableValue _, _
+            | _, DateTimeVariableValue _ ->
+                sprintf "Cannot process the comparison as exactly one of the values is date time: %A" condition
+                |> invalidOp
             | StringVariableValue _, _
             | _, StringVariableValue _ ->
-                sprintf "Cannot process the comparison as only one of the values is textual: %A" condition
+                sprintf "Cannot process the comparison as exactly one of the values is string: %A" condition
                 |> invalidOp
             | (DoubleVariableValue _) as d, IntVariableValue i ->
                 i |> double |> DoubleVariableValue

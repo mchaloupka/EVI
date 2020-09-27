@@ -24,7 +24,6 @@ namespace Slp.Evi.Storage.MsSql.Reader
             for (var i = 0; i < fieldCount; i++)
             {
                 var name = reader.GetName(i);
-                var value = reader.GetValue(i);
 
                 VariableValue variableValue;
                 if (reader.IsDBNull(i))
@@ -50,6 +49,10 @@ namespace Slp.Evi.Storage.MsSql.Reader
                     else if (fieldType == typeof(int))
                     {
                         variableValue = VariableValue.NewBooleanVariableValue(reader.GetBoolean(i));
+                    }
+                    else if (fieldType == typeof(DateTime))
+                    {
+                        variableValue = VariableValue.NewDateTimeVariableValue(reader.GetDateTime(i));
                     }
                     else
                     {

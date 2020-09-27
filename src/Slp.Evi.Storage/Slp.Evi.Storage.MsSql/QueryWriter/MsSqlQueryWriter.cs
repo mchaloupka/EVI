@@ -531,6 +531,12 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
+            public void WriteConstant(DateTime literal)
+            {
+                _sb.AppendFormat("\'{0:yyyy-MM-dd HH:mm:ss.fff}\'", literal);
+            }
+
+            /// <inheritdoc />
             public void WriteTrue()
             {
                 _sb.Append("1=1");

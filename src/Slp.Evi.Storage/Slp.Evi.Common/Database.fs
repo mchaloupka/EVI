@@ -34,4 +34,6 @@ type ISqlDatabaseSchema =
 
     abstract member BooleanType: ISqlColumnType with get
 
+    abstract member DateTimeType: ISqlColumnType with get
+
     abstract member GetCommonType: left: ISqlColumnType * right: ISqlColumnType -> ISqlColumnType

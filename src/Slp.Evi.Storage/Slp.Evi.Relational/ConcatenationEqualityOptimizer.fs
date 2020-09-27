@@ -46,6 +46,7 @@ let private explodeConcatenationToConcatCharacters (concatenation: Concatenation
                         | Int i -> i.ToString()
                         | Double d -> d.ToString()
                         | String s -> s
+                        | DateTimeLiteral d -> System.Xml.XmlConvert.ToString (d, System.Xml.XmlDateTimeSerializationMode.Utc)
                         |> Seq.map ConcatCharacter
                         |> Seq.toList
                         |> fun x -> x @ rest
