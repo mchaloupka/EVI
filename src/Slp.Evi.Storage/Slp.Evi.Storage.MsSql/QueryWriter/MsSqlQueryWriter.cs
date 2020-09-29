@@ -458,7 +458,17 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteSwitch(FSharpList<TypedCaseStatement> caseStatements)
             {
-                throw new NotImplementedException();
+                _sb.Append("CASE");
+
+                foreach (var caseStatement in caseStatements)
+                {
+                    _sb.Append(" WHEN ");
+                    ProcessCondition(caseStatement.Condition);
+                    _sb.Append(" THEN ");
+                    ProcessExpression(caseStatement.Expression);
+                }
+
+                _sb.Append(" END");
             }
 
             /// <inheritdoc />

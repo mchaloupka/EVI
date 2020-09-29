@@ -562,6 +562,31 @@ and private processSparqlCondition (typeIndexer: TypeIndexer) (bindings: Map<Spa
                 if producesError then AlwaysFalse else AlwaysTrue
             ] |> Conjunction, Like (processedExpression.StringExpression, likePattern)
 
+let private neededColumnsForObjectMapping (mapping: ObjectMapping) =
+    match mapping with
+    | IriObject iriObj ->
+        match iriObj.Value with
+        | IriColumn col -> col |> List.singleton
+        | IriConstant _ -> List.empty
+        | IriTemplate tmpl ->
+            tmpl
+            |> List.choose (
+                function
+                | MappingTemplate.ColumnPart col -> col |> Some
+                | _ -> None
+            )
+    | LiteralObject litObj ->
+        match litObj.Value with
+        | LiteralColumn col -> col |> List.singleton
+        | LiteralConstant _ -> List.empty
+        | LiteralTemplate tmpl ->
+            tmpl 
+            |> List.choose (
+                function
+                | MappingTemplate.ColumnPart col -> col |> Some
+                | _ -> None
+            )
+
 let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns: RestrictedPatternMatch list) =
     let findIds (subjectMap: IriMapping) =
         match subjectMap.Value with
@@ -624,29 +649,9 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
     let applyPatternMatch filters (valueBindings: Map<_,_>) source pattern mapping =
         let variables =
             let neededVariables =
-                match mapping with
-                | IriObject iriObj ->
-                    match iriObj.Value with
-                    | IriColumn col -> col.Name |> List.singleton
-                    | IriConstant _ -> List.empty
-                    | IriTemplate tmpl ->
-                        tmpl
-                        |> List.choose (
-                            function
-                            | MappingTemplate.ColumnPart col -> col.Name |> Some
-                            | _ -> None
-                        )
-                | LiteralObject litObj ->
-                    match litObj.Value with
-                    | LiteralColumn col -> col.Name |> List.singleton
-                    | LiteralConstant _ -> List.empty
-                    | LiteralTemplate tmpl ->
-                        tmpl 
-                        |> List.choose (
-                            function
-                            | MappingTemplate.ColumnPart col -> col.Name |> Some
-                            | _ -> None
-                        )
+                mapping
+                |> neededColumnsForObjectMapping
+                |> List.map (fun x -> x.Name)
 
             neededVariables
             |> List.map (
@@ -1005,12 +1010,67 @@ let private addValueBinderToDistinctModel (typeIndexer: TypeIndexer) (prevModel:
     match mayBeDecomposed with
     | Some [] ->
         prevModel, prevBinders |> Map.add variable EmptyValueBinder
+
     | Some [_] ->
         // It is decomposed just to a single BaseValueBinder, so we can safely add it as it is
         prevModel, prevBinders |> Map.add variable valueBinder
+
     | Some decomposed ->
-        sprintf "Decomposed base value binders are not yet supported for DISTINCT alignment: %A" decomposed
-        |> invalidOp
+        let decomposedGroups =
+            decomposed
+            |> List.groupBy (fun (_, objectMapping, _) -> objectMapping)
+
+        match decomposedGroups with
+        | [(objectMapping, grouped)] ->
+            let requiredColumns =
+                objectMapping
+                |> neededColumnsForObjectMapping
+
+            let newColumns =
+                requiredColumns
+                |> List.map (
+                    fun requiredColumn ->
+                        let expression =
+                            grouped
+                            |> List.map (
+                                fun (condition, _, variableMap) ->
+                                    match variableMap.TryGetValue requiredColumn.Name with
+                                    | true, variable ->
+                                        {
+                                            Condition = condition
+                                            Expression =
+                                                variable
+                                                |> Variable
+                                                |> optimizeRelationalExpression
+                                        }
+                                    | false, _ ->
+                                        sprintf "Variable with name %s was not found in variable map %A" requiredColumn.Name variableMap
+                                        |> invalidOp
+                            )
+                            |> Switch
+                            |> optimizeRelationalExpression
+
+                        let assignedVariable = { SqlType = requiredColumn.SqlType }
+                        requiredColumn.Name, { Variable = assignedVariable; Expression = expression }
+                )
+
+            let newValueBinder = BaseValueBinder (objectMapping, newColumns |> List.map (fun (name, assignment) -> name, assignment.Variable |> Assigned) |> Map.ofList)
+            let newAssignments = newColumns |> List.map snd
+
+            let newModel =
+                prevModel
+                |> applyOnNotModifiedModel (
+                    fun x ->
+                        { x with
+                            Assignments = newAssignments @ x.Assignments
+                        }
+                )
+
+            newModel, prevBinders |> Map.add variable newValueBinder
+
+        | _ ->
+            alignmentUsingExpressionSetValueBinder ()
+
     | None ->
         alignmentUsingExpressionSetValueBinder ()
 

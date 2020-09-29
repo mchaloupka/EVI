@@ -1,11 +1,9 @@
 ﻿namespace Slp.Evi.Relational.Algebra
 
 open System
-open DatabaseSchemaReader.DataSchema
 open Slp.Evi.Common.Algebra
 open Slp.Evi.Common.Database
 open Slp.Evi.Sparql.Algebra
-open Slp.Evi.Common.Types
 open Slp.Evi.R2RML
 
 [<ReferenceEquality>]
