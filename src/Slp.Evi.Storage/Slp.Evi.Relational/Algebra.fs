@@ -7,7 +7,7 @@ open Slp.Evi.Sparql.Algebra
 open Slp.Evi.R2RML
 
 [<ReferenceEquality>]
-type SqlColumn = { Schema: ISqlColumnSchema }
+type SqlColumn = { Schema: SqlColumnSchema }
 
 [<ReferenceEquality>]
 type SqlSource = { Schema: ISqlTableSchema; Columns: SqlColumn list }

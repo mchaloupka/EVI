@@ -11,9 +11,9 @@ namespace Slp.Evi.Storage.MsSql.Database
     public class MsSqlTable
         : ISqlTableSchema
     {
-        private readonly Dictionary<string, MsSqlColumn> _columns;
+        private readonly Dictionary<string, SqlColumnSchema> _columns;
 
-        public MsSqlTable(string tableName, IEnumerable<MsSqlColumn> columns, DatabaseConstraint tableSchemaPrimaryKey, List<DatabaseConstraint> tableSchemaUniqueKeys)
+        public MsSqlTable(string tableName, IEnumerable<SqlColumnSchema> columns, DatabaseConstraint tableSchemaPrimaryKey, List<DatabaseConstraint> tableSchemaUniqueKeys)
         {
             Name = tableName;
             _columns = columns.ToDictionary(column => column.Name);
@@ -24,7 +24,7 @@ namespace Slp.Evi.Storage.MsSql.Database
         }
 
         /// <inheritdoc />
-        public ISqlColumnSchema GetColumn(string columnName)
+        public SqlColumnSchema GetColumn(string columnName)
         {
             if (_columns.TryGetValue(columnName, out var column))
             {
@@ -46,7 +46,9 @@ namespace Slp.Evi.Storage.MsSql.Database
 
         public static MsSqlTable CreateFromDatabase(DatabaseTable tableSchema)
         {
-            var columns = tableSchema.Columns.Select(MsSqlColumn.CreateFromDatabase);
+            var columns = tableSchema.Columns.Select(column =>
+                new SqlColumnSchema(column.Name, column.Nullable, MsSqlColumnType.Create(column.DbDataType)));
+
             return new MsSqlTable(tableSchema.Name, columns, tableSchema.PrimaryKey, tableSchema.UniqueKeys);
         }
 

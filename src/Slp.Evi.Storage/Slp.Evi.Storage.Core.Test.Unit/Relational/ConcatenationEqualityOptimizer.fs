@@ -8,13 +8,13 @@ open Slp.Evi.Relational.Algebra
 open Slp.Evi.Relational.ConcatenationEqualityOptimizer
 
 let fakeSchema name = 
-    { new ISqlColumnSchema with
-        member _.Name = name
-        member _.SqlType =
+    {
+        Name = name
+        SqlType =
             { new ISqlColumnType with
                 member _.DefaultRdfType = KnownTypes.xsdString
             }
-        member _.IsNullable = false
+        IsNullable = false
     }
 
 let textPart = String >> Constant

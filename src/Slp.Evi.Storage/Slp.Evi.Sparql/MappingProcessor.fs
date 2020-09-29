@@ -68,7 +68,7 @@ module R2RMLMappingProcessor =
         ]
 
 type R2RMLMappingProcessor(mappings: BasicGraphPatternMapping list) =
-    let templateToValueRestriction (isIriMatch:bool) (input: Template<ISqlColumnSchema>) =
+    let templateToValueRestriction (isIriMatch:bool) (input: Template<SqlColumnSchema>) =
         (TemplateFsm.initialMachine (), input)
         ||> List.fold (
             fun fsm part ->

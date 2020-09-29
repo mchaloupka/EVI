@@ -9,13 +9,13 @@ type TriplesMappingSource =
     | Statement of string
 
 type TermMapValue =
-    | IriColumn of ISqlColumnSchema
-    | IriTemplate of MappingTemplate.Template<ISqlColumnSchema>
+    | IriColumn of SqlColumnSchema
+    | IriTemplate of MappingTemplate.Template<SqlColumnSchema>
     | IriConstant of Iri
 
 type LiteralValue =
-    | LiteralColumn of ISqlColumnSchema
-    | LiteralTemplate of MappingTemplate.Template<ISqlColumnSchema>
+    | LiteralColumn of SqlColumnSchema
+    | LiteralTemplate of MappingTemplate.Template<SqlColumnSchema>
     | LiteralConstant of string
 
 type ITriplesMapping =

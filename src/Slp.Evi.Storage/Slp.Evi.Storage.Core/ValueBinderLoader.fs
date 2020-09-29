@@ -318,7 +318,7 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
             None
 
     | BaseValueBinder (objectMapping, variableMappings) ->
-        let getValueForColumn (column: ISqlColumnSchema) =
+        let getValueForColumn (column: SqlColumnSchema) =
             match variableMappings.TryGetValue column.Name with
             | true, variable ->
                 variable
@@ -327,7 +327,7 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                 sprintf "Base value binder references columns that is not in the mappings: %A" column
                 |> invalidOp
 
-        let loadTemplateValue (isIri: bool) (template: MappingTemplate.Template<ISqlColumnSchema>) =
+        let loadTemplateValue (isIri: bool) (template: MappingTemplate.Template<SqlColumnSchema>) =
             let sb = new System.Text.StringBuilder ()
             let rec templateLoader parts =
                 match parts with
