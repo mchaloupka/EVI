@@ -90,7 +90,7 @@ module ValueRestriction =
             FiniteStateMachine.intersect edgeIntersect leftMachine rightMachine
             |> FiniteStateMachine.canAccept
 
-        let accepts input machine =
+        let accepts input startNode =
             let edgeEvaluation (edge, c) =
                 match edge with
                 | AnyCharacter -> true
@@ -98,7 +98,7 @@ module ValueRestriction =
                 | DigitCharacter -> c |> Char.IsDigit
                 | ExactCharacter a -> a = c
 
-            DeterministicFiniteStateMachine.accepts edgeEvaluation input machine
+            DeterministicFiniteStateMachineNode.accepts edgeEvaluation input startNode
 
         let private getDisjunctParentEdge edge1 edge2 =
             match edge1, edge2 with
@@ -144,3 +144,4 @@ module ValueRestriction =
         let compileMachine machine =
             DeterministicFiniteStateMachine.fromFiniteStateMachine disjunctEdges isNotDisjunct machine
             |> DeterministicFiniteStateMachine.transformNodes GenericNode.transformNode
+            |> DeterministicFiniteStateMachineNode.buildFromDeterministicFiniteStateMachine
