@@ -429,6 +429,8 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteBinaryNumericOperation(Algebra.ArithmeticOperator @operator, TypedExpression leftOperand, TypedExpression rightOperand)
             {
+                _sb.Append("(");
+
                 ProcessExpression(leftOperand);
 
                 if (@operator.IsAdd)
@@ -453,6 +455,8 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 }
 
                 ProcessExpression(rightOperand);
+
+                _sb.Append(")");
             }
 
             /// <inheritdoc />
