@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage", "Slp.Evi.Storage\Slp.Evi.Storage.csproj", "{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.Unit", "Slp.Evi.Test.Unit\Slp.Evi.Test.Unit.csproj", "{48AB080D-DA54-42F1-B738-5C823CA5ACC1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.System", "Slp.Evi.Test.System\Slp.Evi.Test.System.csproj", "{32D17C53-D762-4F83-B617-CAE13E165495}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Benchmark", "Slp.Evi.Benchmark\Slp.Evi.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
@@ -27,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage.Common", "S
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core.Test.Unit", "Slp.Evi.Storage.Core.Test.Unit\Slp.Evi.Storage.Core.Test.Unit.fsproj", "{43E50702-968D-46E8-9D1E-D68B942A1CE4}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Slp.Evi.Database", "Slp.Evi.Database\Slp.Evi.Database.fsproj", "{7719ACF1-FEF2-49C1-B786-0A177BCC4455}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Database", "Slp.Evi.Database\Slp.Evi.Database.fsproj", "{7719ACF1-FEF2-49C1-B786-0A177BCC4455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,14 +31,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48AB080D-DA54-42F1-B738-5C823CA5ACC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48AB080D-DA54-42F1-B738-5C823CA5ACC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48AB080D-DA54-42F1-B738-5C823CA5ACC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48AB080D-DA54-42F1-B738-5C823CA5ACC1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32D17C53-D762-4F83-B617-CAE13E165495}.Release|Any CPU.ActiveCfg = Release|Any CPU
