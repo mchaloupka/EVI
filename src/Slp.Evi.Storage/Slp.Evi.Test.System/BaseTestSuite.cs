@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Slp.Evi.Storage.Utils;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -147,7 +146,7 @@ namespace Slp.Evi.Test.System
                         var type = element.Attribute("type").Value;
                         if (type.StartsWith("xsd:"))
                         {
-                            type = EviConstants.BaseXsdNamespace + type.Substring(4);
+                            type = "http://www.w3.org/2001/XMLSchema#" + type.Substring(4);
                         }
 
                         var uriType = new Uri(type);

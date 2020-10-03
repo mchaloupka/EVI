@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Extensions.Configuration;
-using Slp.Evi.Storage.Database;
-using Slp.Evi.Storage.Database.Vendor.MsSql;
+using Slp.Evi.Storage.MsSql.Database;
 using Xunit;
 
 namespace Slp.Evi.Test.System.Sparql.Vendor
@@ -19,7 +18,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
             }
         }
 
-        protected override ISqlDatabase GetSqlDb()
+        protected override MsSqlDatabase GetSqlDb()
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("database.json")
@@ -28,7 +27,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
             var config = builder.Build();
             var connectionString = config.GetConnectionString("mssql");
 
-            return (new MsSqlDbFactory()).CreateSqlDb(connectionString, 30);
+            return new MsSqlDatabase(connectionString, 30);
         }
     }
 

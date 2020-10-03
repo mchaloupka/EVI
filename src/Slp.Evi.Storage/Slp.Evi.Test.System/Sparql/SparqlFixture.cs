@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using Slp.Evi.Storage.Database;
 using Slp.Evi.Storage.MsSql;
+using Slp.Evi.Storage.MsSql.Database;
 using VDS.RDF.Storage;
 
 namespace Slp.Evi.Test.System.Sparql
@@ -19,6 +19,6 @@ namespace Slp.Evi.Test.System.Sparql
             return SparqlTestHelpers.InitializeDataset(storageName, GetSqlDb());
         }
 
-        protected abstract ISqlDatabase GetSqlDb();
+        protected abstract MsSqlDatabase GetSqlDb();
     }
 }
