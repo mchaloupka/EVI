@@ -5,7 +5,6 @@
     <LangVersion>8.0</LangVersion>
     <Authors>Miloš Chaloupka</Authors>
     <Product>EVI</Product>
-    <DebugType>Full</DebugType>
     <PackageId>slp.evi</PackageId>
     <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
     <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>

@@ -5,7 +5,6 @@
     <AssemblyName>Slp.Evi.Storage.Core</AssemblyName>
     <Authors>Miloš Chaloupka</Authors>
     <Product>EVI</Product>
-    <DebugType>Portable</DebugType>
     <PackageId>slp.evi.core</PackageId>
     <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
     <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>

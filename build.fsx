@@ -170,14 +170,6 @@ Target.create "CreateTempFolder" (fun _ ->
   di.Create()
 )
 
-Target.create "InstallDependencies" (fun _ ->
-  Trace.log " --- Installing dependencies --- "
-  
-  let zipLocation = Common.buildTempDirectory + "/opencover.zip"
-  Http.downloadFile zipLocation "https://github.com/OpenCover/opencover/releases/download/4.6.519/opencover.4.6.519.zip" |> ignore
-  Zip.unzip (Common.buildTempDirectory + "/opencover") zipLocation
-)
-
 Target.create "BeginSonarQube" (fun _ ->
   if Common.branch = "develop" then
     Trace.log " --- Starting SonarQube analyzer --- "
@@ -259,12 +251,17 @@ Target.create "PrepareDatabase" (fun _ ->
 
 Target.create "RunTests" (fun _ ->
   Trace.log " --- Running tests --- "
-  let exec proj =
-    let result = Shell.Exec(Common.buildTempDirectory + "/opencover/OpenCover.Console.exe", sprintf "-register:user -returntargetcode -target:\"dotnet.exe\" -targetargs:\"test %s --configuration Debug\" -filter:\"+[Slp.Evi.Storage*]*\" -mergeoutput -output:\"%s/coverage.xml\" -oldstyle" proj Common.baseDirectory)
-    if result <> 0 then failwithf "Tests failed (exit code %d, project: %s)" result proj
-
-  !! (Common.baseDirectory + "/src/**/*.Test.*.csproj")
-  |> Seq.iter exec
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  |> DotNet.test (fun p ->
+    { p with
+        NoBuild = true
+        Configuration = DotNet.BuildConfiguration.Debug
+        Common =
+          { p.Common with 
+              CustomParams = (sprintf "--collect:\"XPlat Code Coverage\" --results-directory:\"%s/coverage\" --logger:\"console;verbosity=detailed\"" Common.buildTempDirectory) |> Some
+          }
+    }
+  )
 )
 
 Target.create "UploadCodeCov" (fun _ ->
@@ -332,7 +329,6 @@ open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "CreateTempFolder"
- ==> "InstallDependencies"
  ==> "UpdateAssemblyInfo" <=> "RestorePackages"
  ==> "BeginSonarQube"
  ==> "Build"

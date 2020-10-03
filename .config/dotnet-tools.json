@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "fake-cli": {
-      "version": "5.20.0",
+      "version": "5.20.3",
       "commands": [
         "fake"
       ]
     },
     "dotnet-sonarscanner": {
-      "version": "4.9.0",
+      "version": "4.10.0",
       "commands": [
         "dotnet-sonarscanner"
       ]
