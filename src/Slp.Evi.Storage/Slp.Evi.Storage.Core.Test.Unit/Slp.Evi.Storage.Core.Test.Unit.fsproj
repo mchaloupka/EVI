@@ -24,8 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slp.Evi.R2RML\Slp.Evi.R2RML.fsproj" />
-    <ProjectReference Include="..\Slp.Evi.Relational\Slp.Evi.Relational.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

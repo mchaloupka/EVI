@@ -1,4 +1,4 @@
-﻿namespace Slp.Evi.Common
+﻿namespace Slp.Evi.Storage.Core.Common
 
 open System
 

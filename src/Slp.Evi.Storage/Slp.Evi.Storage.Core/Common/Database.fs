@@ -1,6 +1,6 @@
-﻿namespace Slp.Evi.Common.Database
+﻿namespace Slp.Evi.Storage.Core.Common.Database
 
-open Slp.Evi.Common.Types
+open Slp.Evi.Storage.Core.Common.Types
 
 type ISqlColumnType =
     abstract member DefaultRdfType: LiteralValueType with get

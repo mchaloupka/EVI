@@ -1,7 +1,7 @@
-﻿module Slp.Evi.Relational.RelationalAlgebraNormalizer
+﻿module Slp.Evi.Storage.Core.Relational.RelationalAlgebraNormalizer
 
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Relational.Algebra
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
 
 let normalizeRelationalExpression expression =
     match expression with

@@ -1,8 +1,8 @@
-﻿namespace Slp.Evi.R2RML
+﻿namespace Slp.Evi.Storage.Core.R2RML
 
-open Slp.Evi.Common
-open Slp.Evi.Common.Types
-open Slp.Evi.Common.Database
+open Slp.Evi.Storage.Core.Common
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.Common.Database
 
 type TriplesMappingSource =
     | Table of ISqlTableSchema

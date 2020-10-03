@@ -1,8 +1,8 @@
-﻿module Slp.Evi.Database.DatabaseQueryBuilder
+﻿module Slp.Evi.Storage.Core.Database.DatabaseQueryBuilder
 
 open System.Collections.Generic
-open Slp.Evi.Relational.Algebra
-open Slp.Evi.Common.Database
+open Slp.Evi.Storage.Core.Relational.Algebra
+open Slp.Evi.Storage.Core.Common.Database
 
 type private VariableList = HashSet<Variable>
 

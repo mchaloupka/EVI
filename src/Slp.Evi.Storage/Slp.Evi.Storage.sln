@@ -7,14 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.System", "Slp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Benchmark", "Slp.Evi.Benchmark\Slp.Evi.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Relational", "Slp.Evi.Relational\Slp.Evi.Relational.fsproj", "{CD40DCB6-3861-4527-9A8B-26C1014EF89A}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.R2RML", "Slp.Evi.R2RML\Slp.Evi.R2RML.fsproj", "{D764E65D-22DF-434A-B3F4-62697632CC66}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Sparql", "Slp.Evi.Sparql\Slp.Evi.Sparql.fsproj", "{3205ABD5-D7D5-4B4B-84FD-B6AC8222D5C6}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Common", "Slp.Evi.Common\Slp.Evi.Common.fsproj", "{0327677F-55B0-456B-A594-EDBB783F6F42}"
-EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core", "Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj", "{ED460784-7F56-43E1-B411-98B0ABEEA719}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage.MsSql", "Slp.Evi.Storage.MsSql\Slp.Evi.Storage.MsSql.csproj", "{674A72ED-2365-4CD1-A197-87DF73F2CFBC}"
@@ -22,8 +14,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage", "Slp.Evi.Storage\Slp.Evi.Storage.csproj", "{7890F1A3-34AF-478E-BF2B-C2C60251E911}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core.Test.Unit", "Slp.Evi.Storage.Core.Test.Unit\Slp.Evi.Storage.Core.Test.Unit.fsproj", "{43E50702-968D-46E8-9D1E-D68B942A1CE4}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Database", "Slp.Evi.Database\Slp.Evi.Database.fsproj", "{7719ACF1-FEF2-49C1-B786-0A177BCC4455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,22 +29,6 @@ Global
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD40DCB6-3861-4527-9A8B-26C1014EF89A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD40DCB6-3861-4527-9A8B-26C1014EF89A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD40DCB6-3861-4527-9A8B-26C1014EF89A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD40DCB6-3861-4527-9A8B-26C1014EF89A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D764E65D-22DF-434A-B3F4-62697632CC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D764E65D-22DF-434A-B3F4-62697632CC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D764E65D-22DF-434A-B3F4-62697632CC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D764E65D-22DF-434A-B3F4-62697632CC66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3205ABD5-D7D5-4B4B-84FD-B6AC8222D5C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3205ABD5-D7D5-4B4B-84FD-B6AC8222D5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3205ABD5-D7D5-4B4B-84FD-B6AC8222D5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3205ABD5-D7D5-4B4B-84FD-B6AC8222D5C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0327677F-55B0-456B-A594-EDBB783F6F42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0327677F-55B0-456B-A594-EDBB783F6F42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0327677F-55B0-456B-A594-EDBB783F6F42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0327677F-55B0-456B-A594-EDBB783F6F42}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,10 +45,6 @@ Global
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7719ACF1-FEF2-49C1-B786-0A177BCC4455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7719ACF1-FEF2-49C1-B786-0A177BCC4455}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7719ACF1-FEF2-49C1-B786-0A177BCC4455}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7719ACF1-FEF2-49C1-B786-0A177BCC4455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

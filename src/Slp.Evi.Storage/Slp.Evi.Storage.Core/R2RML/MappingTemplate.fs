@@ -1,4 +1,4 @@
-﻿module Slp.Evi.R2RML.MappingTemplate
+﻿module Slp.Evi.Storage.Core.R2RML.MappingTemplate
 
 open System.Text.RegularExpressions
 

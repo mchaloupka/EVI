@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using AngleSharp.Common;
 using Microsoft.FSharp.Collections;
-using Slp.Evi.Common;
-using Slp.Evi.Common.Database;
-using Slp.Evi.Database;
-using Slp.Evi.Relational.Algebra;
+using Slp.Evi.Storage.Core.Common;
+using Slp.Evi.Storage.Core.Common.Database;
+using Slp.Evi.Storage.Core.Database;
+using Slp.Evi.Storage.Core.Relational.Algebra;
 using Slp.Evi.Storage.FSharpExtensions;
 using Slp.Evi.Storage.MsSql.Database;
 

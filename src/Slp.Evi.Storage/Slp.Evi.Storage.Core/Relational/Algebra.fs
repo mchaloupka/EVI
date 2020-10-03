@@ -1,10 +1,10 @@
-﻿namespace Slp.Evi.Relational.Algebra
+﻿namespace Slp.Evi.Storage.Core.Relational.Algebra
 
 open System
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Common.Database
-open Slp.Evi.Sparql.Algebra
-open Slp.Evi.R2RML
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Common.Database
+open Slp.Evi.Storage.Core.Sparql.Algebra
+open Slp.Evi.Storage.Core.R2RML
 
 [<ReferenceEquality>]
 type SqlColumn = { Schema: SqlColumnSchema }

@@ -1,4 +1,4 @@
-﻿module Slp.Evi.Sparql.SparqlQueryNormalizer
+﻿module Slp.Evi.Storage.Core.Sparql.SparqlQueryNormalizer
 
 open Algebra
 open System

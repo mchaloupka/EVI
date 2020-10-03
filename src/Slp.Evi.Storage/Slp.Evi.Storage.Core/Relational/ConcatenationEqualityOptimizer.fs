@@ -1,6 +1,6 @@
-﻿module Slp.Evi.Relational.ConcatenationEqualityOptimizer
+﻿module Slp.Evi.Storage.Core.Relational.ConcatenationEqualityOptimizer
 
-open Slp.Evi.Relational.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
 open TCode.r2rml4net
 
 type ConcatenationPattern = Expression list

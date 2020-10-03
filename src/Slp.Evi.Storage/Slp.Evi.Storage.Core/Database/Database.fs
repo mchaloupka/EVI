@@ -1,10 +1,10 @@
-﻿namespace Slp.Evi.Database
+﻿namespace Slp.Evi.Storage.Core.Database
 
 open System
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Relational.Algebra
-open Slp.Evi.Common.Database
-open Slp.Evi.Database
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
+open Slp.Evi.Storage.Core.Common.Database
+open Slp.Evi.Storage.Core.Database
 
 type VariableValue =
     | IntVariableValue of int

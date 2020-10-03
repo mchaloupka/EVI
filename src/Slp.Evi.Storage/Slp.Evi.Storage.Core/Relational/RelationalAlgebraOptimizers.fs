@@ -1,8 +1,8 @@
-﻿module Slp.Evi.Relational.RelationalAlgebraOptimizers
+﻿module Slp.Evi.Storage.Core.Relational.RelationalAlgebraOptimizers
 
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Relational.Algebra
-open Slp.Evi.Relational.RelationalAlgebraNormalizer
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
+open Slp.Evi.Storage.Core.Relational.RelationalAlgebraNormalizer
 open TCode.r2rml4net
 
 let optimizeRelationalExpression expression =

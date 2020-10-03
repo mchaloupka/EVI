@@ -1,10 +1,10 @@
-﻿namespace Slp.Evi.Database
+﻿namespace Slp.Evi.Storage.Core.Database
 
 open System.Collections.Generic
-open Slp.Evi.Relational.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
 open System.Runtime.InteropServices
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Common.Database
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Common.Database
 
 type NamingProvider private (nameMapping: IDictionary<Variable, string>) =
     member _.TryGetVariableName(var: Variable, [<Out>] value: byref<string>) =

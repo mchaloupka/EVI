@@ -2,10 +2,10 @@
 
 open Xunit
 
-open Slp.Evi.Common.Types
-open Slp.Evi.Common.Database
-open Slp.Evi.Relational.Algebra
-open Slp.Evi.Relational.ConcatenationEqualityOptimizer
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.Common.Database
+open Slp.Evi.Storage.Core.Relational.Algebra
+open Slp.Evi.Storage.Core.Relational.ConcatenationEqualityOptimizer
 
 let fakeSchema name = 
     {

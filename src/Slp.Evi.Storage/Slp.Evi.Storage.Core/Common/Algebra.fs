@@ -1,4 +1,4 @@
-﻿module Slp.Evi.Common.Algebra
+﻿module Slp.Evi.Storage.Core.Common.Algebra
 
 type ArithmeticOperator =
     | Add

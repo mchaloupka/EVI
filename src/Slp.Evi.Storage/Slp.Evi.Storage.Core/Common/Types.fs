@@ -1,10 +1,10 @@
-﻿namespace Slp.Evi.Common.Types
+﻿namespace Slp.Evi.Storage.Core.Common.Types
 
 open System
 open VDS.RDF
-open Slp.Evi.Common.Utils
-open Slp.Evi.Common
-open Slp.Evi.Common.ValueRestriction
+open Slp.Evi.Storage.Core.Common.Utils
+open Slp.Evi.Storage.Core.Common
+open Slp.Evi.Storage.Core.Common.ValueRestriction
 
 type LiteralValueType =
     | DefaultType

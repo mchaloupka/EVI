@@ -1,6 +1,6 @@
 ﻿using System;
-using Slp.Evi.Common.Database;
-using Slp.Evi.Common.Types;
+using Slp.Evi.Storage.Core.Common.Database;
+using Slp.Evi.Storage.Core.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {

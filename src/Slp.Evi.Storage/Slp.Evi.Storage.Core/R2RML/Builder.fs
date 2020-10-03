@@ -1,14 +1,14 @@
-﻿module Slp.Evi.R2RML.Builder
+﻿module Slp.Evi.Storage.Core.R2RML.Builder
 
 open System
 open TCode.r2rml4net
 open TCode.r2rml4net.Extensions
 open TCode.r2rml4net.Mapping
 open VDS.RDF
-open Slp.Evi.Common.Database
-open Slp.Evi.Common.Types
-open Slp.Evi.Common.Utils
-open Slp.Evi.Common
+open Slp.Evi.Storage.Core.Common.Database
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.Common.Utils
+open Slp.Evi.Storage.Core.Common
 
 let private parseTemplate (tableSchema: ISqlTableSchema) = MappingTemplate.parseTemplate tableSchema.GetColumn
 

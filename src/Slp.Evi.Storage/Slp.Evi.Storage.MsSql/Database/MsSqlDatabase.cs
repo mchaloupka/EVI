@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using Slp.Evi.Common.Database;
-using Slp.Evi.Database;
+using Slp.Evi.Storage.Core.Common.Database;
+using Slp.Evi.Storage.Core.Database;
 using Slp.Evi.Storage.MsSql.QueryWriter;
 using Slp.Evi.Storage.MsSql.Reader;
 

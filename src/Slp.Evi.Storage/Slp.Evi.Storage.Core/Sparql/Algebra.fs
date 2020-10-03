@@ -1,9 +1,9 @@
-﻿module Slp.Evi.Sparql.Algebra
+﻿module Slp.Evi.Storage.Core.Sparql.Algebra
 
-open Slp.Evi.Common
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Common.Types
-open Slp.Evi.R2RML
+open Slp.Evi.Storage.Core.Common
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.R2RML
 
 type SparqlVariable = 
     | SparqlVariable of string

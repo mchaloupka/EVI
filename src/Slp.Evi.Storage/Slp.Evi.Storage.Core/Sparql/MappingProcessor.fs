@@ -1,14 +1,14 @@
-﻿namespace Slp.Evi.Sparql
+﻿namespace Slp.Evi.Storage.Core.Sparql
 
 open System
-open Slp.Evi.R2RML
-open Slp.Evi.R2RML.MappingTemplate
+open Slp.Evi.Storage.Core.R2RML
+open Slp.Evi.Storage.Core.R2RML.MappingTemplate
 open Algebra
 open SparqlQueryNormalizer
-open Slp.Evi.Common
-open Slp.Evi.Common.Database
-open Slp.Evi.Common.Types
-open Slp.Evi.Common.ValueRestriction
+open Slp.Evi.Storage.Core.Common
+open Slp.Evi.Storage.Core.Common.Database
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.Common.ValueRestriction
 
 module R2RMLMappingProcessor =
     let generateBasicGraphPatternMapping (input: ITriplesMapping list): BasicGraphPatternMapping list =

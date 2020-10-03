@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Slp.Evi.Database;
+using Slp.Evi.Storage.Core.Database;
 
 namespace Slp.Evi.Storage.MsSql.Reader
 {

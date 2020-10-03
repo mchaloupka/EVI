@@ -3,10 +3,9 @@
 open System
 open VDS.RDF
 open VDS.RDF.Parsing
-open Slp.Evi
 open TCode.r2rml4net
-open Slp.Evi.Relational
-open Slp.Evi.Database
+open Slp.Evi.Storage.Core.Relational
+open Slp.Evi.Storage.Core.Database
 
 type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMapping list, database: ISqlDatabase<'T>) =
     let mappingProcessor = Sparql.R2RMLMappingProcessor(bgpMappings)

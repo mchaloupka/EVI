@@ -1,17 +1,17 @@
-﻿module Slp.Evi.Relational.RelationalAlgebraBuilder
+﻿module Slp.Evi.Storage.Core.Relational.RelationalAlgebraBuilder
 
 open System
 open FSharpx.Collections
 
-open Slp.Evi.Common
-open Slp.Evi.Common.Types
-open Slp.Evi.R2RML
-open Slp.Evi.Sparql.Algebra
-open Slp.Evi.Relational.Algebra
-open Slp.Evi.Relational.RelationalAlgebraOptimizers
-open Slp.Evi.R2RML.MappingTemplate
-open Slp.Evi.Common.Algebra
-open Slp.Evi.Common.Database
+open Slp.Evi.Storage.Core.Common
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.R2RML
+open Slp.Evi.Storage.Core.Sparql.Algebra
+open Slp.Evi.Storage.Core.Relational.Algebra
+open Slp.Evi.Storage.Core.Relational.RelationalAlgebraOptimizers
+open Slp.Evi.Storage.Core.R2RML.MappingTemplate
+open Slp.Evi.Storage.Core.Common.Algebra
+open Slp.Evi.Storage.Core.Common.Database
 
 let rec private isBaseValueBinderBoundCondition neededVars =
     if neededVars |> Map.isEmpty then

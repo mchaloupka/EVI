@@ -2,7 +2,7 @@
 
 open Xunit
 open System
-open Slp.Evi.Common
+open Slp.Evi.Storage.Core.Common
 
 [<Fact>]
 let ``Absolute IRIs are equal if everything including fragment is equal`` () =

@@ -1,9 +1,9 @@
-﻿namespace Slp.Evi.Relational
+﻿namespace Slp.Evi.Storage.Core.Relational
 
 open System.Collections.Concurrent
 open System.Threading
 
-open Slp.Evi.Common.Types
+open Slp.Evi.Storage.Core.Common.Types
 
 module TypeIndexer =
     type TypeCategory =

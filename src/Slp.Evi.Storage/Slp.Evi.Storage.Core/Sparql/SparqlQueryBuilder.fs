@@ -1,14 +1,14 @@
-﻿module Slp.Evi.Sparql.SparqlQueryBuilder
+﻿module Slp.Evi.Storage.Core.Sparql.SparqlQueryBuilder
 
 open Algebra
 open SparqlQueryNormalizer
 
 open System
 open VDS.RDF
-open Slp.Evi.Common.Algebra
+open Slp.Evi.Storage.Core.Common.Algebra
 open System.Reflection
-open Slp.Evi.Common.Types
-open Slp.Evi.Common
+open Slp.Evi.Storage.Core.Common.Types
+open Slp.Evi.Storage.Core.Common
 
 let private getNodeFromConstantTerm: Query.Expressions.Primary.ConstantTerm -> INode =
     let property =
