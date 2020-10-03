@@ -9,7 +9,7 @@ using Slp.Evi.Common;
 using Slp.Evi.Common.Database;
 using Slp.Evi.Database;
 using Slp.Evi.Relational.Algebra;
-using Slp.Evi.Storage.Common.FSharpExtensions;
+using Slp.Evi.Storage.FSharpExtensions;
 using Slp.Evi.Storage.MsSql.Database;
 
 namespace Slp.Evi.Storage.MsSql.QueryWriter

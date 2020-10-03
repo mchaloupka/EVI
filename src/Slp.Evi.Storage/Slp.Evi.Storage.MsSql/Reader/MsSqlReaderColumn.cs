@@ -1,5 +1,4 @@
-﻿using System;
-using Slp.Evi.Database;
+﻿using Slp.Evi.Database;
 
 namespace Slp.Evi.Storage.MsSql.Reader
 {

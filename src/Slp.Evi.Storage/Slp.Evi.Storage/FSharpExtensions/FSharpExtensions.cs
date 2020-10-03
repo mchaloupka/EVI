@@ -1,6 +1,6 @@
 ﻿using Microsoft.FSharp.Core;
 
-namespace Slp.Evi.Storage.Common.FSharpExtensions
+namespace Slp.Evi.Storage.FSharpExtensions
 {
     public static class FSharpExtensions
     {

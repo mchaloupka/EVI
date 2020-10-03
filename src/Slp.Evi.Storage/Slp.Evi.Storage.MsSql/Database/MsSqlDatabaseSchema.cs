@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Common;
 using DatabaseSchemaReader;
 using Slp.Evi.Common.Database;
-using Slp.Evi.Common.Types;
 
 namespace Slp.Evi.Storage.MsSql.Database
 {

@@ -1,5 +1,4 @@
-﻿using Slp.Evi.Storage.Common;
-using Slp.Evi.Storage.MsSql.Database;
+﻿using Slp.Evi.Storage.MsSql.Database;
 using TCode.r2rml4net;
 
 namespace Slp.Evi.Storage.MsSql

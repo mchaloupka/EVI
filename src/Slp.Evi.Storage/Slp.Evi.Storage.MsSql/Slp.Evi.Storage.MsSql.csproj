@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slp.Evi.Storage.Common\Slp.Evi.Storage.csproj" />
     <ProjectReference Include="..\Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj" />
   </ItemGroup>
 
 </Project>

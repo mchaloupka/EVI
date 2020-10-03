@@ -10,7 +10,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 
-namespace Slp.Evi.Storage.Common
+namespace Slp.Evi.Storage
 {
     public abstract class EviStorage<TQuery>
         : IQueryableStorage
