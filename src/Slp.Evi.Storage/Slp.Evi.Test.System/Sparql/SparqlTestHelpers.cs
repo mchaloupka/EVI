@@ -18,8 +18,9 @@ namespace Slp.Evi.Test.System.Sparql
             return path;
         }
 
-        public static MsSqlEviStorage InitializeDataset(string dataset, MsSqlDatabase sqlDb)
+        public static MsSqlEviStorage InitializeDataset(string dataset, Func<MsSqlDatabase> createSqlDb)
         {
+            var sqlDb = createSqlDb();
             var datasetFile = GetPath($@"Data\{dataset}\_dataset.xml");
 
             var doc = XDocument.Load(datasetFile);
@@ -41,7 +42,8 @@ namespace Slp.Evi.Test.System.Sparql
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new MsSqlEviStorage(mapping, sqlDb);
+
+            return new MsSqlEviStorage(mapping, createSqlDb());
         }
 
         private static void ExecuteQuery(MsSqlDatabase sqlDb, XElement query)

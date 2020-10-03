@@ -16,7 +16,7 @@ namespace Slp.Evi.Test.System.Sparql
 
         private MsSqlEviStorage CreateStorage(string storageName)
         {
-            return SparqlTestHelpers.InitializeDataset(storageName, GetSqlDb());
+            return SparqlTestHelpers.InitializeDataset(storageName, GetSqlDb);
         }
 
         protected abstract MsSqlDatabase GetSqlDb();
