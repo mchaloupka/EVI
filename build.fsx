@@ -310,17 +310,24 @@ Target.create "PublishArtifacts" (fun _ ->
     !! (Common.buildTempDirectory + "/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
     !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
-
     match Common.branch with
     | "develop" | "master" ->
-      NuGetPublish (fun p ->
-        { p with
-            AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
-            Project = "slp.evi"
-            Version = version
-            OutputPath = Common.baseDirectory + "/nuget"
-            WorkingDir = Common.baseDirectory + "/nuget"
-        })
+      [
+        "slp.evi"
+        "slp.evi.core"
+        "slp.evi.mssql"
+      ]
+      |> List.iter (
+        fun project ->
+          NuGetPublish (fun p ->
+            { p with
+                AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+                Project = project
+                Version = version
+                OutputPath = Common.baseDirectory + "/nuget"
+                WorkingDir = Common.baseDirectory + "/nuget"
+            })
+      )
     | _ -> ()
   | None -> Trace.log "Skipping artifacts publishing"
 )
