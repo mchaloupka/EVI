@@ -143,7 +143,6 @@ let optimizeCalculusModel model =
         |> Modified
     | _ ->
         model
-    
 
 let optimizeBoundCalculusModel model =
     model

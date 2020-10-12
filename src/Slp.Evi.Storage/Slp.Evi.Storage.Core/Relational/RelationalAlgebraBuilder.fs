@@ -729,28 +729,73 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
 
     implPatternList Map.empty [] Map.empty patterns
 
-let private processJoin (typeIndexer: TypeIndexer) (left: BoundCalculusModel) (right: BoundCalculusModel) =
+let private getNotModifiedModel model =
+    match model with
+    | NotModified notModified ->
+        notModified
+    | _ ->
+        { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
+
+let rec private isAlwaysTrueInModel (model: CalculusModel) condition =
+    let isAlwaysTrueInNotModified (notModified: NotModifiedCalculusModel) =
+        let rec isConditionAlwaysTrue = function
+            | AlwaysTrue -> true
+            | AlwaysFalse -> false
+            | condition when notModified.Filters |> List.contains condition -> true
+            | Disjunction conditions ->
+                conditions |> List.exists isConditionAlwaysTrue
+            | Conjunction conditions ->
+                conditions |> List.forall isConditionAlwaysTrue
+            | _ -> false
+
+        isConditionAlwaysTrue condition
+
+    match model with
+    | NoResult -> false
+    | SingleEmptyResult -> false
+    | Modified modified -> isAlwaysTrueInModel modified.InnerModel condition
+    | Union (_, notModifiedModels) -> notModifiedModels |> List.forall isAlwaysTrueInNotModified
+    | NotModified notModified -> isAlwaysTrueInNotModified notModified
+
+let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCondition option) (left: BoundCalculusModel) (right: BoundCalculusModel) =
+    let isLeftJoin = leftJoinCondition.IsSome
+
     let leftValueBinders = left.Bindings
     let rightValueBinders = right.Bindings
-    let leftVariables = leftValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
-    let rightVariables = rightValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+
+    let leftVariables =
+        leftValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+
+    let rightVariables =
+        rightValueBinders |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+
     let sharedVariables =
         Set.intersect leftVariables rightVariables
-    let onlyLeftVariables = Set.difference leftVariables sharedVariables
-    let onlyRightVariables = Set.difference rightVariables sharedVariables
 
-    let joinConditions =
+    let onlyLeftVariables =
+        Set.difference leftVariables sharedVariables
+
+    let onlyRightVariables =
+        Set.difference rightVariables sharedVariables
+
+    let sharedVariablesWithExpressionSets =
         sharedVariables
         |> Set.toList
         |> List.map (
             fun variable ->
-                let leftBinder = leftValueBinders.[variable] |> valueBinderToExpressionSet typeIndexer
-                let rightBinder = rightValueBinders.[variable] |> valueBinderToExpressionSet typeIndexer
+                let leftBinder = leftValueBinders.[variable]
+                let rightBinder = rightValueBinders.[variable]
+                variable, leftBinder, leftBinder |> valueBinderToExpressionSet typeIndexer, rightBinder, rightBinder |> valueBinderToExpressionSet typeIndexer
+        )
 
+    let joinConditions =
+        sharedVariablesWithExpressionSets
+        |> List.map (
+            fun (_, _, leftBinderExpressionSet, _, rightBinderExpressionSet) ->
                 [
-                    leftBinder.IsNotErrorCondition |> Not |> optimizeRelationalCondition
-                    rightBinder.IsNotErrorCondition |> Not |> optimizeRelationalCondition
-                    expressionSetValuesEqualCondition leftBinder rightBinder
+                    leftBinderExpressionSet.IsNotErrorCondition |> Not |> optimizeRelationalCondition
+                    rightBinderExpressionSet.IsNotErrorCondition |> Not |> optimizeRelationalCondition
+                    expressionSetValuesEqualCondition leftBinderExpressionSet rightBinderExpressionSet
                 ]
                 |> Disjunction
                 |> optimizeRelationalCondition
@@ -761,31 +806,70 @@ let private processJoin (typeIndexer: TypeIndexer) (left: BoundCalculusModel) (r
         |> Map.filter (fun v _ -> variables |> Set.contains v)
 
     let sharedValueBinders =
-        sharedVariables
-        |> Set.toSeq
-        |> Seq.map (
-            fun v ->
-                v,
-                [
-                    leftValueBinders.[v]
-                    rightValueBinders.[v]
-                ] |> CoalesceValueBinder
+        sharedVariablesWithExpressionSets
+        |> List.map (
+            fun (variable, leftBinder, leftExpressionSet, rightBinder, rightExpressionSet) ->
+                let newValueBinder =
+                    if leftExpressionSet.IsNotErrorCondition |> isAlwaysTrueInModel left.Model then
+                        leftBinder
+                    elif isLeftJoin && rightExpressionSet.IsNotErrorCondition |> isAlwaysTrueInModel right.Model then
+                        rightBinder
+                    else
+                        [
+                            leftBinder
+                            rightBinder
+                        ]
+                        |> CoalesceValueBinder
+
+                variable, newValueBinder
         )
-        |> Map.ofSeq
+        |> Map.ofList
 
     let valueBinders =
         oneSideValueBinders onlyLeftVariables leftValueBinders
         |> Map.union (oneSideValueBinders onlyRightVariables rightValueBinders)
         |> Map.union sharedValueBinders
 
-    valueBinders, joinConditions
+    let leftModel = left.Model |> getNotModifiedModel
+    let rightModel = right.Model |> getNotModifiedModel
 
-let private getNotModifiedModel model =
-    match model with
-    | NotModified notModified ->
-        notModified
-    | _ ->
-        { Sources = SubQuery model |> List.singleton; Assignments = List.empty; Filters = List.empty }
+    if isLeftJoin then
+        let conditionProc =
+            leftJoinCondition.Value
+            |> processSparqlCondition typeIndexer valueBinders
+            |> fun (x, y) -> x :: y :: joinConditions
+            |> Conjunction
+            |> optimizeRelationalCondition
+
+        {
+            Model =
+                { leftModel with
+                    Sources =
+                        leftModel.Sources @ [
+                            LeftOuterJoinModel(
+                                rightModel,
+                                conditionProc
+                            )
+                        ]
+                }
+                |> NotModified
+                |> optimizeCalculusModel
+            Bindings = valueBinders
+            Variables = valueBinders |> Map.keys |> List.ofSeq
+        }
+    else
+        {
+            Model =
+                {
+                    Sources = leftModel.Sources @ rightModel.Sources
+                    Assignments = leftModel.Assignments @ rightModel.Assignments
+                    Filters = leftModel.Filters @ rightModel.Filters @ joinConditions
+                }
+                |> NotModified
+                |> optimizeCalculusModel
+            Bindings = valueBinders
+            Variables = valueBinders |> Map.keys |> List.ofSeq
+        }
 
 let private applyOnNotModifiedModel applyFunction model =
     model
@@ -856,55 +940,13 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
         |> List.map (processSparqlPattern database typeIndexer)
         |> List.reduce (
             fun left right ->
-                let (valueBinders, joinConditions) = processJoin typeIndexer left right
-
-                let leftModel = left.Model |> getNotModifiedModel
-                let rightModel = right.Model |> getNotModifiedModel
-
-                {
-                    Model =
-                        {
-                            Sources = leftModel.Sources @ rightModel.Sources
-                            Assignments = leftModel.Assignments @ rightModel.Assignments
-                            Filters = leftModel.Filters @ rightModel.Filters @ joinConditions
-                        }
-                        |> NotModified
-                        |> optimizeCalculusModel
-                    Bindings = valueBinders
-                    Variables = valueBinders |> Map.keys |> List.ofSeq
-                }
+                processJoin typeIndexer None left right
         )
 
     | LeftJoinPattern(left, right, condition) ->
         let leftProc = left |> processSparqlPattern database typeIndexer
         let rightProc = right |> processSparqlPattern database typeIndexer
-        let (valueBinders, joinConditions) = processJoin typeIndexer leftProc rightProc
-        let conditionProc =
-            condition
-            |> processSparqlCondition typeIndexer valueBinders
-            |> fun (x, y) -> [x; y]
-            |> Conjunction
-            |> optimizeRelationalCondition
-
-        let leftModel = leftProc.Model |> getNotModifiedModel
-        let rightModel = rightProc.Model |> getNotModifiedModel
-
-        {
-            Model =
-                { leftModel with
-                    Sources =
-                        LeftOuterJoinModel(
-                            rightModel,
-                            conditionProc :: joinConditions
-                            |> Conjunction
-                            |> optimizeRelationalCondition
-                        ) :: leftModel.Sources
-                }
-                |> NotModified
-                |> optimizeCalculusModel
-            Bindings = valueBinders
-            Variables = valueBinders |> Map.keys |> List.ofSeq
-        }
+        processJoin typeIndexer (condition |> Some) leftProc rightProc
 
     | UnionPattern unioned ->
         let switchVariable = { SqlType = database.IntegerType }
