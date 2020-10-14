@@ -757,6 +757,15 @@ let rec private isAlwaysTrueInModel (model: CalculusModel) condition =
     | Union (_, notModifiedModels) -> notModifiedModels |> List.forall isAlwaysTrueInNotModified
     | NotModified notModified -> isAlwaysTrueInNotModified notModified
 
+let private removeSelfJoins (isLeftJoin: bool) (leftModel: NotModifiedCalculusModel) (rightModel: NotModifiedCalculusModel) (joinCondition: Condition) (valueBinders: Map<SparqlVariable, ValueBinder>) =
+    // Go source by source and remove them from right model if possible
+    // * When removing a source replace all columns in conditions, assignments and value binders
+    //   * When removing a column from value binder, in case that it is a last column from right
+    //     model from the value binder (even from subpart), it is needed to add the join condition
+    //     and all filters into it in case of left join.
+
+    invalidOp "Can be further optimised"
+
 let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCondition option) (left: BoundCalculusModel) (right: BoundCalculusModel) =
     let isLeftJoin = leftJoinCondition.IsSome
 
@@ -841,34 +850,45 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> Conjunction
             |> optimizeRelationalCondition
 
+        let (procRightModel, procJoinCondition, procValueBinders) =
+            removeSelfJoins leftModel rightModel conditionProc valueBinders
+
         {
             Model =
                 { leftModel with
                     Sources =
                         leftModel.Sources @ [
                             LeftOuterJoinModel(
-                                rightModel,
-                                conditionProc
+                                procRightModel,
+                                procJoinCondition
                             )
                         ]
                 }
                 |> NotModified
                 |> optimizeCalculusModel
-            Bindings = valueBinders
-            Variables = valueBinders |> Map.keys |> List.ofSeq
+            Bindings = procValueBinders
+            Variables = procValueBinders |> Map.keys |> List.ofSeq
         }
     else
+        let conditionProc =
+            joinConditions
+            |> Conjunction
+            |> optimizeRelationalCondition
+
+        let (procRightModel, procJoinCondition, procValueBinders) =
+            removeSelfJoins leftModel rightModel conditionProc valueBinders
+
         {
             Model =
                 {
-                    Sources = leftModel.Sources @ rightModel.Sources
-                    Assignments = leftModel.Assignments @ rightModel.Assignments
-                    Filters = leftModel.Filters @ rightModel.Filters @ joinConditions
+                    Sources = leftModel.Sources @ procRightModel.Sources
+                    Assignments = leftModel.Assignments @ procRightModel.Assignments
+                    Filters = procJoinCondition :: leftModel.Filters @ procRightModel.Filters
                 }
                 |> NotModified
                 |> optimizeCalculusModel
-            Bindings = valueBinders
-            Variables = valueBinders |> Map.keys |> List.ofSeq
+            Bindings = procValueBinders
+            Variables = procValueBinders |> Map.keys |> List.ofSeq
         }
 
 let private applyOnNotModifiedModel applyFunction model =
