@@ -851,7 +851,7 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> optimizeRelationalCondition
 
         let (procRightModel, procJoinCondition, procValueBinders) =
-            removeSelfJoins leftModel rightModel conditionProc valueBinders
+            removeSelfJoins true leftModel rightModel conditionProc valueBinders
 
         {
             Model =
@@ -876,7 +876,7 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> optimizeRelationalCondition
 
         let (procRightModel, procJoinCondition, procValueBinders) =
-            removeSelfJoins leftModel rightModel conditionProc valueBinders
+            removeSelfJoins false leftModel rightModel conditionProc valueBinders
 
         {
             Model =
