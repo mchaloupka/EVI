@@ -12,6 +12,7 @@ open Slp.Evi.Storage.Core.Relational.RelationalAlgebraOptimizers
 open Slp.Evi.Storage.Core.R2RML.MappingTemplate
 open Slp.Evi.Storage.Core.Common.Algebra
 open Slp.Evi.Storage.Core.Common.Database
+open System.Collections.Generic
 
 let rec private isBaseValueBinderBoundCondition neededVars =
     if neededVars |> Map.isEmpty then
@@ -757,14 +758,368 @@ let rec private isAlwaysTrueInModel (model: CalculusModel) condition =
     | Union (_, notModifiedModels) -> notModifiedModels |> List.forall isAlwaysTrueInNotModified
     | NotModified notModified -> isAlwaysTrueInNotModified notModified
 
-let private removeSelfJoins (isLeftJoin: bool) (leftModel: NotModifiedCalculusModel) (rightModel: NotModifiedCalculusModel) (joinCondition: Condition) (valueBinders: Map<SparqlVariable, ValueBinder>) =
+let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: NotModifiedCalculusModel) (joinCondition: Condition) (valueBindersToUpdate: Map<SparqlVariable, ValueBinder>) =
     // Go source by source and remove them from right model if possible
     // * When removing a source replace all columns in conditions, assignments and value binders
-    //   * When removing a column from value binder, in case that it is a last column from right
-    //     model from the value binder (even from subpart), it is needed to add the join condition
-    //     and all filters into it in case of left join.
+    let retrieveSources model =
+        model.Sources
+        |> List.choose (function
+            | Sql sqlSource -> sqlSource |> Some
+            | _ -> None
+        )
+        |> List.groupBy (fun x -> x.Schema.Name)
+        |> Map.ofList
 
-    invalidOp "Can be further optimised"
+    let findConstraint variable (constraints: Dictionary<Variable,_>) =
+        match constraints.TryGetValue variable with
+        | true, x -> x |> Some
+        | false, _ -> None
+
+    let equalityConstraints =
+        let emptyConstraints = Dictionary<Variable, HashSet<Variable> * HashSet<Literal>>()
+
+        let updateConstraint variable newConstraint (constraints: Dictionary<Variable,_>) =
+            let newConstraints = Dictionary<_,_>(constraints)
+            if newConstraints.ContainsKey variable then
+                newConstraints.[variable] = newConstraint |> ignore
+            else
+                newConstraints.Add(variable, newConstraint)
+            newConstraints
+
+        let addRestriction restriction (restrictions: HashSet<_>) =
+            let newRestrictions = HashSet<_>(restrictions)
+            newRestrictions.Add restriction |> ignore
+            newRestrictions
+
+        let addVariableToLiteralConstraints variable literal constraints =
+            match constraints |> findConstraint variable with
+            | Some(x) -> x
+            | None -> (HashSet<Variable>(), HashSet<Literal>())
+            |> fun (varConstraints, litConstraints) ->
+                constraints
+                |> updateConstraint variable (varConstraints, litConstraints |> addRestriction literal)
+
+        let addVariableToVariableConstraints var1 var2 constraints =
+            match constraints |> findConstraint var1 with
+            | Some x -> x
+            | None -> (HashSet<Variable>(), HashSet<Literal>())
+            |> fun (varConstraints, litConstraints) ->
+                let (targetVarConstraints, targetLitConstraints) =
+                    constraints
+                    |> findConstraint var2
+                    |> Option.defaultValue (HashSet<Variable>(), HashSet<Literal>())
+
+                let newVarConstraints =
+                    varConstraints
+                    |> addRestriction var2
+                    |> fun x ->
+                        x.UnionWith targetVarConstraints
+                        x
+
+                let newLitConstraints = HashSet<Literal>(litConstraints)
+                newLitConstraints.UnionWith targetLitConstraints
+
+                let newConstraints =
+                    constraints
+                    |> updateConstraint var1 (newVarConstraints, newLitConstraints)
+
+                (newConstraints, newConstraints.Keys)
+                ||> Seq.fold (
+                    fun prevConstraints newVar ->
+                        prevConstraints
+                        |> findConstraint newVar
+                        |> Option.map (
+                            fun (varConstraints, litConstraints) ->
+                                if varConstraints.Contains var1 then
+                                    let updatedVarConstraints = HashSet<Variable>(varConstraints)
+                                    updatedVarConstraints.UnionWith newVarConstraints
+
+                                    let updatedLitConstraints = HashSet<Literal>(litConstraints)
+                                    litConstraints.UnionWith newLitConstraints
+
+                                    prevConstraints
+                                    |> updateConstraint newVar (updatedVarConstraints, updatedLitConstraints)
+                                    |> Some
+                                else
+                                    None
+                        )
+                        |> Option.flatten
+                        |> Option.defaultValue prevConstraints
+                )
+
+        let intersectConstraints constraints otherConstraints =
+            invalidOp "Not Implemented"
+
+        let rec buildEqualityConstraints equalityConstraints = function
+            | [] ->
+                equalityConstraints
+            | Conjunction conditions :: xs ->
+                conditions @ xs
+                |> buildEqualityConstraints equalityConstraints
+            | Disjunction conditions :: xs ->
+                (emptyConstraints, conditions)
+                ||> List.fold (
+                    fun constraints condition ->
+                        buildEqualityConstraints equalityConstraints [condition]
+                        |> intersectConstraints <| constraints
+                )
+                |> buildEqualityConstraints <| xs
+            | EqualVariables(var1, var2) :: xs ->
+                equalityConstraints
+                |> addVariableToVariableConstraints var1 var2
+                |> addVariableToVariableConstraints var2 var1
+                |> buildEqualityConstraints <| xs
+            | EqualVariableTo(var1, lit) :: xs ->
+                equalityConstraints
+                |> addVariableToLiteralConstraints var1 lit
+                |> buildEqualityConstraints <| xs
+            | _ :: xs -> buildEqualityConstraints equalityConstraints xs
+
+        buildEqualityConstraints emptyConstraints (joinCondition :: leftModel.Filters @ rightModel.Filters)
+
+    let leftSources = leftModel |> retrieveSources
+    let rightSources = rightModel |> retrieveSources
+
+    let sharedSourceNames =
+        leftSources |> Map.keySet |> Set.intersect (rightSources |> Map.keySet)
+
+    let getSourceRestrictions (source: SqlSource) =
+        source.Schema.Keys
+        |> Seq.collect id
+        |> Seq.map (
+            fun colName ->
+                let column =
+                    source.Columns
+                    |> List.find (fun x -> x.Schema.Name = colName)
+
+                match equalityConstraints.TryGetValue (column |> Column) with
+                | true, constraints ->
+                    colName, (column, constraints)
+                | false, _ ->
+                    colName, (column, (HashSet<_>(), HashSet<_>()))
+        )
+        |> Map.ofSeq
+
+    ((rightModel, joinCondition, valueBindersToUpdate), sharedSourceNames)
+    ||> Set.fold (
+        fun state sourceName ->
+            let thisLeftSources = leftSources.[sourceName]
+            let thisRightSources = rightSources.[sourceName]
+
+            let selfJoins =
+                seq {
+                    for leftSource in thisLeftSources do
+                        for rightSource in thisRightSources ->
+                            (leftSource, rightSource, leftSource |> getSourceRestrictions, rightSource |> getSourceRestrictions)
+                }
+                |> Seq.map (
+                    fun (leftSource, rightSource, leftRestrictions, rightRistrictions) ->
+                        let sharedVariables =
+                            leftRestrictions
+                            |> Map.keys
+                            |> Seq.map (
+                                fun key ->
+                                    let (leftVarRestrictions, leftLitRestrictions) = leftRestrictions.[key] |> snd
+                                    let (rightVarRestrictions, rightLitRestrictions) = rightRistrictions.[key] |> snd
+                                    let sharedVarRestrictions = HashSet<_>(leftVarRestrictions)
+                                    sharedVarRestrictions.IntersectWith(rightVarRestrictions)
+                                    let sharedLitRestrictions = HashSet<_>(leftLitRestrictions)
+                                    sharedLitRestrictions.IntersectWith(rightLitRestrictions)
+                                    key, sharedVarRestrictions, sharedLitRestrictions
+                            )
+                            |> Seq.filter (
+                                fun (_, varRest, litRest) ->
+                                    varRest.Count > 0 || litRest.Count > 0
+                            )
+                            |> Seq.map (fun (x,_,_) -> x)
+                            |> List.ofSeq
+
+                        leftSource, rightSource, sharedVariables
+                )
+                |> Seq.filter (
+                    fun (leftSource,_,sharedVariables) ->
+                        leftSource.Schema.Keys
+                        |> Seq.exists (
+                            fun key ->
+                                key
+                                |> Seq.forall (
+                                    fun x ->
+                                        sharedVariables
+                                        |> List.contains x
+                                )
+                        )
+                )
+                |> Seq.map (fun (ls,rs,_) -> rs,ls)
+                |> List.ofSeq
+                |> List.groupBy fst
+                |> List.map (fun (rs, lss) -> rs, lss |> List.map snd |> List.head)
+
+            (state, selfJoins)
+            ||> List.fold (
+                fun (prevRightModel, prevJoinCondition, prevValueBindersToUpdate) (rightSource, leftSource) ->
+                    let variableMappings =
+                        rightSource.Columns
+                        |> List.map (
+                            fun rc ->
+                                let lc =
+                                    leftSource.Columns
+                                    |> List.find (fun x -> x.Schema.Name = rc.Schema.Name)
+                                rc, lc
+                        )
+                        |> readOnlyDict
+
+                    let updateVariable = function
+                        | Assigned var ->
+                            Assigned var
+                        | Column col ->
+                            match variableMappings.TryGetValue col with
+                            | true, newCol ->
+                                Column newCol
+                            | false, _ ->
+                                Column col
+
+                    let rec updateExpression = function
+                        | BinaryNumericOperation(op, le, re) ->
+                            BinaryNumericOperation(op, le |> updateExpression, re |> updateExpression)
+                            |> optimizeRelationalExpression
+                        | Switch statements ->
+                            statements
+                            |> List.map (
+                                fun x ->
+                                    {
+                                        Condition = x.Condition |> updateCondition
+                                        Expression = x.Expression |> updateExpression
+                                    }
+                            )
+                            |> Switch
+                            |> optimizeRelationalExpression
+                        | Coalesce expressions ->
+                            expressions
+                            |> List.map updateExpression
+                            |> Coalesce
+                            |> optimizeRelationalExpression
+                        | Variable var ->
+                            var
+                            |> updateVariable
+                            |> Variable
+                            |> optimizeRelationalExpression
+                        | IriSafeVariable var ->
+                            var
+                            |> updateVariable
+                            |> IriSafeVariable
+                            |> optimizeRelationalExpression
+                        | Constant lit ->
+                            Constant lit
+                        | Concatenation expressions ->
+                            expressions
+                            |> List.map updateExpression
+                            |> Concatenation
+                            |> optimizeRelationalExpression
+                        | Boolean cond ->
+                            cond
+                            |> updateCondition
+                            |> Boolean
+                            |> optimizeRelationalExpression
+                        | Null ->
+                            Null
+
+                    and updateCondition = function
+                        | AlwaysFalse ->
+                            AlwaysFalse
+                        | AlwaysTrue ->
+                            AlwaysTrue
+                        | Comparison(comp, le, re) ->
+                            Comparison(comp, le |> updateExpression, re |> updateExpression)
+                        | Conjunction conditions ->
+                            conditions
+                            |> List.map updateCondition
+                            |> Conjunction
+                            |> optimizeRelationalCondition
+                        | Disjunction conditions ->
+                            conditions
+                            |> List.map updateCondition
+                            |> Disjunction
+                            |> optimizeRelationalCondition
+                        | EqualVariableTo (var, lit) ->
+                            EqualVariableTo (var |> updateVariable, lit)
+                            |> optimizeRelationalCondition
+                        | EqualVariables(var1, var2) ->
+                            (var1 |> updateVariable, var2 |> updateVariable)
+                            |> EqualVariables
+                            |> optimizeRelationalCondition
+                        | IsNull var ->
+                            var
+                            |> updateVariable
+                            |> IsNull
+                            |> optimizeRelationalCondition
+                        | LanguageMatch (expr, exprRange) ->
+                            LanguageMatch (expr |> updateExpression, exprRange |> updateExpression)
+                            |> optimizeRelationalCondition
+                        | Like (expr, pattern) ->
+                            Like (expr |> updateExpression, pattern)
+                            |> optimizeRelationalCondition
+                        | Not cond ->
+                            cond
+                            |> updateCondition
+                            |> Not
+                            |> optimizeRelationalCondition
+
+                    let rec updateValueBinder = function
+                        | EmptyValueBinder ->
+                            EmptyValueBinder
+                        | BaseValueBinder (objMap, varMap) ->
+                            let newVarMap =
+                                varMap
+                                |> Map.map (fun _ -> updateVariable)
+                            BaseValueBinder(objMap, varMap)
+                        | CoalesceValueBinder valBinders ->
+                            valBinders
+                            |> List.map updateValueBinder
+                            |> CoalesceValueBinder
+                        | CaseValueBinder(var, binders) ->
+                            CaseValueBinder(var,
+                                binders
+                                |> Map.map (fun _ -> updateValueBinder)
+                            )
+                        | ExpressionValueBinder expressionSet ->
+                            {
+                                IsNotErrorCondition = expressionSet.IsNotErrorCondition |> updateCondition
+                                TypeCategoryExpression = expressionSet.TypeCategoryExpression |> updateExpression
+                                TypeExpression = expressionSet.TypeExpression |> updateExpression
+                                StringExpression = expressionSet.StringExpression |> updateExpression
+                                NumericExpression = expressionSet.NumericExpression |> updateExpression
+                                BooleanExpression = expressionSet.BooleanExpression |> updateExpression
+                                DateTimeExpresion = expressionSet.DateTimeExpresion |> updateExpression
+                            }
+                            |> ExpressionValueBinder
+                    
+                    let newRightModel =
+                        {
+                            Sources =
+                                prevRightModel.Sources
+                                |> List.filter (fun x -> x <> Sql(rightSource))
+                            Assignments =
+                                prevRightModel.Assignments
+                                |> List.map (fun x -> { x with Expression = x.Expression |> updateExpression })
+                            Filters =
+                                prevRightModel.Filters
+                                |> List.map updateCondition
+                        }
+
+                    let newJoinCondition =
+                        prevJoinCondition
+                        |> updateCondition
+
+                    let newValueBindersToUpdate =
+                        prevValueBindersToUpdate
+                        |> Map.map (
+                            fun var valBinder ->
+                                valBinder |> updateValueBinder
+                        )
+
+                    newRightModel, newJoinCondition, newValueBindersToUpdate
+            )
+    )
 
 let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCondition option) (left: BoundCalculusModel) (right: BoundCalculusModel) =
     let isLeftJoin = leftJoinCondition.IsSome
@@ -851,24 +1206,95 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> optimizeRelationalCondition
 
         let (procRightModel, procJoinCondition, procValueBinders) =
-            removeSelfJoins true leftModel rightModel conditionProc valueBinders
+            removeSelfJoins leftModel rightModel conditionProc rightValueBinders
 
-        {
-            Model =
-                { leftModel with
-                    Sources =
-                        leftModel.Sources @ [
-                            LeftOuterJoinModel(
-                                procRightModel,
-                                procJoinCondition
-                            )
-                        ]
-                }
-                |> NotModified
-                |> optimizeCalculusModel
-            Bindings = procValueBinders
-            Variables = procValueBinders |> Map.keys |> List.ofSeq
-        }
+        let conditionToAdd =
+            procJoinCondition :: rightModel.Filters
+            |> Conjunction
+            |> optimizeRelationalCondition
+
+        let conditionedRightValueBinders =
+            procValueBinders
+
+        invalidOp "Add condition to value binders"
+
+        let procSharedValueBinders =
+            sharedVariables
+            |> Set.toList
+            |> List.map (
+                fun variable ->
+                    let leftBinder = leftValueBinders.[variable]
+                    let rightBinder = conditionedRightValueBinders.[variable]
+                    variable, leftBinder, leftBinder |> valueBinderToExpressionSet typeIndexer, rightBinder, rightBinder |> valueBinderToExpressionSet typeIndexer
+            )
+            |> List.map (
+                fun (variable, leftBinder, leftExpressionSet, rightBinder, rightExpressionSet) ->
+                    let newValueBinder =
+                        if leftExpressionSet.IsNotErrorCondition |> isAlwaysTrueInModel left.Model then
+                            leftBinder
+                        elif isLeftJoin && rightExpressionSet.IsNotErrorCondition |> isAlwaysTrueInModel right.Model then
+                            rightBinder
+                        else
+                            [
+                                leftBinder
+                                rightBinder
+                            ]
+                            |> CoalesceValueBinder
+
+                    variable, newValueBinder
+            )
+            |> Map.ofList
+
+        let newValueBinders =
+            oneSideValueBinders onlyLeftVariables leftValueBinders
+            |> Map.union (oneSideValueBinders onlyRightVariables conditionedRightValueBinders)
+            |> Map.union procSharedValueBinders
+
+        if procRightModel.Sources |> List.isEmpty then
+            let updatedAssignments =
+                procRightModel.Assignments
+                |> List.map (
+                    fun x ->
+                        { x with
+                            Expression =
+                                {
+                                    Condition = conditionToAdd
+                                    Expression = x.Expression
+                                }
+                                |> List.singleton
+                                |> Switch
+                                |> optimizeRelationalExpression
+                        }
+                )
+
+            {
+                Model =
+                    { leftModel with
+                        Assignments =
+                            leftModel.Assignments @ updatedAssignments
+                    }
+                    |> NotModified
+                    |> optimizeCalculusModel
+                Bindings = newValueBinders
+                Variables = newValueBinders |> Map.keys |> List.ofSeq
+            }
+        else
+            {
+                Model =
+                    { leftModel with
+                        Sources =
+                            leftModel.Sources @ [
+                                LeftOuterJoinModel(
+                                    procRightModel,
+                                    procJoinCondition
+                                )
+                            ]
+                    }
+                    |> NotModified
+                    |> optimizeCalculusModel
+                Bindings = newValueBinders
+                Variables = newValueBinders |> Map.keys |> List.ofSeq
+            }
     else
         let conditionProc =
             joinConditions
@@ -876,7 +1302,7 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> optimizeRelationalCondition
 
         let (procRightModel, procJoinCondition, procValueBinders) =
-            removeSelfJoins false leftModel rightModel conditionProc valueBinders
+            removeSelfJoins leftModel rightModel conditionProc valueBinders
 
         {
             Model =
