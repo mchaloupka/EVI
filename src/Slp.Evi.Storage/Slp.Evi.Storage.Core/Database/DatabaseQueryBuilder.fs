@@ -154,6 +154,11 @@ let rec private neededVariablesForValueBinders valueBinders result =
         |> neededVariablesForExpression [ expressionSet.StringExpression ]
         |> neededVariablesForValueBinders xs
 
+    | ConditionedValueBinder (condition, valueBinder) :: xs ->
+        [ condition ]
+        |> neededVariablesForCondition <| result
+        |> neededVariablesForValueBinders (valueBinder :: xs)
+
 let private emptySqlQuery = {
     NamingProvider = NamingProvider.Empty
     Variables = List.empty

@@ -288,7 +288,6 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
             let valueType =
                 typeIndex |> typeIndexer.FromIndex
 
-            
             let value =
                 expressionSet.StringExpression
                 |> loadValueFromExpression namingProvider row
@@ -314,6 +313,18 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                 :> INode
             |> Some
 
+        else
+            None
+
+    | ConditionedValueBinder (condition, valueBinder) ->
+        let conditionValue =
+            condition
+            |> loadValueFromCondition namingProvider row
+            |> VariableValue.asBoolean
+
+        if conditionValue then
+            valueBinder
+            |> loadValue rdfHandler blankNodeCache typeIndexer namingProvider row
         else
             None
 

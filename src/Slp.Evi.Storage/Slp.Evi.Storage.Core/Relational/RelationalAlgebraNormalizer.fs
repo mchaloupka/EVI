@@ -111,7 +111,6 @@ let normalizeRelationalCondition condition =
     | Like _
     | Not _ ->
         condition
-    
 
 let normalizeCalculusModel model =
     match model with
@@ -167,3 +166,6 @@ let normalizeCalculusModel model =
 
 let normalizeBoundCalculusModel model =
     model
+
+let normalizeValueBinder valueBinder =
+    valueBinder

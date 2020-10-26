@@ -103,5 +103,6 @@ type ValueBinder =
     | CoalesceValueBinder of ValueBinder list
     | CaseValueBinder of Variable * Map<int, ValueBinder>
     | ExpressionValueBinder of ExpressionSet
+    | ConditionedValueBinder of Condition * ValueBinder
 
 type BoundCalculusModel = { Model: CalculusModel; Bindings: Map<SparqlVariable, ValueBinder>; Variables: SparqlVariable list }

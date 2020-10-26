@@ -146,4 +146,8 @@ let optimizeCalculusModel model =
 
 let optimizeBoundCalculusModel model =
     model
-    |> normalizeBoundCalculusModel 
+    |> normalizeBoundCalculusModel
+
+let optimizeValueBinder valueBinder =
+    valueBinder
+    |> normalizeValueBinder

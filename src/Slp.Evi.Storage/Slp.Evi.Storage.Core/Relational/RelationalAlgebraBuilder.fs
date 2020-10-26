@@ -168,6 +168,15 @@ let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinde
 
     | ExpressionValueBinder expressionSet -> expressionSet
 
+    | ConditionedValueBinder (condition, valueBinder) ->
+        let transformed = valueBinder |> valueBinderToExpressionSet typeIndexer
+        { transformed with
+            IsNotErrorCondition =
+                [ condition; transformed.IsNotErrorCondition ]
+                |> Conjunction
+                |> optimizeRelationalCondition
+        }
+
 let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
     match node with
     | IriNode iriNode ->
@@ -661,7 +670,9 @@ let private processRestrictedTriplePattern (typeIndexer: TypeIndexer) (patterns:
             )
             |> Map.ofList
 
-        let valueBinder = BaseValueBinder(mapping, variables)
+        let valueBinder =
+            BaseValueBinder(mapping, variables)
+            |> optimizeValueBinder
 
         match pattern with
         | VariablePattern var ->
@@ -1064,14 +1075,16 @@ let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: N
                             |> Not
                             |> optimizeRelationalCondition
 
-                    let rec updateValueBinder = function
+                    let rec updateValueBinder valueBinder =
+                        optimizeValueBinder <|
+                        match valueBinder with
                         | EmptyValueBinder ->
                             EmptyValueBinder
                         | BaseValueBinder (objMap, varMap) ->
                             let newVarMap =
                                 varMap
                                 |> Map.map (fun _ -> updateVariable)
-                            BaseValueBinder(objMap, varMap)
+                            BaseValueBinder(objMap, newVarMap)
                         | CoalesceValueBinder valBinders ->
                             valBinders
                             |> List.map updateValueBinder
@@ -1092,7 +1105,9 @@ let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: N
                                 DateTimeExpresion = expressionSet.DateTimeExpresion |> updateExpression
                             }
                             |> ExpressionValueBinder
-                    
+                        | ConditionedValueBinder (condition, valueBinder) ->
+                            ConditionedValueBinder (condition |> updateCondition, valueBinder |> updateValueBinder)
+
                     let newRightModel =
                         {
                             Sources =
@@ -1113,7 +1128,7 @@ let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: N
                     let newValueBindersToUpdate =
                         prevValueBindersToUpdate
                         |> Map.map (
-                            fun var valBinder ->
+                            fun _ valBinder ->
                                 valBinder |> updateValueBinder
                         )
 
@@ -1184,6 +1199,7 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
                             rightBinder
                         ]
                         |> CoalesceValueBinder
+                        |> optimizeValueBinder
 
                 variable, newValueBinder
         )
@@ -1209,14 +1225,38 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             removeSelfJoins leftModel rightModel conditionProc rightValueBinders
 
         let conditionToAdd =
-            procJoinCondition :: rightModel.Filters
+            procJoinCondition :: procRightModel.Filters
             |> Conjunction
             |> optimizeRelationalCondition
 
+        let rec addConditionToValueBinder valueBinder =
+            optimizeValueBinder <|
+            match valueBinder with
+            | EmptyValueBinder -> EmptyValueBinder
+            | CaseValueBinder (var, cases) ->
+                cases
+                |> Map.map (fun _ -> addConditionToValueBinder)
+                |> fun x -> CaseValueBinder(var, x)
+            | CoalesceValueBinder vbs ->
+                vbs
+                |> List.map addConditionToValueBinder
+                |> CoalesceValueBinder
+            | BaseValueBinder _ ->
+                ConditionedValueBinder(conditionToAdd, valueBinder)
+            | ConditionedValueBinder (innerCondition, vb) ->
+                ConditionedValueBinder(innerCondition, vb |> addConditionToValueBinder)
+            | ExpressionValueBinder expressionSet ->
+                { expressionSet with
+                    IsNotErrorCondition =
+                        [ conditionToAdd; expressionSet.IsNotErrorCondition ]
+                        |> Conjunction
+                        |> optimizeRelationalCondition
+                }
+                |> ExpressionValueBinder
+
         let conditionedRightValueBinders =
             procValueBinders
-
-        invalidOp "Add condition to value binders"
+            |> Map.map (fun _ -> addConditionToValueBinder)
 
         let procSharedValueBinders =
             sharedVariables
@@ -1240,6 +1280,7 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
                                 rightBinder
                             ]
                             |> CoalesceValueBinder
+                            |> optimizeValueBinder
 
                     variable, newValueBinder
             )
@@ -1377,7 +1418,7 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
                             |> invalidOp
                         | false, _ ->
                             let expressionSet = processSparqlExpression typeIndexer bindings expression
-                            bindings |> Map.add variable (expressionSet |> ExpressionValueBinder)
+                            bindings |> Map.add variable (expressionSet |> ExpressionValueBinder |> optimizeValueBinder)
                 )
         }
 
@@ -1418,7 +1459,7 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
                         binderCases
                         |> List.map snd
                         |> Map.ofList
-                        |> fun x -> CaseValueBinder(switchVariable |> Assigned, x)
+                        |> fun x -> CaseValueBinder(switchVariable |> Assigned, x) |> optimizeValueBinder
                     variable, vb
             )
             |> Map.ofList
@@ -1486,6 +1527,11 @@ let rec private decomposeValueBinderToBaseValueBinders (typeIndexer: TypeIndexer
          |> Option.map fst
     | ExpressionValueBinder _ ->
         None
+    | ConditionedValueBinder (cond, valueBinder) ->
+        [ condition; cond ]
+        |> Conjunction
+        |> optimizeRelationalCondition
+        |> decomposeValueBinderToBaseValueBinders typeIndexer <| valueBinder
 
 let private addValueBinderToDistinctModel (typeIndexer: TypeIndexer) (prevModel: CalculusModel) (prevBinders: Map<SparqlVariable, ValueBinder>) (variable: SparqlVariable) (valueBinder: ValueBinder) =
     let mayBeDecomposed = decomposeValueBinderToBaseValueBinders typeIndexer AlwaysTrue valueBinder
@@ -1542,7 +1588,10 @@ let private addValueBinderToDistinctModel (typeIndexer: TypeIndexer) (prevModel:
                         requiredColumn.Name, { Variable = assignedVariable; Expression = expression }
                 )
 
-            let newValueBinder = BaseValueBinder (objectMapping, newColumns |> List.map (fun (name, assignment) -> name, assignment.Variable |> Assigned) |> Map.ofList)
+            let newValueBinder =
+                BaseValueBinder (objectMapping, newColumns |> List.map (fun (name, assignment) -> name, assignment.Variable |> Assigned) |> Map.ofList)
+                |> optimizeValueBinder
+
             let newAssignments = newColumns |> List.map snd
 
             let newModel =
