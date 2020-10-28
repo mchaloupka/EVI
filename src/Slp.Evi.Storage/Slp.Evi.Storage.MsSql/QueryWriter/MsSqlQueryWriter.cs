@@ -29,7 +29,8 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
         {
             StringBuilder sb = new StringBuilder();
             WriteQuery(sb, query);
-            return new MsSqlQuery(sb.ToString());
+            var queryString = sb.ToString();
+            return new MsSqlQuery(queryString);
         }
 
         private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
