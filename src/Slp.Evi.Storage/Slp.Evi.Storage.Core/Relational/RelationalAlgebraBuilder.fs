@@ -858,8 +858,22 @@ let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: N
                         |> Option.defaultValue prevConstraints
                 )
 
-        let intersectConstraints constraints otherConstraints =
-            invalidOp "Not Implemented"
+        let intersectConstraints (constraints: Dictionary<Variable, HashSet<Variable> * HashSet<Literal>>) (otherConstraints: Dictionary<Variable, HashSet<Variable> * HashSet<Literal>>) =
+            constraints.Keys
+            |> Seq.choose (
+                fun variable ->
+                    match otherConstraints.TryGetValue variable with
+                    | true, (otherVarRestriction, otherLitRestriction) ->
+                        let (varRestriction, litRestriction) = constraints.[variable]
+                        let updatedVarRestriction = HashSet<Variable>(varRestriction)
+                        updatedVarRestriction.IntersectWith otherVarRestriction
+                        let updatedLitRestriction = HashSet<Literal>(litRestriction)
+                        updatedLitRestriction.IntersectWith otherLitRestriction
+                        (variable, (updatedVarRestriction, updatedLitRestriction)) |> Some
+                    | false, _ ->
+                        None
+            )
+            |> fun x -> Dictionary<_,_>(x |> dict)
 
         let rec buildEqualityConstraints equalityConstraints = function
             | [] ->
@@ -1136,7 +1150,7 @@ let private removeSelfJoins (leftModel: NotModifiedCalculusModel) (rightModel: N
             )
     )
 
-let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCondition option) (left: BoundCalculusModel) (right: BoundCalculusModel) =
+let private processJoin (database: ISqlDatabaseSchema) (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCondition option) (left: BoundCalculusModel) (right: BoundCalculusModel) =
     let isLeftJoin = leftJoinCondition.IsSome
 
     let leftValueBinders = left.Bindings
@@ -1224,10 +1238,22 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
         let (procRightModel, procJoinCondition, procValueBinders) =
             removeSelfJoins leftModel rightModel conditionProc rightValueBinders
 
-        let conditionToAdd =
+        let processedLeftJoinCondition =
             procJoinCondition :: procRightModel.Filters
             |> Conjunction
             |> optimizeRelationalCondition
+
+        let (conditionToAdd, extraAssignment) =
+            if procRightModel.Sources |> List.isEmpty then
+                processedLeftJoinCondition, None
+            else
+                let extraAssignment =
+                    {
+                        Variable = { SqlType = database.IntegerType }
+                        Expression = 1 |> Int |> Constant
+                    }
+
+                extraAssignment.Variable |> Assigned |> IsNull |> Not, extraAssignment |> Some
 
         let rec addConditionToValueBinder valueBinder =
             optimizeValueBinder <|
@@ -1291,51 +1317,49 @@ let private processJoin (typeIndexer: TypeIndexer) (leftJoinCondition: SparqlCon
             |> Map.union (oneSideValueBinders onlyRightVariables conditionedRightValueBinders)
             |> Map.union procSharedValueBinders
 
-        if procRightModel.Sources |> List.isEmpty then
-            let updatedAssignments =
-                procRightModel.Assignments
-                |> List.map (
-                    fun x ->
-                        { x with
-                            Expression =
-                                {
-                                    Condition = conditionToAdd
-                                    Expression = x.Expression
-                                }
-                                |> List.singleton
-                                |> Switch
-                                |> optimizeRelationalExpression
-                        }
-                )
-
-            {
-                Model =
-                    { leftModel with
-                        Assignments =
-                            leftModel.Assignments @ updatedAssignments
+        let updatedAssignments =
+            procRightModel.Assignments
+            |> List.map (
+                fun x ->
+                    { x with
+                        Expression =
+                            {
+                                Condition = conditionToAdd
+                                Expression = x.Expression
+                            }
+                            |> List.singleton
+                            |> Switch
+                            |> optimizeRelationalExpression
                     }
-                    |> NotModified
-                    |> optimizeCalculusModel
-                Bindings = newValueBinders
-                Variables = newValueBinders |> Map.keys |> List.ofSeq
-            }
-        else
-            {
-                Model =
-                    { leftModel with
-                        Sources =
+            )
+
+        {
+            Model = 
+                { leftModel with
+                    Assignments =
+                        leftModel.Assignments @ updatedAssignments
+                    Sources =
+                        if procRightModel.Sources |> List.isEmpty then
+                            leftModel.Sources
+                        else
                             leftModel.Sources @ [
                                 LeftOuterJoinModel(
-                                    procRightModel,
-                                    procJoinCondition
+                                    { procRightModel with
+                                        Assignments =
+                                            match extraAssignment with
+                                            | Some a -> a |> List.singleton
+                                            | None -> List.empty
+                                        Filters = List.empty
+                                    },
+                                    processedLeftJoinCondition
                                 )
                             ]
-                    }
-                    |> NotModified
-                    |> optimizeCalculusModel
-                Bindings = newValueBinders
-                Variables = newValueBinders |> Map.keys |> List.ofSeq
-            }
+                }
+                |> NotModified
+                |> optimizeCalculusModel
+            Bindings = newValueBinders
+            Variables = newValueBinders |> Map.keys |> List.ofSeq
+        }
     else
         let conditionProc =
             joinConditions
@@ -1427,13 +1451,13 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
         |> List.map (processSparqlPattern database typeIndexer)
         |> List.reduce (
             fun left right ->
-                processJoin typeIndexer None left right
+                processJoin database typeIndexer None left right
         )
 
     | LeftJoinPattern(left, right, condition) ->
         let leftProc = left |> processSparqlPattern database typeIndexer
         let rightProc = right |> processSparqlPattern database typeIndexer
-        processJoin typeIndexer (condition |> Some) leftProc rightProc
+        processJoin database typeIndexer (condition |> Some) leftProc rightProc
 
     | UnionPattern unioned ->
         let switchVariable = { SqlType = database.IntegerType }
