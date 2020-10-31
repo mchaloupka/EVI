@@ -5,21 +5,24 @@
     <LangVersion>8.0</LangVersion>
     <Authors>Miloš Chaloupka</Authors>
     <Product>EVI</Product>
-    <PackageId>slp.evi</PackageId>
+    <PackageId>slp.evi.mssql</PackageId>
     <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
     <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
     <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
     <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
-    <ProjectGuid>57F07E37-93C5-49C0-8E44-2676D1C3ADC8</ProjectGuid>
+    <ProjectGuid>CF132216-78FF-4870-A3BC-A7B4234253D5</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.5.1" />
+    <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj" />
+    <ProjectReference Include="..\Slp.Evi.Storage\Slp.Evi.Storage.csproj" />
   </ItemGroup>
 
 </Project>

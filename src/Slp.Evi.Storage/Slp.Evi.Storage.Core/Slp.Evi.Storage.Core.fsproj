@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Slp.Evi.Storage.Core</AssemblyName>
+    <Authors>Miloš Chaloupka</Authors>
+    <Product>EVI</Product>
+    <PackageId>slp.evi.core</PackageId>
+    <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
+    <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
+    <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
+    <ProjectGuid>E63E3C11-CCD2-4E5B-9334-AA74213AC0C7</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Common\Algebra.fs" />
+    <Compile Include="Common\Utils.fs" />
+    <Compile Include="Common\ValueRestriction.fs" />
+    <Compile Include="Common\Iri.fs" />
+    <Compile Include="Common\Types.fs" />
+    <Compile Include="Common\Database.fs" />
+    <Compile Include="R2RML\MappingTemplate.fs" />
+    <Compile Include="R2RML\Mapping.fs" />
+    <Compile Include="R2RML\Builder.fs" />
+    <Compile Include="Sparql\Algebra.fs" />
+    <Compile Include="Sparql\SparqlQueryNormalizer.fs" />
+    <Compile Include="Sparql\MappingProcessor.fs" />
+    <Compile Include="Sparql\SparqlQueryBuilder.fs" />
+    <Compile Include="Relational\Algebra.fs" />
+    <Compile Include="Relational\ConcatenationEqualityOptimizer.fs" />
+    <Compile Include="Relational\RelationalAlgebraNormalizer.fs" />
+    <Compile Include="Relational\RelationalAlgebraOptimizers.fs" />
+    <Compile Include="Relational\TypeIndexer.fs" />
+    <Compile Include="Relational\RelationalAlgebraBuilder.fs" />
+    <Compile Include="Database\DatabaseQuery.fs" />
+    <Compile Include="Database\Database.fs" />
+    <Compile Include="Database\DatabaseQueryBuilder.fs" />
+    <Compile Include="ValueBinderLoader.fs" />
+    <Compile Include="QueryProcessor.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DatabaseSchemaReader" Version="2.7.3" />
+    <PackageReference Include="dotNetRDF" Version="2.5.1" />
+    <PackageReference Include="FSharpx.Collections" Version="2.1.3" />
+    <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
+    <PackageReference Include="Slp.Fsm" Version="0.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>

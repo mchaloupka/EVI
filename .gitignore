@@ -24,6 +24,10 @@ build/
 .fake
 !/build
 
+# Temporary build output is not needed
+.build
+coverage.xml
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -170,3 +174,9 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Ionide VS code files
+.ionide
+
+# Benchmark artifacts
+BenchmarkDotNet.Artifacts

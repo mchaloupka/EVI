@@ -1,10 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Slp.Evi.Storage;
-using Slp.Evi.Storage.Bootstrap;
-using Slp.Evi.Storage.Database;
+using Slp.Evi.Storage.MsSql;
+using Slp.Evi.Storage.MsSql.Database;
 using TCode.r2rml4net.Mapping.Fluent;
 
 namespace Slp.Evi.Test.System.Sparql
@@ -13,12 +13,14 @@ namespace Slp.Evi.Test.System.Sparql
     {
         public static string GetPath(string dataFile)
         {
-            var path = $".\\Sparql\\{dataFile}";
+            var root = AppDomain.CurrentDomain.BaseDirectory;
+            var path = Path.Combine(root, $".\\Sparql\\{dataFile}");
             return path;
         }
 
-        public static EviQueryableStorage InitializeDataset(string dataset, ISqlDatabase sqlDb, IEviQueryableStorageFactory storageFactory)
+        public static MsSqlEviStorage InitializeDataset(string dataset, Func<MsSqlDatabase> createSqlDb)
         {
+            var sqlDb = createSqlDb();
             var datasetFile = GetPath($@"Data\{dataset}\_dataset.xml");
 
             var doc = XDocument.Load(datasetFile);
@@ -35,23 +37,24 @@ namespace Slp.Evi.Test.System.Sparql
                 else if (command.Name == "query")
                     ExecuteQuery(sqlDb, command);
                 else
-                    throw new Exception(String.Format("Unknown sql command {1} when creating dataset {0}", dataset, command.Name));
+                    throw new Exception(string.Format("Unknown sql command {1} when creating dataset {0}", dataset, command.Name));
             }
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
             var mapping = R2RMLLoader.Load(mappingString);
-            return new EviQueryableStorage(sqlDb, mapping, storageFactory);
+
+            return new MsSqlEviStorage(mapping, createSqlDb());
         }
 
-        private static void ExecuteQuery(ISqlDatabase sqlDb, XElement query)
+        private static void ExecuteQuery(MsSqlDatabase sqlDb, XElement query)
         {
-            sqlDb.ExecuteQuery(query.Value);
+            sqlDb.ExecuteQuery(new MsSqlQuery(query.Value));
         }
 
-        private static void CreateTable(ISqlDatabase sqlDb, XElement table)
+        private static void CreateTable(MsSqlDatabase sqlDb, XElement table)
         {
             var tableName = table.Attribute("name").Value;
-            sqlDb.ExecuteQuery(String.Format("IF OBJECT_ID(\'{0}\', 'U') IS NOT NULL DROP TABLE {0}", tableName));
+            sqlDb.ExecuteQuery(new MsSqlQuery($"IF OBJECT_ID(\'{tableName}\', 'U') IS NOT NULL DROP TABLE {tableName}"));
 
             StringBuilder sb = new StringBuilder();
             sb.Append("CREATE TABLE ");
@@ -95,14 +98,14 @@ namespace Slp.Evi.Test.System.Sparql
 
             string primaryKeyName = "pk_" + tableName;
 
-            RemovePrimaryKey(sqlDb, tableName, primaryKeyName, table);
+            RemovePrimaryKey(sqlDb, tableName, primaryKeyName);
 
-            sqlDb.ExecuteQuery(sb.ToString());
+            sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
 
             AddPrimaryKey(sqlDb, tableName, primaryKeyName, table);
         }
 
-        private static void RemovePrimaryKey(ISqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
+        private static void RemovePrimaryKey(MsSqlDatabase sqlDb, string tableName, string primaryKeyName)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'");
@@ -114,10 +117,10 @@ namespace Slp.Evi.Test.System.Sparql
             sb.Append(" DROP CONSTRAINT ");
             sb.Append(primaryKeyName);
 
-            sqlDb.ExecuteQuery(sb.ToString());
+            sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
         }
 
-        private static void AddPrimaryKey(ISqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
+        private static void AddPrimaryKey(MsSqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("ALTER TABLE ");
@@ -149,7 +152,7 @@ namespace Slp.Evi.Test.System.Sparql
             if (!first)
             {
                 sb.Append(")");
-                sqlDb.ExecuteQuery(sb.ToString());
+                sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
             }
         }
     }

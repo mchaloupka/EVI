@@ -1,5 +1,7 @@
 # Release notes for EVI
 
+### 0.0.7 (Not yet released)
+
 ### 0.0.6 (Released 2018/10/17)
 * .NET Core support (library now supports .NET Standard 2.0)
 * Migration of the build process to FAKE

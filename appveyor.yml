@@ -1,5 +1,5 @@
 version: 0.0.0.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 shallow_clone: true
 configuration: Release
 platform: Any CPU
@@ -9,9 +9,10 @@ environment:
   CODECOV_TOKEN:
     secure: TkNT/U61mrXkNbtNjTxKXnBmF3wzp8YcFqAiboRXi8bj61fYHdogm/DxHxIJEtiH
   NUGET_TOKEN:
-    secure: 1LgbIbX85nwAiw/QI4PTcJ8JfKZUuSG8ta+H9RevK798l+wY4TvkgKVu5t8+rRxh
+    secure: jYfEAKY4ZyiDX9CwBtM8y7ZuW6meadOoyaVGtGkDRjREqqmmgdRKKFcjwgJP5vyi
 services: 
-  - mssql2014
+  - mssql2017
 build_script:
-  - ps: ./build/fake.cmd build
+  - ps: dotnet tool restore
+  - ps: dotnet fake build
 test: off
