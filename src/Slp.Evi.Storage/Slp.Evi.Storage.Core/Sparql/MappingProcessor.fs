@@ -36,8 +36,8 @@ module R2RMLMappingProcessor =
                     yield {
                         TriplesMap = triplesMapping
                         Subject = subjectMap
-                        Predicate = { IsBlankNode = false; BaseIri = triplesMapping.BaseIri; Value = classPredicateIri |> IriConstant }
-                        Object = { IsBlankNode = false; BaseIri = triplesMapping.BaseIri; Value = classUri |> IriConstant } |> IriObject |> ObjectMatch
+                        Predicate = { IsBlankNode = false; Value = classPredicateIri |> IriConstant }
+                        Object = { IsBlankNode = false; Value = classUri |> IriConstant } |> IriObject |> ObjectMatch
                         Graph = graphMap
                     }
 

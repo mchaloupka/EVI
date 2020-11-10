@@ -70,7 +70,7 @@ type TypeIndexer () =
         | true, record -> record
         | false, _ ->
             sprintf "Requested an entry for index %d which was not inserted before" index
-            |> invalidArg "index"
+            |> invalidArg (nameof index)
 
     member _.FromType nodeType = getTypeRecord nodeType
     member _.FromIndex index = getFromIndex index

@@ -5,7 +5,7 @@ open System
 type Iri internal (uri: Uri) =
     do if uri.IsAbsoluteUri |> not then
             (sprintf "Provided URI is not absolute which is not allowed: %O" uri)
-            |> invalidArg <| "uri"
+            |> invalidArg (nameof uri)
 
     let iri = uri
     
@@ -25,7 +25,7 @@ type Iri internal (uri: Uri) =
         member x.CompareTo yObj =
             match yObj with
             | :? Iri as i -> x.Uri.AbsoluteUri.CompareTo(i.Uri.AbsoluteUri)
-            | _ -> "cannot compare values of different types"|> invalidArg "yObj"
+            | _ -> "cannot compare values of different types"|> invalidArg (nameof yObj)
 
 type IriReference =
     | AbsoluteIriReference of Iri
@@ -59,7 +59,7 @@ module IriReference =
         | RelativeIriReference r ->
             if r.Split('/') |> Seq.exists (fun x -> x = "." || x = "..") then
                 (sprintf "Relative IRI cannot contain . or .. segments, but it was: %O" r)
-                |> invalidArg <| "input"
+                |> invalidArg (nameof input)
             else
                 (baseIri.Uri, r) |> Uri |> Iri.fromUri
 

@@ -22,11 +22,9 @@ type ITriplesMapping =
     abstract member SubjectMap: SubjectMapping
     abstract member PredicateObjectMaps: PredicateObjectMapping list
     abstract member Source: TriplesMappingSource
-    abstract member BaseIri: Iri option
 
 and IriMapping = {
     Value: TermMapValue
-    BaseIri: Iri option
     IsBlankNode: bool
 }
 
@@ -38,7 +36,6 @@ and SubjectMapping = {
 }
 
 and PredicateObjectMapping = {
-    BaseIri: Iri option
     PredicateMaps: IriMapping list
     ObjectMaps: ObjectMapping list
     RefObjectMaps: RefObjectMapping list

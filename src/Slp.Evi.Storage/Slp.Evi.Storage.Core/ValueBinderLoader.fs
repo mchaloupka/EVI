@@ -363,7 +363,7 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
 
         match objectMapping with
         | IriObject iriMapping ->
-            let buildIri isBlankNode mayBeBaseIri value =
+            let buildIri isBlankNode value =
                 if isBlankNode then
                     blankNodeCache
                     |> BlankNodeCache.getBlankNode rdfHandler value
@@ -371,7 +371,7 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                 else
                     value
                     |> IriReference.fromString
-                    |> IriReference.tryResolve mayBeBaseIri
+                    |> IriReference.tryResolve None
                     |> Iri.toUri
                     |> rdfHandler.CreateUriNode
                     :> INode
@@ -381,11 +381,11 @@ let rec loadValue (rdfHandler: INodeFactory) (blankNodeCache: BlankNodeCache) (t
                 column
                 |> getValueForColumn
                 |> VariableValue.tryAsString
-                |> Option.map (buildIri iriMapping.IsBlankNode iriMapping.BaseIri)
+                |> Option.map (buildIri iriMapping.IsBlankNode)
             | IriTemplate template ->
                 template
                 |> loadTemplateValue true
-                |> Option.map (buildIri iriMapping.IsBlankNode iriMapping.BaseIri)
+                |> Option.map (buildIri iriMapping.IsBlankNode)
             | IriConstant iri ->
                 Some <|
                 if iriMapping.IsBlankNode then

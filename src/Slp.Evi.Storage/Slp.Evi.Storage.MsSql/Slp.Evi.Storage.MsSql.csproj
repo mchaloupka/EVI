@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.6.0" />
-    <PackageReference Include="r2rml4net" Version="0.5.0-beta" />
+    <PackageReference Include="r2rml4net" Version="0.7.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
