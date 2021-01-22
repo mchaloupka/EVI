@@ -13,6 +13,6 @@ environment:
 services: 
   - mssql2017
 build_script:
-  - ps: dotnet tool restore
-  - ps: dotnet fake build
+  - cmd: dotnet tool restore
+  - cmd: dotnet fake build
 test: off
