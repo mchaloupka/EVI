@@ -1,6 +1,9 @@
 # Release notes for EVI
 
-### 0.0.7 (Released 2021/01/22)
+### 0.0.8 (Released 2021/01/22)
+* Migrate to .NET 5
+
+### 0.0.7 (Released 2020/10/31)
 * Migrate to F# and new translation engine
 
 ### 0.0.6 (Released 2018/10/17)
