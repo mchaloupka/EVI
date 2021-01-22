@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="dotNetRDF" Version="2.6.0" />
+    <PackageReference Include="dotNetRDF" Version="2.6.1" />
   </ItemGroup>
 
   <ItemGroup>
