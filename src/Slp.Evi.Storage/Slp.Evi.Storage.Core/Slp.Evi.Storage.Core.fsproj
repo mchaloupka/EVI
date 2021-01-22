@@ -8,7 +8,7 @@
     <PackageId>slp.evi.core</PackageId>
     <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
     <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
     <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
     <ProjectGuid>E63E3C11-CCD2-4E5B-9334-AA74213AC0C7</ProjectGuid>
