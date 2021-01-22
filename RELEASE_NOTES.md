@@ -1,6 +1,7 @@
 # Release notes for EVI
 
-### 0.0.7 (Not yet released)
+### 0.0.7 (Released 2021/01/22)
+* Migrate to F# and new translation engine
 
 ### 0.0.6 (Released 2018/10/17)
 * .NET Core support (library now supports .NET Standard 2.0)
