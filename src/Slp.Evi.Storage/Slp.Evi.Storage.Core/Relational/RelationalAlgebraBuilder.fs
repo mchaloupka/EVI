@@ -1408,7 +1408,7 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
 
     | NotProcessedTriplePatterns _ ->
         "Encountered NotProcessedTriplePatterns in RelationalAlgebraBuilder"
-        |> invalidArg "sparqlPattern"
+        |> invalidArg (nameof sparqlPattern)
 
     | RestrictedTriplePatterns restrictedPatterns ->
         restrictedPatterns

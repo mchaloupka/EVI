@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using Slp.Evi.Storage.MsSql;
 using Slp.Evi.Storage.MsSql.Database;
+using TCode.r2rml4net;
 using TCode.r2rml4net.Mapping.Fluent;
 
 namespace Slp.Evi.Test.System.Sparql
@@ -41,7 +42,7 @@ namespace Slp.Evi.Test.System.Sparql
             }
 
             var mappingString = doc.Root.Elements().Where(x => x.Name == "mapping").Single().Value;
-            var mapping = R2RMLLoader.Load(mappingString);
+            var mapping = R2RMLLoader.Load(mappingString, new MappingOptions());
 
             return new MsSqlEviStorage(mapping, createSqlDb());
         }
