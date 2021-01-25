@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation.  All Rights Reserved.  See License.txt in the project root for license information. -->
+<Project>
+    <PropertyGroup>
+        <Authors>Miloš Chaloupka</Authors>
+        <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
+        <Product>EVI</Product>
+        <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
+        <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    </PropertyGroup>
+</Project>

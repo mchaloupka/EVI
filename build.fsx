@@ -112,28 +112,6 @@ module VersionLogic =
         ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
       { Version = version; InformationalVersion = informational; NugetVersion = nuget}
 
-// *** Define Targets ***
-Target.create "UpdateAssemblyInfo" (fun _ ->
-  match Common.branch with
-  | "local" -> Trace.log "Skipping assembly info update"
-  | _ ->
-    Trace.log " --- Updating assembly info --- "
-    Trace.log (sprintf " Version: %s" VersionLogic.version.InformationalVersion)
-    let date = DateTime.Now
-    let copyrightYear = date.Year
-
-    !! (Common.baseDirectory + "/src/**/AssemblyInfo.cs")
-    |> Seq.iter(fun asmInfo ->
-      let version = VersionLogic.version
-      [
-        AssemblyInfo.Version version.Version
-        AssemblyInfo.FileVersion version.Version
-        AssemblyInfo.InformationalVersion version.InformationalVersion
-        AssemblyInfo.Copyright (sprintf "Copyright (c) %d" copyrightYear)
-      ] |> AssemblyInfoFile.updateAttributes asmInfo
-    )
-)
-
 Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
 
@@ -145,6 +123,9 @@ Target.create "Build" (fun _ ->
   Trace.log " --- Building the app --- "
 
   let project = (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+
+  let version = VersionLogic.version
+
   let build conf =
     project
     |> MSBuild.build (fun p ->
@@ -154,6 +135,7 @@ Target.create "Build" (fun _ ->
           Properties =
             [
               "Configuration", conf
+              "Version", version.Version
             ]
           MaxCpuCount = Some None
       }
@@ -336,7 +318,7 @@ open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "CreateTempFolder"
- ==> "UpdateAssemblyInfo" <=> "RestorePackages"
+ ==> "RestorePackages"
  ==> "BeginSonarQube"
  ==> "Build"
  ==> "PrepareDatabase"
