@@ -80,7 +80,7 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                                     ()
                         )
 
-                        let ctx = new VDS.RDF.Query.Construct.ConstructContext(rdfHandler, s, false)
+                        let ctx = new VDS.RDF.Query.Construct.ConstructContext(rdfHandler, false)
 
                         template.TriplePatterns
                         |> Seq.choose (
@@ -190,7 +190,7 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
                                     ()
                         )
 
-                        if resultsHandler.HandleResult(new VDS.RDF.Query.SparqlResult(s)) then
+                        if resultsHandler.HandleResult(s.ToSparqlResult()) then
                             processResult curResult
                         else
                             "Results handler failed to handle result" |> invalidOp

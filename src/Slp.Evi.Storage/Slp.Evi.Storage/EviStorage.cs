@@ -167,5 +167,11 @@ namespace Slp.Evi.Storage
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+            => throw new NotSupportedException("Update graph is not supported");
+
+        public IEnumerable<string> ListGraphNames()
+            => throw new NotSupportedException("List graph names is not supported");
     }
 }
