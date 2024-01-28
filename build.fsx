@@ -263,6 +263,7 @@ module MSSQLDatabase =
         [
           "-S"
           appveyorSqlInstance
+          "-Q"
           sprintf "USE [master]; CREATE DATABASE [%s]" dbName
         ]
         |> CreateProcess.fromRawCommand "sqlcmd"
