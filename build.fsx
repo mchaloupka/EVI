@@ -319,15 +319,21 @@ module MySQLDatabase =
         Trace.log "--- Skipping MySQL creation as it already exists ---"
     else
       Trace.log "--- Preparing MySQL database (appveyor) ---"
+
       Trace.log " ... Creating database in MySQL"
-      Docker.execInContainer containerName [
-        "mysql"
-        "-u"
-        "root"
-        sprintf "-p%s" password
-        "-e"
-        sprintf "create database %s;" dbName
-      ]
+      let result =
+        [
+          "-u"
+          "root"
+          sprintf "-p%s" password
+          "-e"
+          sprintf "create database %s;" dbName
+        ]
+        |> CreateProcess.fromRawCommand "mysql"
+        |> Proc.run
+      
+      if result.ExitCode <> 0 then
+        failwith "MS SQL Database instantiation failed"
 
   let tearDown () =
     if Common.isLocalBuild then
