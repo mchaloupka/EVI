@@ -328,7 +328,7 @@ module MySQLDatabase =
           "-e"
           sprintf "create database %s;" dbName
         ]
-        |> CreateProcess.fromRawCommand @"C:\Program Files\MySQL\MySQL Server 8.0\mysql"
+        |> CreateProcess.fromRawCommand @"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql"
         |> Proc.run
       
       if result.ExitCode <> 0 then
