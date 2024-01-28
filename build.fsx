@@ -221,13 +221,13 @@ module MSSQLDatabase =
   let private dockerPort = 1453
   let private password = "Password12!" // AppVeyor default password to MS SQL
   let private dbName = "R2RMLTestStore"
-  let private localSqlInstance = "(local)\\SQL2017"
+  let private appveyorSqlInstance = "(local)\\SQL2019"
 
   let connectionString =
     if Common.isLocalBuild then
       sprintf "Server=127.0.0.1,%d;Database=%s;User Id=sa;Password=%s" dockerPort dbName password
     else
-      sprintf "Server=%s;Database=%s;User ID=sa;Password=%s" localSqlInstance dbName password
+      sprintf "Server=%s;Database=%s;User ID=sa;Password=%s" appveyorSqlInstance dbName password
 
   let startDatabase () =
     if Common.isLocalBuild then
@@ -262,8 +262,7 @@ module MSSQLDatabase =
       let result =
         [
           "-S"
-          localSqlInstance
-          "-Q"
+          appveyorSqlInstance
           sprintf "USE [master]; CREATE DATABASE [%s]" dbName
         ]
         |> CreateProcess.fromRawCommand "sqlcmd"
@@ -329,7 +328,7 @@ module MySQLDatabase =
           "-e"
           sprintf "create database %s;" dbName
         ]
-        |> CreateProcess.fromRawCommand @"C:\Program Files\MySQL\MySQL Server 5.7"
+        |> CreateProcess.fromRawCommand @"C:\Program Files\MySQL\MySQL Server 8.0\mysql"
         |> Proc.run
       
       if result.ExitCode <> 0 then

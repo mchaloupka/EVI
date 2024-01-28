@@ -6,9 +6,9 @@ platform: Any CPU
 environment:
   NUGET_TOKEN:
     secure: jY23wi+NgtlLYXankYsI0sr0Tx0oFFA7IXKcf+oxhXf/amVd/rHycGYC3+sxy8xy
-services: 
-  - mssql2017
-  - mysql
+init:
+  - net start MSSQL$SQL2019
+  - ps: Start-Service MySQL80
 build_script:
   - cmd: dotnet fsi build.fsx
 test: off
