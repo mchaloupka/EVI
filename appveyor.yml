@@ -8,6 +8,7 @@ environment:
     secure: jY23wi+NgtlLYXankYsI0sr0Tx0oFFA7IXKcf+oxhXf/amVd/rHycGYC3+sxy8xy
 services: 
   - mssql2017
+  - mysql
 build_script:
   - cmd: dotnet fsi build.fsx
 test: off
