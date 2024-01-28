@@ -6,19 +6,19 @@ using VDS.RDF.Storage;
 
 namespace Slp.Evi.Benchmark.Sparql
 {
-    public class SparqlBenchmarkArguments
+    public class SparqlBenchmarkArguments<TStorage, TDatabase> where TStorage : IQueryableStorage
     {
         private readonly string _dataset;
         private readonly string _queryFile;
         private readonly IQueryableStorage _storage;
         private readonly string _query;
 
-        public SparqlBenchmarkArguments(string dataset, string queryFile, SparqlFixture fixture)
+        public SparqlBenchmarkArguments(string dataset, string queryFile, SparqlFixture<TStorage, TDatabase> fixture)
         {
             _dataset = dataset;
             _queryFile = queryFile;
             _storage = fixture.GetStorage(dataset);
-            _query = SparqlTestSuite.GetQuery($"Data\\{_dataset}\\{_queryFile}.rq");
+            _query = SparqlTestData.GetQuery($"Data\\{_dataset}\\{_queryFile}.rq");
         }
 
         public void RunTest()
@@ -62,21 +62,19 @@ namespace Slp.Evi.Benchmark.Sparql
         }
     }
 
-    public abstract class SparqlBenchmark
+    public abstract class SparqlBenchmark<TStorage, TDatabase>(SparqlFixture<TStorage, TDatabase> fixture)
+        where TStorage : IQueryableStorage
     {
-        private readonly SparqlFixture _fixture;
-
-        protected SparqlBenchmark(SparqlFixture fixture)
-        {
-            _fixture = fixture;
-        }
-
-        public IEnumerable<SparqlBenchmarkArguments> TestParamSource =>
-            SparqlTestSuite.TestData
-                .Select(x => new SparqlBenchmarkArguments(x[0] as string, x[1] as string, _fixture));
+        public IEnumerable<SparqlBenchmarkArguments<TStorage, TDatabase>> TestParamSource =>
+            SparqlTestData.TestData
+                .Select(x => new SparqlBenchmarkArguments<TStorage, TDatabase>(
+                    x[0] as string,
+                    x[1] as string,
+                    fixture)
+                );
 
         [ParamsSource(nameof(TestParamSource))]
-        public SparqlBenchmarkArguments Argument { get; set; }
+        public SparqlBenchmarkArguments<TStorage, TDatabase> Argument { get; set; }
 
         [Benchmark]
         public void RunTest()
