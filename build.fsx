@@ -322,7 +322,8 @@ module MySQLDatabase =
       Trace.log " ... Creating database in MySQL"
       Docker.execInContainer containerName [
         "mysql"
-        "u root"
+        "-u"
+        "root"
         sprintf "-p%s" password
         "-e"
         sprintf "create database %s;" dbName
@@ -465,6 +466,7 @@ Target.create "PublishArtifacts" (fun _ ->
         "slp.evi"
         "slp.evi.core"
         "slp.evi.mssql"
+        "slp.evi.mysql"
       ]
       |> List.iter (
         fun project ->
