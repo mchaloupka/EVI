@@ -1,21 +1,19 @@
-#r "paket:
-    nuget Fake.Core.Target
-    nuget Fake.Core.Environment
-    nuget Fake.Core.Xml
-    nuget Fake.Core.Process
-    nuget Fake.Core.ReleaseNotes
-    nuget Fake.IO.FileSystem
-    nuget Fake.IO.Zip
-    nuget Fake.Net.Http
-    nuget Fake.DotNet.Cli
-    nuget Fake.DotNet.AssemblyInfoFile
-    nuget Fake.BuildServer.AppVeyor
-    nuget Fake.DotNet.Nuget
-    nuget Fake.DotNet.MSBuild
-    nuget Fake.Testing.SonarQube
-    nuget Newtonsoft.Json"
+#!/usr/bin/env -S dotnet fsi
 
-#load "./.fake/build.fsx/intellisense.fsx"
+#r "nuget: Fake.Core.Target"
+#r "nuget: Fake.Core.Environment"
+#r "nuget: Fake.Core.Xml"
+#r "nuget: Fake.Core.Process"
+#r "nuget: Fake.Core.ReleaseNotes"
+#r "nuget: Fake.IO.FileSystem"
+#r "nuget: Fake.IO.Zip"
+#r "nuget: Fake.Net.Http"
+#r "nuget: Fake.DotNet.Cli"
+#r "nuget: Fake.DotNet.AssemblyInfoFile"
+#r "nuget: Fake.BuildServer.AppVeyor"
+#r "nuget: Fake.DotNet.Nuget"
+#r "nuget: Fake.DotNet.MSBuild"
+#r "nuget: Newtonsoft.Json"
 
 open System
 open System.IO
@@ -27,6 +25,14 @@ open Fake.DotNet
 open Fake.Net
 open Fake.BuildServer
 open Fake.DotNet.NuGet.NuGet
+
+// Boilerplate
+Environment.GetCommandLineArgs()
+|> Array.skip 2 // skip fsi.exe; build.fsx
+|> Array.toList
+|> Context.FakeExecutionContext.Create false __SOURCE_FILE__
+|> Context.RuntimeContext.Fake
+|> Context.setExecutionContext
 
 BuildServer.install [
   AppVeyor.Installer
@@ -112,11 +118,30 @@ module VersionLogic =
         ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
       { Version = version; InformationalVersion = informational; NugetVersion = nuget}
 
+// *** Build helpers ***
+module Build =
+  let customBuildProps =
+    sprintf "/p:Version=%s /p:AssemblyVersion=%s" VersionLogic.version.Version VersionLogic.version.Version
+
+  let setDotnetCommon (defaults: DotNet.Options) =
+    { defaults with CustomParams = customBuildProps |> Some }
+
+  let setDotnetCommonWithExtraArgs extraArgs (defaults: DotNet.Options) =
+    { defaults with CustomParams = sprintf "%s %s" customBuildProps extraArgs |> Some }
+
+  let setMsBuildProps (defaults: Fake.DotNet.MSBuild.CliArguments) =
+    {
+      defaults with
+        DisableInternalBinLog = true
+        Verbosity = MSBuildVerbosity.Quiet |> Some
+        MaxCpuCount = None |> Some
+    }
+
 Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
 
   (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
-  |> DotNet.restore id
+  |> DotNet.restore (fun p -> { p with MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps })
 )
 
 Target.create "Build" (fun _ ->
@@ -124,20 +149,14 @@ Target.create "Build" (fun _ ->
 
   let project = (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
 
-  let version = VersionLogic.version
-
   let build conf =
     project
-    |> MSBuild.build (fun p ->
-      { p with
-          Verbosity = Some MSBuildVerbosity.Quiet
-          Targets = ["Build"]
-          Properties =
-            [
-              "Configuration", conf
-              "Version", version.Version
-            ]
-          MaxCpuCount = Some None
+    |> DotNet.build (fun p ->
+      {
+        p with
+          Configuration = conf |> DotNet.BuildConfiguration.fromString
+          MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
+          Common = p.Common |> Build.setDotnetCommon
       }
     )
 
@@ -150,37 +169,6 @@ Target.create "CreateTempFolder" (fun _ ->
 
   let di = DirectoryInfo(Common.buildTempDirectory)
   di.Create()
-)
-
-Target.create "BeginSonarQube" (fun _ ->
-  if Common.branch = "develop" then
-    Trace.log " --- Starting SonarQube analyzer --- "
-    let startProc = 
-      DotNet.exec
-        id 
-        "sonarscanner" 
-        (sprintf
-          "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\" /d:sonar.host.url=\"https://sonarcloud.io\""
-          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
-          Common.baseDirectory
-        )
-    if not startProc.OK then failwithf "Process failed with %A" startProc
-  else Trace.log "SonarQube start skipped (not develop branch)"
-)
-
-Target.create "EndSonarQube" (fun _ ->
-  if Common.branch = "develop" then
-    Trace.log " --- Exiting SonarQube analyzer --- "
-    let endProc = 
-      DotNet.exec
-        id 
-        "sonarscanner" 
-        (sprintf
-          "end /d:sonar.login=\"%s\""
-          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
-        )
-    if not endProc.OK then failwithf "Process failed with %A" endProc
-  else Trace.log "SonarQube end skipped (not develop branch)"
 )
 
 Target.create "Package" (fun _ ->
@@ -196,10 +184,8 @@ Target.create "Package" (fun _ ->
           NoBuild = true
           OutputPath = Some (Common.baseDirectory + "/nuget")
           Configuration = DotNet.BuildConfiguration.Release
-          Common =
-            { p.Common with 
-                CustomParams = Some ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
-            }
+          MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
+          Common = p.Common |> Build.setDotnetCommonWithExtraArgs ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
       }
     )
 
@@ -238,22 +224,10 @@ Target.create "RunTests" (fun _ ->
     { p with
         NoBuild = true
         Configuration = DotNet.BuildConfiguration.Debug
-        Common =
-          { p.Common with 
-              CustomParams = (sprintf "--collect:\"XPlat Code Coverage\" --results-directory:\"%s/coverage\" --logger:\"console;verbosity=detailed\"" Common.buildTempDirectory) |> Some
-          }
+        MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
+        Common = p.Common |> Build.setDotnetCommon
     }
   )
-)
-
-Target.create "UploadCodeCov" (fun _ ->
-  match Common.branch with
-  | "local" -> Trace.log "Skipping uploading coverage results"
-  | _ ->
-    Trace.log " --- Uploading CodeCov --- "
-    Http.downloadFile "codecov.sh" "https://codecov.io/bash" |> ignore
-    let result = Shell.Exec("bash", sprintf "codecov.sh -f coverage.xml -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
-    if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
 )
 
 Target.create "RunBenchmarks" (fun _ ->
@@ -319,12 +293,9 @@ open Fake.Core.TargetOperators
 // *** Define Dependencies ***
 "CreateTempFolder"
  ==> "RestorePackages"
- ==> "BeginSonarQube"
  ==> "Build"
  ==> "PrepareDatabase"
  ==> "RunTests"
- ==> "EndSonarQube"
- ==> "UploadCodeCov"
  ==> "Package"
  ==> "PublishArtifacts"
 
