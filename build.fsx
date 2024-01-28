@@ -242,7 +242,6 @@ module MSSQLDatabase =
         Threading.Thread.Sleep(60000) // Enough time to start MSSQL server
 
         Trace.log " ... Creating database in MS SQL"
-
         Docker.execInContainer containerName [
           "/opt/mssql-tools/bin/sqlcmd"
           "-S"
@@ -259,6 +258,7 @@ module MSSQLDatabase =
     else
       Trace.log "--- Preparing MS SQL database (appveyor) ---"
       
+      Trace.log " ... Creating database in MS SQL"
       let result =
         [
           "-S"
@@ -271,6 +271,62 @@ module MSSQLDatabase =
 
       if result.ExitCode <> 0 then
         failwith "MS SQL Database instantiation failed"
+
+  let tearDown () =
+    if Common.isLocalBuild then
+      Trace.log "--- Removing MS SQL container ---"
+      Docker.removeDockerContainer containerName
+
+module MySQLDatabase =
+  let private containerName = "evi-tests-mysqldb"
+  let private imageName = "mysql:latest"
+  let private dockerPort = 1454
+  let private password = "Password12!"
+  let private dbName = "R2RMLTestStore"
+  let private sqlPort = 3306
+
+  let connectionString =
+    let port =
+      if Common.isLocalBuild then
+        dockerPort
+      else
+        sqlPort
+
+    sprintf "Server=localhost;Port=%d;User ID=root;Password=%s;Database=%s" port password dbName
+
+  let startDatabase () =
+    if Common.isLocalBuild then
+      Trace.log "--- Preparing MySQL database (docker) ---"
+
+      if Docker.isDockerRunning containerName |> not then
+        Docker.startDockerDetached containerName imageName [dockerPort, 3306] [
+          "MYSQL_ROOT_PASSWORD", password
+        ]
+
+        Trace.log " ... Waiting for MySQL Server to start up"
+        Threading.Thread.Sleep(60000) // Enough time to start MSSQL server
+
+        Trace.log " ... Creating database in MySQL"
+        Docker.execInContainer containerName [
+          "mysql"
+          "-u"
+          "root"
+          sprintf "-p%s" password
+          "-e"
+          sprintf "create database %s;" dbName
+        ]
+      else
+        Trace.log "--- Skipping MySQL creation as it already exists ---"
+    else
+      Trace.log "--- Preparing MySQL database (appveyor) ---"
+      Trace.log " ... Creating database in MySQL"
+      Docker.execInContainer containerName [
+        "mysql"
+        "u root"
+        sprintf "-p%s" password
+        "-e"
+        sprintf "create database %s;" dbName
+      ]
 
   let tearDown () =
     if Common.isLocalBuild then
@@ -350,6 +406,10 @@ Target.create "PrepareMSSQLDatabase"  (fun _ ->
   MSSQLDatabase.startDatabase ()
 )
 
+Target.create "PrepareMySQLDatabase" (fun _ ->
+  MySQLDatabase.startDatabase ()
+)
+
 Target.create "PrepareDatabases" (fun _ ->
   Trace.log "--- Updating connection string in database file ---"
   let content =
@@ -359,13 +419,14 @@ Target.create "PrepareDatabases" (fun _ ->
     :?> Newtonsoft.Json.Linq.JToken
 
   content.["ConnectionStrings"].["mssql"] <- MSSQLDatabase.connectionString |> Newtonsoft.Json.Linq.JValue
+  content.["ConnectionStrings"].["mysql"] <- MySQLDatabase.connectionString |> Newtonsoft.Json.Linq.JValue
   
   File.WriteAllText(Common.databaseConnectionsFile, content |> Newtonsoft.Json.JsonConvert.SerializeObject)
 )
 
 Target.create "TearDownDatabases" (fun _ ->
-  if Common.isLocalBuild then
-    MSSQLDatabase.tearDown ()
+  MSSQLDatabase.tearDown ()
+  MySQLDatabase.tearDown ()
 )
 
 Target.create "RunTests" (fun _ ->
@@ -432,6 +493,9 @@ open Fake.Core.TargetOperators
  ==> "PublishArtifacts"
 
 "PrepareMSSQLDatabase"
+ ==> "PrepareDatabases"
+
+"PrepareMySQLDatabase"
  ==> "PrepareDatabases"
 
 "PrepareDatabases"
