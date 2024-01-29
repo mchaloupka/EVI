@@ -5,7 +5,7 @@ configuration: Release
 platform: Any CPU
 environment:
   NUGET_TOKEN:
-    secure: jY23wi+NgtlLYXankYsI0sr0Tx0oFFA7IXKcf+oxhXf/amVd/rHycGYC3+sxy8xy
+    secure: VfrBUBr5ET8sEypbmbNDtI/C8V+cs4B4NCRevUZ9r/XPS+5y6YK+3xlYKhtJbA5d
 init:
   - net start MSSQL$SQL2019
   - ps: Start-Service MySQL80
