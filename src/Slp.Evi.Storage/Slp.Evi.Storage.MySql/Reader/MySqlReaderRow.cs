@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.MySql.Reader
                 {
                     var fieldType = reader.GetFieldType(i);
 
-                    if (fieldType == typeof(int))
+                    if (fieldType == typeof(int) || fieldType == typeof(long))
                     {
                         variableValue = VariableValue.NewIntVariableValue(reader.GetInt32(i));
                     }
@@ -42,7 +42,7 @@ namespace Slp.Evi.Storage.MySql.Reader
                     {
                         variableValue = VariableValue.NewStringVariableValue(reader.GetString(i));
                     }
-                    else if (fieldType == typeof(double))
+                    else if (fieldType == typeof(double) || fieldType == typeof(float))
                     {
                         variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
                     }

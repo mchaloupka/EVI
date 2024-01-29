@@ -528,7 +528,7 @@ namespace Slp.Evi.Storage.MySql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteConstant(int literal)
+            public void WriteConstant(long literal)
             {
                 _sb.Append(literal);
             }

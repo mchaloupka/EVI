@@ -58,12 +58,12 @@ let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: I
                 |> evaluateArithmeticExpression <| d
 
             | BooleanVariableValue b, o ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateArithmeticExpression <| o
 
             | o, BooleanVariableValue b ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateArithmeticExpression o
 
@@ -213,11 +213,11 @@ and private loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlRe
                 i |> double |> DoubleVariableValue
                 |> evaluateComparison <| d
             | BooleanVariableValue b, o ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateComparison <| o
             | o, BooleanVariableValue b ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateComparison o
             | NullVariableValue, _

@@ -7,7 +7,7 @@ open Slp.Evi.Storage.Core.Common.Database
 open Slp.Evi.Storage.Core.Database
 
 type VariableValue =
-    | IntVariableValue of int
+    | IntVariableValue of int64
     | BooleanVariableValue of bool
     | StringVariableValue of string
     | DoubleVariableValue of double
@@ -80,7 +80,7 @@ module SqlDatabaseWriterHelper =
         abstract member WriteBooleanExpression: condition: TypedCondition -> unit
         abstract member WriteConstant: literal:string -> unit
         abstract member WriteConstant: literal:double -> unit
-        abstract member WriteConstant: literal:int -> unit
+        abstract member WriteConstant: literal:int64 -> unit
         abstract member WriteConstant: literal:DateTime -> unit
 
         abstract member WriteTrue: unit -> unit

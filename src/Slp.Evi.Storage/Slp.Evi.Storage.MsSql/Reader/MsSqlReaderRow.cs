@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.MsSql.Reader
                 {
                     var fieldType = reader.GetFieldType(i);
 
-                    if (fieldType == typeof(int))
+                    if (fieldType == typeof(int) || fieldType == typeof(long))
                     {
                         variableValue = VariableValue.NewIntVariableValue(reader.GetInt32(i));
                     }
