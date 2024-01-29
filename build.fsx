@@ -50,6 +50,8 @@ module Common =
 
   let solutionFile = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Storage.sln")
 
+  let benchmarkDirectory = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Benchmark")
+
   let databaseConnectionsFile = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Test.System", "database.json")
   
   let releaseNotesFile = Path.Combine(baseDirectory, "RELEASE_NOTES.md")
@@ -452,13 +454,17 @@ Target.create "RunTests" (fun _ ->
 Target.create "RunBenchmarks" (fun _ ->
   Trace.log "--- Starting benchmarking --- "
   let startProc =
-    DotNet.exec
-      id
-      "run"
-      (sprintf "-p .\\src\\Slp.Evi.Storage\\Slp.Evi.Benchmark -c Release")
+    DotNet.exec (fun p -> 
+    {
+      p with
+        Verbosity = DotNet.Verbosity.Quiet |> Some
+        WorkingDirectory = Common.benchmarkDirectory
+    }) "run" (sprintf "--project Slp.Evi.Benchmark.csproj -c Release")
 
   if not startProc.OK then failwithf "Process failed with %A" startProc
 )
+
+Target.create "Benchmarks" (fun _ -> ())
 
 Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
@@ -513,8 +519,14 @@ open Fake.Core.TargetOperators
  ?=> "TearDownDatabases"
  ==> "PublishArtifacts"
 
+"RunBenchmarks"
+ ?=> "TearDownDatabases"
+ ==> "Benchmarks"
+
 "RestorePackages"
+ ==> "PrepareDatabases"
  ==> "RunBenchmarks"
+ ==> "Benchmarks"
 
 // *** Start Build ***
 Target.runOrDefault "PublishArtifacts"

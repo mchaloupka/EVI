@@ -5,24 +5,23 @@ To run a proper benchmark of SPARQL endpoint, take a look at https://github.com/
 This repository contains a mechanism to benchmark the available system tests. The intention is to have the ability to easily compare performance of two branches. However, it mainly represents the overhead time to generate the SQL query. It does not reflect whether the generated SQL query is optimal as the underlying datasets are extremely small.
 
 It can be executed using the following commands:
-```
-dotnet tool restore
-dotnet fake build -t RunBenchmarks
+
+```shell
+dotnet fsi build.fsx -t Benchmarks
 ```
 
 After that, the folder BenchmarkDotNet.Artifacts will contains logs and results of the benchmark.
 
 ## Last results on this branch
-``` ini
 
+``` ini
 BenchmarkDotNet=v0.12.1, OS=Windows 10.0.19041.264 (2004/?/20H1)
 Intel Core i7-1065G7 CPU 1.30GHz, 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=3.1.300
   [Host]     : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
   DefaultJob : .NET Core 3.1.4 (CoreCLR 4.700.20.20201, CoreFX 4.700.20.22101), X64 RyuJIT
-
-
 ```
+
 |  Method |             Argument |       Mean |     Error |    StdDev |     Median |
 |-------- |--------------------- |-----------:|----------:|----------:|-----------:|
 | **RunTest** | **bsb.ductType_OrderBy** | **1,207.6 μs** |  **17.39 μs** |  **15.42 μs** | **1,206.4 μs** |

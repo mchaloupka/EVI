@@ -1,80 +1,90 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Slp.Evi.Test.System.Sparql;
 using VDS.RDF.Storage;
+using Slp.Evi.Test.System.Sparql.Vendor;
 
 namespace Slp.Evi.Benchmark.Sparql
 {
-    public class SparqlBenchmarkArguments<TStorage, TDatabase> where TStorage : IQueryableStorage
+    public interface ISparqlBenchmarkArgument
+    {
+        void RunTest();
+    }
+
+    public class SparqlBenchmarkArguments<TStorage, TDatabase>
+        : ISparqlBenchmarkArgument where TStorage : IQueryableStorage
     {
         private readonly string _dataset;
         private readonly string _queryFile;
         private readonly IQueryableStorage _storage;
         private readonly string _query;
+        private readonly string _databaseName;
 
-        public SparqlBenchmarkArguments(string dataset, string queryFile, SparqlFixture<TStorage, TDatabase> fixture)
+        public SparqlBenchmarkArguments(string dataset, string queryFile, string databaseName, SparqlFixture<TStorage, TDatabase> fixture)
         {
             _dataset = dataset;
             _queryFile = queryFile;
+            _databaseName = databaseName;
             _storage = fixture.GetStorage(dataset);
             _query = SparqlTestData.GetQuery($"Data\\{_dataset}\\{_queryFile}.rq");
         }
 
         public void RunTest()
         {
-            // Temporarily catch exceptions as they are expected
-            // TODO: Remove try-catch
-            try
-            {
-                _storage.Query(_query);
-            }
-            catch
-            {
-                // We do not care in Benchmark right now
-            }
+            _storage.Query(_query);
         }
 
         public override string ToString()
         {
             // The argument is trimmed to 20 characters, let's make it fit
-            var totalLength = _dataset.Length + _queryFile.Length + 1;
+            var trimmedDataset = _dataset.Substring(0, 3);
+            var totalLength = _databaseName.Length + trimmedDataset.Length + _queryFile.Length + 2;
             var toTrim = totalLength - 20;
 
             if (toTrim > 0)
             {
-                var trimmedDataset = _dataset.Substring(0, 3);
-                toTrim -= (_dataset.Length - 3);
-
-                if (toTrim > 0)
-                {
-                    return $"{trimmedDataset}.{_queryFile.Substring(toTrim)}";
-                }
-                else
-                {
-                    return $"{trimmedDataset}.{_queryFile}";
-                }
+                return $"{_databaseName}-{trimmedDataset}.{_queryFile.Substring(toTrim)}";
             }
             else
             {
-                return $"{_dataset}-{_queryFile}";
+                return $"{_databaseName}-{trimmedDataset}.{_queryFile}";
             }
         }
     }
 
-    public abstract class SparqlBenchmark<TStorage, TDatabase>(SparqlFixture<TStorage, TDatabase> fixture)
-        where TStorage : IQueryableStorage
+    public sealed class SparqlBenchmark
     {
-        public IEnumerable<SparqlBenchmarkArguments<TStorage, TDatabase>> TestParamSource =>
-            SparqlTestData.TestData
-                .Select(x => new SparqlBenchmarkArguments<TStorage, TDatabase>(
-                    x[0] as string,
-                    x[1] as string,
-                    fixture)
+        public SparqlBenchmark()
+        {
+            var arguments = new List<ISparqlBenchmarkArgument>();
+            AddDatabaseToArguments("mssql", new MsSqlSparqlFixture(), arguments);
+            AddDatabaseToArguments("mysql", new MySqlSparqlFixture(), arguments);
+            TestParamSource = arguments;
+        }
+
+        private static void AddDatabaseToArguments<TStorage, TDatabase> (
+            string databaseName,
+            SparqlFixture<TStorage, TDatabase> fixture,
+            ICollection<ISparqlBenchmarkArgument> arguments
+        ) where TStorage : IQueryableStorage
+        {
+            foreach (var testData in SparqlTestData.TestData)
+            {
+                arguments
+                    .Add(new SparqlBenchmarkArguments<TStorage, TDatabase>(
+                        testData[0] as string,
+                        testData[1] as string,
+                        databaseName,
+                        fixture
+                    )
                 );
+            }
+        }
+
+        public IEnumerable<ISparqlBenchmarkArgument> TestParamSource { get; }
 
         [ParamsSource(nameof(TestParamSource))]
-        public SparqlBenchmarkArguments<TStorage, TDatabase> Argument { get; set; }
+        public ISparqlBenchmarkArgument Argument { get; set; }
 
         [Benchmark]
         public void RunTest()
