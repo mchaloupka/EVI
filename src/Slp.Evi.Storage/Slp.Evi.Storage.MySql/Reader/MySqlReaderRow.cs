@@ -46,7 +46,7 @@ namespace Slp.Evi.Storage.MySql.Reader
                     {
                         variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
                     }
-                    else if (fieldType == typeof(int))
+                    else if (fieldType == typeof(bool))
                     {
                         variableValue = VariableValue.NewBooleanVariableValue(reader.GetBoolean(i));
                     }

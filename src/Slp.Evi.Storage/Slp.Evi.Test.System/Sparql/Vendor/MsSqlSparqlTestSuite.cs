@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Slp.Evi.Storage.MsSql;
 using Slp.Evi.Storage.MsSql.Database;
 using TCode.r2rml4net;
 using Xunit;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Slp.Evi.Test.System.Sparql.Vendor
 {
@@ -50,7 +48,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
                 {
                     sb.Append(tablePart.Attribute("name").Value);
                     sb.Append(' ');
-                    sb.Append(tablePart.Attribute("type").Value);
+                    sb.Append(tablePart.Attribute("mssqltype").Value);
                     sb.Append(' ');
 
                     if (tablePart.Attribute("nullable") != null && tablePart.Attribute("nullable").Value == "true")

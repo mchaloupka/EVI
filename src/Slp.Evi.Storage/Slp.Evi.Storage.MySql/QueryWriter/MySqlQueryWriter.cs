@@ -36,14 +36,7 @@ namespace Slp.Evi.Storage.MySql.QueryWriter
         private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
             bool isTrivialQuery;
-            if (sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsSome())
-            {
-                sb.Append("SELECT TOP ");
-                sb.Append(sqlQuery.Limit.Value);
-                sb.Append(" * FROM (");
-                isTrivialQuery = false;
-            }
-            else if(!sqlQuery.Ordering.IsEmpty)
+            if(!sqlQuery.Ordering.IsEmpty)
             {
                 sb.Append("SELECT * FROM (");
                 isTrivialQuery = false;
@@ -120,29 +113,24 @@ namespace Slp.Evi.Storage.MySql.QueryWriter
                 }
             }
 
-            if (sqlQuery.Offset.IsSome())
+            var offset = sqlQuery.Offset.ToNullable();
+            var limit = sqlQuery.Limit.ToNullable();
+
+            if (limit.HasValue)
             {
-                if (sqlQuery.Ordering.IsEmpty)
-                {
-                    throw new Exception("To enable offset and limit, it is needed to use also order by clause");
-                }
+                sb.Append(" LIMIT ");
+                sb.Append(limit.Value);
             }
 
-            if (!sqlQuery.Ordering.IsEmpty)
+            if (offset.HasValue)
             {
-                var offset = sqlQuery.Offset.ToNullable();
-                var limit = sqlQuery.Limit.ToNullable();
+                if (!limit.HasValue)
+                {
+                    sb.Append(" LIMIT 18446744073709551615");
+                }
 
                 sb.Append(" OFFSET ");
-                sb.Append(offset ?? 0);
-                sb.Append(" ROWS");
-
-                if (limit.HasValue)
-                {
-                    sb.Append(" FETCH FIRST ");
-                    sb.Append(limit.Value);
-                    sb.Append(" ROWS ONLY");
-                }
+                sb.Append(offset.Value);
             }
         }
 
@@ -520,7 +508,7 @@ namespace Slp.Evi.Storage.MySql.QueryWriter
             /// <inheritdoc />
             public void WriteBooleanExpression(TypedCondition condition)
             {
-                _sb.Append("IIF(");
+                _sb.Append("IF(");
                 ProcessCondition(condition);
                 _sb.Append(",1,0)");
             }
