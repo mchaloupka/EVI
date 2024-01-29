@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MySqlConnector;
 using Slp.Evi.Storage.Core.Database;
@@ -42,7 +43,11 @@ namespace Slp.Evi.Storage.MySql.Reader
                     {
                         variableValue = VariableValue.NewStringVariableValue(reader.GetString(i));
                     }
-                    else if (fieldType == typeof(double) || fieldType == typeof(float))
+                    else if (fieldType == typeof(float))
+                    {
+                        variableValue = VariableValue.NewFloatVariableValue(reader.GetFloat(i));
+                    }
+                    else if (fieldType == typeof(double))
                     {
                         variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
                     }

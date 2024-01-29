@@ -42,6 +42,10 @@ namespace Slp.Evi.Storage.MsSql.Reader
                     {
                         variableValue = VariableValue.NewStringVariableValue(reader.GetString(i));
                     }
+                    else if (fieldType == typeof(float))
+                    {
+                        variableValue = VariableValue.NewFloatVariableValue(reader.GetFloat(i));
+                    }
                     else if (fieldType == typeof(double))
                     {
                         variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
