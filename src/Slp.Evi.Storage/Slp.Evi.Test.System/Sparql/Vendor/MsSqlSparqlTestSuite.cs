@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml.Linq;
 using Slp.Evi.Storage.MsSql;
 using Slp.Evi.Storage.MsSql.Database;
+using Slp.Evi.Storage.MySql.Database;
 using TCode.r2rml4net;
 using Xunit;
 
@@ -24,7 +25,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
         protected override void CreateTable(MsSqlDatabase sqlDb, XElement table)
         {
             var tableName = table.Attribute("name").Value;
-            sqlDb.ExecuteQuery(new MsSqlQuery($"IF OBJECT_ID(\'{tableName}\', 'U') IS NOT NULL DROP TABLE {tableName}"));
+            RunQuery(sqlDb, $"IF OBJECT_ID(\'{tableName}\', 'U') IS NOT NULL DROP TABLE {tableName}");
 
             StringBuilder sb = new StringBuilder();
             sb.Append("CREATE TABLE ");
@@ -70,7 +71,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
 
             RemovePrimaryKey(sqlDb, tableName, primaryKeyName);
 
-            sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
+            RunQuery(sqlDb, sb.ToString());
 
             AddPrimaryKey(sqlDb, tableName, primaryKeyName, table);
         }
@@ -87,7 +88,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
             sb.Append(" DROP CONSTRAINT ");
             sb.Append(primaryKeyName);
 
-            sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
+            RunQuery(sqlDb, sb.ToString());
         }
 
         private void AddPrimaryKey(MsSqlDatabase sqlDb, string tableName, string primaryKeyName, XElement table)
@@ -122,14 +123,19 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
             if (!first)
             {
                 sb.Append(")");
-                sqlDb.ExecuteQuery(new MsSqlQuery(sb.ToString()));
+                RunQuery(sqlDb, sb.ToString());
             }
         }
 
         /// <inheritdoc />
         protected override void ExecuteQuery(MsSqlDatabase sqlDb, XElement query)
         {
-            sqlDb.ExecuteQuery(new MsSqlQuery(query.Value));
+            RunQuery(sqlDb, query.Value);
+        }
+
+        private void RunQuery(MsSqlDatabase sqlDb, String query)
+        {
+            sqlDb.ExecuteQuery(new MsSqlQuery(query)).Dispose();
         }
 
         /// <inheritdoc />

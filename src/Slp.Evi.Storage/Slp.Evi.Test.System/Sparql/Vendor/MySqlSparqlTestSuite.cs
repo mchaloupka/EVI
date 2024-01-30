@@ -25,7 +25,7 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
         protected override void CreateTable(MySqlDatabase sqlDb, XElement table)
         {
             var tableName = table.Attribute("name").Value;
-            sqlDb.ExecuteQuery(new MySqlQuery($"DROP TABLE IF EXISTS {tableName}"));
+            RunQuery(sqlDb, $"DROP TABLE IF EXISTS {tableName}");
 
             StringBuilder sb = new StringBuilder();
             sb.Append("CREATE TABLE ");
@@ -78,13 +78,18 @@ namespace Slp.Evi.Test.System.Sparql.Vendor
 
             sb.Append(")");
 
-            sqlDb.ExecuteQuery(new MySqlQuery(sb.ToString()));
+            RunQuery(sqlDb, sb.ToString());
+        }
+
+        private void RunQuery(MySqlDatabase sqlDb, String query)
+        {
+            sqlDb.ExecuteQuery(new MySqlQuery(query)).Dispose();
         }
 
         /// <inheritdoc />
         protected override void ExecuteQuery(MySqlDatabase sqlDb, XElement query)
         {
-            sqlDb.ExecuteQuery(new MySqlQuery(query.Value));
+            RunQuery(sqlDb, query.Value);
         }
 
         /// <inheritdoc />

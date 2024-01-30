@@ -52,7 +52,7 @@ namespace Slp.Evi.Benchmark.Sparql
         }
     }
 
-    public sealed class SparqlBenchmark
+    public class SparqlBenchmark
     {
         public SparqlBenchmark()
         {
