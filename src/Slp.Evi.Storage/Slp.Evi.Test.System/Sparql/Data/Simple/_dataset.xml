@@ -2,21 +2,21 @@
 <storage>
   <sql>
     <table name="iri_table">
-      <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="predicate" type="nvarchar(max)" nullable="false" />
-      <column name="object" type="nvarchar(max)" nullable="true" />
+      <column name="subject" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="false" />
+      <column name="predicate" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="false" />
+      <column name="object" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="true" />
     </table>
     <table name="simple_table">
-      <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="object" type="nvarchar(max)" nullable="true" />
+      <column name="subject" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="false" />
+      <column name="object" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="true" />
     </table>
     <table name="int_table">
-      <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="object" type="int" nullable="true" />
+      <column name="subject" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="false" />
+      <column name="object" mssqltype="int" mysqltype="int" nullable="true" />
     </table>
     <table name="double_table">
-      <column name="subject" type="nvarchar(max)" nullable="false" />
-      <column name="object" type="float" nullable="true" />
+      <column name="subject" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="false" />
+      <column name="object" mssqltype="float" mysqltype="float" nullable="true" />
     </table>
     <query>INSERT INTO iri_table VALUES('a','b','c')</query>
     <query>INSERT INTO iri_table VALUES('b','c','a')</query>

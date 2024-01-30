@@ -18,7 +18,7 @@ module SqlSource =
 
 type Literal =
     | String of string
-    | Int of int
+    | Int of int64
     | Double of double
     | DateTimeLiteral of DateTime
 
@@ -101,7 +101,7 @@ type ValueBinder =
     | EmptyValueBinder
     | BaseValueBinder of ObjectMapping * Map<string, Variable>
     | CoalesceValueBinder of ValueBinder list
-    | CaseValueBinder of Variable * Map<int, ValueBinder>
+    | CaseValueBinder of Variable * Map<int64, ValueBinder>
     | ExpressionValueBinder of ExpressionSet
     | ConditionedValueBinder of Condition * ValueBinder
 

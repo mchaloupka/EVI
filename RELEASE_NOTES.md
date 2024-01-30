@@ -1,5 +1,8 @@
 # Release notes for EVI
 
+### 0.0.10 (Unreleased)
+* Add MySQL Support
+
 ### 0.0.9 (Released 2021/01/25)
 * Fix build process so the assemblies have correct build version
 

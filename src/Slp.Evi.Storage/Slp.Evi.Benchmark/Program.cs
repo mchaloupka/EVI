@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using Slp.Evi.Benchmark.Sparql.Vendor;
+using Slp.Evi.Benchmark.Sparql;
 
 namespace Slp.Evi.Benchmark
 {
@@ -9,9 +9,9 @@ namespace Slp.Evi.Benchmark
         static void Main(string[] args)
         {
 #if DEBUG
-            BenchmarkRunner.Run<MsSqlSparqlBenchmark>(new DebugBuildConfig());
+            BenchmarkRunner.Run<SparqlBenchmark>(new DebugBuildConfig());
 #else
-             BenchmarkRunner.Run<MsSqlSparqlBenchmark>();
+            BenchmarkRunner.Run<SparqlBenchmark>();
 #endif
 
         }

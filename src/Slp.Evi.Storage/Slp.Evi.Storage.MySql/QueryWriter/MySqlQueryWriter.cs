@@ -10,40 +10,33 @@ using Slp.Evi.Storage.Core.Common.Database;
 using Slp.Evi.Storage.Core.Database;
 using Slp.Evi.Storage.Core.Relational.Algebra;
 using Slp.Evi.Storage.FSharpExtensions;
-using Slp.Evi.Storage.MsSql.Database;
+using Slp.Evi.Storage.MySql.Database;
 
-namespace Slp.Evi.Storage.MsSql.QueryWriter
+namespace Slp.Evi.Storage.MySql.QueryWriter
 {
-    public class MsSqlQueryWriter
-        : ISqlDatabaseWriter<MsSqlQuery>
+    public class MySqlQueryWriter
+        : ISqlDatabaseWriter<MySqlQuery>
     {
-        private readonly MsSqlDatabaseSchema _databaseSchema;
+        private readonly MySqlDatabaseSchema _databaseSchema;
 
-        public MsSqlQueryWriter(MsSqlDatabaseSchema databaseSchema)
+        public MySqlQueryWriter(MySqlDatabaseSchema databaseSchema)
         {
             _databaseSchema = databaseSchema;
         }
 
         /// <inheritdoc />
-        public MsSqlQuery WriteQuery(SqlQuery query)
+        public MySqlQuery WriteQuery(SqlQuery query)
         {
             StringBuilder sb = new StringBuilder();
             WriteQuery(sb, query);
             var queryString = sb.ToString();
-            return new MsSqlQuery(queryString);
+            return new MySqlQuery(queryString);
         }
 
         private void WriteQuery(StringBuilder sb, SqlQuery sqlQuery)
         {
             bool isTrivialQuery;
-            if (sqlQuery.Ordering.IsEmpty && sqlQuery.Limit.IsSome())
-            {
-                sb.Append("SELECT TOP ");
-                sb.Append(sqlQuery.Limit.Value);
-                sb.Append(" * FROM (");
-                isTrivialQuery = false;
-            }
-            else if(!sqlQuery.Ordering.IsEmpty)
+            if(!sqlQuery.Ordering.IsEmpty)
             {
                 sb.Append("SELECT * FROM (");
                 isTrivialQuery = false;
@@ -120,29 +113,24 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                 }
             }
 
-            if (sqlQuery.Offset.IsSome())
+            var offset = sqlQuery.Offset.ToNullable();
+            var limit = sqlQuery.Limit.ToNullable();
+
+            if (limit.HasValue)
             {
-                if (sqlQuery.Ordering.IsEmpty)
-                {
-                    throw new Exception("To enable offset and limit, it is needed to use also order by clause");
-                }
+                sb.Append(" LIMIT ");
+                sb.Append(limit.Value);
             }
 
-            if (!sqlQuery.Ordering.IsEmpty)
+            if (offset.HasValue)
             {
-                var offset = sqlQuery.Offset.ToNullable();
-                var limit = sqlQuery.Limit.ToNullable();
+                if (!limit.HasValue)
+                {
+                    sb.Append(" LIMIT 18446744073709551615");
+                }
 
                 sb.Append(" OFFSET ");
-                sb.Append(offset ?? 0);
-                sb.Append(" ROWS");
-
-                if (limit.HasValue)
-                {
-                    sb.Append(" FETCH FIRST ");
-                    sb.Append(limit.Value);
-                    sb.Append(" ROWS ONLY");
-                }
+                sb.Append(offset.Value);
             }
         }
 
@@ -379,28 +367,28 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
 
         private static void WriteExpression(StringBuilder sb, InnerQuery query, TypedExpression expression)
         {
-            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
+            var writer = new MySqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
         }
 
         private static void WriteExpression(StringBuilder sb, SqlQuery query, TypedExpression expression)
         {
-            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
+            var writer = new MySqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessExpression(writer, expression);
         }
 
         private static void WriteCondition(StringBuilder sb, InnerQuery query, TypedCondition condition)
         {
-            var writer = new MsSqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
+            var writer = new MySqlExpressionWriter(sb, (x, variable) => WriteVariable(x, query, variable));
             SqlDatabaseWriterHelper.ProcessCondition(writer, condition);
         }
 
-        private class MsSqlExpressionWriter: SqlDatabaseWriterHelper.ISqlExpressionWriter
+        private class MySqlExpressionWriter: SqlDatabaseWriterHelper.ISqlExpressionWriter
         {
             private readonly StringBuilder _sb;
             private readonly Action<StringBuilder, Variable> _writeVariableAction;
 
-            public MsSqlExpressionWriter(StringBuilder sb, Action<StringBuilder, Variable> writeVariableAction)
+            public MySqlExpressionWriter(StringBuilder sb, Action<StringBuilder, Variable> writeVariableAction)
             {
                 _sb = sb;
                 _writeVariableAction = writeVariableAction;
@@ -520,7 +508,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             /// <inheritdoc />
             public void WriteBooleanExpression(TypedCondition condition)
             {
-                _sb.Append("IIF(");
+                _sb.Append("IF(");
                 ProcessCondition(condition);
                 _sb.Append(",1,0)");
             }
@@ -701,7 +689,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
                     writeExpressionFunc();
                     _sb.Append(" AS ");
 
-                    if (!(expectedType is MsSqlColumnType columnType))
+                    if (!(expectedType is MySqlColumnType columnType))
                     {
                         throw new InvalidOperationException($"Trying to cast to a type that is not specific to MS SQL, type: {expectedType.GetType()}");
                     }

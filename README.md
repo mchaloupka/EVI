@@ -1,19 +1,34 @@
-EVI
-================
+# EVI
 [![Build status](https://ci.appveyor.com/api/projects/status/0occxl9nsbjcmkc2/branch/master?svg=true)](https://ci.appveyor.com/project/mchaloupka/evi/branch/master)
-[![CodeCov](https://codecov.io/gh/mchaloupka/EVI/branch/master/graph/badge.svg)](https://codecov.io/gh/mchaloupka/EVI)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=alert_status)](https://sonarcloud.io/dashboard?id=EVI)
-[![Security rating](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=security_rating)](https://sonarcloud.io/dashboard?id=EVI)
-[![Reliabality rating](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=EVI)
-[![Maintainability rating](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=EVI)\
-[![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=ncloc)](https://sonarcloud.io/dashboard?id=EVI)
-[![Duplicated lines](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=EVI)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=EVI)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=bugs)](https://sonarcloud.io/dashboard?id=EVI)
-[![Code smells](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=code_smells)](https://sonarcloud.io/dashboard?id=EVI)
-[![Technical debt](https://sonarcloud.io/api/project_badges/measure?project=EVI&metric=sqale_index)](https://sonarcloud.io/dashboard?id=EVI)
----
+
 
 http://mchaloupka.github.io/EVI/
 
 .NET implementation of an RDB2RDF storage based on R2RML mapping file
+
+## Development
+
+To be able to develop for this project, you need to have installed:
+* .NET SDK 8
+* Docker
+
+To test that you can build the whole project, run the following command:
+```
+dotnet fsi.build.fsx
+```
+
+### Integration tests (in Visual Studio)
+
+The integration tests that are part of the solutions require to have databases available. To allow development, run the following command:
+
+```
+dotnet fsi build.fsx -t "PrepareDatabases"
+```
+
+That will start and initiate all databases necessary for the integration tests. From that moment, it is possible to run the integration tests during development. To delete all the databases (e.g. after development), run the following command:
+
+```
+dotnet fsi build.fsx -t "TearDownDatabases"
+```
+
+In case you run the full build using FAKE, it will run both `PrepareDatabases` and `TearDownDatabases` commands. Therefore, in case you had the databases running before, the full build command will remove them and it is needed to start them again.

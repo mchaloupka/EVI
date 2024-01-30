@@ -25,7 +25,10 @@ type QueryProcessor<'T> private (bgpMappings: Sparql.Algebra.BasicGraphPatternMa
             sqlAlgebra
             |> DatabaseQueryBuilder.translateToQuery database.DatabaseSchema
 
-        use queryResult = databaseQuery |> database.Writer.WriteQuery |> database.ExecuteQuery
+        use queryResult =
+            databaseQuery
+            |> database.Writer.WriteQuery
+            |> database.ExecuteQuery
 
         match query.QueryType with
         | Query.SparqlQueryType.Ask ->
