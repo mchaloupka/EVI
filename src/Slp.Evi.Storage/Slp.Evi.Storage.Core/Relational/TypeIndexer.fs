@@ -16,7 +16,7 @@ module TypeIndexer =
         | DateTimeLiteral = 6
         | OtherLiteral = 7
 
-    type TypeRecord = { Index: int; Category: TypeCategory; NodeType: NodeType }
+    type TypeRecord = { Index: int64; Category: TypeCategory; NodeType: NodeType }
 
     let private knownTypeToCategoryMappings =
         [
@@ -43,9 +43,9 @@ module TypeIndexer =
             | false, _ -> TypeCategory.OtherLiteral
 
 type TypeIndexer () =
-    let indexedRecords = ConcurrentDictionary<int, TypeIndexer.TypeRecord>()
-    let typeToIndex = ConcurrentDictionary<NodeType, int>()
-    let largestIndex = ref 0
+    let indexedRecords = ConcurrentDictionary<int64, TypeIndexer.TypeRecord>()
+    let typeToIndex = ConcurrentDictionary<NodeType, int64>()
+    let largestIndex = ref 0L
 
     let getTypeRecord nodeType =
         let createNewIndex _ =

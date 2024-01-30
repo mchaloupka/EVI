@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Slp.Evi.Storage.MsSql\Slp.Evi.Storage.MsSql.csproj" />
+    <ProjectReference Include="..\Slp.Evi.Storage.MySql\Slp.Evi.Storage.MySql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

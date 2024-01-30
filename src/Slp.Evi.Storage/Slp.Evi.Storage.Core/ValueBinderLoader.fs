@@ -49,6 +49,13 @@ let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: I
                 | Multiply -> l * r |> DoubleVariableValue
                 | Divide -> l / r |> DoubleVariableValue
 
+            | FloatVariableValue l, FloatVariableValue r ->
+                match operator with
+                | Add -> l + r |> FloatVariableValue
+                | Subtract -> l - r |> FloatVariableValue
+                | Multiply -> l * r |> FloatVariableValue
+                | Divide -> l / r |> FloatVariableValue
+
             | (DoubleVariableValue _) as d, IntVariableValue i ->
                 i |> double |> DoubleVariableValue
                 |> evaluateArithmeticExpression d
@@ -57,13 +64,29 @@ let rec private loadValueFromExpression (namingProvider: NamingProvider) (row: I
                 i |> double |> DoubleVariableValue
                 |> evaluateArithmeticExpression <| d
 
+            | (FloatVariableValue _) as d, IntVariableValue i ->
+                i |> single |> FloatVariableValue
+                |> evaluateArithmeticExpression d
+
+            | IntVariableValue i, ((FloatVariableValue _) as d) ->
+                i |> single |> FloatVariableValue
+                |> evaluateArithmeticExpression <| d
+
+            | (DoubleVariableValue _) as d, FloatVariableValue f ->
+                f |> double |> DoubleVariableValue
+                |> evaluateArithmeticExpression d
+
+            | FloatVariableValue f, ((DoubleVariableValue _) as d) ->
+                f |> double |> DoubleVariableValue
+                |> evaluateArithmeticExpression <| d
+
             | BooleanVariableValue b, o ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateArithmeticExpression <| o
 
             | o, BooleanVariableValue b ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateArithmeticExpression o
 
@@ -184,6 +207,13 @@ and private loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlRe
                 | LessThan -> l < r
                 | LessOrEqualThan -> l <= r
                 | EqualTo -> l = r
+            | FloatVariableValue l, FloatVariableValue r ->
+                match comparison with
+                | GreaterThan -> l > r
+                | GreaterOrEqualThan -> l >= r
+                | LessThan -> l < r
+                | LessOrEqualThan -> l <= r
+                | EqualTo -> l = r
             | StringVariableValue l, StringVariableValue r ->
                 match comparison with
                 | GreaterThan -> l > r
@@ -212,12 +242,24 @@ and private loadValueFromCondition (namingProvider: NamingProvider) (row: ISqlRe
             | IntVariableValue i, ((DoubleVariableValue _) as d) ->
                 i |> double |> DoubleVariableValue
                 |> evaluateComparison <| d
+            | (DoubleVariableValue _) as d, FloatVariableValue f ->
+                f |> double |> DoubleVariableValue
+                |> evaluateComparison d
+            | FloatVariableValue f, ((DoubleVariableValue _) as d) ->
+                f |> double |> DoubleVariableValue
+                |> evaluateComparison <| d
+            | (FloatVariableValue _) as f, IntVariableValue i ->
+                i |> single |> FloatVariableValue
+                |> evaluateComparison f
+            | IntVariableValue i, ((FloatVariableValue _) as f) ->
+                i |> single |> FloatVariableValue
+                |> evaluateComparison <| f
             | BooleanVariableValue b, o ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateComparison <| o
             | o, BooleanVariableValue b ->
-                if b then 1 else 0
+                if b then 1L else 0L
                 |> IntVariableValue
                 |> evaluateComparison o
             | NullVariableValue, _

@@ -1,5 +1,1 @@
-{
-  "ConnectionStrings": {
-    "mssql": "Data Source=.;Initial Catalog=R2RMLTestDatabase;Integrated Security=True"
-  }
-}
+{"ConnectionStrings":{"mssql":"Server=127.0.0.1,1453;Database=R2RMLTestStore;User Id=sa;Password=Password12!","mysql":"Server=localhost;Port=1454;User ID=root;Password=Password12!;Database=R2RMLTestStore"}}

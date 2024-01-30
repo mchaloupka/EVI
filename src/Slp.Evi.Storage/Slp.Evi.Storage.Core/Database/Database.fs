@@ -7,9 +7,10 @@ open Slp.Evi.Storage.Core.Common.Database
 open Slp.Evi.Storage.Core.Database
 
 type VariableValue =
-    | IntVariableValue of int
+    | IntVariableValue of int64
     | BooleanVariableValue of bool
     | StringVariableValue of string
+    | FloatVariableValue of single
     | DoubleVariableValue of double
     | DateTimeVariableValue of DateTime
     | NullVariableValue
@@ -29,6 +30,7 @@ module VariableValue =
     let asString = function
         | StringVariableValue s -> s
         | IntVariableValue i -> System.Xml.XmlConvert.ToString i
+        | FloatVariableValue f -> System.Xml.XmlConvert.ToString f
         | DoubleVariableValue d -> System.Xml.XmlConvert.ToString d
         | BooleanVariableValue b -> System.Xml.XmlConvert.ToString b
         | DateTimeVariableValue d -> System.Xml.XmlConvert.ToString (d, System.Xml.XmlDateTimeSerializationMode.Utc);
@@ -80,7 +82,7 @@ module SqlDatabaseWriterHelper =
         abstract member WriteBooleanExpression: condition: TypedCondition -> unit
         abstract member WriteConstant: literal:string -> unit
         abstract member WriteConstant: literal:double -> unit
-        abstract member WriteConstant: literal:int -> unit
+        abstract member WriteConstant: literal:int64 -> unit
         abstract member WriteConstant: literal:DateTime -> unit
 
         abstract member WriteTrue: unit -> unit

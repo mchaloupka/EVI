@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
+using MySqlConnector;
 using Slp.Evi.Storage.Core.Database;
 
-namespace Slp.Evi.Storage.MsSql.Reader
+namespace Slp.Evi.Storage.MySql.Reader
 {
-    public class MsSqlReaderRow
+    public class MySqlReaderRow
         : ISqlResultRow
     {
-        private readonly Dictionary<string, MsSqlReaderColumn> _columns;
+        private readonly Dictionary<string, MySqlReaderColumn> _columns;
 
-        private MsSqlReaderRow(IEnumerable<MsSqlReaderColumn> columns)
+        private MySqlReaderRow(IEnumerable<MySqlReaderColumn> columns)
         {
             _columns = columns.ToDictionary(x => x.Name);
         }
 
-        public static MsSqlReaderRow Create(SqlDataReader reader)
+        public static MySqlReaderRow Create(MySqlDataReader reader)
         {
-            var columns = new List<MsSqlReaderColumn>();
+            var columns = new List<MySqlReaderColumn>();
             var fieldCount = reader.VisibleFieldCount;
 
             for (var i = 0; i < fieldCount; i++)
@@ -64,10 +65,10 @@ namespace Slp.Evi.Storage.MsSql.Reader
                     }
                 }
 
-                columns.Add(new MsSqlReaderColumn(name, variableValue));
+                columns.Add(new MySqlReaderColumn(name, variableValue));
             }
 
-            return new MsSqlReaderRow(columns);
+            return new MySqlReaderRow(columns);
         }
 
         /// <inheritdoc />
