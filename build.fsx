@@ -470,7 +470,9 @@ Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
     Trace.log "--- Publishing artifacts --- "
-    !! (Common.nugetDirectory + "/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.nugetDirectory + "/*.nupkg") 
+    ++ (Common.nugetDirectory + "/*.snupkg")
+    |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
     match Common.branch with
     | "develop" | "master" ->
@@ -482,7 +484,6 @@ Target.create "PublishArtifacts" (fun _ ->
             DotNet.exec id "nuget" (sprintf "push %s -k %s -s https://api.nuget.org/v3/index.json" nuget key)
     
         !! (Common.nugetDirectory + "/*.nupkg")
-        -- (Common.nugetDirectory + "/*.symbols.nupkg")
         |> Seq.map publishNuget
         |> Seq.iter (fun x -> if not x.OK then failwithf "Nuget publish failed with: %A" x)
     | _ -> ()
