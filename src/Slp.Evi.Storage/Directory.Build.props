@@ -6,9 +6,23 @@
         <Description>.NET implementation of an RDB2RDF storage based on R2RML mapping file</Description>
         <Product>EVI</Product>
         <PackageProjectUrl>http://mchaloupka.github.io/EVI/</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageTags>rdb2rdf rdf r2rml sparql</PackageTags>
+        <PackageTags>RDB2RDF SPARQL RDF R2RML C# F# .Net</PackageTags>
         <RepositoryUrl>https://github.com/mchaloupka/EVI</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
         <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+
+        <!-- Following part is taken from: https://github.com/dotnet/SourceLink#using-sourcelink -->
+        <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
 </Project>
