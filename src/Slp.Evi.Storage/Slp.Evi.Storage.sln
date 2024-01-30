@@ -1,21 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.8.34511.84
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Test.System", "Slp.Evi.Test.System\Slp.Evi.Test.System.csproj", "{32D17C53-D762-4F83-B617-CAE13E165495}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Benchmark", "Slp.Evi.Benchmark\Slp.Evi.Benchmark.csproj", "{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core", "Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj", "{E63E3C11-CCD2-4E5B-9334-AA74213AC0C7}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core", "Slp.Evi.Storage.Core\Slp.Evi.Storage.Core.fsproj", "{ED460784-7F56-43E1-B411-98B0ABEEA719}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage.MsSql", "Slp.Evi.Storage.MsSql\Slp.Evi.Storage.MsSql.csproj", "{CF132216-78FF-4870-A3BC-A7B4234253D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage.MsSql", "Slp.Evi.Storage.MsSql\Slp.Evi.Storage.MsSql.csproj", "{674A72ED-2365-4CD1-A197-87DF73F2CFBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage", "Slp.Evi.Storage\Slp.Evi.Storage.csproj", "{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slp.Evi.Storage", "Slp.Evi.Storage\Slp.Evi.Storage.csproj", "{7890F1A3-34AF-478E-BF2B-C2C60251E911}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Slp.Evi.Storage.Core.Test.Unit", "Slp.Evi.Storage.Core.Test.Unit\Slp.Evi.Storage.Core.Test.Unit.fsproj", "{43E50702-968D-46E8-9D1E-D68B942A1CE4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slp.Evi.Storage.MySql", "Slp.Evi.Storage.MySql\Slp.Evi.Storage.MySql.csproj", "{BD3F3189-665D-4572-A575-A8008813F8D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,26 +29,22 @@ Global
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B02D3B8-2A5B-43E7-9076-4EA62A574E75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E63E3C11-CCD2-4E5B-9334-AA74213AC0C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E63E3C11-CCD2-4E5B-9334-AA74213AC0C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E63E3C11-CCD2-4E5B-9334-AA74213AC0C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E63E3C11-CCD2-4E5B-9334-AA74213AC0C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF132216-78FF-4870-A3BC-A7B4234253D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF132216-78FF-4870-A3BC-A7B4234253D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF132216-78FF-4870-A3BC-A7B4234253D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF132216-78FF-4870-A3BC-A7B4234253D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57F07E37-93C5-49C0-8E44-2676D1C3ADC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED460784-7F56-43E1-B411-98B0ABEEA719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{674A72ED-2365-4CD1-A197-87DF73F2CFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7890F1A3-34AF-478E-BF2B-C2C60251E911}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43E50702-968D-46E8-9D1E-D68B942A1CE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD3F3189-665D-4572-A575-A8008813F8D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD3F3189-665D-4572-A575-A8008813F8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD3F3189-665D-4572-A575-A8008813F8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD3F3189-665D-4572-A575-A8008813F8D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

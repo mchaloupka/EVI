@@ -34,7 +34,7 @@ namespace Slp.Evi.Storage.MsSql.Reader
                 {
                     var fieldType = reader.GetFieldType(i);
 
-                    if (fieldType == typeof(int) || fieldType == typeof(long))
+                    if (fieldType == typeof(int))
                     {
                         variableValue = VariableValue.NewIntVariableValue(reader.GetInt32(i));
                     }
@@ -42,15 +42,11 @@ namespace Slp.Evi.Storage.MsSql.Reader
                     {
                         variableValue = VariableValue.NewStringVariableValue(reader.GetString(i));
                     }
-                    else if (fieldType == typeof(float))
-                    {
-                        variableValue = VariableValue.NewFloatVariableValue(reader.GetFloat(i));
-                    }
                     else if (fieldType == typeof(double))
                     {
                         variableValue = VariableValue.NewDoubleVariableValue(reader.GetDouble(i));
                     }
-                    else if (fieldType == typeof(bool))
+                    else if (fieldType == typeof(int))
                     {
                         variableValue = VariableValue.NewBooleanVariableValue(reader.GetBoolean(i));
                     }

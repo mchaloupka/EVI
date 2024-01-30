@@ -2,19 +2,19 @@
 <storage>
   <sql>
     <table name="students_students">
-      <column name="id" mssqltype="int" mysqltype="int" primary-key="true" />
-      <column name="name" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" />
-      <column name="gradyear" mssqltype="int" mysqltype="int" />
+      <column name="id" type="int" primary-key="true" />
+      <column name="name" type="nvarchar(max)" />
+      <column name="gradyear" type="int" />
     </table>
     <table name="students_courses">
-      <column name="id" mssqltype="int" mysqltype="int" nullable="false" primary-key="true" />
-      <column name="name" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" />
+      <column name="id" type="int" nullable="false" primary-key="true" />
+      <column name="name" type="nvarchar(max)" />
     </table>
     <table name="students_enrollments">
-      <column name="studentId" mssqltype="int" mysqltype="int" primary-key="true" />
-      <column name="courseId" mssqltype="int" mysqltype="int" primary-key="true" />
-      <column name="year" mssqltype="int" mysqltype="int" primary-key="true" />
-      <column name="grade" mssqltype="nvarchar(max)" mysqltype="varchar(5000)" nullable="true" />
+      <column name="studentId" type="int" primary-key="true" />
+      <column name="courseId" type="int" primary-key="true" />
+      <column name="year" type="int" primary-key="true" />
+      <column name="grade" type="nvarchar(max)" nullable="true" />
     </table>
 
     <query>INSERT INTO students_students VALUES(1, 'John', 1)</query>

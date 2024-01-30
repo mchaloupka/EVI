@@ -63,7 +63,7 @@ namespace Slp.Evi.Test.System
 
                 if (!found)
                 {
-                    Assert.Fail($"Expected item #{eIndex} cannot be found in the actual collection.");
+                    Assert.True(false, $"Expected item #{eIndex} cannot be found in the actual collection.");
                 }
             }
         }
