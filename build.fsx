@@ -11,7 +11,6 @@
 #r "nuget: Fake.DotNet.Cli"
 #r "nuget: Fake.DotNet.AssemblyInfoFile"
 #r "nuget: Fake.BuildServer.AppVeyor"
-#r "nuget: Fake.DotNet.Nuget"
 #r "nuget: Fake.DotNet.MSBuild"
 #r "nuget: Newtonsoft.Json"
 
@@ -24,7 +23,6 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.Net
 open Fake.BuildServer
-open Fake.DotNet.NuGet.NuGet
 
 // Boilerplate
 Environment.GetCommandLineArgs()
@@ -404,7 +402,9 @@ Target.create "Package" (fun _ ->
           OutputPath = Some Common.nugetDirectory
           Configuration = DotNet.BuildConfiguration.Release
           MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
-          Common = p.Common |> Build.setDotnetCommonWithExtraArgs ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
+          IncludeSymbols = true
+          NoRestore = true
+          Common = p.Common |> Build.setDotnetCommonWithExtraArgs ("--include-source /p:PackageVersion=" + version)
       }
     )
 
@@ -474,23 +474,15 @@ Target.create "PublishArtifacts" (fun _ ->
 
     match Common.branch with
     | "develop" | "master" ->
-      [
-        "slp.evi"
-        "slp.evi.core"
-        "slp.evi.mssql"
-        "slp.evi.mysql"
-      ]
-      |> List.iter (
-        fun project ->
-          NuGetPublish (fun p ->
-            { p with
-                AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
-                Project = project
-                Version = version
-                OutputPath = Common.nugetDirectory
-                WorkingDir = Common.nugetDirectory
-            })
-      )
+      let key = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+
+      let publishNuget nuget =
+          DotNet.exec id "nuget" (sprintf "push %s -k %s -s https://api.nuget.org/v3/index.json" nuget key)
+  
+      !! (Common.nugetDirectory + "/*.nupkg")
+      -- (Common.nugetDirectory + "*.symbols.nupkg")
+      |> Seq.map publishNuget
+      |> Seq.iter (fun x -> if not x.OK then failwithf "Nuget publish failed with: %A" x)
     | _ -> ()
   | None -> Trace.log "Skipping artifacts publishing"
 )
