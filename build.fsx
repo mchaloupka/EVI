@@ -474,15 +474,17 @@ Target.create "PublishArtifacts" (fun _ ->
 
     match Common.branch with
     | "develop" | "master" ->
-      let key = Environment.GetEnvironmentVariable("NUGET_TOKEN")
+      // Skip the pull request builds
+      if AppVeyor.Environment.PullRequestNumber |> String.isNotNullOrEmpty then
+        let key = Environment.GetEnvironmentVariable("NUGET_TOKEN")
 
-      let publishNuget nuget =
-          DotNet.exec id "nuget" (sprintf "push %s -k %s -s https://api.nuget.org/v3/index.json" nuget key)
-  
-      !! (Common.nugetDirectory + "/*.nupkg")
-      -- (Common.nugetDirectory + "/*.symbols.nupkg")
-      |> Seq.map publishNuget
-      |> Seq.iter (fun x -> if not x.OK then failwithf "Nuget publish failed with: %A" x)
+        let publishNuget nuget =
+            DotNet.exec id "nuget" (sprintf "push %s -k %s -s https://api.nuget.org/v3/index.json" nuget key)
+    
+        !! (Common.nugetDirectory + "/*.nupkg")
+        -- (Common.nugetDirectory + "/*.symbols.nupkg")
+        |> Seq.map publishNuget
+        |> Seq.iter (fun x -> if not x.OK then failwithf "Nuget publish failed with: %A" x)
     | _ -> ()
   | None -> Trace.log "Skipping artifacts publishing"
 )
