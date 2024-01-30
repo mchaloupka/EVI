@@ -540,7 +540,7 @@ namespace Slp.Evi.Storage.MsSql.QueryWriter
             }
 
             /// <inheritdoc />
-            public void WriteConstant(long literal)
+            public void WriteConstant(int literal)
             {
                 _sb.Append(literal);
             }

@@ -46,10 +46,10 @@
         <literal>Ruggiero-Delane</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">3</literal>
+        <literal>3</literal>
       </binding>
       <binding name="rating2">
-		<literal type="xsd:integer">3</literal>
+        <literal>3</literal>
       </binding>
     </result>
     <result>
@@ -81,7 +81,7 @@
         <literal>Ruggiero-Delane</literal>
       </binding>
       <binding name="rating1">
-		<literal type="xsd:integer">4</literal>
+        <literal>4</literal>
       </binding>
     </result>
     <result>
@@ -113,10 +113,10 @@
         <literal>Ruggiero-Delane</literal>
       </binding>
       <binding name="rating1">
-		<literal type="xsd:integer">1</literal>
+        <literal>1</literal>
       </binding>
       <binding name="rating2">
-		<literal type="xsd:integer">10</literal>
+        <literal>10</literal>
       </binding>
     </result>
     <result>
@@ -148,10 +148,10 @@
         <literal>Ruggiero-Delane</literal>
       </binding>
       <binding name="rating1">
-		<literal type="xsd:integer">9</literal>
+        <literal>9</literal>
       </binding>
       <binding name="rating2">
-		<literal type="xsd:integer">7</literal>
+        <literal>7</literal>
       </binding>
     </result>
     <result>
@@ -183,10 +183,10 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">9</literal>
+        <literal>9</literal>
       </binding>
       <binding name="rating2">
-		<literal type="xsd:integer">8</literal>
+        <literal>8</literal>
       </binding>
     </result>
     <result>
@@ -218,10 +218,10 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">3</literal>
+        <literal>3</literal>
       </binding>
       <binding name="rating2">
-        <literal type="xsd:integer">7</literal>
+        <literal>7</literal>
       </binding>
     </result>
     <result>
@@ -253,10 +253,10 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">9</literal>
+        <literal>9</literal>
       </binding>
       <binding name="rating2">
-        <literal type="xsd:integer">4</literal>
+        <literal>4</literal>
       </binding>
     </result>
     <result>
@@ -288,7 +288,7 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">4</literal>
+        <literal>4</literal>
       </binding>
     </result>
     <result>
@@ -320,10 +320,10 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">5</literal>
+        <literal>5</literal>
       </binding>
       <binding name="rating2">
-        <literal type="xsd:integer">2</literal>
+        <literal>2</literal>
       </binding>
     </result>
     <result>
@@ -355,7 +355,7 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating1">
-        <literal type="xsd:integer">1</literal>
+        <literal>1</literal>
       </binding>
     </result>
     <result>
@@ -387,7 +387,7 @@
         <literal>Eyana-Aurelianus</literal>
       </binding>
       <binding name="rating2">
-        <literal type="xsd:integer">3</literal>
+        <literal>3</literal>
       </binding>
     </result>
   </results>

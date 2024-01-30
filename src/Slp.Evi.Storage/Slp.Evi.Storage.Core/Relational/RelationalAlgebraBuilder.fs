@@ -53,7 +53,7 @@ let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinde
 
             { ExpressionSet.empty with
                 IsNotErrorCondition = isBoundCondition
-                TypeCategoryExpression = nodeTypeRecord.Category |> int64 |> Int |> Constant |> optimizeRelationalExpression
+                TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
                 TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
                 StringExpression = expression
             }
@@ -81,7 +81,7 @@ let rec private valueBinderToExpressionSet (typeIndexer: TypeIndexer) valueBinde
             let baseRecord =
                 { ExpressionSet.empty with
                     IsNotErrorCondition = isBoundCondition
-                    TypeCategoryExpression = nodeTypeRecord.Category |> int64 |> Int |> Constant |> optimizeRelationalExpression
+                    TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
                     TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
                 }
 
@@ -186,7 +186,7 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
 
         { ExpressionSet.empty with
             IsNotErrorCondition = AlwaysTrue
-            TypeCategoryExpression = nodeTypeRecord.Category |> int64 |> Int |> Constant |> optimizeRelationalExpression
+            TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
             TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
             StringExpression = iriNode.Iri |> Iri.toText |> String |> Constant |> optimizeRelationalExpression
         }
@@ -200,7 +200,7 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
         let baseRecord =
             { ExpressionSet.empty with
                 IsNotErrorCondition = AlwaysTrue
-                TypeCategoryExpression = nodeTypeRecord.Category |> int64 |> Int |> Constant |> optimizeRelationalExpression
+                TypeCategoryExpression = nodeTypeRecord.Category |> int |> Int |> Constant |> optimizeRelationalExpression
                 TypeExpression = nodeTypeRecord.Index |> Int |> Constant |> optimizeRelationalExpression
             }
 
@@ -210,7 +210,7 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
             |> raise
         | TypeIndexer.TypeCategory.NumericLiteral ->
             let numericLiteral =
-                match Int64.TryParse(literalNode.Value) with
+                match Int32.TryParse(literalNode.Value) with
                 | true, intValue -> intValue |> Int
                 | false, _ ->
                     match System.Double.TryParse(literalNode.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) with
@@ -236,7 +236,7 @@ let private nodeToExpressionSet (typeIndexer: TypeIndexer) node =
             }
 
 let private isExpressionSetInCategory (category: TypeIndexer.TypeCategory) exprSet =
-    Comparison(Comparisons.EqualTo, exprSet.TypeCategoryExpression, category |> int64 |> Int |> Constant)
+    Comparison(Comparisons.EqualTo, exprSet.TypeCategoryExpression, category |> int |> Int |> Constant)
     |> optimizeRelationalCondition
 
 let private isExpressionSetInOneOfCategories (categories: TypeIndexer.TypeCategory list) exprSet =
@@ -303,7 +303,7 @@ let rec private processSparqlExpression (typeIndexer: TypeIndexer) (bindings: Ma
         let (isNonError, condition) = sparqlCondition |> processSparqlCondition typeIndexer bindings
         { ExpressionSet.empty with
             IsNotErrorCondition = isNonError
-            TypeCategoryExpression = TypeIndexer.TypeCategory.BooleanLiteral |> int64 |> Int |> Constant |> optimizeRelationalExpression
+            TypeCategoryExpression = TypeIndexer.TypeCategory.BooleanLiteral |> int |> Int |> Constant |> optimizeRelationalExpression
             TypeExpression = typeIndexer.FromType (KnownTypes.xsdBoolean |> LiteralNodeType) |> fun x -> x.Index |> Int |> Constant |> optimizeRelationalExpression
             BooleanExpression = condition |> Boolean |> optimizeRelationalExpression
         }
@@ -394,7 +394,7 @@ let rec private processSparqlExpression (typeIndexer: TypeIndexer) (bindings: Ma
 
         { ExpressionSet.empty with
             IsNotErrorCondition = isNotError
-            TypeCategoryExpression = TypeIndexer.TypeCategory.NumericLiteral |> int64 |> Int |> Constant
+            TypeCategoryExpression = TypeIndexer.TypeCategory.NumericLiteral |> int |> Int |> Constant
             TypeExpression = typeExpression
             NumericExpression = BinaryNumericOperation(operator, leftProc.NumericExpression, rightProc.NumericExpression)
         }
@@ -404,7 +404,7 @@ let rec private processSparqlExpression (typeIndexer: TypeIndexer) (bindings: Ma
 
         { ExpressionSet.empty with
             IsNotErrorCondition = procInner.IsNotErrorCondition
-            TypeCategoryExpression = TypeIndexer.TypeCategory.SimpleLiteral |> int64 |> Int |> Constant |> optimizeRelationalExpression
+            TypeCategoryExpression = TypeIndexer.TypeCategory.SimpleLiteral |> int |> Int |> Constant |> optimizeRelationalExpression
             TypeExpression = DefaultType |> LiteralNodeType |> typeIndexer.FromType |> fun x -> x.Index |> Int |> Constant |> optimizeRelationalExpression
             StringExpression =
                 typeIndexer.IndexedTypes
@@ -1250,7 +1250,7 @@ let private processJoin (database: ISqlDatabaseSchema) (typeIndexer: TypeIndexer
                 let extraAssignment =
                     {
                         Variable = { SqlType = database.IntegerType }
-                        Expression = 1L |> Int |> Constant
+                        Expression = 1 |> Int |> Constant
                     }
 
                 extraAssignment.Variable |> Assigned |> IsNull |> Not, extraAssignment |> Some
@@ -1466,11 +1466,10 @@ let rec private processSparqlPattern (database: ISqlDatabaseSchema) (typeIndexer
             |> List.map (processSparqlPattern database typeIndexer)
             |> List.mapi (
                 fun i proc ->
-                    let ii = i |> int64
                     let procModel = proc.Model |> getNotModifiedModel
                     { procModel with
-                        Assignments = { Variable = switchVariable; Expression = ii |> Int |> Constant } :: procModel.Assignments
-                    }, proc.Bindings |> Map.toList |> List.map (fun (v, vb) -> v, (ii, vb))
+                        Assignments = { Variable = switchVariable; Expression = i |> Int |> Constant } :: procModel.Assignments
+                    }, proc.Bindings |> Map.toList |> List.map (fun (v, vb) -> v, (i, vb))
             )
             |> List.unzip
 

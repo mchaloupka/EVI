@@ -1,19 +1,21 @@
-#!/usr/bin/env -S dotnet fsi
+#r "paket:
+    nuget Fake.Core.Target
+    nuget Fake.Core.Environment
+    nuget Fake.Core.Xml
+    nuget Fake.Core.Process
+    nuget Fake.Core.ReleaseNotes
+    nuget Fake.IO.FileSystem
+    nuget Fake.IO.Zip
+    nuget Fake.Net.Http
+    nuget Fake.DotNet.Cli
+    nuget Fake.DotNet.AssemblyInfoFile
+    nuget Fake.BuildServer.AppVeyor
+    nuget Fake.DotNet.Nuget
+    nuget Fake.DotNet.MSBuild
+    nuget Fake.Testing.SonarQube
+    nuget Newtonsoft.Json"
 
-#r "nuget: Fake.Core.Target"
-#r "nuget: Fake.Core.Environment"
-#r "nuget: Fake.Core.Xml"
-#r "nuget: Fake.Core.Process"
-#r "nuget: Fake.Core.ReleaseNotes"
-#r "nuget: Fake.IO.FileSystem"
-#r "nuget: Fake.IO.Zip"
-#r "nuget: Fake.Net.Http"
-#r "nuget: Fake.DotNet.Cli"
-#r "nuget: Fake.DotNet.AssemblyInfoFile"
-#r "nuget: Fake.BuildServer.AppVeyor"
-#r "nuget: Fake.DotNet.Nuget"
-#r "nuget: Fake.DotNet.MSBuild"
-#r "nuget: Newtonsoft.Json"
+#load "./.fake/build.fsx/intellisense.fsx"
 
 open System
 open System.IO
@@ -26,14 +28,6 @@ open Fake.Net
 open Fake.BuildServer
 open Fake.DotNet.NuGet.NuGet
 
-// Boilerplate
-Environment.GetCommandLineArgs()
-|> Array.skip 2 // skip fsi.exe; build.fsx
-|> Array.toList
-|> Context.FakeExecutionContext.Create false __SOURCE_FILE__
-|> Context.RuntimeContext.Fake
-|> Context.setExecutionContext
-
 BuildServer.install [
   AppVeyor.Installer
 ]
@@ -42,26 +36,14 @@ BuildServer.install [
 module Common =
   let private scriptDirectory = __SOURCE_DIRECTORY__
 
-  let private baseDirectory = DirectoryInfo(scriptDirectory).FullName
+  let baseDirectory = DirectoryInfo(scriptDirectory).FullName
 
   let buildTempDirectory = Path.Combine(baseDirectory, ".build")
-
-  let nugetDirectory = Path.Combine(buildTempDirectory, "nuget")
-
-  let solutionFile = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Storage.sln")
-
-  let benchmarkDirectory = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Benchmark")
-
-  let databaseConnectionsFile = Path.Combine(baseDirectory, "src", "Slp.Evi.Storage", "Slp.Evi.Test.System", "database.json")
-  
-  let releaseNotesFile = Path.Combine(baseDirectory, "RELEASE_NOTES.md")
 
   let branch =
     let b = AppVeyor.Environment.RepoBranch
     if String.IsNullOrEmpty b then "local"
     else b
-
-  let isLocalBuild = branch = "local"
 
   let (|Regex|_|) pattern input =
     let m = Regex.Match(input, pattern)
@@ -90,8 +72,7 @@ module VersionLogic =
     else None
 
   let private releaseNotesVersion =
-    Common.releaseNotesFile
-    |> ReleaseNotes.load
+    ReleaseNotes.load (Common.baseDirectory + "/RELEASE_NOTES.md")
     |> (fun x ->
       match x.AssemblyVersion with
       | Common.Regex @"([0-9]*)\.([0-9]*)\.([0-9]*)" [ major; minor; patch ] -> (major, minor, patch)
@@ -122,6 +103,7 @@ module VersionLogic =
         match Common.branch with
         | "develop" -> "alpha"
         | "master" -> "beta"
+        | "local" -> "local"
         | _ -> 
           let date = DateTime.Now
           date.ToString "yyyyMMdd" |> sprintf "ci-%s"
@@ -130,236 +112,32 @@ module VersionLogic =
         ((sprintf "%s.%s" rnVersion buildNumber), (sprintf "%s.%s-%s" rnVersion buildNumber suffix), Some (sprintf "%s-%s%s" rnVersion suffix buildNumber))
       { Version = version; InformationalVersion = informational; NugetVersion = nuget}
 
-// *** Build helpers ***
-module Build =
-  let customBuildProps =
-    sprintf "/p:Version=%s /p:AssemblyVersion=%s" VersionLogic.version.Version VersionLogic.version.Version
-
-  let setDotnetCommon (defaults: DotNet.Options) =
-    { defaults with CustomParams = customBuildProps |> Some }
-
-  let setDotnetCommonWithExtraArgs extraArgs (defaults: DotNet.Options) =
-    { defaults with CustomParams = sprintf "%s %s" customBuildProps extraArgs |> Some }
-
-  let setMsBuildProps (defaults: Fake.DotNet.MSBuild.CliArguments) =
-    {
-      defaults with
-        DisableInternalBinLog = true
-        Verbosity = MSBuildVerbosity.Quiet |> Some
-        MaxCpuCount = None |> Some
-    }
-
-module Docker =
-  let removeDockerContainer containerName =
-    [ "stop"; containerName ]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
-
-    [ "rm"; "-vf"; containerName ]
-    |> CreateProcess.fromRawCommand "docker"
-    |> Proc.run
-    |> ignore
-
-  let isDockerRunning containerName =
-    let result =
-      [ "ps"; "-a"; "--filter"; sprintf "name=%s" containerName; "--format"; "{{.Names}} {{.Status}}"]
-      |> CreateProcess.fromRawCommand "docker"
-      |> CreateProcess.redirectOutput
-      |> Proc.run
-
-    if result.ExitCode <> 0 then
-      failwithf "Failed to check whether docker is running for %s" containerName
-    else
-      if result.Result.Output.Contains containerName then
-        if result.Result.Output.Contains "Exited" then
-          removeDockerContainer containerName
-          false
-        else
-          true
-      else
-        false
-
-  let startDockerDetached containerName imageName portMapping envVariables =
-    let result =
-      [
-        yield "run"
-        yield "-d"
-        yield "--name"
-        yield containerName
-
-        for k, v in portMapping do
-          yield "-p"
-          yield sprintf "%d:%d" k v
-
-        for k, v in envVariables do
-          yield "-e"
-          yield sprintf "%s=%s" k v
-
-        yield imageName
-      ]
-      |> CreateProcess.fromRawCommand "docker"
-      |> Proc.run
-
-    if result.ExitCode <> 0 then
-      failwithf "Failed to start %s" containerName
-
-  let execInContainer containerName args =
-    let result =
-      [
-        yield "exec"
-        yield containerName
-        yield! args
-      ]
-      |> CreateProcess.fromRawCommand "docker"
-      |> Proc.run
-
-    if result.ExitCode <> 0 then
-      failwithf "Failed to exec %A in %s" args containerName
-
-module MSSQLDatabase =
-  let private containerName = "evi-tests-mssqldb"
-  let private imageName = "mcr.microsoft.com/mssql/server:2022-latest"
-  let private dockerPort = 1453
-  let private password = "Password12!" // AppVeyor default password to MS SQL
-  let private dbName = "R2RMLTestStore"
-  let private appveyorSqlInstance = "(local)\\SQL2019"
-
-  let connectionString =
-    if Common.isLocalBuild then
-      sprintf "Server=127.0.0.1,%d;Database=%s;User Id=sa;Password=%s" dockerPort dbName password
-    else
-      sprintf "Server=%s;Database=%s;User ID=sa;Password=%s" appveyorSqlInstance dbName password
-
-  let startDatabase () =
-    if Common.isLocalBuild then
-      Trace.log "--- Preparing MS SQL database (docker) ---"
-      if Docker.isDockerRunning containerName |> not then
-        Docker.startDockerDetached containerName imageName [dockerPort, 1433] [
-          "ACCEPT_EULA", "Y"
-          "SA_PASSWORD", password
-        ]
-
-        Trace.log " ... Waiting for MS SQL Server to start up"
-        Threading.Thread.Sleep(60000) // Enough time to start MSSQL server
-
-        Trace.log " ... Creating database in MS SQL"
-        Docker.execInContainer containerName [
-          "/opt/mssql-tools/bin/sqlcmd"
-          "-S"
-          "localhost"
-          "-U"
-          "sa"
-          "-P"
-          password
-          "-Q"
-          sprintf "USE [master]; CREATE DATABASE [%s]" dbName
-        ]
-      else
-        Trace.log "--- Skipping MS SQL creation as it already exists ---"
-    else
-      Trace.log "--- Preparing MS SQL database (appveyor) ---"
-      
-      Trace.log " ... Creating database in MS SQL"
-      let result =
-        [
-          "-S"
-          appveyorSqlInstance
-          "-Q"
-          sprintf "USE [master]; CREATE DATABASE [%s]" dbName
-        ]
-        |> CreateProcess.fromRawCommand "sqlcmd"
-        |> Proc.run
-
-      if result.ExitCode <> 0 then
-        failwith "MS SQL Database instantiation failed"
-
-  let tearDown () =
-    if Common.isLocalBuild then
-      Trace.log "--- Removing MS SQL container ---"
-      Docker.removeDockerContainer containerName
-
-module MySQLDatabase =
-  let private containerName = "evi-tests-mysqldb"
-  let private imageName = "mysql:latest"
-  let private dockerPort = 1454
-  let private password = "Password12!"
-  let private dbName = "R2RMLTestStore"
-  let private sqlPort = 3306
-
-  let connectionString =
-    let port =
-      if Common.isLocalBuild then
-        dockerPort
-      else
-        sqlPort
-
-    sprintf "Server=localhost;Port=%d;User ID=root;Password=%s;Database=%s" port password dbName
-
-  let startDatabase () =
-    if Common.isLocalBuild then
-      Trace.log "--- Preparing MySQL database (docker) ---"
-
-      if Docker.isDockerRunning containerName |> not then
-        Docker.startDockerDetached containerName imageName [dockerPort, 3306] [
-          "MYSQL_ROOT_PASSWORD", password
-        ]
-
-        Trace.log " ... Waiting for MySQL Server to start up"
-        Threading.Thread.Sleep(60000) // Enough time to start MSSQL server
-
-        Trace.log " ... Creating database in MySQL"
-        Docker.execInContainer containerName [
-          "mysql"
-          "-u"
-          "root"
-          sprintf "-p%s" password
-          "-e"
-          sprintf "create database %s;" dbName
-        ]
-      else
-        Trace.log "--- Skipping MySQL creation as it already exists ---"
-    else
-      Trace.log "--- Preparing MySQL database (appveyor) ---"
-
-      Trace.log " ... Creating database in MySQL"
-      let result =
-        [
-          "-u"
-          "root"
-          sprintf "-p%s" password
-          "-e"
-          sprintf "create database %s;" dbName
-        ]
-        |> CreateProcess.fromRawCommand @"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql"
-        |> Proc.run
-      
-      if result.ExitCode <> 0 then
-        failwith "MS SQL Database instantiation failed"
-
-  let tearDown () =
-    if Common.isLocalBuild then
-      Trace.log "--- Removing MS SQL container ---"
-      Docker.removeDockerContainer containerName
-
 Target.create "RestorePackages" (fun _ ->
   Trace.log "--- Restore packages starting ---"
 
-  Common.solutionFile
-  |> DotNet.restore (fun p -> { p with MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps })
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+  |> DotNet.restore id
 )
 
 Target.create "Build" (fun _ ->
-  Trace.log "--- Building the app --- "
+  Trace.log " --- Building the app --- "
+
+  let project = (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
+
+  let version = VersionLogic.version
 
   let build conf =
-    Common.solutionFile
-    |> DotNet.build (fun p ->
-      {
-        p with
-          Configuration = conf |> DotNet.BuildConfiguration.fromString
-          MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
-          Common = p.Common |> Build.setDotnetCommon
+    project
+    |> MSBuild.build (fun p ->
+      { p with
+          Verbosity = Some MSBuildVerbosity.Quiet
+          Targets = ["Build"]
+          Properties =
+            [
+              "Configuration", conf
+              "Version", version.Version
+            ]
+          MaxCpuCount = Some None
       }
     )
 
@@ -368,109 +146,151 @@ Target.create "Build" (fun _ ->
 )
 
 Target.create "CreateTempFolder" (fun _ ->
-  Trace.log"--- Creating temporary build folder ---"
-  Common.buildTempDirectory
-  |> DirectoryInfo.ofPath
-  |> DirectoryInfo.ensure
+  Trace.log("--- Creating temporary build folder ---")
+
+  let di = DirectoryInfo(Common.buildTempDirectory)
+  di.Create()
 )
 
-Target.create "Clean" (fun _ ->
-  Trace.log "--- Cleaning folders ---"
-  Shell.cleanDirs [
-    Common.buildTempDirectory
-  ]
+Target.create "BeginSonarQube" (fun _ ->
+  if Common.branch = "develop" then
+    Trace.log " --- Starting SonarQube analyzer --- "
+    let startProc = 
+      DotNet.exec
+        id 
+        "sonarscanner" 
+        (sprintf
+          "begin /k:\"EVI\" /o:\"mchaloupka-github\" /d:sonar.login=\"%s\" /d:sonar.cs.opencover.reportsPaths=\"%s\\coverage.xml\" /d:sonar.host.url=\"https://sonarcloud.io\""
+          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
+          Common.baseDirectory
+        )
+    if not startProc.OK then failwithf "Process failed with %A" startProc
+  else Trace.log "SonarQube start skipped (not develop branch)"
+)
 
-  Common.solutionFile
-  |> DotNet.exec (fun p -> 
-    {
-      p with
-        Verbosity = DotNet.Verbosity.Quiet |> Some
-    }
-  ) "clean"
-  |> ignore
+Target.create "EndSonarQube" (fun _ ->
+  if Common.branch = "develop" then
+    Trace.log " --- Exiting SonarQube analyzer --- "
+    let endProc = 
+      DotNet.exec
+        id 
+        "sonarscanner" 
+        (sprintf
+          "end /d:sonar.login=\"%s\""
+          (Environment.GetEnvironmentVariable("SONARQUBE_TOKEN"))
+        )
+    if not endProc.OK then failwithf "Process failed with %A" endProc
+  else Trace.log "SonarQube end skipped (not develop branch)"
 )
 
 Target.create "Package" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
-    Trace.log "--- Packaging app --- "
+    Trace.log " --- Packaging app --- "
 
-    DirectoryInfo.ensure (DirectoryInfo.ofPath Common.nugetDirectory)
+    DirectoryInfo.ensure (DirectoryInfo.ofPath (Common.baseDirectory + "/nuget"))
 
-    Common.solutionFile
+    (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
     |> DotNet.pack (fun p ->
       { p with
           NoBuild = true
-          OutputPath = Some Common.nugetDirectory
+          OutputPath = Some (Common.baseDirectory + "/nuget")
           Configuration = DotNet.BuildConfiguration.Release
-          MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
-          Common = p.Common |> Build.setDotnetCommonWithExtraArgs ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
+          Common =
+            { p.Common with 
+                CustomParams = Some ("--no-restore --include-source --include-symbols /p:PackageVersion=" + version)
+            }
       }
     )
 
   | None -> Trace.log "Skipping nuget packaging"
 )
 
-Target.create "PrepareMSSQLDatabase"  (fun _ ->
-  MSSQLDatabase.startDatabase ()
-)
+Target.create "PrepareDatabase" (fun _ ->
+  match Common.branch with
+  | "local" -> Trace.log "Skipping database preparation "
+  | _ ->
+    Trace.log " --- Preparing database --- "
+    let sqlInstance = "(local)\\SQL2017";
+    let dbName = "R2RMLTestStore";
+    let connectionString = sprintf "Server=%s;Database=%s;User ID=sa;Password=Password12!" sqlInstance dbName
 
-Target.create "PrepareMySQLDatabase" (fun _ ->
-  MySQLDatabase.startDatabase ()
-)
+    let updateConfig file =
+      Trace.log (sprintf "Updating connection string in: %s" file)
+      let content = File.ReadAllText file
+      let contentObj = Newtonsoft.Json.JsonConvert.DeserializeObject content :?> Newtonsoft.Json.Linq.JToken
+      contentObj.["ConnectionStrings"].["mssql"] <- Newtonsoft.Json.Linq.JValue connectionString
+      let newContent = Newtonsoft.Json.JsonConvert.SerializeObject contentObj
+      File.WriteAllText(file, newContent)
 
-Target.create "PrepareDatabases" (fun _ ->
-  Trace.log "--- Updating connection string in database file ---"
-  let content =
-    Common.databaseConnectionsFile
-    |> File.ReadAllText
-    |> Newtonsoft.Json.JsonConvert.DeserializeObject
-    :?> Newtonsoft.Json.Linq.JToken
+    !! (Common.baseDirectory + "/src/**/database.json")
+    |> Seq.iter updateConfig
 
-  content.["ConnectionStrings"].["mssql"] <- MSSQLDatabase.connectionString |> Newtonsoft.Json.Linq.JValue
-  content.["ConnectionStrings"].["mysql"] <- MySQLDatabase.connectionString |> Newtonsoft.Json.Linq.JValue
-  
-  File.WriteAllText(Common.databaseConnectionsFile, content |> Newtonsoft.Json.JsonConvert.SerializeObject)
-)
-
-Target.create "TearDownDatabases" (fun _ ->
-  MSSQLDatabase.tearDown ()
-  MySQLDatabase.tearDown ()
+    Trace.log (sprintf "Creating database in %s" sqlInstance)
+    let result = Shell.Exec("sqlcmd", sprintf "-S \"%s\" -Q \"USE [master]; CREATE DATABASE [%s]\"" sqlInstance dbName)
+    if result <> 0 then failwith "Database creation failed"
 )
 
 Target.create "RunTests" (fun _ ->
-  Trace.log "--- Running tests --- "
-  Common.solutionFile
+  Trace.log " --- Running tests --- "
+  (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Storage.sln")
   |> DotNet.test (fun p ->
     { p with
         NoBuild = true
         Configuration = DotNet.BuildConfiguration.Debug
-        MSBuildParams = p.MSBuildParams |> Build.setMsBuildProps
-        Common = p.Common |> Build.setDotnetCommon
+        Common =
+          { p.Common with 
+              CustomParams = (sprintf "--collect:\"XPlat Code Coverage\" --results-directory:\"%s/coverage\" --logger:\"console;verbosity=detailed\"" Common.buildTempDirectory) |> Some
+          }
     }
   )
 )
 
+Target.create "UploadCodeCov" (fun _ ->
+  match Common.branch with
+  | "local" -> Trace.log "Skipping uploading coverage results"
+  | _ ->
+    Trace.log " --- Uploading CodeCov --- "
+    Http.downloadFile "codecov.sh" "https://codecov.io/bash" |> ignore
+    let result = Shell.Exec("bash", sprintf "codecov.sh -f coverage.xml -t %s" (Environment.GetEnvironmentVariable("CODECOV_TOKEN")))
+    if result <> 0 then failwithf "Uploading coverage results failed (exit code %d)" result
+)
+
 Target.create "RunBenchmarks" (fun _ ->
-  Trace.log "--- Starting benchmarking --- "
+  Trace.log " --- Starting benchmarking --- "
   let startProc =
-    DotNet.exec (fun p -> 
-    {
-      p with
-        Verbosity = DotNet.Verbosity.Quiet |> Some
-        WorkingDirectory = Common.benchmarkDirectory
-    }) "run" (sprintf "--project Slp.Evi.Benchmark.csproj -c Release")
+    DotNet.exec
+      id
+      "run"
+      (sprintf "-p .\\src\\Slp.Evi.Storage\\Slp.Evi.Benchmark -c Release")
 
   if not startProc.OK then failwithf "Process failed with %A" startProc
 )
 
-Target.create "Benchmarks" (fun _ -> ())
-
 Target.create "PublishArtifacts" (fun _ ->
   match VersionLogic.version.NugetVersion with
   | Some version ->
-    Trace.log "--- Publishing artifacts --- "
-    !! (Common.nugetDirectory + "/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    Trace.log " --- Publishing artifacts --- "
+
+    [
+      !! (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Storage\bin\**\*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Storage\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Library"
+      !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.System/bin/**/*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Test.System\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Tests/System"
+      !! (Common.baseDirectory + "/src/Slp.Evi.Storage/Slp.Evi.Test.Unit/bin/**/*")
+        |> GlobbingPattern.setBaseDir (Common.baseDirectory + @"\src\Slp.Evi.Storage\Slp.Evi.Test.Unit\bin")
+        |> Zip.filesAsSpecs ""
+        |> Zip.moveToFolder "Tests/Unit"
+    ]
+    |> Seq.concat
+    |> Zip.zipSpec (sprintf "%s/Binaries-%s.zip" Common.buildTempDirectory version)
+
+    !! (Common.buildTempDirectory + "/Binaries-*.zip") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
+    !! (Common.baseDirectory + "/nuget/*.nupkg") |> Seq.iter (fun f -> Trace.publish ImportData.BuildArtifact f)
 
     match Common.branch with
     | "develop" | "master" ->
@@ -478,7 +298,6 @@ Target.create "PublishArtifacts" (fun _ ->
         "slp.evi"
         "slp.evi.core"
         "slp.evi.mssql"
-        "slp.evi.mysql"
       ]
       |> List.iter (
         fun project ->
@@ -487,8 +306,8 @@ Target.create "PublishArtifacts" (fun _ ->
                 AccessKey = Environment.GetEnvironmentVariable("NUGET_TOKEN")
                 Project = project
                 Version = version
-                OutputPath = Common.nugetDirectory
-                WorkingDir = Common.nugetDirectory
+                OutputPath = Common.baseDirectory + "/nuget"
+                WorkingDir = Common.baseDirectory + "/nuget"
             })
       )
     | _ -> ()
@@ -499,34 +318,18 @@ open Fake.Core.TargetOperators
 
 // *** Define Dependencies ***
 "CreateTempFolder"
- ==> "Clean"
  ==> "RestorePackages"
+ ==> "BeginSonarQube"
  ==> "Build"
+ ==> "PrepareDatabase"
  ==> "RunTests"
+ ==> "EndSonarQube"
+ ==> "UploadCodeCov"
  ==> "Package"
  ==> "PublishArtifacts"
 
-"PrepareMSSQLDatabase"
- ==> "PrepareDatabases"
-
-"PrepareMySQLDatabase"
- ==> "PrepareDatabases"
-
-"PrepareDatabases"
- ==> "RunTests"
-
-"RunTests"
- ?=> "TearDownDatabases"
- ==> "PublishArtifacts"
-
-"RunBenchmarks"
- ?=> "TearDownDatabases"
- ==> "Benchmarks"
-
 "RestorePackages"
- ==> "PrepareDatabases"
  ==> "RunBenchmarks"
- ==> "Benchmarks"
 
 // *** Start Build ***
 Target.runOrDefault "PublishArtifacts"

@@ -1,14 +1,18 @@
 version: 0.0.0.{build}
-image: Visual Studio 2022
+image: Visual Studio 2019
 shallow_clone: true
 configuration: Release
 platform: Any CPU
 environment:
+  SONARQUBE_TOKEN:
+    secure: jD8yc9tSVznJZlP2a70DtOy4/eC6Ld4A0J1GH/7xjs7mWrrlKqeTIWk6BGR7eFv0
+  CODECOV_TOKEN:
+    secure: TkNT/U61mrXkNbtNjTxKXnBmF3wzp8YcFqAiboRXi8bj61fYHdogm/DxHxIJEtiH
   NUGET_TOKEN:
-    secure: VfrBUBr5ET8sEypbmbNDtI/C8V+cs4B4NCRevUZ9r/XPS+5y6YK+3xlYKhtJbA5d
-init:
-  - net start MSSQL$SQL2019
-  - ps: Start-Service MySQL80
+    secure: jYfEAKY4ZyiDX9CwBtM8y7ZuW6meadOoyaVGtGkDRjREqqmmgdRKKFcjwgJP5vyi
+services: 
+  - mssql2017
 build_script:
-  - cmd: dotnet fsi build.fsx
+  - cmd: dotnet tool restore
+  - cmd: dotnet fake build
 test: off
