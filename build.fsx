@@ -477,7 +477,7 @@ Target.create "PublishArtifacts" (fun _ ->
     match Common.branch with
     | "develop" | "master" ->
       // Skip the pull request builds
-      if AppVeyor.Environment.PullRequestNumber |> String.isNotNullOrEmpty then
+      if AppVeyor.Environment.PullRequestNumber |> String.isNullOrEmpty then
         let key = Environment.GetEnvironmentVariable("NUGET_TOKEN")
 
         let publishNuget nuget =
