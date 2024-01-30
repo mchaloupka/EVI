@@ -480,7 +480,7 @@ Target.create "PublishArtifacts" (fun _ ->
           DotNet.exec id "nuget" (sprintf "push %s -k %s -s https://api.nuget.org/v3/index.json" nuget key)
   
       !! (Common.nugetDirectory + "/*.nupkg")
-      -- (Common.nugetDirectory + "*.symbols.nupkg")
+      -- (Common.nugetDirectory + "/*.symbols.nupkg")
       |> Seq.map publishNuget
       |> Seq.iter (fun x -> if not x.OK then failwithf "Nuget publish failed with: %A" x)
     | _ -> ()
